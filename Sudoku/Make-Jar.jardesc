@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<jardesc>
+    <jar path="Sudoku/SudokuExplainer.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Sudoku/Make-Jar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=Sudoku/&lt;diuf.sudoku.gui{SudokuExplainer.java[SudokuExplainer" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.test"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.solver"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.generator"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.solver.rules"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.tools"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.solver.rules.chaining"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.io"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.solver.checks"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.solver.rules.unique"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.applet"/>
+        <javaElement handleIdentifier="=Sudoku/&lt;diuf.sudoku.gui"/>
+    </selectedElements>
+</jardesc>
