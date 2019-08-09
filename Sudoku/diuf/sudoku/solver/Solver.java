@@ -1,6 +1,6 @@
 /*
  * Project: Sudoku Explainer
- * Copyright (C) 2006-2007 Nicolas Juillerat
+ * Copyright (C) 2006-2009 Nicolas Juillerat
  * Available under the terms of the Lesser General Public License (LGPL)
  */
 package diuf.sudoku.solver;
@@ -46,6 +46,11 @@ public class Solver {
         "The next solving techniques are advanced ones\n" +
         "that may take a very long computing time.\n" +
         "Do you want to continue anyway?";
+
+    public double difficulty;
+    public double pearl;
+    public double diamond;
+    public char want;
 
     private Grid grid;
     private List<HintProducer> directHintProducers;
@@ -469,11 +474,13 @@ public class Solver {
         }
     }
 
-    public double getDifficulty() {
+    public void getDifficulty() {
         Grid backup = new Grid();
         grid.copyTo(backup);
         try {
-            double difficulty = Double.NEGATIVE_INFINITY;
+            difficulty = Double.NEGATIVE_INFINITY;
+            pearl = 0.0;
+            diamond = 0.0;
             while (!isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
@@ -492,8 +499,8 @@ public class Solver {
                 } catch (InterruptedException willHappen) {}
                 Hint hint = accu.getHint();
                 if (hint == null) {
-                    System.err.println("Failed to solve:\n" + grid.toString());
-                    return 20.0;
+		    difficulty = 20.0;
+                    break;
                 }
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
@@ -501,8 +508,22 @@ public class Solver {
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
                 hint.apply();
+		if (pearl == 0.0) {
+		    if (diamond == 0.0)
+			diamond = difficulty;
+		    if (hint.getCell() != null) {
+                        if (want == 'd' && difficulty > diamond) {
+		            difficulty = 20.0;
+                            break;
+                        }
+		        pearl = difficulty;
+		    }
+                }
+		else if (want != 0 && difficulty > pearl) {
+		    difficulty = 20.0;
+                    break;
+                }
             }
-            return difficulty;
         } finally {
             backup.copyTo(grid);
         }
