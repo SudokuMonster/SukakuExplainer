@@ -418,7 +418,7 @@ public class Solver {
                 usedRules.put(rule, usedRules.get(rule) + 1);
             else
                 usedRules.put(rule, 1);
-            hint.apply();
+            hint.apply(grid);
         }
         normalPriority(oldPriority);
         return usedRules;
@@ -467,7 +467,7 @@ public class Solver {
                     break;
                 if (difficulty > max)
                     break;
-                hint.apply();
+                hint.apply(grid);
             }
             return difficulty;
         } finally {
@@ -508,7 +508,7 @@ public class Solver {
                 double ruleDiff = rule.getDifficulty();
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
-                hint.apply();
+                hint.apply(grid);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
                         diamond = difficulty;

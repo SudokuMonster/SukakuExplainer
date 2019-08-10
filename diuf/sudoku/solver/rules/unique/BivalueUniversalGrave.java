@@ -62,9 +62,9 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             Cell twin = temp.getCell(cell.getX(), cell.getY());
                             twin.removePotentialValue(value);
                             if (commonCells == null)
-                                commonCells = new LinkedHashSet<Cell>(cell.getHouseCells());
+                                commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
                             else
-                                commonCells.retainAll(cell.getHouseCells());
+                                commonCells.retainAll(cell.getHouseCells(grid));
                             commonCells.removeAll(bugCells);
                             if (bugCells.size() > 1 && allBugValues.cardinality() > 1
                                     && commonCells.isEmpty())

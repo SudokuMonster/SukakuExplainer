@@ -40,7 +40,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                     boolean hasNakedSingle = false;
                     // Look for potentially excluding cells (whose number of candidates <= degree)
                     Collection<Cell> excludingCells = new ArrayList<Cell>();
-                    for (Cell excludingCell : cell.getHouseCells()) {
+                    for (Cell excludingCell : cell.getHouseCells(grid)) {
                         int exclCardinality = excludingCell.getPotentialValues().cardinality();
                         if (exclCardinality == 1)
                             hasNakedSingle = true;
@@ -173,7 +173,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                                      */
                                     Cell c1 = cells[cellIndexes[0]];
                                     Cell c2 = cells[cellIndexes[1]];
-                                    if (c1.getHouseCells().contains(c2)) {
+                                    if (c1.getHouseCells(grid).contains(c2)) {
                                         isAllowed = false;
                                         break;
                                     }

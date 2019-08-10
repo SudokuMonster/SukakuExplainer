@@ -892,7 +892,7 @@ public class Chaining implements IndirectHintProducer {
         while (!p.parents.isEmpty()) {
             assert p.parents.size() == 1;
             Cell srcCell = grid.getCell(p.cell.getX(), p.cell.getY());
-            for (Cell cell : srcCell.getHouseCells()) {
+            for (Cell cell : srcCell.getHouseCells(grid)) {
                 if (!cells.contains(cell) && cell.hasPotentialValue(p.value)) {
                     if (p.isOn)
                         cancelForw.add(new Potential(cell, p.value, false));

@@ -36,7 +36,7 @@ public class AlignedPairExclusion extends AlignedExclusion {
                     // Look for potentially excluding cells (whose number of candidates <=
                     // degree)
                     Collection<Cell> excludingCells = new ArrayList<Cell>();
-                    for (Cell excludingCell : cell.getHouseCells()) {
+                    for (Cell excludingCell : cell.getHouseCells(grid)) {
                         int exclCardinality = excludingCell.getPotentialValues()
                                 .cardinality();
                         if (exclCardinality == 1)
@@ -96,7 +96,7 @@ public class AlignedPairExclusion extends AlignedExclusion {
                         Cell lockingCell = null;
 
                         // Check if this potential combination is allowed, hidden single rule
-                        if (pt0 == pt1 && cells[0].getHouseCells().contains(cells[1]))
+                        if (pt0 == pt1 && cells[0].getHouseCells(grid).contains(cells[1]))
                             isAllowed = false;
 
                         // Check if this potential combination is allowed, using common

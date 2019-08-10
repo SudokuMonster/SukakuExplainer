@@ -59,9 +59,9 @@ public class SolutionHint extends WarningHint {
         return HtmlLoader.loadHtml(this, "Solution.html");
     }
 
-    @Override
-    public void apply() {
-        solution.copyTo(grid);
-    }
+//    @Override
+//    public void apply() {
+//        solution.copyTo(grid);
+//    }
 
 }

@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class Cell {
 
-    private final Grid grid;
+    //private final Grid grid;
     private final int x;
     private final int y;
     private int value = 0;
@@ -34,7 +34,7 @@ public class Cell {
      * @param y the y coordinate of this cell (0=topmost, 8=bottommost)
      */
     public Cell(Grid grid, int x, int y) {
-        this.grid = grid;
+        //this.grid = grid;
         this.x = x;
         this.y = y;
     }
@@ -92,25 +92,25 @@ public class Cell {
      * @param value the value to set this cell to.
      * @see #getHouseCells()
      */
-    public void setValueAndCancel(int value) {
-        assert value != 0;
-        this.value = value;
-        this.potentialValues.clear();
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
-            Grid.Region region = grid.getRegionAt(regionType, this.x, this.y);
-            for (int i = 0; i < 9; i++) {
-                Cell other = region.getCell(i);
-                other.removePotentialValue(value);
-            }
-        }
-    }
+//    public void setValueAndCancel(int value) {
+//        assert value != 0;
+//        this.value = value;
+//        this.potentialValues.clear();
+//        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+//            Grid.Region region = grid.getRegionAt(regionType, this.x, this.y);
+//            for (int i = 0; i < 9; i++) {
+//                Cell other = region.getCell(i);
+//                other.removePotentialValue(value);
+//            }
+//        }
+//    }
 
     public void setValueAndCancel(int value, Grid targetGrid) {
         assert value != 0;
         this.value = value;
         this.potentialValues.clear();
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
-            Grid.Region region = grid.getRegionAt(regionType, this.x, this.y);
+        for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
+            Grid.Region region = targetGrid.getRegionAt(regionType, this.x, this.y);
             for (int i = 0; i < 9; i++) {
                 Cell original = region.getCell(i);
                 Cell other = targetGrid.getCell(original.getX(), original.getY());
@@ -177,13 +177,28 @@ public class Cell {
      * are always returned in the same order).
      * @return the cells that are controlled by this cell
      */
-    public Collection<Cell> getHouseCells() {
+//    public Collection<Cell> getHouseCells() {
+//        // Use a set to prevent duplicates (cells in both block and row/column)
+//        Collection<Cell> result = new LinkedHashSet<Cell>();
+//        // Iterate on region types (Block, Row, Column)
+//        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+//            // Get region on which this cell is
+//            Grid.Region region = grid.getRegionAt(regionType, x, y);
+//            // Add all cell of that region
+//            for (int i = 0; i < 9; i++)
+//                result.add(region.getCell(i));
+//        }
+//        // Remove this cell
+//        result.remove(this);
+//        return result;
+//    }
+    public Collection<Cell> getHouseCells(Grid targetGrid) {
         // Use a set to prevent duplicates (cells in both block and row/column)
         Collection<Cell> result = new LinkedHashSet<Cell>();
         // Iterate on region types (Block, Row, Column)
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
             // Get region on which this cell is
-            Grid.Region region = grid.getRegionAt(regionType, x, y);
+            Grid.Region region = targetGrid.getRegionAt(regionType, x, y);
             // Add all cell of that region
             for (int i = 0; i < 9; i++)
                 result.add(region.getCell(i));
