@@ -223,9 +223,9 @@ public class SudokuIO {
             if (result == RES_OK) // success
                 return null;
             if (result == RES_WARN) // warning
-                return new ErrorMessage(WARNING_MSG, false);
+                return new ErrorMessage(WARNING_MSG, false, (Object[])null);
             else // error
-                return new ErrorMessage(ERROR_MSG, true);
+                return new ErrorMessage(ERROR_MSG, true, (Object[])null);
         } catch (IOException ex) {
             return new ErrorMessage("Error while copying:\n{0}", ex);
         } catch (UnsupportedFlavorException ex) {
@@ -257,10 +257,10 @@ public class SudokuIO {
             int result = loadFromReader(grid, reader);
             if (result == RES_OK)
                 return null;
-            else if (result == RES_WARN)
-                return new ErrorMessage(WARNING_MSG, false);
-            else
-                return new ErrorMessage(ERROR_MSG, true);
+            if (result == RES_WARN) // warning
+                return new ErrorMessage(WARNING_MSG, false, (Object[])null);
+            else // error
+                return new ErrorMessage(ERROR_MSG, true, (Object[])null);
         } catch (FileNotFoundException ex) {
             return new ErrorMessage("File not found: {0}", file);
         } catch (IOException ex) {
