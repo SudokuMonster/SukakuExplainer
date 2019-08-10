@@ -216,8 +216,8 @@ public class Chaining implements IndirectHintProducer {
     
     private List<ChainingHint> getMultipleChainsHintList(Grid grid) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
-        //boolean alreadyInParallel = (Thread.currentThread() instanceof ForkJoinWorkerThread);
-        boolean alreadyInParallel = true;
+        boolean alreadyInParallel = (Thread.currentThread() instanceof ForkJoinWorkerThread);
+        //boolean alreadyInParallel = true;
         List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
         for (int y = 0; y < 9; y++) {

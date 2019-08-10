@@ -299,4 +299,23 @@ public class Cell {
         other.potentialValues = (BitSet)this.potentialValues.clone();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Cell))
+            return false;
+    	if(this == o) return true;
+    	Cell other = (Cell)o;
+    	if(x != other.getX()) return false;
+    	if(y != other.getY()) return false;
+    	if(value != other.getValue()) return false;
+    	if(!potentialValues.equals(other.getPotentialValues())) return false;
+    	return true;
+    }
+    
+    @Override
+    public int hashCode() {
+    	int ret = 81 * value + 9 * y + x;
+    	ret ^= potentialValues.hashCode();
+    	return ret;
+    }
 }
