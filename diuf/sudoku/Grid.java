@@ -224,16 +224,17 @@ public class Grid {
          * @return the index of the cell, or -1 if the cell does not belong to
          * this region.
          */
-        public int indexOf(Cell cell) {
-            /*
-             * This code is not really used. The method is always overriden
-             */
-            for (int i = 0; i < 9; i++) {
-                if (getCell(i).equals(cell))
-                    return i;
-            }
-            return -1;
-        }
+        public abstract int indexOf(Cell cell);
+//        public int indexOf(Cell cell) {
+//            /*
+//             * This code is not really used. The method is always overriden
+//             */
+//            for (int i = 0; i < 9; i++) {
+//                if (getCell(i).equals(cell))
+//                    return i;
+//            }
+//            return -1;
+//        }
 
         /**
          * Test whether this region contains the given value, that is,
