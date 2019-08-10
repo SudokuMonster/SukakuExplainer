@@ -137,6 +137,7 @@ public class Solver {
         experimentalHintProducers = new ArrayList<IndirectHintProducer>(); // Two levels of nesting !?
         addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4));
         addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
     }
 
     /**
@@ -366,7 +367,7 @@ public class Solver {
                 return -1;
             else if (d1 > d2)
                 return 1;
-            else 
+            else
                 return r1.getName().compareTo(r2.getName());
         }
 
@@ -499,7 +500,7 @@ public class Solver {
                 } catch (InterruptedException willHappen) {}
                 Hint hint = accu.getHint();
                 if (hint == null) {
-		    difficulty = 20.0;
+                    difficulty = 20.0;
                     break;
                 }
                 assert hint instanceof Rule;
@@ -508,19 +509,19 @@ public class Solver {
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
                 hint.apply();
-		if (pearl == 0.0) {
-		    if (diamond == 0.0)
-			diamond = difficulty;
-		    if (hint.getCell() != null) {
+                if (pearl == 0.0) {
+                    if (diamond == 0.0)
+                        diamond = difficulty;
+                    if (hint.getCell() != null) {
                         if (want == 'd' && difficulty > diamond) {
-		            difficulty = 20.0;
+                            difficulty = 20.0;
                             break;
                         }
-		        pearl = difficulty;
-		    }
+                        pearl = difficulty;
+                    }
                 }
-		else if (want != 0 && difficulty > pearl) {
-		    difficulty = 20.0;
+                else if (want != 0 && difficulty > pearl) {
+                    difficulty = 20.0;
                     break;
                 }
             }
@@ -529,6 +530,210 @@ public class Solver {
         }
     }
 
+//    public void getHintsHint() {
+//        Grid backup = new Grid();
+//        grid.copyTo(backup);
+//        try {
+//            difficulty = Double.NEGATIVE_INFINITY;
+//            pearl = 0.0;
+//            diamond = 0.0;
+//            while (!isSolved()) {
+//                SingleHintAccumulator accu = new SingleHintAccumulator();
+//                try {
+//                    for (HintProducer producer : directHintProducers)
+//                        producer.getHints(grid, accu);
+//                    for (IndirectHintProducer producer : indirectHintProducers)
+//                        producer.getHints(grid, accu);
+//                    for (IndirectHintProducer producer : chainingHintProducers)
+//                        producer.getHints(grid, accu);
+//                    for (IndirectHintProducer producer : chainingHintProducers2)
+//                        producer.getHints(grid, accu);
+//                    for (IndirectHintProducer producer : advancedHintProducers)
+//                        producer.getHints(grid, accu);
+//                    for (IndirectHintProducer producer : experimentalHintProducers)
+//                        producer.getHints(grid, accu);
+//                } catch (InterruptedException willHappen) {}
+//                Hint hint = accu.getHint();
+//                if (hint == null) {
+//                    difficulty = 20.0;
+//                    break;
+//                }
+//                assert hint instanceof Rule;
+//                Rule rule = (Rule)hint;
+//                double ruleDiff = rule.getDifficulty();
+//                if (ruleDiff > difficulty)
+//                    difficulty = ruleDiff;
+//                hint.apply();
+//
+//                String s = "";
+//                for (int i = 0; i < 81; i++) {
+//                    int n = grid.getCellValue(i % 9, i / 9);
+//                    s += (n==0)?".":n;
+//                }
+//                s += " ";
+//                int w = (int)((ruleDiff + 0.05) * 10);
+//                int p = w % 10;
+//                w /= 10;
+//                s += w + "." + p;
+//                s += ", " + hint.toString();
+//                System.out.println(s);
+//                System.out.flush();
+//
+//                if (pearl == 0.0) {
+//                    if (diamond == 0.0)
+//                        diamond = difficulty;
+//                    if (hint.getCell() != null) {
+//                        if (want == 'd' && difficulty > diamond) {
+//                            difficulty = 20.0;
+//                            break;
+//                        }
+//                        pearl = difficulty;
+//                    }
+//                }
+//                else if (want != 0 && difficulty > pearl) {
+//                    difficulty = 20.0;
+//                    break;
+//                }
+//            }
+//        } finally {
+//            backup.copyTo(grid);
+//        }
+//    }
+    public void getHintsHint() {
+        Grid backup = new Grid();
+        grid.copyTo(backup);
+        try {
+            difficulty = Double.NEGATIVE_INFINITY;
+            pearl = 0.0;
+            diamond = 0.0;
+            while (!isSolved()) {
+                String s = "";
+
+                int crd = 1;
+                for (int i = 0; i < 81; i++) {
+                    int n = grid.getCell(i % 9, i / 9).getPotentialValues().cardinality();
+                    if ( n > crd ) { crd = n; }
+                }
+                if ( crd > 1 )
+                {
+                    for (int i=0; i<3; i++ ) {
+                        s = "+";
+                        for (int j=0; j<3; j++ ) {
+                            for (int k=0; k<3; k++ ) { s += "-";
+                                for (int l=0; l<crd; l++ ) { s += "-";
+                                }
+                            }
+                            s += "-+";
+                        }
+                        System.out.println(s);
+                        System.out.flush();
+
+                        for (int j=0; j<3; j++ ) {
+                            s = "|";
+                            for (int k=0; k<3; k++ ) {
+                                for (int l=0; l<3; l++ ) {
+                                    s += " ";
+                                    int cnt = 0;
+                                    int c = ((((i*3)+j)*3)+k)*3+l;
+                                    Cell cell = grid.getCell(c % 9, c / 9);
+                                    int n = cell.getValue();
+                                    if ( n != 0 ) {
+                                        s += n;
+                                        cnt += 1;
+                                    }
+                                    if ( n == 0 ) {
+                                        for (int pv=1; pv<=9; pv++ ) {
+                                            if ( cell.hasPotentialValue( pv) ) {
+                                                s += pv;
+                                                cnt += 1;
+                                            }
+                                        }
+                                    }
+                                    for (int pad=cnt; pad<crd; pad++ ) { s += " ";
+                                    }
+                                }
+                                s += " |";
+                            }
+                            System.out.println(s);
+                            System.out.flush();
+                        }
+
+                    }
+
+                    s = "+";
+                    for (int j=0; j<3; j++ ) {
+                        for (int k=0; k<3; k++ ) { s += "-";
+                            for (int l=0; l<crd; l++ ) { s += "-";
+                            }
+                        }
+                        s += "-+";
+                    }
+                    System.out.println(s);
+                    System.out.flush();
+                }
+
+                SingleHintAccumulator accu = new SingleHintAccumulator();
+                try {
+                    for (HintProducer producer : directHintProducers)
+                        producer.getHints(grid, accu);
+                    for (IndirectHintProducer producer : indirectHintProducers)
+                        producer.getHints(grid, accu);
+                    for (IndirectHintProducer producer : chainingHintProducers)
+                        producer.getHints(grid, accu);
+                    for (IndirectHintProducer producer : chainingHintProducers2)
+                        producer.getHints(grid, accu);
+                    for (IndirectHintProducer producer : advancedHintProducers)
+                        producer.getHints(grid, accu);
+                    for (IndirectHintProducer producer : experimentalHintProducers)
+                        producer.getHints(grid, accu);
+                } catch (InterruptedException willHappen) {}
+                Hint hint = accu.getHint();
+                if (hint == null) {
+                    difficulty = 20.0;
+                    break;
+                }
+                assert hint instanceof Rule;
+                Rule rule = (Rule)hint;
+                double ruleDiff = rule.getDifficulty();
+                if (ruleDiff > difficulty)
+                    difficulty = ruleDiff;
+                hint.apply();
+
+                s = "";
+                for (int i = 0; i < 81; i++) {
+                    int n = grid.getCellValue(i % 9, i / 9);
+                    s += (n==0)?".":n;
+                }
+                s += " ";
+                int w = (int)((ruleDiff + 0.05) * 10);
+                int p = w % 10;
+                w /= 10;
+                s += w + "." + p;
+                s += ", " + hint.toString();
+                System.out.println(s);
+                System.out.flush();
+
+                if (pearl == 0.0) {
+                    if (diamond == 0.0)
+                        diamond = difficulty;
+                    if (hint.getCell() != null) {
+                        if (want == 'd' && difficulty > diamond) {
+                            difficulty = 20.0;
+                            break;
+                        }
+                        pearl = difficulty;
+                    }
+                }
+                else if (want != 0 && difficulty > pearl) {
+                    difficulty = 20.0;
+                    break;
+                }
+            }
+        } finally {
+            backup.copyTo(grid);
+        }
+    }
+    
     public Map<String, Integer> toNamedList(Map<Rule, Integer> rules) {
         Map<String, Integer> hints = new LinkedHashMap<String, Integer>();
         for (Rule rule : rules.keySet()) {

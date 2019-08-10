@@ -72,7 +72,8 @@ public class AlignedExclusion implements IndirectHintProducer {
          * continue the iteration on these remaining cells.
          */
         // First iterate on the first two cells
-        Permutations cellSetPerm2 = new Permutations(2, candidateList.size());
+        //Permutations cellSetPerm2 = new Permutations(2, candidateList.size());
+        Twomutations cellSetPerm2 = new Twomutations(2, candidateList.size());
         while (cellSetPerm2.hasNext()) {
             int[] indexes = cellSetPerm2.nextBitNums();
             // Setup the first two cells
