@@ -6,6 +6,8 @@
 package diuf.sudoku.solver.rules.chaining;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ForkJoinWorkerThread;
 
 import diuf.sudoku.*;
 import diuf.sudoku.Grid.*;
@@ -120,6 +122,13 @@ public class Chaining implements IndirectHintProducer {
         return result;
     }
 
+    /**
+     * Search for hints on the given grid
+     * @param grid the grid on which to search for hints
+     * @param isYChainEnabled whether Y-Links are used in "on to off" searches
+     * @param isXChainEnabled whether X-Links are used in "off to on" searches
+     * @return the hints found
+     */
     private List<ChainingHint> getLoopHintList(Grid grid, boolean isYChainEnabled,
             boolean isXChainEnabled) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
@@ -144,84 +153,102 @@ public class Chaining implements IndirectHintProducer {
         return result;
     }
 
-    /**
-     * Search for hints on the given grid
-     * @param grid the grid on which to search for hints
-     * @param isYChainEnabled whether Y-Links are used in "on to off" searches
-     * @param isXChainEnabled whether X-Links are used in "off to on" searches
-     * @return the hints found
-     */
+    private List<ChainingHint> getMultipleChainsHintListForCell(Grid grid, Cell cell, int cardinality) {
+        List<ChainingHint> result = new ArrayList<ChainingHint>();
+        // Prepare storage and accumulator for "Cell Reduction"
+        Map<Integer, LinkedSet<Potential>> valueToOn =
+            new HashMap<Integer, LinkedSet<Potential>>();
+        Map<Integer, LinkedSet<Potential>> valueToOff =
+            new HashMap<Integer, LinkedSet<Potential>>();
+        LinkedSet<Potential> cellToOn = null;
+        LinkedSet<Potential> cellToOff = null;
+
+        // Iterate on all potential values that are not alone
+        for (int value = 1; value <= 9; value++) {
+            if (cell.hasPotentialValue(value)) {
+                // Do Binary chaining (same potential either on or off)
+                Potential pOn = new Potential(cell, value, true);
+                Potential pOff = new Potential(cell, value, false);
+                LinkedSet<Potential> onToOn = new LinkedSet<Potential>();
+                LinkedSet<Potential> onToOff = new LinkedSet<Potential>();
+                boolean doDouble = (cardinality >= 3 && !isNisho && isDynamic);
+                boolean doContradiction = isDynamic || isNisho;
+                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff,
+                        doDouble, doContradiction);
+
+                if (!isNisho) {
+                    // Do region chaining
+                    doRegionChainings(grid, result, cell, value, onToOn, onToOff);
+                }
+
+                // Collect results for cell chaining
+                valueToOn.put(value, onToOn);
+                valueToOff.put(value, onToOff);
+                if (cellToOn == null) {
+                    cellToOn = new LinkedSet<Potential>();
+                    cellToOff = new LinkedSet<Potential>();
+                    cellToOn.addAll(onToOn);
+                    cellToOff.addAll(onToOff);
+                } else {
+                    cellToOn.retainAll(onToOn);
+                    cellToOff.retainAll(onToOff);
+                }
+            }
+        } // for value
+
+        if (!isNisho) {
+            // Do Cell reduction
+            if (cardinality == 2 || (isMultipleEnabled && cardinality > 2)) {
+                for (Potential p : cellToOn) {
+                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOn);
+                    if (hint.isWorth())
+                        result.add(hint);
+                }
+                for (Potential p : cellToOff) {
+                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOff);
+                    if (hint.isWorth())
+                        result.add(hint);
+                }
+            }
+        }
+    	return result;
+    }
+    
     private List<ChainingHint> getMultipleChainsHintList(Grid grid) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
+        //boolean alreadyInParallel = (Thread.currentThread() instanceof ForkJoinWorkerThread);
+        boolean alreadyInParallel = true;
+        List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                int cardinality = cell.getPotentialValues().cardinality();
                 if (cell.getValue() == 0) { // the cell is empty
+                	int cardinality = cell.getPotentialValues().cardinality();
                     if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
-                        // Prepare storage and accumulator for "Cell Reduction"
-                        Map<Integer, LinkedSet<Potential>> valueToOn =
-                            new HashMap<Integer, LinkedSet<Potential>>();
-                        Map<Integer, LinkedSet<Potential>> valueToOff =
-                            new HashMap<Integer, LinkedSet<Potential>>();
-                        LinkedSet<Potential> cellToOn = null;
-                        LinkedSet<Potential> cellToOff = null;
-
-                        // Iterate on all potential values that are not alone
-                        for (int value = 1; value <= 9; value++) {
-                            if (cell.hasPotentialValue(value)) {
-                                // Do Binary chaining (same potential either on or off)
-                                Potential pOn = new Potential(cell, value, true);
-                                Potential pOff = new Potential(cell, value, false);
-                                LinkedSet<Potential> onToOn = new LinkedSet<Potential>();
-                                LinkedSet<Potential> onToOff = new LinkedSet<Potential>();
-                                boolean doDouble = (cardinality >= 3 && !isNisho && isDynamic);
-                                boolean doContradiction = isDynamic || isNisho;
-                                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff,
-                                        doDouble, doContradiction);
-
-                                if (!isNisho) {
-                                    // Do region chaining
-                                    doRegionChainings(grid, result, cell, value, onToOn, onToOff);
-                                }
-
-                                // Collect results for cell chaining
-                                valueToOn.put(value, onToOn);
-                                valueToOff.put(value, onToOff);
-                                if (cellToOn == null) {
-                                    cellToOn = new LinkedSet<Potential>();
-                                    cellToOff = new LinkedSet<Potential>();
-                                    cellToOn.addAll(onToOn);
-                                    cellToOff.addAll(onToOff);
-                                } else {
-                                    cellToOn.retainAll(onToOn);
-                                    cellToOff.retainAll(onToOff);
-                                }
-                            }
-                        } // for value
-
-                        if (!isNisho) {
-                            // Do Cell reduction
-                            if (cardinality == 2 || (isMultipleEnabled && cardinality > 2)) {
-                                for (Potential p : cellToOn) {
-                                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOn);
-                                    if (hint.isWorth())
-                                        result.add(hint);
-                                }
-                                for (Potential p : cellToOff) {
-                                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOff);
-                                    if (hint.isWorth())
-                                        result.add(hint);
-                                }
-                            }
-                        }
-
+                    	if (alreadyInParallel) {
+                    		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
+                    	}
+                    	else {
+                    		cellsToProcess.add(cell);
+                    	}
                     } // Cardinality > 1
-
                 } // if empty
             } // for x
         } // for y
+        if (alreadyInParallel) {
+        	return result;
+        }
+        //process the collected cells in parallel
+        ConcurrentLinkedQueue<ChainingHint> parallelResult = new ConcurrentLinkedQueue<ChainingHint>();
+        cellsToProcess.parallelStream().forEach((cell) -> {
+           	int cardinality = cell.getPotentialValues().cardinality();
+           	Grid gridClone = new Grid();
+           	grid.copyTo(gridClone);
+           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level);
+           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getX()), cardinality));
+        });
+        result.addAll(parallelResult);
         return result;
     }
 
@@ -797,6 +824,8 @@ public class Chaining implements IndirectHintProducer {
                     otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
                 if (level >= 5)
                     otherRules.add(new Chaining(true, true, false, level - 3));
+//                if (level >= 5)
+//                    otherRules.add(new Chaining(true, true, false, level - 1));
             }
         }
         int index = 0;
