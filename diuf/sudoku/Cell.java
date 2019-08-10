@@ -105,6 +105,20 @@ public class Cell {
         }
     }
 
+    public void setValueAndCancel(int value, Grid targetGrid) {
+        assert value != 0;
+        this.value = value;
+        this.potentialValues.clear();
+        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+            Grid.Region region = grid.getRegionAt(regionType, this.x, this.y);
+            for (int i = 0; i < 9; i++) {
+                Cell original = region.getCell(i);
+                Cell other = targetGrid.getCell(original.getX(), original.getY());
+                other.removePotentialValue(value);
+            }
+        }
+    }
+
     /**
      * Get the potential values for this cell.
      * <p>

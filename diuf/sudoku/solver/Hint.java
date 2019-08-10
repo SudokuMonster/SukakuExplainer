@@ -49,6 +49,11 @@ public abstract class Hint {
     public abstract void apply();
 
     /**
+     * Apply this hint on the target sudoku grid ignoring cell's grid reference
+     */
+    public abstract void apply(Grid targetGrid);
+
+    /**
      * Get the regions concerned by this hint.
      * <tt>null</tt> can be returned if this hint does
      * not depend on regions.

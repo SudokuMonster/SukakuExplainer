@@ -27,13 +27,14 @@ public class NumberOfFilledCells implements WarningHintProducer {
             WarningMessage message = new WarningMessage(this, "The sudoku has been solved",
             "SudokuSolved.html");
             accu.add(message);
-        } else if (countEmpty > 81 - 17) {
-            int given = 81 - countEmpty;
-            WarningMessage message = new WarningMessage(this,
-                    "Sudoku is not valid",
-                    "TooFewCells.html", given);
-            accu.add(message);
         }
+    //  else if (countEmpty > 81 - 17) {
+    //      int given = 81 - countEmpty;
+    //      WarningMessage message = new WarningMessage(this,
+    //              "Sudoku is not valid",
+    //              "TooFewCells.html", given);
+    //      accu.add(message);
+    //  }
     }
 
     @Override

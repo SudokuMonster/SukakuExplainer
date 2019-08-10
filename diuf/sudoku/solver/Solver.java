@@ -697,7 +697,7 @@ public class Solver {
                 double ruleDiff = rule.getDifficulty();
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
-                hint.apply();
+                hint.apply(grid);
 
                 s = "";
                 for (int i = 0; i < 81; i++) {

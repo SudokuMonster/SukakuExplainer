@@ -231,6 +231,24 @@ public class serate {
 		    break;
                 if (puzzle.length() >= 81) {
                     Grid grid = new Grid();
+                if (puzzle.length() >= 729)
+                {
+                    for (int i = 0; i < 81; i++) {
+                        grid.setCellValue(i % 9, i / 9, 0);
+                    }
+                    for (int i = 0; i < 729; i++) {
+                        int cl = i / 9;  // cell
+                        char ch = puzzle.charAt(i);
+
+                        if (ch >= '1' && ch <= '9') {
+                            int value = (ch - '0');
+                            Cell cell = grid.getCell(cl % 9, cl / 9);
+                            cell.addPotentialValue(value);
+                        }
+                    }
+                }
+                else
+                {
                     for (int i = 0; i < 81; i++) {
                         char ch = puzzle.charAt(i);
                         if (ch >= '1' && ch <= '9') {
@@ -238,28 +256,32 @@ public class serate {
                             grid.setCellValue(i % 9, i / 9, value);
                         }
                     }
-		    t = System.currentTimeMillis();
+                }
+                    t = System.currentTimeMillis();
                     Solver solver = new Solver(grid);
-		    solver.want = want;
+                    solver.want = want;
+                if (puzzle.length() >= 81 && puzzle.length() < 729)
+                {
                     solver.rebuildPotentialValues();
-		    ordinal++;
+                }
+                    ordinal++;
                     try {
                         solver.getDifficulty();
                     } catch (UnsupportedOperationException ex) {
-			solver.difficulty = solver.pearl = solver.diamond = 0.0;
+                        solver.difficulty = solver.pearl = solver.diamond = 0.0;
                     }
-		    t = System.currentTimeMillis() - t;
-		    s = "";
-		    for (int i = 0; i < format.length(); i++) {
-			int		w;
-			int		p;
-			long		u;
-			char	f = format.charAt(i);
-			if (f != '%' || ++i >= format.length())
-			    s += f;
-			else
-			    switch (format.charAt(i)) {
-			    case 'd':
+                    t = System.currentTimeMillis() - t;
+                    s = "";
+                    for (int i = 0; i < format.length(); i++) {
+                        int             w;
+                        int             p;
+                        long            u;
+                        char    f = format.charAt(i);
+                        if (f != '%' || ++i >= format.length())
+                            s += f;
+                        else
+                            switch (format.charAt(i)) {
+                            case 'd':
                                 w = (int)((solver.diamond + 0.05) * 10);
     		                p = w % 10;
     		                w /= 10;

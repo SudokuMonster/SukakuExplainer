@@ -62,6 +62,11 @@ public abstract class DirectHint extends Hint {
     public void apply() {
         cell.setValueAndCancel(value);
     }
+    
+    @Override
+    public void apply(Grid targetGrid) {
+        cell.setValueAndCancel(value, targetGrid);
+    }
 
     @Override
     public boolean equals(Object o) {
