@@ -7,7 +7,7 @@ modification of &quot;Sudoku Explainer&quot; by Nicolas Juillerat
 
 Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/releases) to download the latest version
 
-[Sukaku Explainer v1.2.14](https://github.com/SudokuMonster/SukakuExplainer/releases/tag/v1.2.1.4)
+[Sukaku Explainer v1.2.1.4](https://github.com/SudokuMonster/SukakuExplainer/releases/tag/v1.2.1.4)
 
 [Serate v1.2.1.2](https://github.com/SudokuMonster/SukakuExplainer/releases/tag/v1.2.1.2)
 
