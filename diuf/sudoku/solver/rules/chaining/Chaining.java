@@ -246,7 +246,7 @@ public class Chaining implements IndirectHintProducer {
            	Grid gridClone = new Grid();
            	grid.copyTo(gridClone);
            	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level);
-           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getX()), cardinality));
+           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
         });
         result.addAll(parallelResult);
         return result;
