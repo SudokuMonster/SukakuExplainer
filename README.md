@@ -165,7 +165,7 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 ## About:
 
 Sudoku Explainer (Nicolas Juillerat 2006-2019) is a popular Sudoku solver/generator/rater which solves every known Sudoku
-puzzle using logical techniques. This popularity and consistency was the basis of the[Patterns game](http://forum.enjoysudoku.com/patterns-game-1-5-t5760.html) on
+puzzle using logical techniques. This popularity and consistency was the basis of the [Patterns game](http://forum.enjoysudoku.com/patterns-game-1-5-t5760.html) on
 the &quot;New Sudoku Players Forum&quot;. It was further modified to incorporate &quot;serate&quot; which allowed
 the explainer rating (ER), the pearl rating (EP) and he diamond rating (ED).
 
