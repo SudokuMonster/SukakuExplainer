@@ -123,19 +123,19 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
   GUI:
 
-  java.exe -jar SukakuExplainer.jar
+        java.exe -jar SukakuExplainer.jar
 
   Command Line:
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate ...
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate ...
 
   Display Hints:
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints ...
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints ...
 
   Display Pencilmarks:
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks ...
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks ...
 
 ### EXAMPLES
 
@@ -143,15 +143,16 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
   To rate a single or a group of puzzle(s):
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate --format=&quot;%g ED=%r/%p/%d&quot; --input=puzzles.txt --output=puzzles.rated.txt
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate
+         --format=&quot;%g ED=%r/%p/%d&quot; --input=puzzles.txt --output=puzzles.rated.txt
 
   To display explainer hints (output is to standard output):
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints --input=puzzle.txt
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints --input=puzzle.txt
 
   To display explainer pencilmarks (output is to standard output):
 
-  java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks --input=puzzle.txt
+        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks --input=puzzle.txt
 
 ## Contributors:
 
