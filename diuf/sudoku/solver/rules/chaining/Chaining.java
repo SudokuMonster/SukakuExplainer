@@ -851,13 +851,15 @@ public class Chaining implements IndirectHintProducer {
                 if (level >= 3)
                     otherRules.add(new Chaining(true, false, false, 0)); // Multiple forcing chains
             } else {
-                // Dynamic Forcing Chains already cover Simple and Multiple Forcing Chains
-                if (level >= 4)
-                    otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
-                if (level >= 5)
-                    otherRules.add(new Chaining(true, true, false, level - 3));
+//                // Dynamic Forcing Chains already cover Simple and Multiple Forcing Chains
+//                if (level >= 4)
+//                    otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
 //                if (level >= 5)
-//                    otherRules.add(new Chaining(true, true, false, level - 1));
+//                    otherRules.add(new Chaining(true, true, false, level - 3));
+                otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
+                otherRules.add(new Chaining(true, true, false, 1)); // Dynamic FC+
+                otherRules.add(new Chaining(true, true, false, 2)); // Dynamic FC++
+                otherRules.add(new Chaining(true, true, false, 3)); // Dynamic FC+++
             }
         }
         int index = 0;
