@@ -461,8 +461,7 @@ public class SudokuExplainer {
         clearGrid();
         ErrorMessage message = SudokuIO.loadFromClipboard(grid);
         if (message == null || !message.isFatal())
-    //      solver.rebuildPotentialValues();
-            ;
+            solver.cancelPotentialValues();
         else
             copy.copyTo(grid);
         if (message != null)
