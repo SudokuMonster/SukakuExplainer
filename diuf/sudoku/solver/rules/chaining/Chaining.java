@@ -27,6 +27,7 @@ public class Chaining implements IndirectHintProducer {
     private final boolean isNisho;
     private final int level;
     private final boolean noParallel;
+    private final int nestingLimit;
     private Grid saveGrid = new Grid();
     private List<IndirectHintProducer> otherRules;
     private Grid lastGrid = null;
@@ -46,15 +47,17 @@ public class Chaining implements IndirectHintProducer {
         this.isDynamic = isDynamic;
         this.isNisho = isNishio;
         this.level = level;
-        noParallel = level < 3;
+        this.noParallel = level < 3;
+        this.nestingLimit = 0;
     }
     
-    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level, boolean noParallel) {
+    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level, boolean noParallel, int nestingLimit) {
         this.isMultipleEnabled = isMultipleEnabled;
         this.isDynamic = isDynamic;
         this.isNisho = isNishio;
         this.level = level;
         this.noParallel = noParallel;
+        this.nestingLimit = nestingLimit;
     }
 
     boolean isDynamic() {
@@ -295,48 +298,48 @@ public class Chaining implements IndirectHintProducer {
         //process the collected cells in parallel
         ConcurrentLinkedQueue<ChainingHint> parallelResult = new ConcurrentLinkedQueue<ChainingHint>();
         
-//        cellsToProcess.parallelStream().forEach((cell) -> {
-//           	int cardinality = cell.getPotentialValues().cardinality();
-//           	Grid gridClone = new Grid();
-//           	grid.copyTo(gridClone);
-//           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level, true);
-//           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
-//        });
+        cellsToProcess.parallelStream().forEach((cell) -> {
+           	int cardinality = cell.getPotentialValues().cardinality();
+           	Grid gridClone = new Grid();
+           	grid.copyTo(gridClone);
+           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level, true, nestingLimit);
+           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
+        });
         
-        List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
-        for(Cell cell : cellsToProcess) {
-        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
-        	threads.add(t);
-        	t.start();
-        }
-        for(MultipleChainsHintsCollector t : threads) {
-        	try {
-        		t.join();
-        	} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        	finally {}
-        }
+//        List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
+//        for(Cell cell : cellsToProcess) {
+//        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
+//        	threads.add(t);
+//        	t.start();
+//        }
+//        for(MultipleChainsHintsCollector t : threads) {
+//        	try {
+//        		t.join();
+//        	} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//        	finally {}
+//        }
         
         result.addAll(parallelResult);
         return result;
     }
-    class MultipleChainsHintsCollector extends Thread {
-    	private Chaining chaining;
-    	private ConcurrentLinkedQueue<ChainingHint> accumulator;
-    	private final Grid gridClone = new Grid();
-    	private Cell cell;
-    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, ConcurrentLinkedQueue<ChainingHint> result) {
-    		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true);
-    		grid.copyTo(gridClone);
-    		accumulator = result;
-    		this.cell = gridClone.getCell(cell.getX(), cell.getY());
-    	}
-    	public void run() {
-    		int cardinality = cell.getPotentialValues().cardinality();
-    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
-    	}
-    }
+//    class MultipleChainsHintsCollector extends Thread {
+//    	private Chaining chaining;
+//    	private ConcurrentLinkedQueue<ChainingHint> accumulator;
+//    	private final Grid gridClone = new Grid();
+//    	private Cell cell;
+//    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, ConcurrentLinkedQueue<ChainingHint> result) {
+//    		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true);
+//    		grid.copyTo(gridClone);
+//    		accumulator = result;
+//    		this.cell = gridClone.getCell(cell.getX(), cell.getY());
+//    	}
+//    	public void run() {
+//    		int cardinality = cell.getPotentialValues().cardinality();
+//    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
+//    	}
+//    }
     private Potential getReversedCycle(Potential org) {
         List<Potential> result = new LinkedList<Potential>();
         String explanations = null;
@@ -909,7 +912,7 @@ public class Chaining implements IndirectHintProducer {
 //                    otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
 //                if (level >= 5)
 //                    otherRules.add(new Chaining(true, true, false, level - 3));
-                otherRules.add(new Chaining(true, true, false, 0, true)); // Dynamic FC
+                otherRules.add(new Chaining(true, true, false, nestingLimit, true, 0)); // Dynamic FC
 //                otherRules.add(new Chaining(true, true, false, 1, true)); // Dynamic FC+
 //                otherRules.add(new Chaining(true, true, false, 2, true)); // Dynamic FC++
 //                otherRules.add(new Chaining(true, true, false, 3, true)); // Dynamic FC+++
