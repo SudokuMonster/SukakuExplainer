@@ -233,7 +233,7 @@ public class SudokuExplainer {
         panel.repaint();
         frame.setExplanations(HtmlLoader.loadHtml(this, "Multiple.html"));
     }
-    
+
     /**
      * Invoked when the user manually types a value in a cell of
      * the sudoku grid.
@@ -461,7 +461,8 @@ public class SudokuExplainer {
         clearGrid();
         ErrorMessage message = SudokuIO.loadFromClipboard(grid);
         if (message == null || !message.isFatal())
-            solver.rebuildPotentialValues();
+    //      solver.rebuildPotentialValues();
+            ;
         else
             copy.copyTo(grid);
         if (message != null)
@@ -479,7 +480,8 @@ public class SudokuExplainer {
         clearGrid();
         ErrorMessage message = SudokuIO.loadFromFile(grid, file);
         if (message == null || !message.isFatal())
-            solver.rebuildPotentialValues();
+    //      solver.rebuildPotentialValues();
+            ;
         else
             copy.copyTo(grid);
         if (message != null)
