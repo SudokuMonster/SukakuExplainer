@@ -87,6 +87,32 @@ public class Chaining implements IndirectHintProducer {
         else
             throw new IllegalStateException(); // Must compute by themselves
     }
+    
+    public class SortableChainingHint {
+    	final ChainingHint hint;
+    	final double difficulty;
+    	final int complexity;
+    	final int sortKey;
+    	SortableChainingHint(ChainingHint hint) {
+    		this.hint = hint;
+    		this.difficulty = hint.getDifficulty();
+    		this.complexity = hint.getComplexity();
+    		this.sortKey = hint.getSortKey();
+    	}
+        public int compare(SortableChainingHint h1, SortableChainingHint h2) {
+            double d1 = h1.difficulty;
+            double d2 = h2.difficulty;
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            int l1 = h1.complexity;
+            int l2 = h2.complexity;
+            if (l1 == l2)
+                return h1.sortKey - h2.sortKey;
+            return l1 - l2;
+        }
+    }
 
     /**
      * Search for hints on the given grid
@@ -109,26 +135,43 @@ public class Chaining implements IndirectHintProducer {
             result.addAll(yLoops);
             result.addAll(xyLoops);
         }
-
+        if(result.isEmpty()) {
+        	return result;
+        }
         /*
          * Sort the resulting hints. The hints with the shortest chain length
          * are returned first.
          */
-        Collections.sort(result, new Comparator<ChainingHint>() {
-            public int compare(ChainingHint h1, ChainingHint h2) {
-                double d1 = h1.getDifficulty();
-                double d2 = h2.getDifficulty();
-                if (d1 < d2)
-                    return -1;
-                else if (d1 > d2)
-                    return 1;
-                int l1 = h1.getComplexity();
-                int l2 = h2.getComplexity();
-                if (l1 == l2)
-                    return h1.getSortKey() - h2.getSortKey();
-                return l1 - l2;
+//        Collections.sort(result, new Comparator<ChainingHint>() {
+//            public int compare(ChainingHint h1, ChainingHint h2) {
+//                double d1 = h1.getDifficulty();
+//                double d2 = h2.getDifficulty();
+//                if (d1 < d2)
+//                    return -1;
+//                else if (d1 > d2)
+//                    return 1;
+//                int l1 = h1.getComplexity();
+//                int l2 = h2.getComplexity();
+//                if (l1 == l2)
+//                    return h1.getSortKey() - h2.getSortKey();
+//                return l1 - l2;
+//            }
+//        });
+        
+        List<SortableChainingHint> sortableResult= new ArrayList<SortableChainingHint>();
+        for(ChainingHint hint : result) {
+        	sortableResult.add(new SortableChainingHint(hint));
+        }
+        Collections.sort(sortableResult, new Comparator<SortableChainingHint>() {
+            public int compare(SortableChainingHint h1, SortableChainingHint h2) {
+            	return h1.compare(h1, h2);
             }
         });
+        result.clear();
+        for(SortableChainingHint hint : sortableResult) {
+        	result.add(hint.hint);
+        }
+
         return result;
     }
 
@@ -251,6 +294,15 @@ public class Chaining implements IndirectHintProducer {
         }
         //process the collected cells in parallel
         ConcurrentLinkedQueue<ChainingHint> parallelResult = new ConcurrentLinkedQueue<ChainingHint>();
+        
+//        cellsToProcess.parallelStream().forEach((cell) -> {
+//           	int cardinality = cell.getPotentialValues().cardinality();
+//           	Grid gridClone = new Grid();
+//           	grid.copyTo(gridClone);
+//           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level, true);
+//           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
+//        });
+        
         List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
         for(Cell cell : cellsToProcess) {
         	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
@@ -265,6 +317,7 @@ public class Chaining implements IndirectHintProducer {
 			}
         	finally {}
         }
+        
         result.addAll(parallelResult);
         return result;
     }
@@ -857,9 +910,9 @@ public class Chaining implements IndirectHintProducer {
 //                if (level >= 5)
 //                    otherRules.add(new Chaining(true, true, false, level - 3));
                 otherRules.add(new Chaining(true, true, false, 0, true)); // Dynamic FC
-                otherRules.add(new Chaining(true, true, false, 1, true)); // Dynamic FC+
-                otherRules.add(new Chaining(true, true, false, 2, true)); // Dynamic FC++
-                otherRules.add(new Chaining(true, true, false, 3, true)); // Dynamic FC+++
+//                otherRules.add(new Chaining(true, true, false, 1, true)); // Dynamic FC+
+//                otherRules.add(new Chaining(true, true, false, 2, true)); // Dynamic FC++
+//                otherRules.add(new Chaining(true, true, false, 3, true)); // Dynamic FC+++
             }
         }
         int index = 0;
