@@ -856,10 +856,10 @@ public class Chaining implements IndirectHintProducer {
 //                    otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
 //                if (level >= 5)
 //                    otherRules.add(new Chaining(true, true, false, level - 3));
-                otherRules.add(new Chaining(true, true, false, 0)); // Dynamic FC
-                otherRules.add(new Chaining(true, true, false, 1)); // Dynamic FC+
-                otherRules.add(new Chaining(true, true, false, 2)); // Dynamic FC++
-                otherRules.add(new Chaining(true, true, false, 3)); // Dynamic FC+++
+                otherRules.add(new Chaining(true, true, false, 0, true)); // Dynamic FC
+                otherRules.add(new Chaining(true, true, false, 1, true)); // Dynamic FC+
+                otherRules.add(new Chaining(true, true, false, 2, true)); // Dynamic FC++
+                otherRules.add(new Chaining(true, true, false, 3, true)); // Dynamic FC+++
             }
         }
         int index = 0;
