@@ -251,6 +251,13 @@ public class Grid {
         }
 
         /**
+         * Test whether this region contains the given cell.
+         * @param cell the cell to check
+         * @return whether this region contains the given cell
+         */
+        public abstract boolean contains(Cell cell);
+
+        /**
          * Get the potential positions of the given value within this region.
          * The bits of the returned bitset correspond to indexes of cells, as
          * in {@link #getCell(int)}. Only the indexes of cells that have the given
@@ -360,6 +367,11 @@ public class Grid {
         }
 
         @Override
+        public boolean contains(Cell cell) {
+        	return cell.getY() == rowNum;
+        }
+
+        @Override
         public boolean crosses(Region other) {
             if (other instanceof Block) {
                 Block square = (Block)other;
@@ -413,6 +425,11 @@ public class Grid {
         @Override
         public int indexOf(Cell cell) {
             return cell.getY();
+        }
+
+        @Override
+        public boolean contains(Cell cell) {
+        	return cell.getX() == columnNum;
         }
 
         @Override
@@ -477,6 +494,19 @@ public class Grid {
         }
 
         @Override
+        public boolean contains(Cell cell) {
+        	int x = cell.getX();
+        	int hStart = hNum * 3;
+        	if(x < hStart) return false;
+        	if(x > hStart + 2) return false;
+        	int y = cell.getY();
+        	int vStart = vNum * 3;
+        	if(y < vStart) return false;
+        	if(y > vStart + 2) return false;
+        	return true;
+        }
+
+       @Override
         public boolean crosses(Region other) {
             if (other instanceof Row) {
                 return ((Row)other).crosses(this);

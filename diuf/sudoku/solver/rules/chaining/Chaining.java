@@ -630,7 +630,7 @@ public class Chaining implements IndirectHintProducer {
         rowPositions.clear(row.indexOf(p.cell));
         for (int i = rowPositions.nextSetBit(0); i >= 0; i = rowPositions.nextSetBit(i + 1)) {
             Cell cell = row.getCell(i);
-            //if(box.indexOf(cell) != -1) continue;
+            if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
                     getRegionCause(row),
                     "the value can occur only once in the " + row.toString()));
@@ -640,7 +640,7 @@ public class Chaining implements IndirectHintProducer {
         colPositions.clear(col.indexOf(p.cell));
         for (int i = colPositions.nextSetBit(0); i >= 0; i = colPositions.nextSetBit(i + 1)) {
             Cell cell = col.getCell(i);
-            //if(box.indexOf(cell) != -1) continue;
+            if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
                     getRegionCause(col),
                     "the value can occur only once in the " + col.toString()));
