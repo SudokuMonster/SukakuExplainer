@@ -148,8 +148,10 @@ public class SudokuIO {
     }
 
     private static int loadFromSingleLine(Grid grid, String line) {
-        boolean isStandard = (line.length() == 81);
+        boolean isStandard = (line.length() == 81) | (line.length() == 729);
         // Detect Sudoku Susser format (Although the SS cannot cut/past to itself)
+    if ( line.length() < 729 )
+    {
         if (line.endsWith("\t"))
             line = line.substring(0, line.length() - 1);
         boolean hasAlphaLabel = false;
@@ -165,8 +167,29 @@ public class SudokuIO {
             line = line.substring(line.length() - 81);
         else if (line.trim().length() >= 81)
             line = line.trim();
+    }
 
         if (line.length() >= 81) {
+    if ( line.length() >= 729 )
+    {
+            for (int i = 0; i < 81; i++) {
+                grid.setCellValue(i % 9, i / 9, 0);
+                Cell cell = grid.getCell(i % 9, i / 9);
+                cell.clearPotentialValues();
+            }
+            for (int i = 0; i < 729; i++) {
+                int cl = i / 9;  // cell
+                char ch = line.charAt(i);
+
+                if (ch >= '1' && ch <= '9') {
+                    int value = (ch - '0');
+                    Cell cell = grid.getCell(cl % 9, cl / 9);
+                    cell.addPotentialValue(value);
+                }
+            }
+    }
+    else
+    {
             int rowGap = (line.length() - 81) / 8;
             int srcIndex = 0;
             for (int y = 0; y < 9; y++) {
@@ -181,6 +204,7 @@ public class SudokuIO {
                 }
                 srcIndex += rowGap;
             }
+    }
             return (isStandard ? RES_OK : RES_WARN);
         }
         return RES_ERROR;
@@ -223,9 +247,9 @@ public class SudokuIO {
             if (result == RES_OK) // success
                 return null;
             if (result == RES_WARN) // warning
-                return new ErrorMessage(WARNING_MSG, false, (Object[])null);
+                return new ErrorMessage(WARNING_MSG, false);
             else // error
-                return new ErrorMessage(ERROR_MSG, true, (Object[])null);
+                return new ErrorMessage(ERROR_MSG, true);
         } catch (IOException ex) {
             return new ErrorMessage("Error while copying:\n{0}", ex);
         } catch (UnsupportedFlavorException ex) {
@@ -257,10 +281,10 @@ public class SudokuIO {
             int result = loadFromReader(grid, reader);
             if (result == RES_OK)
                 return null;
-            if (result == RES_WARN) // warning
-                return new ErrorMessage(WARNING_MSG, false, (Object[])null);
-            else // error
-                return new ErrorMessage(ERROR_MSG, true, (Object[])null);
+            else if (result == RES_WARN)
+                return new ErrorMessage(WARNING_MSG, false);
+            else
+                return new ErrorMessage(ERROR_MSG, true);
         } catch (FileNotFoundException ex) {
             return new ErrorMessage("File not found: {0}", file);
         } catch (IOException ex) {
