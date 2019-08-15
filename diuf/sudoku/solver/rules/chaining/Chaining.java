@@ -7,7 +7,7 @@ package diuf.sudoku.solver.rules.chaining;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ForkJoinWorkerThread;
+//import java.util.concurrent.ForkJoinWorkerThread;
 
 import diuf.sudoku.*;
 import diuf.sudoku.Grid.*;
@@ -298,48 +298,51 @@ public class Chaining implements IndirectHintProducer {
         //process the collected cells in parallel
         ConcurrentLinkedQueue<ChainingHint> parallelResult = new ConcurrentLinkedQueue<ChainingHint>();
         
-        cellsToProcess.parallelStream().forEach((cell) -> {
-           	int cardinality = cell.getPotentialValues().cardinality();
-           	Grid gridClone = new Grid();
-           	grid.copyTo(gridClone);
-           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level, true, nestingLimit);
-           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
-        });
+//        //this approach wrongly distributes the work possibly due to java implementation bugs
+//        cellsToProcess.parallelStream().forEach((cell) -> {
+//           	int cardinality = cell.getPotentialValues().cardinality();
+//           	Grid gridClone = new Grid();
+//           	grid.copyTo(gridClone);
+//           	Chaining chainingClone = new Chaining(isMultipleEnabled, isDynamic, isNisho, level, true, nestingLimit);
+//           	parallelResult.addAll(chainingClone.getMultipleChainsHintListForCell(gridClone, gridClone.getCell(cell.getX(), cell.getY()), cardinality));
+//        });
         
-//        List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
-//        for(Cell cell : cellsToProcess) {
-//        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
-//        	threads.add(t);
-//        	t.start();
-//        }
-//        for(MultipleChainsHintsCollector t : threads) {
-//        	try {
-//        		t.join();
-//        	} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//        	finally {}
-//        }
+        List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
+        for(Cell cell : cellsToProcess) {
+        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
+        	threads.add(t);
+        	t.start();
+        }
+        for(MultipleChainsHintsCollector t : threads) {
+        	try {
+        		t.join();
+        	} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	finally {}
+        }
         
         result.addAll(parallelResult);
         return result;
     }
-//    class MultipleChainsHintsCollector extends Thread {
-//    	private Chaining chaining;
-//    	private ConcurrentLinkedQueue<ChainingHint> accumulator;
-//    	private final Grid gridClone = new Grid();
-//    	private Cell cell;
-//    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, ConcurrentLinkedQueue<ChainingHint> result) {
-//    		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true);
-//    		grid.copyTo(gridClone);
-//    		accumulator = result;
-//    		this.cell = gridClone.getCell(cell.getX(), cell.getY());
-//    	}
-//    	public void run() {
-//    		int cardinality = cell.getPotentialValues().cardinality();
-//    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
-//    	}
-//    }
+
+    class MultipleChainsHintsCollector extends Thread {
+    	private Chaining chaining;
+    	private ConcurrentLinkedQueue<ChainingHint> accumulator;
+    	private final Grid gridClone = new Grid();
+    	private Cell cell;
+    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, ConcurrentLinkedQueue<ChainingHint> result) {
+    		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true, caller.nestingLimit);
+    		grid.copyTo(gridClone);
+    		accumulator = result;
+    		this.cell = gridClone.getCell(cell.getX(), cell.getY());
+    	}
+    	public void run() {
+    		int cardinality = cell.getPotentialValues().cardinality();
+    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
+    	}
+    }
+
     private Potential getReversedCycle(Potential org) {
         List<Potential> result = new LinkedList<Potential>();
         String explanations = null;
