@@ -158,6 +158,8 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
 @SudokuMonster
 
+@sudokuwiki
+
 ## About:
 
 Sudoku Explainer (Nicolas Juillerat 2006-2019) is a popular Sudoku solver/generator/rater which solves every known Sudoku
