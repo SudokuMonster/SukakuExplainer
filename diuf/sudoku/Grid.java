@@ -221,20 +221,10 @@ public class Grid {
          * <p>
          * The returned value is consistent with {@link #getCell(int)}.
          * @param cell the cell whose index to get
-         * @return the index of the cell, or -1 if the cell does not belong to
-         * this region.
+         * @return the index of the cell. If the cell does not belong to
+         * this region the result is undetermined.
          */
         public abstract int indexOf(Cell cell);
-//        public int indexOf(Cell cell) {
-//            /*
-//             * This code is not really used. The method is always overriden
-//             */
-//            for (int i = 0; i < 9; i++) {
-//                if (getCell(i).equals(cell))
-//                    return i;
-//            }
-//            return -1;
-//        }
 
         /**
          * Test whether this region contains the given value, that is,
