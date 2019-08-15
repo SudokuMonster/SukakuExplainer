@@ -604,16 +604,48 @@ public class Chaining implements IndirectHintProducer {
         }
 
         // Second rule: other potential position for this value get off
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
-            Grid.Region region = grid.getRegionAt(regionType, p.cell.getX(), p.cell.getY());
-            for (int i = 0; i < 9; i++) {
-                Cell cell = region.getCell(i);
-                if (!cell.equals(p.cell) && cell.hasPotentialValue(p.value))
-                    result.add(new Potential(cell, p.value, false, p,
-                            getRegionCause(region),
-                            "the value can occur only once in the " + region.toString()));
-            }
+
+//        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+//            Grid.Region region = grid.getRegionAt(regionType, p.cell.getX(), p.cell.getY());
+//            for (int i = 0; i < 9; i++) {
+//                Cell cell = region.getCell(i);
+//                if (!cell.equals(p.cell) && cell.hasPotentialValue(p.value))
+//                    result.add(new Potential(cell, p.value, false, p,
+//                            getRegionCause(region),
+//                            "the value can occur only once in the " + region.toString()));
+//            }
+//        }
+
+        Grid.Region box = grid.getRegionAt(Grid.Block.class, p.cell.getX(), p.cell.getY());
+        BitSet boxPositions = box.copyPotentialPositions(p.value);
+        boxPositions.clear(box.indexOf(p.cell));
+        for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
+            Cell cell = box.getCell(i);
+            result.add(new Potential(cell, p.value, false, p,
+                    getRegionCause(box),
+                    "the value can occur only once in the " + box.toString()));
         }
+        Grid.Region row = grid.getRegionAt(Grid.Row.class, p.cell.getX(), p.cell.getY());
+        BitSet rowPositions = row.copyPotentialPositions(p.value);
+        rowPositions.clear(row.indexOf(p.cell));
+        for (int i = rowPositions.nextSetBit(0); i >= 0; i = rowPositions.nextSetBit(i + 1)) {
+            Cell cell = row.getCell(i);
+            //if(box.indexOf(cell) != -1) continue;
+            result.add(new Potential(cell, p.value, false, p,
+                    getRegionCause(row),
+                    "the value can occur only once in the " + row.toString()));
+        }
+        Grid.Region col = grid.getRegionAt(Grid.Column.class, p.cell.getX(), p.cell.getY());
+        BitSet colPositions = col.copyPotentialPositions(p.value);
+        colPositions.clear(col.indexOf(p.cell));
+        for (int i = colPositions.nextSetBit(0); i >= 0; i = colPositions.nextSetBit(i + 1)) {
+            Cell cell = col.getCell(i);
+            //if(box.indexOf(cell) != -1) continue;
+            result.add(new Potential(cell, p.value, false, p,
+                    getRegionCause(col),
+                    "the value can occur only once in the " + col.toString()));
+        }
+
         return result;
     }
 
