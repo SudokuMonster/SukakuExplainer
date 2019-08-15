@@ -43,3 +43,11 @@ public class NumberOfFilledCells implements WarningHintProducer {
     }
 
 }
+
+
+    @Override
+    public String toString() {
+        return "Number of clues";
+    }
+
+}
