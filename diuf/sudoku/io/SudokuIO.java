@@ -10,7 +10,6 @@ import java.awt.datatransfer.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.regex.Matcher;
 
 import diuf.sudoku.*;
 
@@ -66,23 +65,23 @@ public class SudokuIO {
     }
     
     private static int TryParseSudoku(Grid grid, String singleLine) {
-    	String[] singleLineFormat = new String[] {
+        var singleLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{81})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{81})($|[^.1-9])",
                 "(^|[^*1-9])(?<key>[*1-9]{81})($|[^*1-9])",
                 "(^|[^_1-9])(?<key>[_1-9]{81})($|[^_1-9])" };
        
-        for (String pattern : singleLineFormat)
+        for (var pattern : singleLineFormat)
         {
-            Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
+            var result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
             if (result.find())
             {
-                String line = result.group("key");
+                var line = result.group("key");
                 for (int y = 0; y < 9; y++)
                 {
                     for (int x = 0; x < 9; x++)
                     {
-                        char ch = line.charAt(x + y * 9);
+                        var ch = line.charAt(x + y * 9);
                         if (ch >= '1' && ch <= '9')
                             grid.setCellValue(x, y, ch - '0');
                     }
@@ -95,31 +94,31 @@ public class SudokuIO {
     }
     
     private static int TryParseSukaku(Grid grid, String singleLine) {
-    	String[] sukakuLineFormat = new String[] {
+    	var sukakuLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{729})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{729})($|[^.1-9])",
                 "(^|[^*1-9])(?<key>[*1-9]{729})($|[^*1-9])",
                 "(^|[^_1-9])(?<key>[_1-9]{729})($|[^_1-9])" };
        
-        for (String pattern : sukakuLineFormat)
+        for (var pattern : sukakuLineFormat)
         {
-        	Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
+            var result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
             if (result.find())
             {
-                String line = result.group("key");
+                var line = result.group("key");
                 for (int y = 0; y < 9; y++)
                 {
                     for (int x = 0; x < 9; x++)
                     {
-                    	HashSet<Integer> possible = new HashSet<Integer>();
+                        var possible = new HashSet<Integer>();
                         for (int i = 0; i < 9; i++)
                         {
-                            char ch = line.charAt(i + x * 9 + y * 81);
+                            var ch = line.charAt(i + x * 9 + y * 81);
                             if (ch >= '1' && ch <= '9')
                                 possible.add(ch - '0');
                         }
                        
-                        Cell cell = grid.getCell(x, y);
+                        var cell = grid.getCell(x, y);
                         for (int i = 1; i <= 9; i++)
                         {
                             if (!possible.contains(i))
@@ -135,7 +134,7 @@ public class SudokuIO {
     }
     
     private static int loadFromLines(Grid grid, String[] lines) {
-    	String singleLine = String.join("", lines);
+    	var singleLine = String.join("", lines);
         if (TryParseSudoku(grid, singleLine) == RES_OK) 
         {
         	return RES_OK;
@@ -153,15 +152,15 @@ public class SudokuIO {
         }
        
         //Last resort try first 81 parts of candidates separated by space
-        String allLines = String.join(" ", lines);
-        String newLines = allLines.replace(".", "0").replace("/", "0").replaceAll("[^1-9]", " ").trim();
-        String[] parts = newLines.split("\\s+");
+        var allLines = String.join(" ", lines);
+        var newLines = allLines.replace(".", "/").replace("/", "0").replaceAll("[^1-9]", " ").trim();
+        var parts = newLines.split("\\s+");
         int y = 0, x = 0;
      
         for (String part : parts) {
-            Cell cell = grid.getCell(x, y);
+            var cell = grid.getCell(x, y);
            
-            HashSet<Integer> possible = new HashSet<Integer>();
+            var possible = new HashSet<Integer>();
             for (char ch : part.toCharArray()) {
                 if (ch >= '1' && ch <= '9')
                     possible.add(ch - '0');
