@@ -133,6 +133,22 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
         java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks ...
 
+### GUI
+
+Functionality is retained with vanilla sudoku puzzles
+
+With Pencilmark (sukaku) puzzles functionality is currently limited to "Get next hint" and "Apply hint"
+
+With Pencilmark (sukaku) puzzles the validity check currently will assume puzzle has multiple solutions.
+
+Paste Grid (Ctrl+V) currently allows parsing the following only:
+```
+Pencilmark grid
+729-character line representation of Pencilmark (Sukaku) grid
+81-character line represtation of a vanilla sudoku grid
+Sudoku grid: only in a multi line format consisting of 81 consecutive characters
+```
+
 ### EXAMPLES
 
   Note: % must be entered as %% in windows .bat files and shortcut commands.
