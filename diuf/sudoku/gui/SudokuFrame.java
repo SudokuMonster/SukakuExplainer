@@ -86,7 +86,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem mitSolve = null;
     private JMenuItem mitResetPotentials = null;
     private JMenuItem mitClearHints = null;
-    private File defaultDirectory = null;
+    private File defaultDirectory = new File("").getAbsoluteFile();
     private JRadioButton rdbView1 = null;
     private JRadioButton rdbView2 = null;
     private JMenu optionsMenu = null;
@@ -939,7 +939,7 @@ public class SudokuFrame extends JFrame implements Asker {
             setCommand(getMitPaste(), 'V');
             editMenu.addSeparator();
             editMenu.add(getMitClear());
-            setCommand(getMitClear(), 'E'); 
+            setCommand(getMitClear(), 'E');
         }
         return editMenu;
     }
@@ -1060,7 +1060,7 @@ public class SudokuFrame extends JFrame implements Asker {
                     try {
                         engine.analyse();
                     } catch (UnsupportedOperationException ex) {
-                        JOptionPane.showMessageDialog(SudokuFrame.this, 
+                        JOptionPane.showMessageDialog(SudokuFrame.this,
                                 "The Sudoku Explainer failed to solve this Sudoku\n" +
                                 "using the solving techniques that are currently enabled.",
                                 "Analysis", JOptionPane.ERROR_MESSAGE);

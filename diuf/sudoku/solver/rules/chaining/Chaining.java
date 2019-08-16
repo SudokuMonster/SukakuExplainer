@@ -192,8 +192,8 @@ public class Chaining implements IndirectHintProducer {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                int cardinality = cell.getPotentialValues().cardinality();
                 if (cell.getValue() == 0) { // the cell is empty
+                	int cardinality = cell.getPotentialValues().cardinality();
                     if (cardinality > 1) {
                         // Iterate on all potential values that are not alone
                         for (int value = 1; value <= 9; value++) {
@@ -272,7 +272,7 @@ public class Chaining implements IndirectHintProducer {
     
     private List<ChainingHint> getMultipleChainsHintList(Grid grid) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
-        //boolean noParallel = true;
+        //boolean noParallel = true; //debug, hide the class member noParallel
         //boolean noParallel = false;
         List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
@@ -781,8 +781,8 @@ public class Chaining implements IndirectHintProducer {
                     if (!isParent(p, pOff)) {
                         // Not processed yet
                         pendingOff.add(pOff);
-                        assert length >= 1;
-                        if (length >= 1) // Seems this can be removed!
+                        //assert length >= 1;
+                        //if (length >= 1) // Seems this can be removed!
                             toOff.add(pOff);
                     }
                 }
@@ -800,8 +800,8 @@ public class Chaining implements IndirectHintProducer {
                     if (!toOn.contains(pOn)) {
                         // Not processed yet
                         pendingOn.add(pOn);
-                        assert length >= 1;
-                        if (length >= 1) // Seems this can be removed
+                        //assert length >= 1;
+                        //if (length >= 1) // Seems this can be removed
                             toOn.add(pOn);
                     }
                 }
@@ -825,13 +825,13 @@ public class Chaining implements IndirectHintProducer {
                         if (!chains.contains(pOff))
                             chains.add(pOff);
                     }
-                    if (!isParent(p, pOff)) { // Why this filter? (seems useless)
+                    //if (!isParent(p, pOff)) { // Why this filter? (seems useless)
                         if (!toOff.contains(pOff)) {
                             // Not processed yet
                             pendingOff.add(pOff);
                             toOff.add(pOff);
                         }
-                    }
+                    //}
                 }
             }
             while (!pendingOff.isEmpty()) {

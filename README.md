@@ -5,18 +5,7 @@ modification of &quot;Sudoku Explainer&quot; by Nicolas Juillerat
 
 ## Installation:
 
-Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/releases) to download the latest version(s)
-
-[Sukaku Explainer v1.2.1.4](https://github.com/SudokuMonster/SukakuExplainer/releases/tag/v1.2.1.4): Modification to the serate 
-release to allow solving/rating of sukaku (Pencilmark sudoku) puzzles. Still retains the functionality of the serate release. 
-There are additional functions to display hints and to display a Pencilmark grid from the 729-character per line representation 
-of a Pencilmark grid. Known issues: Slow, Puzzles that exceed solver capacity still exist, GUI is relatively unstable. See Usage 
-in the main page or alternatively read SukakuExplainer.html for user manual.
-
-[Serate v1.2.1.2](https://github.com/SudokuMonster/SukakuExplainer/releases/tag/v1.2.1.2): This is the code from 2009 with serate
-modification to Sudoku Explainer. GUI and command line entry point to process single or group of vanilla sudoku puzzles.
-There is no known vanilla puzzle that can't be rated. Known issues: Slow, has few known bugs that rarely cause deviations 
-from the optimal solution path. See serate.html for user manual.
+Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/releases) to download the latest version(s) of Sukaku Explainer and Serate.
 
 ## Usage:
 
@@ -168,6 +157,8 @@ from the optimal solution path. See serate.html for user manual.
 @1to9only
 
 @SudokuMonster
+
+@sudokuwiki
 
 ## About:
 
