@@ -63,9 +63,8 @@ public class SudokuIO {
         }
         return result;
     }
-
-    private static int loadFromLines(Grid grid, String[] lines) {
-        var singleLine = String.join("", lines);
+    
+    private static int TryParseSudoku(Grid grid, String singleLine) {
         var singleLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{81})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{81})($|[^.1-9])",
@@ -91,8 +90,11 @@ public class SudokuIO {
                 return RES_OK;
             }
         }
-       
-        var sukakuLineFormat = new String[] {
+        return RES_ERROR;
+    }
+    
+    private static int TryParseSukaku(Grid grid, String singleLine) {
+    	var sukakuLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{729})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{729})($|[^.1-9])",
                 "(^|[^*1-9])(?<key>[*1-9]{729})($|[^*1-9])",
@@ -127,6 +129,26 @@ public class SudokuIO {
                
                 return RES_OK;
             }
+        }
+        return RES_ERROR;
+    }
+    
+    private static int loadFromLines(Grid grid, String[] lines) {
+    	var singleLine = String.join("", lines);
+        if (TryParseSudoku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
+        }
+       
+        if (TryParseSukaku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
+        }
+        
+        singleLine = singleLine.replace("#", ".").replaceAll("[^._01-9]", "");
+        if (TryParseSudoku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
         }
        
         //Last resort try first 81 parts of candidates separated by space
