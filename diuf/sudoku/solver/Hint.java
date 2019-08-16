@@ -43,10 +43,15 @@ public abstract class Hint {
         return 0;
     }
 
+//    /**
+//     * Apply this hint on the current sudoku grid.
+//     */
+//    public abstract void apply();
+
     /**
-     * Apply this hint on the current sudoku grid.
+     * Apply this hint on the target sudoku grid ignoring cell's grid reference
      */
-    public abstract void apply();
+    public abstract void apply(Grid targetGrid);
 
     /**
      * Get the regions concerned by this hint.

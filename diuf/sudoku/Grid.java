@@ -221,19 +221,10 @@ public class Grid {
          * <p>
          * The returned value is consistent with {@link #getCell(int)}.
          * @param cell the cell whose index to get
-         * @return the index of the cell, or -1 if the cell does not belong to
-         * this region.
+         * @return the index of the cell. If the cell does not belong to
+         * this region the result is undetermined.
          */
-        public int indexOf(Cell cell) {
-            /*
-             * This code is not really used. The method is always overriden
-             */
-            for (int i = 0; i < 9; i++) {
-                if (getCell(i).equals(cell))
-                    return i;
-            }
-            return -1;
-        }
+        public abstract int indexOf(Cell cell);
 
         /**
          * Test whether this region contains the given value, that is,
@@ -248,6 +239,13 @@ public class Grid {
             }
             return false;
         }
+
+        /**
+         * Test whether this region contains the given cell.
+         * @param cell the cell to check
+         * @return whether this region contains the given cell
+         */
+        public abstract boolean contains(Cell cell);
 
         /**
          * Get the potential positions of the given value within this region.
@@ -359,6 +357,11 @@ public class Grid {
         }
 
         @Override
+        public boolean contains(Cell cell) {
+        	return cell.getY() == rowNum;
+        }
+
+        @Override
         public boolean crosses(Region other) {
             if (other instanceof Block) {
                 Block square = (Block)other;
@@ -412,6 +415,11 @@ public class Grid {
         @Override
         public int indexOf(Cell cell) {
             return cell.getY();
+        }
+
+        @Override
+        public boolean contains(Cell cell) {
+        	return cell.getX() == columnNum;
         }
 
         @Override
@@ -476,6 +484,19 @@ public class Grid {
         }
 
         @Override
+        public boolean contains(Cell cell) {
+        	int x = cell.getX();
+        	int hStart = hNum * 3;
+        	if(x < hStart) return false;
+        	if(x > hStart + 2) return false;
+        	int y = cell.getY();
+        	int vStart = vNum * 3;
+        	if(y < vStart) return false;
+        	if(y > vStart + 2) return false;
+        	return true;
+        }
+
+       @Override
         public boolean crosses(Region other) {
             if (other instanceof Row) {
                 return ((Row)other).crosses(this);

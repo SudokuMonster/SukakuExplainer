@@ -245,9 +245,9 @@ public class UniqueLoops implements IndirectHintProducer {
         Set<Cell> commonCells = null;
         for (Cell extraCell : extraCells) {
             if (commonCells == null)
-                commonCells = new LinkedHashSet<Cell>(extraCell.getHouseCells());
+                commonCells = new LinkedHashSet<Cell>(extraCell.getHouseCells(grid));
             else
-                commonCells.retainAll(extraCell.getHouseCells());
+                commonCells.retainAll(extraCell.getHouseCells(grid));
         }
         for (Cell cell : commonCells) {
             if (!extraCells.contains(cell)) {

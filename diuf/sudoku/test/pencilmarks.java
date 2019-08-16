@@ -7,7 +7,7 @@
 package diuf.sudoku.test;
 
 import java.io.*;
-import java.util.*;
+//import java.util.*;
 
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;

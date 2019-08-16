@@ -65,17 +65,34 @@ public abstract class IndirectHint extends Hint {
         return !removablePotentials.isEmpty();
     }
 
+//    /**
+//     * Apply this hint on the grid (passed to the constructor).
+//     */
+//    @Override
+//    public void apply() {
+//        for (Cell cell : removablePotentials.keySet()) {
+//            BitSet cellRemovablePotentials = removablePotentials.get(cell);
+//            cell.removePotentialValues(cellRemovablePotentials);
+//        }
+//        if (getCell() != null)
+//            getCell().setValueAndCancel(getValue());
+//    }
+    
     /**
-     * Apply this hint on the grid (passed to the constructor).
+     * Apply this hint on the passed grid (ignore the one from the constructor).
      */
     @Override
-    public void apply() {
+    public void apply(Grid targetGrid) {
         for (Cell cell : removablePotentials.keySet()) {
             BitSet cellRemovablePotentials = removablePotentials.get(cell);
-            cell.removePotentialValues(cellRemovablePotentials);
+            Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
+            targetCell.removePotentialValues(cellRemovablePotentials);
         }
-        if (getCell() != null)
-            getCell().setValueAndCancel(getValue());
+    	Cell cell = getCell();
+        if (cell != null) {
+        	Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
+        	targetCell.setValueAndCancel(getValue(), targetGrid);
+        }
     }
 
 //  Visual representation

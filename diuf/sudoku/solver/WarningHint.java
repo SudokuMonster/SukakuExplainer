@@ -20,9 +20,9 @@ public abstract class WarningHint extends IndirectHint {
         super(rule, new HashMap<Cell,BitSet>());
     }
 
-    @Override
-    public void apply() {
-    }
+//    @Override
+//    public void apply() {
+//    }
 
     @Override
     public Map<Cell, BitSet> getGreenPotentials(int viewNum) {

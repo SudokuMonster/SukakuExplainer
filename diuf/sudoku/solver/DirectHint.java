@@ -58,9 +58,14 @@ public abstract class DirectHint extends Hint {
         return this.value;
     }
 
+//    @Override
+//    public void apply() {
+//        cell.setValueAndCancel(value);
+//    }
+    
     @Override
-    public void apply() {
-        cell.setValueAndCancel(value);
+    public void apply(Grid targetGrid) {
+        cell.setValueAndCancel(value, targetGrid);
     }
 
     @Override

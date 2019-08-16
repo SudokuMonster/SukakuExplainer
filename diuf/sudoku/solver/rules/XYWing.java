@@ -73,7 +73,7 @@ public class XYWing implements IndirectHintProducer {
                 BitSet xyValues = xyCell.getPotentialValues();
                 if (xyValues.cardinality() == targetCardinality) {
                     // Potential XY cell found
-                    for (Cell xzCell : xyCell.getHouseCells()) {
+                    for (Cell xzCell : xyCell.getHouseCells(grid)) {
                         BitSet xzValues = xzCell.getPotentialValues();
                         if (xzValues.cardinality() == 2) {
                             // Potential XZ cell found. Do small test
@@ -81,14 +81,14 @@ public class XYWing implements IndirectHintProducer {
                             remValues.andNot(xzValues);
                             if (remValues.cardinality() == 1) {
                                 // We have found XZ cell, look for YZ cell
-                                for (Cell yzCell : xyCell.getHouseCells()) {
+                                for (Cell yzCell : xyCell.getHouseCells(grid)) {
                                     BitSet yzValues = yzCell.getPotentialValues();
                                     if (yzValues.cardinality() == 2) {
                                         // Potential YZ cell found
                                         if (isXYZ) {
                                             if (isXYZWing(xyValues, xzValues, yzValues)) {
                                                 // Found XYZ-Wing pattern
-                                                XYWingHint hint = createHint(xyCell, xzCell, yzCell,
+                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
                                                         xzValues, yzValues);
                                                 if (hint.isWorth())
                                                     accu.add(hint);
@@ -96,7 +96,7 @@ public class XYWing implements IndirectHintProducer {
                                         } else {
                                             if (isXYWing(xyValues, xzValues, yzValues)) {
                                                 // Found XY-Wing pattern
-                                                XYWingHint hint = createHint(xyCell, xzCell, yzCell,
+                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
                                                         xzValues, yzValues);
                                                 if (hint.isWorth())
                                                     accu.add(hint);
@@ -112,7 +112,7 @@ public class XYWing implements IndirectHintProducer {
         } // for y
     }
 
-    private XYWingHint createHint(Cell xyCell, Cell xzCell, Cell yzCell,
+    private XYWingHint createHint(Grid grid, Cell xyCell, Cell xzCell, Cell yzCell,
             BitSet xzValues, BitSet yzValues) {
         // Get the "z" value
         BitSet inter = (BitSet)xzValues.clone();
@@ -121,10 +121,10 @@ public class XYWing implements IndirectHintProducer {
 
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-        Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells());
-        victims.retainAll(yzCell.getHouseCells());
+        Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
+        victims.retainAll(yzCell.getHouseCells(grid));
         if (isXYZ)
-            victims.retainAll(xyCell.getHouseCells());
+            victims.retainAll(xyCell.getHouseCells(grid));
         victims.remove(xyCell);
         victims.remove(xzCell);
         victims.remove(yzCell);

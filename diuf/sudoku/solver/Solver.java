@@ -135,8 +135,11 @@ public class Solver {
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2));
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 3));
         experimentalHintProducers = new ArrayList<IndirectHintProducer>(); // Two levels of nesting !?
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4));
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 0));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 1));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 2));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
     }
 
     /**
@@ -417,7 +420,7 @@ public class Solver {
                 usedRules.put(rule, usedRules.get(rule) + 1);
             else
                 usedRules.put(rule, 1);
-            hint.apply();
+            hint.apply(grid);
         }
         normalPriority(oldPriority);
         return usedRules;
@@ -466,7 +469,7 @@ public class Solver {
                     break;
                 if (difficulty > max)
                     break;
-                hint.apply();
+                hint.apply(grid);
             }
             return difficulty;
         } finally {
@@ -507,7 +510,7 @@ public class Solver {
                 double ruleDiff = rule.getDifficulty();
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
-                hint.apply();
+                hint.apply(grid);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
                         diamond = difficulty;
@@ -562,7 +565,7 @@ public class Solver {
                 double ruleDiff = rule.getDifficulty();
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
-                hint.apply();
+                hint.apply(grid);
 
                 String s = "";
                 for (int i = 0; i < 81; i++) {
@@ -696,7 +699,7 @@ public class Solver {
                 double ruleDiff = rule.getDifficulty();
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
-                hint.apply();
+                hint.apply(grid);
 
                 s = "";
                 for (int i = 0; i < 81; i++) {

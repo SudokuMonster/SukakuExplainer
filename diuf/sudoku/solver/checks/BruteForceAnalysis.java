@@ -158,7 +158,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
         Hint hint = null;
         do {
             if (hint != null)
-                hint.apply();
+                hint.apply(grid);
             SingleHintAccumulator accu = new SingleHintAccumulator();
             try {
                 nakedSingle.getHints(grid, accu);
@@ -200,7 +200,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
                 value = ((value0 + firstValue) % 9) + 1;
             if (leastCell.hasPotentialValue(value)) {
                 grid.copyTo(savePoint);
-                leastCell.setValueAndCancel(value);
+                leastCell.setValueAndCancel(value, grid);
                 boolean result = analyse(grid, isReverse, rnd, hiddenSingle, nakedSingle);
                 if (result)
                     return true;

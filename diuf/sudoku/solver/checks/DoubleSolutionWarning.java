@@ -31,19 +31,19 @@ public class DoubleSolutionWarning extends WarningHint {
         this.solution2 = solution2;
     }
 
-    @Override
-    public void apply() {
-        if (lastViewNum == 0)
-            solution1.copyTo(grid);
-        else
-            solution2.copyTo(grid);
-        // Clear all potentials
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                grid.getCell(x, y).clearPotentialValues();
-            }
-        }
-    }
+//    @Override
+//    public void apply() {
+//        if (lastViewNum == 0)
+//            solution1.copyTo(grid);
+//        else
+//            solution2.copyTo(grid);
+//        // Clear all potentials
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                grid.getCell(x, y).clearPotentialValues();
+//            }
+//        }
+//    }
 
     @Override
     public Map<Cell, BitSet> getGreenPotentials(int viewNum) {

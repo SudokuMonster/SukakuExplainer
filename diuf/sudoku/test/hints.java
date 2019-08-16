@@ -8,7 +8,7 @@
 package diuf.sudoku.test;
 
 import java.io.*;
-import java.util.*;
+//import java.util.*;
 
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
@@ -24,8 +24,8 @@ public class hints {
     public static void main(String[] args) {
         String          format = FORMAT;
         String          input = null;
-        String          output = "-";
-        String          a;
+        //String          output = "-";
+        //String          a;
         String          s;
         String          v;
         String          puzzle;
@@ -35,7 +35,7 @@ public class hints {
         char            c;
         try {
             for (arg = 0; arg < args.length; arg++) {
-                a = s = args[arg];
+                /*a = */s = args[arg];
                 if (s.charAt(0) != '-')
                     break;
                 v = null;
@@ -68,9 +68,9 @@ public class hints {
                 case 'i':
                     input = v;
                     break;
-                case 'o':
-                    output = v;
-                    break;
+                //case 'o':
+                //    output = v;
+                //    break;
                 default:
                     break;
                 }

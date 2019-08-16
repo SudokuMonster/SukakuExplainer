@@ -86,8 +86,8 @@ public class Generator {
             indexes[p2] = temp;
         }
 
-        int attempts = 0;
-        int successes = 0;
+        //int attempts = 0;
+        //int successes = 0;
 
         // Randomly remove clues
         boolean isSuccess = true;
@@ -117,14 +117,14 @@ public class Generator {
                     if (state == 1) {
                         // Cells successfully removed: still a unique solution
                         isSuccess = true;
-                        successes += 1;
+                        //successes += 1;
                     } else if (state == 0) {
                         assert false : "Invalid grid";
                     } else {
                         // Failed. Put the cells back and try with next cell
                         for (Point p : points)
                             grid.setCellValue(p.x, p.y, solution.getCellValue(p.x, p.y));
-                        attempts += 1;
+                        //attempts += 1;
                     }
                 }
                 index = (index + 1) % 81; // Next index (indexing scrambled array of indexes)
