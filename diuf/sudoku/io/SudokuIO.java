@@ -10,6 +10,7 @@ import java.awt.datatransfer.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import diuf.sudoku.*;
 
@@ -45,113 +46,124 @@ public class SudokuIO {
     private static final String WARNING_MSG = "Warning: the Sudoku format was not recognized.\nThe Sudoku may not have been read correctly";
 
     private static int loadFromReader(Grid grid, Reader reader) throws IOException {
-        boolean isValid = true;
-        List<String> lines = new ArrayList<String>();
+    	List<String> lines = new ArrayList<String>();
         LineNumberReader lineReader = new LineNumberReader(reader);
         String line = lineReader.readLine();
         while (line != null) {
-            if (line.length() >= 9)
-                lines.add(line);
-            else
-                isValid = false;
+            lines.add(line);
             line = lineReader.readLine();
         }
-        if (lines.size() >= 9 && lines.size() <= 30) {
-            String[] arrLines = new String[lines.size()];
-            lines.toArray(arrLines);
+        String[] arrLines = new String[lines.size()];
+        lines.toArray(arrLines);
+       
+        int result = loadFromLines(grid, arrLines);
+        if (result == RES_ERROR) {
             for (int i = 0; i < arrLines.length; i++)
                 arrLines[i] = arrLines[i].trim();
-            int result = loadFromLines(grid, arrLines);
-            if (result == RES_OK && !isValid)
-                result = RES_WARN;
-            return result;
-        } else if (lines.size() == 1) {
-            int result = loadFromSingleLine(grid, lines.get(0));
-            if (result == RES_OK && !isValid)
-                result = RES_WARN;
-            return result;
+            return loadFromSingleLine(grid, lines.get(0));
         }
-        return RES_ERROR;
+        return result;
     }
 
     private static int loadFromLines(Grid grid, String[] lines) {
-        boolean isStandard = (lines.length == 9);
-
-        int lineSize = lines.length / 9;
-        int loffset = (lineSize - 1) / 2;
-        int borderLines = lines.length - 9 * lineSize;
-        if (borderLines < 0)
-            borderLines = 0;
-        int outerLines; // Number of lines before the grid
-        int innerLines; // Number of additional lines between blocks
-        if (borderLines % 4 == 0) {
-            outerLines = borderLines / 4;
-            innerLines = outerLines;
-        } else {
-            outerLines = 0;
-            innerLines = borderLines / 2;
-        }
-        int index = outerLines + loffset;
-        for (int y = 0; y < 9; y++) {
-            /*
-             * This is very ugly code, without real logic. Maybe a case-by-case version
-             * would be more understandable. Or I should try some real AI stuff...
-             */
-            String line = lines[index];
-
-            // Check line format
-            if (line.length() != 9)
-                isStandard = false;
-            for (int i = 0; i < line.length(); i++) {
-                char ch = line.charAt(i);
-                if (ch != '.' && (ch < '0' || ch > '9'))
-                    isStandard = false;
-            }
-
-            // Read line
-            int cellSize = (line.length() + 1) / 9;
-            int borderChars = line.length() - 9 * cellSize;
-            if (borderChars < 0)
-                borderChars = 0;
-            int outerChars, innerChars;
-            if (borderChars % 4 == 0 || (borderChars % 4 == 3 && cellSize == 2 && borderChars > 4)) {
-                innerChars = (borderChars + 1) / 4;
-                outerChars = (borderChars - innerChars * 2) / 2;
-            } else {
-                outerChars = 0;
-                // The last cell, if cell size > 1, may only have half its size
-                innerChars = (borderChars + cellSize / 2) / 2;
-            }
-            int pos = outerChars;
-            for (int x = 0; x < 9; x++) {
-                for (int offset = 0; offset < cellSize; offset++) {
-                    if (pos + offset < line.length()) {
-                        char ch = line.charAt(pos + offset);
-                        int value = 0;
+    	String singleLine = String.join("", lines);
+    	String[] singleLineFormat = new String[] {
+                "(^|[^01-9])(?<key>[01-9]{81})($|[^01-9])",
+                "(^|[^.1-9])(?<key>[.1-9]{81})($|[^.1-9])",
+                "(^|[^*1-9])(?<key>[*1-9]{81})($|[^*1-9])",
+                "(^|[^_1-9])(?<key>[_1-9]{81})($|[^_1-9])" };
+       
+        for (String pattern : singleLineFormat)
+        {
+        	Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
+            if (result.find())
+            {
+            	String line = result.group("key");
+                for (int y = 0; y < 9; y++)
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        char ch = line.charAt(x + y * 9);
                         if (ch >= '1' && ch <= '9')
-                            value = ch - '0';
-                        if (offset == 0 || value > 0)
-                            grid.setCellValue(x, y, value);
+                            grid.setCellValue(x, y, ch - '0');
                     }
                 }
-
-                pos += cellSize;
-                if (x == 2 || x == 5)
-                    pos += innerChars;
+               
+                return RES_OK;
             }
-
-            index += lineSize;
-            if (y == 2 || y == 5)
-                index += innerLines;
         }
-        return (isStandard ? RES_OK : RES_WARN);
+       
+        String[] sukakuLineFormat = new String[] {
+                "(^|[^01-9])(?<key>[01-9]{729})($|[^01-9])",
+                "(^|[^.1-9])(?<key>[.1-9]{729})($|[^.1-9])",
+                "(^|[^*1-9])(?<key>[*1-9]{729})($|[^*1-9])",
+                "(^|[^_1-9])(?<key>[_1-9]{729})($|[^_1-9])" };
+       
+        for (String pattern : sukakuLineFormat)
+        {
+        	Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
+            if (result.find())
+            {
+            	String line = result.group("key");
+                for (int y = 0; y < 9; y++)
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                    	HashSet<Integer> possible = new HashSet<Integer>();
+                        for (int i = 0; i < 9; i++)
+                        {
+                            char ch = line.charAt(i + x * 9 + y * 81);
+                            if (ch >= '1' && ch <= '9')
+                                possible.add(ch - '0');
+                        }
+                       
+                        Cell cell = grid.getCell(x, y);
+                        for (int i = 1; i <= 9; i++)
+                        {
+                            if (!possible.contains(i))
+                                cell.removePotentialValue(i);
+                        }
+                    }
+                }
+               
+                return RES_OK;
+            }
+        }
+       
+        //Last resort try first 81 parts of candidates separated by space
+        String allLines = String.join(" ", lines);
+        String newLines = allLines.replace(".", "/").replace("/", "0").replaceAll("[^1-9]", " ").trim();
+        String[] parts = newLines.split("\\s+");
+        int y = 0, x = 0;
+     
+        for (String part : parts) {
+            Cell cell = grid.getCell(x, y);
+           
+            HashSet<Integer> possible = new HashSet<Integer>();
+            for (char ch : part.toCharArray()) {
+                if (ch >= '1' && ch <= '9')
+                    possible.add(ch - '0');
+            }
+            for (int i = 1; i <= 9; i++)
+            {
+                if (!possible.contains(i))
+                    cell.removePotentialValue(i);
+            }
+           
+            x++;
+            if (x == 9) {
+                y++;
+                x = 0;
+                if (y == 9)
+                    break; //ignore if more than 81 found
+            }
+        }
+        return parts.length == 81 ? RES_OK : RES_WARN;
     }
 
     private static int loadFromSingleLine(Grid grid, String line) {
-        boolean isStandard = (line.length() == 81) | (line.length() == 729);
+        boolean isStandard = (line.length() == 81);
         // Detect Sudoku Susser format (Although the SS cannot cut/past to itself)
-    if ( line.length() < 729 )
-    {
         if (line.endsWith("\t"))
             line = line.substring(0, line.length() - 1);
         boolean hasAlphaLabel = false;
@@ -167,29 +179,8 @@ public class SudokuIO {
             line = line.substring(line.length() - 81);
         else if (line.trim().length() >= 81)
             line = line.trim();
-    }
 
         if (line.length() >= 81) {
-    if ( line.length() >= 729 )
-    {
-            for (int i = 0; i < 81; i++) {
-                grid.setCellValue(i % 9, i / 9, 0);
-                Cell cell = grid.getCell(i % 9, i / 9);
-                cell.clearPotentialValues();
-            }
-            for (int i = 0; i < 729; i++) {
-                int cl = i / 9;  // cell
-                char ch = line.charAt(i);
-
-                if (ch >= '1' && ch <= '9') {
-                    int value = (ch - '0');
-                    Cell cell = grid.getCell(cl % 9, cl / 9);
-                    cell.addPotentialValue(value);
-                }
-            }
-    }
-    else
-    {
             int rowGap = (line.length() - 81) / 8;
             int srcIndex = 0;
             for (int y = 0; y < 9; y++) {
@@ -204,7 +195,6 @@ public class SudokuIO {
                 }
                 srcIndex += rowGap;
             }
-    }
             return (isStandard ? RES_OK : RES_WARN);
         }
         return RES_ERROR;
