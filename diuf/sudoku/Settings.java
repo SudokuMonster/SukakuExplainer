@@ -16,7 +16,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 2;
-    public final static String SUBREV = ".1";
+    public final static String SUBREV = ".1.6";
 
     private static Settings instance = null;
 
