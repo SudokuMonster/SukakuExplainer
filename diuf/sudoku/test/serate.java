@@ -378,8 +378,10 @@ public class serate {
                     }
                 }
             } //parse format
-            writer.println(s);
-            writer.flush();        
+            if(! s.isEmpty()) { //don't output empty rows
+	            writer.println(s);
+	            writer.flush();
+            }
         }
  
     	public void afterHint(Solver solver, Hint hint) {
@@ -391,7 +393,7 @@ public class serate {
                     s += f;
                 }
                 else {
-                    switch (formatAfter.charAt(i)) { //format specifier
+                    switch (f = formatAfter.charAt(i)) { //format specifier
                         case 'M':
                             s += solver.getGrid().toStringMultilinePencilmarks();
                             break;
@@ -426,13 +428,15 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += f; //literal
+                            s += '%' + f; //literal
                             break;
                     }
                 }
             } //parse format
-            writer.println(s);
-            writer.flush();
+            if(! s.isEmpty()) { //don't output empty rows
+	            writer.println(s);
+	            writer.flush();
+            }
         }
 
     	public void beforePuzzle(Solver solver) {
@@ -447,7 +451,7 @@ public class serate {
                     s += f;
                 }
                 else {
-                    switch (formatStart.charAt(i)) { //format specifier
+                    switch (f = formatStart.charAt(i)) { //format specifier
 	                    case 'M':
 	                        s += solver.getGrid().toStringMultilinePencilmarks();
                         case 'g':
@@ -466,13 +470,15 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += f; //literal
+                            s += '%' + f; //literal
                             break;
                     }
                 }
             } //parse format
-            writer.println(s);
-            writer.flush();
+            if(! s.isEmpty()) { //don't output empty rows
+	            writer.println(s);
+	            writer.flush();
+            }
         }
     	
     	public void afterPuzzle(Solver solver) {
@@ -484,7 +490,7 @@ public class serate {
                     s += f;
                 }
                 else {
-                    switch (formatFinal.charAt(i)) { //format specifier
+                    switch (f = formatFinal.charAt(i)) { //format specifier
                         case 'd':
                             s += ratingToString(solver.diamond);
                             break;
@@ -513,13 +519,15 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += f; //literal
+                            s += '%' + f; //literal
                             break;
                     }
                 }
             } //parse format
-            writer.println(s);
-            writer.flush();
+            if(! s.isEmpty()) { //don't output empty rows
+	            writer.println(s);
+	            writer.flush();
+            }
         }
     	
     	private String ratingToString(double rating) {
