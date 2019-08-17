@@ -310,7 +310,7 @@ public class SudokuFrame extends JFrame implements Asker {
     }
 
     private void initialize() {
-        this.setTitle("Sudoku Explainer " + VERSION + "." + REVISION + SUBREV);
+        this.setTitle("Sukaku Explainer " + VERSION + "." + REVISION + SUBREV);
         JMenuBar menuBar = getJJMenuBar();
         setupLookAndFeelMenu();
         this.setJMenuBar(menuBar);

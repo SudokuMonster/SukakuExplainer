@@ -66,10 +66,10 @@ public class AboutDialog extends JDialog {
     private JPanel getPnlTop() {
         if (pnlTop == null) {
             lblCopyright = new JLabel();
-            lblCopyright.setText("(C) 2005-2007 Nicolas Juillerat");
+            lblCopyright.setText("(C) 2005-2019 Nicolas Juillerat");
             lblCopyright.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lblTitle = new JLabel();
-            lblTitle.setText("Sudoku Explainer");
+            lblTitle.setText("Sukaku Explainer");
             lblTitle.setFont(new java.awt.Font("Comic Sans MS", java.awt.Font.BOLD, 24));
             lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lblTitle.setHorizontalTextPosition(javax.swing.SwingConstants.TRAILING);
@@ -91,7 +91,7 @@ public class AboutDialog extends JDialog {
             gridBagConstraints6.weightx = 1.0D;
             gridBagConstraints6.gridy = 4;
             txtLicense = new JLabel();
-            txtLicense.setText("Lesser General Public License");
+            txtLicense.setText("LGPL-2.1");
             txtLicense.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 12));
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.gridx = 0;
