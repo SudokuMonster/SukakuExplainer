@@ -60,6 +60,18 @@ public class GenerateDialog extends JDialog {
                 return 2.5;
             }
         },
+        Superior {
+
+            @Override
+            public double getMinDifficulty() {
+                return 3.2;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 4.0;
+            }
+        },
         Fiendish {
 
             @Override
@@ -72,7 +84,31 @@ public class GenerateDialog extends JDialog {
                 return 6.0;
             }
         },
-        Diabolical {
+		SuperiorPlus {
+
+            @Override
+            public double getMinDifficulty() {
+                return 4.5;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 6.0;
+            }
+        },
+		AdvancedPlayer {
+
+            @Override
+            public double getMinDifficulty() {
+                return 7.0;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 8.0;
+            }
+        },
+         Diabolical {
 
             @Override
             public double getMinDifficulty() {
