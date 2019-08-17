@@ -31,7 +31,8 @@ public class serate {
         System.err.println("  serate - Sudoku Explainer command line rating");
         System.err.println("");
         System.err.println("SYNOPSIS");
-        System.err.println("  serate [ --diamond ] [ --format=FORMAT ] [ --input=FILE ] [ --output=FILE ] [ --pearl ] [ puzzle ... ]");
+        System.err.println("  serate [ --diamond ] [ --after=FORMAT ] [ --before=FORMAT ] [ --format=FORMAT ]");
+        System.err.println("    [ --input=FILE ] [ --output=FILE ] [ --pearl ] [ --threads=N ] [ puzzle ... ]");
         System.err.println("");
         System.err.println("DESCRIPTION");
         System.err.println("  serate is a Sudoku Explainer command line entry point that rates one or more");
@@ -40,7 +41,7 @@ public class serate {
         System.err.println("  not specified the puzzles are read from the standard input.  If an --output=FILE");
         System.err.println("  option is specified then the output is written to that file, otherwise output");
         System.err.println("  is written to the standard output.  The output is controlled by the");
-        System.err.println("  --format=FORMAT option.");
+        System.err.println("  --format=FORMAT option (F) as well as --before (B) and --after (A) options.");
         System.err.println("");
         System.err.println("  Ratings are floating point numbers in the range 0.0 - 20.0, rounded to the");
         System.err.println("  tenths digit.  0.0 indicates a processing error and 20.0 indicates an valid");
@@ -58,19 +59,21 @@ public class serate {
         System.err.println("      conversion are %CHARACTER; all other characters are output unchanged.");
         System.err.println("      The default format is " + FORMAT + ".  The format conversions are:");
         System.err.println("        %d  The diamond rating.  This is the highest ER of the methods leading");
-        System.err.println("            to the first candidate elimination.");
-        System.err.println("        %e  The elapsed time to rate the puzzle.");
-        System.err.println("        %h  The step description in multi-line HTML format.");
-        System.err.println("        %g  The input puzzle line.");
-        System.err.println("        %i  The puzzle grid in 81-character [0-9] form.");
-        System.err.println("        %m  The input puzzle pencilmarks in 729-char format.");
-        System.err.println("        %M  The input puzzle pencilmarks in multi-line format.");
-        System.err.println("        %n  The input puzzle ordinal, counting from 1.");
+        System.err.println("            to the first candidate elimination. (F)");
+        System.err.println("        %e  The elapsed time to rate the puzzle. (AF)");
+        System.err.println("        %f  The tab character. (BAF)");
+        System.err.println("        %h  The long step description in multi-line HTML format. (A)");
+        System.err.println("        %g  The input puzzle line. (BAF)");
+        System.err.println("        %i  The puzzle grid in 81-character [0-9] form. (BAF)");
+        System.err.println("        %l  The new line. (BAF)");
+        System.err.println("        %m  The input puzzle pencilmarks in 729-char format. (BA)");
+        System.err.println("        %M  The input puzzle pencilmarks in multi-line format. (BA)");
+        System.err.println("        %n  The input puzzle ordinal, counting from 1. (F)");
         System.err.println("        %p  The pearl rating.  This is the highest ER of the methods leading");
-        System.err.println("            to the first cell placement.");
+        System.err.println("            to the first cell placement. (F)");
         System.err.println("        %r  The puzzle rating.  This is the highest ER of the methods leading");
-        System.err.println("            to the puzzle solution.");
-        System.err.println("        %s  The solution grid in 81-character {.,[1-9]} form.");
+        System.err.println("            to the puzzle solution. (F)");
+        System.err.println("        %s  The short step description. (A)");
         System.err.println("        %%  The % character.");
         System.err.println("  -h, --html");
         System.err.println("      List detailed info in html.");
@@ -85,7 +88,7 @@ public class serate {
         System.err.println("  -p, --pearl");
         System.err.println("      Terminate rating if the puzzle is not a pearl.");
         System.err.println("  -t, --threads");
-        System.err.println("      Maximal degree of parrallelism. Default 0=auto; 1=no parallelism");
+        System.err.println("      Maximal degree of parrallelism. Default 0=auto. 1=no parallelism; -1=unlimited");
         System.err.println("  -V, --version");
         System.err.println("      Print the Sudoku Explainer (serate) version and exit.");
         System.err.println("");
@@ -128,7 +131,6 @@ public class serate {
         String          puzzle;
         BufferedReader  reader = null;
         PrintWriter     writer = null;
-        int             ordinal = 0;
         int             numThreads = 1;
         char            want = 0;
         int             arg;
@@ -221,7 +223,9 @@ public class serate {
                     output = v;
                     break;
                 case 't':
-                	numThreads = Integer.parseUnsignedInt(v);
+                	numThreads = Integer.parseInt(v);
+                	if(numThreads == 0) numThreads = Runtime.getRuntime().availableProcessors();
+                	if(numThreads < 1) numThreads = 1; //no parallel processing
                     break;
                 case 'V':
                     System.out.println(VERSION);
@@ -233,8 +237,7 @@ public class serate {
                 }
             }
             //options were parsed
-            Settings.getInstance().setNumThreads(numThreads); // make it accessible at runtime from everywhere
-            formatter.init(formatAfter, formatBefore, format);
+            Settings.getInstance().setNumThreads(numThreads); // make numThreads accessible at runtime from everywhere
             if (input != null) {
                 if (input.equals("-")) {
                     InputStreamReader reader0 = new InputStreamReader(System.in);
@@ -255,6 +258,8 @@ public class serate {
                 BufferedWriter writer1 = new BufferedWriter(writer0);
                 writer = new PrintWriter(writer1);
             }
+            formatter.init(writer, formatAfter, formatBefore, format);
+            //loop over input puzzles
             for (;;) {
                 if (reader != null) {
                     puzzle = reader.readLine();
@@ -265,119 +270,20 @@ public class serate {
                     puzzle = args[arg++];
                 else
                     break;
-                if (puzzle.length() >= 81) {
+                if (puzzle.length() < 81) continue; //silently ignore short input lines or parameters
+                {
+                	//process puzzle
                     Grid grid = new Grid();
-                if (puzzle.length() >= 729) {
-                    for (int i = 0; i < 81; i++) {
-                        grid.setCellValue(i % 9, i / 9, 0);
-                    }
-                    for (int i = 0; i < 729; i++) {
-                        int cl = i / 9;  // cell
-                        char ch = puzzle.charAt(i);
-
-                        if (ch >= '1' && ch <= '9') {
-                            int value = (ch - '0');
-                            Cell cell = grid.getCell(cl % 9, cl / 9);
-                            cell.addPotentialValue(value);
-                        }
-                    }
-                }
-                else {
-                    for (int i = 0; i < 81; i++) {
-                        char ch = puzzle.charAt(i);
-                        if (ch >= '1' && ch <= '9') {
-                            int value = (ch - '0');
-                            grid.setCellValue(i % 9, i / 9, value);
-                        }
-                    }
-                }
-                t = System.currentTimeMillis();
-                Solver solver = new Solver(grid);
-                solver.want = want;
-                if (puzzle.length() >= 81 && puzzle.length() < 729) {
-                    solver.rebuildPotentialValues();
-                }
-                    ordinal++;
-                    try {
-                        solver.getDifficulty(formatter);
-                    }
-                    catch (UnsupportedOperationException ex) {
-                        solver.difficulty = solver.pearl = solver.diamond = 0.0;
-                    }
-                    t = System.currentTimeMillis() - t;
-                    s = "";
-                    for (int i = 0; i < format.length(); i++) {
-                        int             w;
-                        int             p;
-                        long            u;
-                        char    f = format.charAt(i);
-                        if (f != '%' || ++i >= format.length())
-                            s += f;
-                        else
-                            switch (format.charAt(i)) {
-                            case 'd':
-                                w = (int)((solver.diamond + 0.05) * 10);
-                                p = w % 10;
-                                w /= 10;
-                                s += w + "." + p;
-                                break;
-                            case 'e':
-                                t /= 10;
-                                u = t % 100;
-                                t /= 100;
-                                if (t < 60) {
-                                    s += t + ".";
-                                    if (u < 10)
-                                        s += "0";
-                                    s += u + "s";
-                                }
-                                else if (t < 60*60) {
-                                    s += (t / 60) + "m";
-                                    u = t - (t / 60) * 60;
-                                    if (u < 10)
-                                        s += "0";
-                                    s += u + "s";
-                                }
-                                else if (t < 24*60*60) {
-                                    s += (t / (60*60)) + "h";
-                                    u = (t - (t / (60*60)) * (60*60)) / 60;
-                                    if (u < 10)
-                                        s += "0";
-                                    s += u + "m";
-                                }
-                                else {
-                                    s += (t / (24*60*60)) + "d";
-                                    u = (t - (t / (24*60*60)) * (24*60*60)) / (60*60);
-                                    if (u < 10)
-                                        s += "0";
-                                    s += u + "h";
-                                }
-                                break;
-                            case 'g':
-                                s += puzzle;
-                                break;
-                            case 'n':
-                                s += ordinal;
-                                break;
-                            case 'p':
-                                w = (int)((solver.pearl + 0.05) * 10);
-                                p = w % 10;
-                                w /= 10;
-                                s += w + "." + p;
-                                break;
-                            case 'r':
-                                w = (int)((solver.difficulty + 0.05) * 10);
-                                p = w % 10;
-                                w /= 10;
-                                s += w + "." + p;
-                                break;
-                            default:
-                                s += f;
-                                break;
-                            }
-                    }
-                    writer.println(s);
-                    writer.flush();
+                    grid.fromString(puzzle);
+                    formatter.setPuzzleLine(puzzle);
+                    t = System.currentTimeMillis();
+	                Solver solver = new Solver(grid);
+	                solver.want = want;
+	                if (puzzle.length() >= 81 && puzzle.length() < 729) {
+	                    solver.rebuildPotentialValues();
+	                }
+                    solver.getDifficulty(formatter);
+	                t = System.currentTimeMillis() - t;
                 }
             }
         }
@@ -402,36 +308,222 @@ public class serate {
             }
         }
     } //main
+    
     public class Formatter {
+    	PrintWriter writer;
         private String formatAfter; //after each step
         private String formatBefore; //before each step
         private String formatFinal; //after each puzzle
+        private String puzzleLine; //the input line
         
         private long stepBeginTime;
         private long puzzleBeginTime;
         
-    	public void init(String formatAfter, String formatBefore, String formatFinal) {
+        private int ordinal;
+        
+    	public void init(PrintWriter writer, String formatAfter, String formatBefore, String formatFinal) {
+    		this.writer = writer;
     		this.formatAfter = formatAfter;
     		this.formatBefore = formatBefore;
     		this.formatFinal = formatFinal;
+    		this.ordinal = 0;
     	}
 
     	public void beforeHint(Solver solver) {
         	stepBeginTime = System.currentTimeMillis();
+        	
+    		if(formatBefore.isEmpty()) return;
+    		String s = new String();
+            for (int i = 0; i < formatBefore.length(); i++) { //parse format
+                char    f = formatBefore.charAt(i);
+                if (f != '%' || ++i >= formatBefore.length()) { //literal
+                    s += f;
+                }
+                else {
+                    switch (formatBefore.charAt(i)) { //format specifier
+                        case 'M':
+                            s += solver.getGrid().toStringMultilinePencilmarks();
+                            break;
+                        case 'g':
+                            s += puzzleLine;
+                            break;
+                        case 'i':
+                            s += solver.getGrid().toString81();
+                            break;
+                        case 'l':
+                            s += System.lineSeparator();
+                            break;
+                        case 'm':
+                            s += solver.getGrid().toStringPencilmarks();
+                            break;
+                        case 'r':
+                            s += ratingToString(solver.difficulty);
+                            break;
+                        case 't':
+                            s += '\t';
+                            break;
+                        default:
+                            s += f; //literal
+                            break;
+                    }
+                }
+            } //parse format
+            writer.println(s);
+            writer.flush();        
         }
  
     	public void afterHint(Solver solver, Hint hint) {
-        	
+    		if(formatAfter.isEmpty()) return;
+    		String s = new String();
+            for (int i = 0; i < formatAfter.length(); i++) { //parse format
+                char    f = formatAfter.charAt(i);
+                if (f != '%' || ++i >= formatAfter.length()) { //literal
+                    s += f;
+                }
+                else {
+                    switch (formatAfter.charAt(i)) { //format specifier
+                        case 'M':
+                            s += solver.getGrid().toStringMultilinePencilmarks();
+                            break;
+                        case 'e':
+                        	s += getTimeString(stepBeginTime);
+                            break;
+                        case 'g':
+                            s += puzzleLine;
+                            break;
+                        case 'h':
+                            s += hint.toHtml();
+                            break;
+                        case 'i':
+                            s += solver.getGrid().toString81();
+                            break;
+                        case 'l':
+                            s += System.lineSeparator();
+                            break;
+                        case 'm':
+                            s += solver.getGrid().toStringPencilmarks();
+                            break;
+                        case 'n':
+                            s += ordinal;
+                            break;
+                        case 'r':
+                            s += ratingToString(((Rule)hint).getDifficulty());
+                            break;
+                        case 's':
+                            s += hint.toString();
+                            break;
+                        case 't':
+                            s += '\t';
+                            break;
+                        default:
+                            s += f; //literal
+                            break;
+                    }
+                }
+            } //parse format
+            writer.println(s);
+            writer.flush();
         }
 
     	public void beforePuzzle(Solver solver) {
     		puzzleBeginTime = System.currentTimeMillis();
-        	
-        }
-
-    	public void afterPuzzle(Solver solver) {
-        	
+    		ordinal++;
         }
     	
-    }
+    	public void afterPuzzle(Solver solver) {
+    		String s = new String();
+            for (int i = 0; i < formatFinal.length(); i++) { //parse format
+                char    f = formatFinal.charAt(i);
+                if (f != '%' || ++i >= formatFinal.length()) { //literal
+                    s += f;
+                }
+                else {
+                    switch (formatFinal.charAt(i)) { //format specifier
+                        case 'd':
+                            s += ratingToString(solver.diamond);
+                            break;
+                        case 'e':
+                        	s += getTimeString(puzzleBeginTime);
+                            break;
+                        case 'g':
+                            s += puzzleLine;
+                            break;
+                        case 'i':
+                            s += solver.getGrid().toString81();
+                            break;
+                        case 'l':
+                            s += System.lineSeparator();
+                            break;
+                        case 'n':
+                            s += ordinal;
+                            break;
+                        case 'p':
+                            s += ratingToString(solver.pearl);
+                            break;
+                        case 'r':
+                            s += ratingToString(solver.difficulty);
+                            break;
+                        case 't':
+                            s += '\t';
+                            break;
+                        default:
+                            s += f; //literal
+                            break;
+                    }
+                }
+            } //parse format
+            writer.println(s);
+            writer.flush();
+        }
+    	
+    	private String ratingToString(double rating) {
+    		String s = new String();
+            int w = (int)((rating + 0.05) * 10);
+            int p = w % 10;
+            w /= 10;
+            s += w + "." + p;
+            return s;
+    	}
+    	
+    	private String getTimeString(long oldTime) {
+    		String s = new String();
+    		long t = System.currentTimeMillis() - oldTime;
+            long            u;
+            t /= 10;
+            u = t % 100;
+            t /= 100;
+            if (t < 60) {
+                s += t + ".";
+                if (u < 10)
+                    s += "0";
+                s += u + "s";
+            }
+            else if (t < 60*60) {
+                s += (t / 60) + "m";
+                u = t - (t / 60) * 60;
+                if (u < 10)
+                    s += "0";
+                s += u + "s";
+            }
+            else if (t < 24*60*60) {
+                s += (t / (60*60)) + "h";
+                u = (t - (t / (60*60)) * (60*60)) / 60;
+                if (u < 10)
+                    s += "0";
+                s += u + "m";
+            }
+            else {
+                s += (t / (24*60*60)) + "d";
+                u = (t - (t / (24*60*60)) * (24*60*60)) / (60*60);
+                if (u < 10)
+                    s += "0";
+                s += u + "h";
+            }
+            return s;
+    	}
+
+    	public void setPuzzleLine(String puzzleLine) {
+    		this.puzzleLine = puzzleLine;
+        }
+    } //class Formatter
 }

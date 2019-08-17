@@ -65,7 +65,10 @@ public class Solver {
 
     private boolean isUsingAdvanced = false;
 
-
+    public Grid getGrid() {
+    	return this.grid;
+    }
+    
     private class DefaultHintsAccumulator implements HintsAccumulator {
 
         private final List<Hint> result;
@@ -507,17 +510,25 @@ public class Solver {
         	formatter.beforePuzzle(this);
             while (!isSolved()) {
             	formatter.beforeHint(this);
-            	Hint hint = getSingleHint();
+            	Hint hint = null;
+            	try {
+            		hint = getSingleHint();
+	                assert hint instanceof Rule;
+	                Rule rule = (Rule)hint;
+	                double ruleDiff = rule.getDifficulty();
+	                if (ruleDiff > difficulty) {
+	                    difficulty = ruleDiff;
+	                }
+            	}
+                catch (UnsupportedOperationException ex) {
+                    difficulty = pearl = diamond = 0.0;
+                }
                 if (hint == null) {
                     difficulty = 20.0;
                     break;
                 }
-                assert hint instanceof Rule;
-                Rule rule = (Rule)hint;
-                double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
-                    difficulty = ruleDiff;
                 hint.apply(grid);
+                
             	formatter.afterHint(this, hint);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
