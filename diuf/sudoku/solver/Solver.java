@@ -13,6 +13,7 @@ import diuf.sudoku.solver.checks.*;
 import diuf.sudoku.solver.rules.*;
 import diuf.sudoku.solver.rules.chaining.*;
 import diuf.sudoku.solver.rules.unique.*;
+import diuf.sudoku.test.serate;
 import diuf.sudoku.tools.*;
 
 /**
@@ -64,7 +65,10 @@ public class Solver {
 
     private boolean isUsingAdvanced = false;
 
-
+    public Grid getGrid() {
+    	return this.grid;
+    }
+    
     private class DefaultHintsAccumulator implements HintsAccumulator {
 
         private final List<Hint> result;
@@ -476,41 +480,56 @@ public class Solver {
             normalPriority(oldPriority);
         }
     }
+    
+    private Hint getSingleHint() {
+        SingleHintAccumulator accu = new SingleHintAccumulator();
+        try {
+            for (HintProducer producer : directHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : indirectHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : chainingHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : chainingHintProducers2)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : advancedHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : experimentalHintProducers)
+                producer.getHints(grid, accu);
+        } catch (InterruptedException willHappen) {}
+        return accu.getHint();
+    }
 
-    public void getDifficulty() {
+    public void getDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
         try {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
             diamond = 0.0;
+        	formatter.beforePuzzle(this);
             while (!isSolved()) {
-                SingleHintAccumulator accu = new SingleHintAccumulator();
-                try {
-                    for (HintProducer producer : directHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : indirectHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : chainingHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : chainingHintProducers2)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : advancedHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : experimentalHintProducers)
-                        producer.getHints(grid, accu);
-                } catch (InterruptedException willHappen) {}
-                Hint hint = accu.getHint();
+            	formatter.beforeHint(this);
+            	Hint hint = null;
+            	try {
+            		hint = getSingleHint();
+	                assert hint instanceof Rule;
+	                Rule rule = (Rule)hint;
+	                double ruleDiff = rule.getDifficulty();
+	                if (ruleDiff > difficulty) {
+	                    difficulty = ruleDiff;
+	                }
+            	}
+                catch (UnsupportedOperationException ex) {
+                    difficulty = pearl = diamond = 0.0;
+                }
                 if (hint == null) {
                     difficulty = 20.0;
                     break;
                 }
-                assert hint instanceof Rule;
-                Rule rule = (Rule)hint;
-                double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
-                    difficulty = ruleDiff;
                 hint.apply(grid);
+                
+            	formatter.afterHint(this, hint);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
                         diamond = difficulty;
@@ -527,6 +546,7 @@ public class Solver {
                     break;
                 }
             }
+        	formatter.afterPuzzle(this);
         } finally {
             backup.copyTo(grid);
         }

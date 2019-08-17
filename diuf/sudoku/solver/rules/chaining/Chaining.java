@@ -274,6 +274,7 @@ public class Chaining implements IndirectHintProducer {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         //boolean noParallel = true; //debug, hide the class member noParallel
         //boolean noParallel = false;
+        boolean noParallel = this.noParallel || Settings.getInstance().getNumThreads() == 1;
         List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
         for (int y = 0; y < 9; y++) {

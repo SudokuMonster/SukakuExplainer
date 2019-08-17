@@ -598,6 +598,144 @@ public class Grid {
         }
         return result.toString();
     }
+    
+    /**
+     * Get a single-line string representation of this grid.
+     */
+    public String toString81() {
+        StringBuilder result = new StringBuilder(88);
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                int value = getCellValue(x, y);
+                if (value == 0)
+                    result.append('.');
+                else
+                    result.append(value);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Get a pencilmark-string representation of this grid.
+     */
+    public String toStringPencilmarks() {
+        StringBuilder result = new StringBuilder();
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                BitSet values = cells[x][y].getPotentialValues();
+                for (int v = 1; v < 10; v++) {
+                if (values.get(v))
+                    result.append(v);
+                else
+                    result.append('.');
+                }
+            }
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Get a multi-line pencilmark-string representation of this grid.
+     */
+    public String toStringMultilinePencilmarks() {
+    	String res = "";
+        String s = "";
+
+        int crd = 1;
+        for (int i = 0; i < 81; i++) {
+            int n = getCell(i % 9, i / 9).getPotentialValues().cardinality();
+            if ( n > crd ) { crd = n; }
+        }
+        if ( crd > 1 )
+        {
+            for (int i=0; i<3; i++ ) {
+                s = "+";
+                for (int j=0; j<3; j++ ) {
+                    for (int k=0; k<3; k++ ) { s += "-";
+                        for (int l=0; l<crd; l++ ) { s += "-";
+                        }
+                    }
+                    s += "-+";
+                }
+                res += s + System.lineSeparator();
+                for (int j=0; j<3; j++ ) {
+                    s = "|";
+                    for (int k=0; k<3; k++ ) {
+                        for (int l=0; l<3; l++ ) {
+                            s += " ";
+                            int cnt = 0;
+                            int c = ((((i*3)+j)*3)+k)*3+l;
+                            Cell cell = getCell(c % 9, c / 9);
+                            int n = cell.getValue();
+                            if ( n != 0 ) {
+                                s += n;
+                                cnt += 1;
+                            }
+                            if ( n == 0 ) {
+                                for (int pv=1; pv<=9; pv++ ) {
+                                    if ( cell.hasPotentialValue( pv) ) {
+                                        s += pv;
+                                        cnt += 1;
+                                    }
+                                }
+                            }
+                            for (int pad=cnt; pad<crd; pad++ ) { s += " ";
+                            }
+                        }
+                        s += " |";
+                    }
+                    res += s + System.lineSeparator();
+                }
+            }
+            s = "+";
+            for (int j=0; j<3; j++ ) {
+                for (int k=0; k<3; k++ ) { s += "-";
+                    for (int l=0; l<crd; l++ ) { s += "-";
+                    }
+                }
+                s += "-+";
+            }
+            res += s;
+        }
+        return res;
+    }
+   
+    /**
+     * rebuilds grid from a string of either 81 givens or 729 pencilmarks
+     * @param string a string with 0 or '.' for non-givens and positional mapping to cells/pencilmarks
+     */
+    public void fromString(String string) {
+    	int len = string.length();
+    	if(len < 81) return; //ignore
+    	
+    	//always perform cleanup
+        for (int i = 0; i < 81; i++) {
+            setCellValue(i % 9, i / 9, 0);
+        }
+        
+    	if(len < 729) { //vanilla clues
+            for (int i = 0; i < 81; i++) {
+                char ch = string.charAt(i);
+                if (ch >= '1' && ch <= '9') {
+                    int value = (ch - '0');
+                    setCellValue(i % 9, i / 9, value);
+                }
+            }
+    	}
+    	else { //pencilmarks
+            for (int i = 0; i < 729; i++) {
+                int cl = i / 9;  // cell
+                char ch = string.charAt(i);
+                if (ch >= '1' && ch <= '9') {
+                    int value = (ch - '0');
+                    assert value == 1 + i % 9; //exact positional mapping
+                    Cell cell = getCell(cl % 9, cl / 9);
+                    cell.addPotentialValue(value);
+                }
+            }
+    	}
+    }
 
     /**
      * Compare two grids for equality. Comparison is based on the values

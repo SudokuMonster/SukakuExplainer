@@ -26,7 +26,8 @@ public class Settings {
     private String lookAndFeelClassName = null;
 
     private EnumSet<SolvingTechnique> techniques;
-
+    
+    private int numThreads = 1;
 
     private Settings() {
         init();
@@ -113,7 +114,15 @@ public class Settings {
         return true;
     }
 
-//  Load / Save
+    public void setNumThreads(int numThreads) {
+        this.numThreads = numThreads;
+    }
+    
+    public int getNumThreads() {
+        return this.numThreads;
+    }
+
+    //  Load / Save
 
     private void init() {
         techniques = EnumSet.allOf(SolvingTechnique.class);
