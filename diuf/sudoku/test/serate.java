@@ -14,8 +14,8 @@ import diuf.sudoku.solver.*;
 
 public class serate {
     static String FORMAT = "%r/%p/%d";
-    static String RELEASE = "2019-08-16";
-    static String VERSION = "1.2.1.6";
+    static String RELEASE = "2019-08-17";
+    static String VERSION = "1.2.1.7";
     static Formatter formatter;
     static void help(int html) {
         if (html != 0) {
@@ -112,6 +112,15 @@ public class serate {
         }
         System.exit(2);
     }
+    /*
+     * An example command line that demonstrates almost all of the formatting options:
+    java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
+    --format="--format%l%%d: %d%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%r: %r%l--- end of final section ---" \
+    --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
+    --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
+    --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
+    --input=my_input.txt --output=- --threads=0 > my_output.txt
+    */
 
     static void usage(String option, int argument) {
         System.err.println("serate: " + option + ((argument == 1) ? ": option argument expected" : ": unknown option"));
@@ -373,7 +382,7 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += '%' + f; //literal
+                            s += f; //literal
                             break;
                     }
                 }
@@ -428,7 +437,7 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += '%' + f; //literal
+                            s += f; //literal
                             break;
                     }
                 }
@@ -454,6 +463,7 @@ public class serate {
                     switch (f = formatStart.charAt(i)) { //format specifier
 	                    case 'M':
 	                        s += solver.getGrid().toStringMultilinePencilmarks();
+                            break;
                         case 'g':
                             s += puzzleLine;
                             break;
@@ -463,6 +473,9 @@ public class serate {
                         case 'l':
                             s += System.lineSeparator();
                             break;
+                        case 'm':
+                            s += solver.getGrid().toStringPencilmarks();
+                            break;
                         case 'n':
                             s += ordinal;
                             break;
@@ -470,7 +483,7 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += '%' + f; //literal
+                            s += f; //literal
                             break;
                     }
                 }
@@ -519,7 +532,7 @@ public class serate {
                             s += '\t';
                             break;
                         default:
-                            s += '%' + f; //literal
+                            s += f; //literal
                             break;
                     }
                 }
