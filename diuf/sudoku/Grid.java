@@ -696,7 +696,7 @@ public class Grid {
                 }
                 s += "-+";
             }
-            res += s + System.lineSeparator();
+            res += s;
         }
         return res;
     }

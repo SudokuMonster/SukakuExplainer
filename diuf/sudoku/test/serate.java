@@ -31,8 +31,8 @@ public class serate {
         System.err.println("  serate - Sudoku Explainer command line rating");
         System.err.println("");
         System.err.println("SYNOPSIS");
-        System.err.println("  serate [ --diamond ] [ --after=FORMAT ] [ --before=FORMAT ] [ --format=FORMAT ]");
-        System.err.println("    [ --input=FILE ] [ --output=FILE ] [ --pearl ] [ --threads=N ] [ puzzle ... ]");
+        System.err.println("  serate [--diamond] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
+        System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]");
         System.err.println("");
         System.err.println("DESCRIPTION");
         System.err.println("  serate is a Sudoku Explainer command line entry point that rates one or more");
@@ -41,7 +41,7 @@ public class serate {
         System.err.println("  not specified the puzzles are read from the standard input.  If an --output=FILE");
         System.err.println("  option is specified then the output is written to that file, otherwise output");
         System.err.println("  is written to the standard output.  The output is controlled by the");
-        System.err.println("  --format=FORMAT option (F) as well as --before (B) and --after (A) options.");
+        System.err.println("  --format=FORMAT option (F) as well as --start (S), --before (B), and --after (A) options.");
         System.err.println("");
         System.err.println("  Ratings are floating point numbers in the range 0.0 - 20.0, rounded to the");
         System.err.println("  tenths digit.  0.0 indicates a processing error and 20.0 indicates an valid");
@@ -61,19 +61,19 @@ public class serate {
         System.err.println("        %d  The diamond rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first candidate elimination. (F)");
         System.err.println("        %e  The elapsed time to rate the puzzle. (AF)");
-        System.err.println("        %f  The tab character. (BAF)");
         System.err.println("        %h  The long step description in multi-line HTML format. (A)");
-        System.err.println("        %g  The input puzzle line. (BAF)");
-        System.err.println("        %i  The puzzle grid in 81-character [0-9] form. (BAF)");
-        System.err.println("        %l  The new line. (BAF)");
-        System.err.println("        %m  The input puzzle pencilmarks in 729-char format. (BA)");
-        System.err.println("        %M  The input puzzle pencilmarks in multi-line format. (BA)");
-        System.err.println("        %n  The input puzzle ordinal, counting from 1. (F)");
+        System.err.println("        %g  The input puzzle line. (SBAF)");
+        System.err.println("        %i  The puzzle grid in 81-character [0-9] form. (SBAF)");
+        System.err.println("        %l  The new line. (SBAF)");
+        System.err.println("        %m  The input puzzle pencilmarks in 729-char format. (SBA)");
+        System.err.println("        %M  The input puzzle pencilmarks in multi-line format. (SBA)");
+        System.err.println("        %n  The input puzzle ordinal, counting from 1. (SF)");
         System.err.println("        %p  The pearl rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first cell placement. (F)");
         System.err.println("        %r  The puzzle rating.  This is the highest ER of the methods leading");
-        System.err.println("            to the puzzle solution. (F)");
+        System.err.println("            to the puzzle solution. (AF)");
         System.err.println("        %s  The short step description. (A)");
+        System.err.println("        %t  The tab character. (SBAF)");
         System.err.println("        %%  The % character.");
         System.err.println("  -h, --html");
         System.err.println("      List detailed info in html.");
@@ -87,6 +87,8 @@ public class serate {
         System.err.println("      Write output to FILE instead of the standard output.");
         System.err.println("  -p, --pearl");
         System.err.println("      Terminate rating if the puzzle is not a pearl.");
+        System.err.println("  -s, --start=FORMAT");
+        System.err.println("      Format the output before each puzzle according to FORMAT. Default is empty.");
         System.err.println("  -t, --threads");
         System.err.println("      Maximal degree of parrallelism. Default 0=auto. 1=no parallelism; -1=unlimited");
         System.err.println("  -V, --version");
@@ -110,9 +112,11 @@ public class serate {
         }
         System.exit(2);
     }
+
     static void usage(String option, int argument) {
         System.err.println("serate: " + option + ((argument == 1) ? ": option argument expected" : ": unknown option"));
-        System.err.println("Usage: serate [ --diamond ] [ --format=FORMAT ] [ --input=FILE ] [ --output=FILE ] [ --pearl ]");
+        System.err.println("Usage: serate [--diamond] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
+        System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]");
         System.exit(2);
     }
     /**
@@ -121,6 +125,7 @@ public class serate {
      */
     public static void main(String[] args) {
         String          format = FORMAT;
+        String          formatStart = "";
         String          formatAfter = "";
         String          formatBefore = "";
         String          input = null;
@@ -173,6 +178,8 @@ public class serate {
                         c = 'a';
                     else if (s.equals("before"))
                         c = 'b';
+                    else if (s.equals("start"))
+                        c = 's';
                     else if (s.equals("threads"))
                         c = 't';
                     else
@@ -188,6 +195,7 @@ public class serate {
                 switch (c) {
                 case 'a':
                 case 'b':
+                case 's':
                 case 't':
                 case 'f':
                 case 'i':
@@ -202,6 +210,9 @@ public class serate {
                     break;
                 case 'b':
                     formatBefore = v;
+                    break;
+                case 's':
+                    formatStart = v;
                     break;
                 case 'd':
                 case 'p':
@@ -258,7 +269,7 @@ public class serate {
                 BufferedWriter writer1 = new BufferedWriter(writer0);
                 writer = new PrintWriter(writer1);
             }
-            formatter.init(writer, formatAfter, formatBefore, format);
+            formatter = new Formatter(writer, formatStart, formatAfter, formatBefore, format);
             //loop over input puzzles
             for (;;) {
                 if (reader != null) {
@@ -309,8 +320,9 @@ public class serate {
         }
     } //main
     
-    public class Formatter {
-    	PrintWriter writer;
+    public static class Formatter {
+    	private PrintWriter writer;
+        private String formatStart; //before each puzzle
         private String formatAfter; //after each step
         private String formatBefore; //before each step
         private String formatFinal; //after each puzzle
@@ -321,8 +333,9 @@ public class serate {
         
         private int ordinal;
         
-    	public void init(PrintWriter writer, String formatAfter, String formatBefore, String formatFinal) {
+    	public Formatter(PrintWriter writer, String formatStart, String formatAfter, String formatBefore, String formatFinal) {
     		this.writer = writer;
+    		this.formatStart = formatStart;
     		this.formatAfter = formatAfter;
     		this.formatBefore = formatBefore;
     		this.formatFinal = formatFinal;
@@ -340,7 +353,7 @@ public class serate {
                     s += f;
                 }
                 else {
-                    switch (formatBefore.charAt(i)) { //format specifier
+                    switch (f = formatBefore.charAt(i)) { //format specifier
                         case 'M':
                             s += solver.getGrid().toStringMultilinePencilmarks();
                             break;
@@ -356,14 +369,11 @@ public class serate {
                         case 'm':
                             s += solver.getGrid().toStringPencilmarks();
                             break;
-                        case 'r':
-                            s += ratingToString(solver.difficulty);
-                            break;
                         case 't':
                             s += '\t';
                             break;
                         default:
-                            s += f; //literal
+                            s += '%' + f; //literal
                             break;
                     }
                 }
@@ -428,9 +438,45 @@ public class serate {
     	public void beforePuzzle(Solver solver) {
     		puzzleBeginTime = System.currentTimeMillis();
     		ordinal++;
+    		
+    		if(formatStart.isEmpty()) return;
+    		String s = new String();
+            for (int i = 0; i < formatStart.length(); i++) { //parse format
+                char    f = formatStart.charAt(i);
+                if (f != '%' || ++i >= formatStart.length()) { //literal
+                    s += f;
+                }
+                else {
+                    switch (formatStart.charAt(i)) { //format specifier
+	                    case 'M':
+	                        s += solver.getGrid().toStringMultilinePencilmarks();
+                        case 'g':
+                            s += puzzleLine;
+                            break;
+                        case 'i':
+                            s += solver.getGrid().toString81();
+                            break;
+                        case 'l':
+                            s += System.lineSeparator();
+                            break;
+                        case 'n':
+                            s += ordinal;
+                            break;
+                        case 't':
+                            s += '\t';
+                            break;
+                        default:
+                            s += f; //literal
+                            break;
+                    }
+                }
+            } //parse format
+            writer.println(s);
+            writer.flush();
         }
     	
     	public void afterPuzzle(Solver solver) {
+    		if(formatFinal.isEmpty()) return;
     		String s = new String();
             for (int i = 0; i < formatFinal.length(); i++) { //parse format
                 char    f = formatFinal.charAt(i);
