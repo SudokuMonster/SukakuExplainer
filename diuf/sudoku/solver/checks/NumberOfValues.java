@@ -29,6 +29,8 @@ public class NumberOfValues implements WarningHintProducer {
                     values.set(value);
             }
         }
+//The following was disabled to allow Sukaku puzzles into GUI
+/**
         if (values.cardinality() < 8) {
             String missingValues = "";
             for (int v = 1; v <= 9; v++) {
@@ -43,6 +45,7 @@ public class NumberOfValues implements WarningHintProducer {
                     "TooFewValues.html", missingValues);
             accu.add(message);
         }
+*/
     }
 
     @Override
