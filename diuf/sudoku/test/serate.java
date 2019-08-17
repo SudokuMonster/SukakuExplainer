@@ -16,6 +16,7 @@ public class serate {
     static String FORMAT = "%r/%p/%d";
     static String RELEASE = "2019-08-16";
     static String VERSION = "1.2.1.6";
+    static Formatter formatter;
     static void help(int html) {
         if (html != 0) {
             System.err.println("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">");
@@ -46,6 +47,10 @@ public class serate {
         System.err.println("  but otherwise unsolvable input puzzle.");
         System.err.println("");
         System.err.println("OPTIONS");
+        System.err.println("  -a, --after=FORMAT");
+        System.err.println("      Format the output after each step according to FORMAT. Default is empty.");
+        System.err.println("  -b, --before=FORMAT");
+        System.err.println("      Format the output before each step according to FORMAT. Default is empty.");
         System.err.println("  -d, --diamond");
         System.err.println("      Terminate rating if the puzzle is not a diamond.");
         System.err.println("  -f, --format=FORMAT");
@@ -55,12 +60,16 @@ public class serate {
         System.err.println("        %d  The diamond rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first candidate elimination.");
         System.err.println("        %e  The elapsed time to rate the puzzle.");
+        System.err.println("        %h  The step description in multi-line HTML format.");
         System.err.println("        %g  The puzzle grid in 81-character [0-9] form.");
+        System.err.println("        %m  The input puzzle pencilmarks in 729-char format.");
+        System.err.println("        %M  The input puzzle pencilmarks in multi-line format.");
         System.err.println("        %n  The input puzzle ordinal, counting from 1.");
         System.err.println("        %p  The pearl rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first cell placement.");
         System.err.println("        %r  The puzzle rating.  This is the highest ER of the methods leading");
         System.err.println("            to the puzzle solution.");
+        System.err.println("        %s  The solution grid in 81-character {.,[1-9]} form.");
         System.err.println("        %%  The % character.");
         System.err.println("  -h, --html");
         System.err.println("      List detailed info in html.");
@@ -74,6 +83,8 @@ public class serate {
         System.err.println("      Write output to FILE instead of the standard output.");
         System.err.println("  -p, --pearl");
         System.err.println("      Terminate rating if the puzzle is not a pearl.");
+        System.err.println("  -t, --threads");
+        System.err.println("      Maximal degree of parrallelism. Default 0=auto; 1=no parallelism");
         System.err.println("  -V, --version");
         System.err.println("      Print the Sudoku Explainer (serate) version and exit.");
         System.err.println("");
@@ -231,8 +242,7 @@ public class serate {
                     break;
                 if (puzzle.length() >= 81) {
                     Grid grid = new Grid();
-                if (puzzle.length() >= 729)
-                {
+                if (puzzle.length() >= 729) {
                     for (int i = 0; i < 81; i++) {
                         grid.setCellValue(i % 9, i / 9, 0);
                     }
@@ -247,8 +257,7 @@ public class serate {
                         }
                     }
                 }
-                else
-                {
+                else {
                     for (int i = 0; i < 81; i++) {
                         char ch = puzzle.charAt(i);
                         if (ch >= '1' && ch <= '9') {
@@ -257,17 +266,17 @@ public class serate {
                         }
                     }
                 }
-                    t = System.currentTimeMillis();
-                    Solver solver = new Solver(grid);
-                    solver.want = want;
-                if (puzzle.length() >= 81 && puzzle.length() < 729)
-                {
+                t = System.currentTimeMillis();
+                Solver solver = new Solver(grid);
+                solver.want = want;
+                if (puzzle.length() >= 81 && puzzle.length() < 729) {
                     solver.rebuildPotentialValues();
                 }
                     ordinal++;
                     try {
-                        solver.getDifficulty();
-                    } catch (UnsupportedOperationException ex) {
+                        solver.getDifficulty(formatter);
+                    }
+                    catch (UnsupportedOperationException ex) {
                         solver.difficulty = solver.pearl = solver.diamond = 0.0;
                     }
                     t = System.currentTimeMillis() - t;
@@ -346,19 +355,33 @@ public class serate {
                     writer.flush();
                 }
             }
-        } catch(FileNotFoundException ex) {
+        }
+        catch(FileNotFoundException ex) {
             ex.printStackTrace();
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
+        }
+        finally {
             try {
                 if (reader != null)
                     reader.close();
                 if (writer != null)
                     writer.close();
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+    } //main
+    public class Formatter {
+    	public Formatter() {}
+        public void BeforeHint(Solver solver) {
+        	
+        }
+        public void AfterHint(Solver solver, Hint hint) {
+        	
+        }
+    	
     }
 }

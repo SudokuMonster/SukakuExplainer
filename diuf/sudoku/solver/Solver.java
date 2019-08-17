@@ -13,6 +13,7 @@ import diuf.sudoku.solver.checks.*;
 import diuf.sudoku.solver.rules.*;
 import diuf.sudoku.solver.rules.chaining.*;
 import diuf.sudoku.solver.rules.unique.*;
+import diuf.sudoku.test.serate;
 import diuf.sudoku.tools.*;
 
 /**
@@ -476,8 +477,27 @@ public class Solver {
             normalPriority(oldPriority);
         }
     }
+    
+    private Hint getSingleHint() {
+        SingleHintAccumulator accu = new SingleHintAccumulator();
+        try {
+            for (HintProducer producer : directHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : indirectHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : chainingHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : chainingHintProducers2)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : advancedHintProducers)
+                producer.getHints(grid, accu);
+            for (IndirectHintProducer producer : experimentalHintProducers)
+                producer.getHints(grid, accu);
+        } catch (InterruptedException willHappen) {}
+        return accu.getHint();
+    }
 
-    public void getDifficulty() {
+    public void getDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
         try {
@@ -485,22 +505,8 @@ public class Solver {
             pearl = 0.0;
             diamond = 0.0;
             while (!isSolved()) {
-                SingleHintAccumulator accu = new SingleHintAccumulator();
-                try {
-                    for (HintProducer producer : directHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : indirectHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : chainingHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : chainingHintProducers2)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : advancedHintProducers)
-                        producer.getHints(grid, accu);
-                    for (IndirectHintProducer producer : experimentalHintProducers)
-                        producer.getHints(grid, accu);
-                } catch (InterruptedException willHappen) {}
-                Hint hint = accu.getHint();
+            	formatter.BeforeHint(this);
+            	Hint hint = getSingleHint();
                 if (hint == null) {
                     difficulty = 20.0;
                     break;
@@ -511,6 +517,7 @@ public class Solver {
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
                 hint.apply(grid);
+            	formatter.AfterHint(this, hint);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
                         diamond = difficulty;
