@@ -504,8 +504,9 @@ public class Solver {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
             diamond = 0.0;
+        	formatter.beforePuzzle(this);
             while (!isSolved()) {
-            	formatter.BeforeHint(this);
+            	formatter.beforeHint(this);
             	Hint hint = getSingleHint();
                 if (hint == null) {
                     difficulty = 20.0;
@@ -517,7 +518,7 @@ public class Solver {
                 if (ruleDiff > difficulty)
                     difficulty = ruleDiff;
                 hint.apply(grid);
-            	formatter.AfterHint(this, hint);
+            	formatter.afterHint(this, hint);
                 if (pearl == 0.0) {
                     if (diamond == 0.0)
                         diamond = difficulty;
@@ -534,6 +535,7 @@ public class Solver {
                     break;
                 }
             }
+        	formatter.afterPuzzle(this);
         } finally {
             backup.copyTo(grid);
         }

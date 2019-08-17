@@ -61,7 +61,8 @@ public class serate {
         System.err.println("            to the first candidate elimination.");
         System.err.println("        %e  The elapsed time to rate the puzzle.");
         System.err.println("        %h  The step description in multi-line HTML format.");
-        System.err.println("        %g  The puzzle grid in 81-character [0-9] form.");
+        System.err.println("        %g  The input puzzle line.");
+        System.err.println("        %i  The puzzle grid in 81-character [0-9] form.");
         System.err.println("        %m  The input puzzle pencilmarks in 729-char format.");
         System.err.println("        %M  The input puzzle pencilmarks in multi-line format.");
         System.err.println("        %n  The input puzzle ordinal, counting from 1.");
@@ -117,6 +118,8 @@ public class serate {
      */
     public static void main(String[] args) {
         String          format = FORMAT;
+        String          formatAfter = "";
+        String          formatBefore = "";
         String          input = null;
         String          output = "-";
         String          a;
@@ -126,6 +129,7 @@ public class serate {
         BufferedReader  reader = null;
         PrintWriter     writer = null;
         int             ordinal = 0;
+        int             numThreads = 1;
         char            want = 0;
         int             arg;
         long            t;
@@ -163,6 +167,12 @@ public class serate {
                         c = 'p';
                     else if (s.equals("version"))
                         c = 'V';
+                    else if (s.equals("after"))
+                        c = 'a';
+                    else if (s.equals("before"))
+                        c = 'b';
+                    else if (s.equals("threads"))
+                        c = 't';
                     else
                         c = '?';
                 }
@@ -174,6 +184,9 @@ public class serate {
                         v = args[arg];
                 }
                 switch (c) {
+                case 'a':
+                case 'b':
+                case 't':
                 case 'f':
                 case 'i':
                 case 'o':
@@ -182,6 +195,12 @@ public class serate {
                     break;
                 }
                 switch (c) {
+                case 'a':
+                    formatAfter = v;
+                    break;
+                case 'b':
+                    formatBefore = v;
+                    break;
                 case 'd':
                 case 'p':
                     want = c;
@@ -201,6 +220,9 @@ public class serate {
                 case 'o':
                     output = v;
                     break;
+                case 't':
+                	numThreads = Integer.parseUnsignedInt(v);
+                    break;
                 case 'V':
                     System.out.println(VERSION);
                     System.exit(0);
@@ -210,6 +232,9 @@ public class serate {
                     break;
                 }
             }
+            //options were parsed
+            Settings.getInstance().setNumThreads(numThreads); // make it accessible at runtime from everywhere
+            formatter.init(formatAfter, formatBefore, format);
             if (input != null) {
                 if (input.equals("-")) {
                     InputStreamReader reader0 = new InputStreamReader(System.in);
@@ -362,6 +387,9 @@ public class serate {
         catch (IOException ex) {
             ex.printStackTrace();
         }
+        catch (NumberFormatException ex) { // --threads
+            ex.printStackTrace();
+        }
         finally {
             try {
                 if (reader != null)
@@ -375,11 +403,33 @@ public class serate {
         }
     } //main
     public class Formatter {
-    	public Formatter() {}
-        public void BeforeHint(Solver solver) {
+        private String formatAfter; //after each step
+        private String formatBefore; //before each step
+        private String formatFinal; //after each puzzle
+        
+        private long stepBeginTime;
+        private long puzzleBeginTime;
+        
+    	public void init(String formatAfter, String formatBefore, String formatFinal) {
+    		this.formatAfter = formatAfter;
+    		this.formatBefore = formatBefore;
+    		this.formatFinal = formatFinal;
+    	}
+
+    	public void beforeHint(Solver solver) {
+        	stepBeginTime = System.currentTimeMillis();
+        }
+ 
+    	public void afterHint(Solver solver, Hint hint) {
         	
         }
-        public void AfterHint(Solver solver, Hint hint) {
+
+    	public void beforePuzzle(Solver solver) {
+    		puzzleBeginTime = System.currentTimeMillis();
+        	
+        }
+
+    	public void afterPuzzle(Solver solver) {
         	
         }
     	
