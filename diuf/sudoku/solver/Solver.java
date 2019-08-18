@@ -513,12 +513,14 @@ public class Solver {
             	Hint hint = null;
             	try {
             		hint = getSingleHint();
-	                assert hint instanceof Rule;
-	                Rule rule = (Rule)hint;
-	                double ruleDiff = rule.getDifficulty();
-	                if (ruleDiff > difficulty) {
-	                    difficulty = ruleDiff;
-	                }
+            		if(hint != null) {
+		                assert hint instanceof Rule;
+		                Rule rule = (Rule)hint;
+		                double ruleDiff = rule.getDifficulty();
+		                if (ruleDiff > difficulty) {
+		                    difficulty = ruleDiff;
+		                }
+            		}
             	}
                 catch (UnsupportedOperationException ex) {
                     difficulty = pearl = diamond = 0.0;

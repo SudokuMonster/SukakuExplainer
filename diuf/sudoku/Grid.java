@@ -748,6 +748,37 @@ public class Grid {
             }
     	}
     }
+    
+    /**
+     * Clears potentialValues for cells with value set.
+     * First pass sets value for cells having single potential value w/o applying
+     * further direct eliminations. Clears potentials of the cells with newly set values.
+     * Second pass does direct eliminations.
+     */
+    public void adjustPencilmarks() {
+    	//first pass: apply Naked Single
+    	List<Cell> forEliminations = new ArrayList<Cell>();
+    	for(int x = 0; x < 9; x++) {
+    		for(int y = 0; y < 9; y++) {
+    			Cell cell = cells[x][y];
+    			if(cell.getValue() != 0) {
+    				cell.clearPotentialValues();
+    			}
+    			else {
+    				BitSet values = cell.getPotentialValues();
+    				if(values.cardinality() == 1) {
+    					cell.setValue(values.nextSetBit(0));
+    					cell.clearPotentialValues();
+    					forEliminations.add(cell);
+    				}
+    			}
+    		}
+    	}
+    	//second pass: apply direct eliminations
+    	for(Cell cell : forEliminations) {
+    		cell.setValueAndCancel(cell.getValue(), this);
+    	}
+    }
 
     /**
      * Compare two grids for equality. Comparison is based on the values

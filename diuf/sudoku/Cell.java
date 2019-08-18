@@ -23,7 +23,7 @@ public class Cell {
     private final int x;
     private final int y;
     private int value = 0;
-    private BitSet potentialValues = new BitSet(10);
+    private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
 
 
     /**
@@ -111,7 +111,7 @@ public class Cell {
      * bit number 1 to 9 is set if the corresponding
      * value is a potential value for this cell. Bit number
      * <tt>0</tt> is not used and ignored.
-     * @return the potential values for this cell
+     * @return the potential values for unresolved cell, empty for resolved
      */
     public BitSet getPotentialValues() {
         return this.potentialValues;
