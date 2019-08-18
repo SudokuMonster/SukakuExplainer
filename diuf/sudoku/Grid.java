@@ -623,13 +623,25 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                BitSet values = cells[x][y].getPotentialValues();
-                for (int v = 1; v < 10; v++) {
-                if (values.get(v))
-                    result.append(v);
-                else
-                    result.append('.');
-                }
+            	Cell cell = cells[x][y];
+            	int value = cell.getValue();
+            	if(value == 0) {
+	                BitSet values = cell.getPotentialValues();
+	                for (int v = 1; v < 10; v++) {
+		                if (values.get(v))
+		                    result.append(v);
+		                else
+		                    result.append('.');
+	                }
+            	}
+            	else {
+	                for (int v = 1; v < 10; v++) {
+		                if (v == value)
+		                    result.append(v);
+		                else
+		                    result.append('.');
+	                }
+            	}
             }
         }
         return result.toString();
