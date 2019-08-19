@@ -135,7 +135,7 @@ public class pencilmarks {
                             }
                             if ( isnakedsingle ) {
                                 cell.setValue(singleclue);
-                                cell.getPotentialValues().clear();
+                                cell.clearPotentialValues();
                             }
                         }
                     }               
