@@ -136,7 +136,7 @@ public class hints {
                             }
                             if ( isnakedsingle ) {
                                 cell.setValue(singleclue);
-                                cell.getPotentialValues().clear();
+                                cell.clearPotentialValues();
                             }
                         }
                     }               
