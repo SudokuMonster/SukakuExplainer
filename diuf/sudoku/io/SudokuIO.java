@@ -139,7 +139,7 @@ public class SudokuIO {
                         }
                         if ( isnakedsingle ) {
                             cell.setValue(singleclue);
-                            cell.getPotentialValues().clear();
+                            cell.clearPotentialValues();
                         }
                     }
                 }               
