@@ -20,6 +20,11 @@ import java.util.*;
 public class Grid {
 
     /*
+     * Cell values of the grid [0 .. 9].
+     */
+    private int[] cellValues = new int[81];
+    
+    /*
      * Cells of the grid. First array index is the vertical index (from top
      * to bottom), and second index is horizontal index (from left to right).
      */
@@ -121,8 +126,20 @@ public class Grid {
      * @param y the vertical coordinate of the cell
      * @param value the value to set the cell to. Use 0 to clear the cell.
      */
+//    public void setCellValue(int x, int y, int value) {
+//        this.cells[y][x].setValue(value);
+//    }
     public void setCellValue(int x, int y, int value) {
-        this.cells[y][x].setValue(value);
+    	cellValues[y * 9 + x] = value;
+    }
+
+    /**
+     * Set the value of a cell
+     * @param index the cell index [0..80]
+     * @param value the value to set the cell to. Use 0 to clear the cell.
+     */
+    public void setCellValue(int index, int value) {
+        cellValues[index] = value;
     }
 
     /**
@@ -131,8 +148,11 @@ public class Grid {
      * @param y the vertical coordinate of the cell
      * @return the value of the cell, or 0 if the cell is empty
      */
+//    public int getCellValue(int x, int y) {
+//        return this.cells[y][x].getValue();
+//    }
     public int getCellValue(int x, int y) {
-        return this.cells[y][x].getValue();
+        return cellValues[9 * y + x];
     }
 
     /**
@@ -322,15 +342,29 @@ public class Grid {
             return !commonCells(other).isEmpty();
         }
 
+//        /**
+//         * Get the number of cells of this region that are still empty.
+//         * @return the number of cells of this region that are still empty
+//         */
+//        public int getEmptyCellCount() {
+//            int result = 0;
+//            for (int i = 0; i < 9; i++)
+//                if (getCell(i).isEmpty())
+//                    result++;
+//            return result;
+//        }
+
         /**
          * Get the number of cells of this region that are still empty.
          * @return the number of cells of this region that are still empty
          */
-        public int getEmptyCellCount() {
+        public int getEmptyCellCount(Grid grid) {
             int result = 0;
-            for (int i = 0; i < 9; i++)
-                if (getCell(i).isEmpty())
+            for (int i = 0; i < 9; i++) {
+            	Cell cell = getCell(i);
+                if (grid.getCellValue(cell.getX(), cell.getY()) == 0)
                     result++;
+            }
             return result;
         }
 
@@ -573,12 +607,22 @@ public class Grid {
      * are copied.
      * @param other the grid to copy this grid to
      */
+//    public void copyTo(Grid other) {
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                this.cells[y][x].copyTo(other.cells[y][x]);
+//            }
+//        }
+//    }
     public void copyTo(Grid other) {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                this.cells[y][x].copyTo(other.cells[y][x]);
-            }
+        for (int i = 0; i < 81; i++) {
+            other.setCellValue(i, this.cellValues[i]);
         }
+		for (int y = 0; y < 9; y++) {
+			for (int x = 0; x < 9; x++) {
+				this.cells[y][x].copyTo(other.cells[y][x]);
+			}
+		}
     }
 
     /**
@@ -787,7 +831,8 @@ public class Grid {
                     }
                 }
                 if ( isnakedsingle ) {
-                    cell.setValue(singleclue);
+                    //cell.setValue(singleclue);
+                	setCellValue(i, singleclue);
                     cell.clearPotentialValues();
                 }
             }

@@ -55,31 +55,31 @@ public class Cell {
         return this.y;
     }
 
-    /**
-     * Get the value of this cell. Returns <tt>0</tt>
-     * if this cell is still empty.
-     * @return the value of this cell.
-     */
-    public int getValue() {
-        return value;
-    }
+//    /**
+//     * Get the value of this cell. Returns <tt>0</tt>
+//     * if this cell is still empty.
+//     * @return the value of this cell.
+//     */
+//    public int getValue() {
+//        return value;
+//    }
 
-    /**
-     * Get whether this cell is empty
-     * @return whether this cell is empty
-     */
-    public boolean isEmpty() {
-        return (value == 0);
-    }
+//    /**
+//     * Get whether this cell is empty
+//     * @return whether this cell is empty
+//     */
+//    public boolean isEmpty() {
+//        return (value == 0);
+//    }
 
-    /**
-     * Set the value of this cell.
-     * @param value the value of this cell. Use <tt>0</tt> to
-     * clear it.
-     */
-    public void setValue(int value) {
-        this.value = value;
-    }
+//    /**
+//     * Set the value of this cell.
+//     * @param value the value of this cell. Use <tt>0</tt> to
+//     * clear it.
+//     */
+//    public void setValue(int value) {
+//        this.value = value;
+//    }
 
     /**
      * Set the value of this cell, and remove that value
@@ -92,7 +92,8 @@ public class Cell {
      */
     public void setValueAndCancel(int value, Grid targetGrid) {
         assert value != 0;
-        this.value = value;
+        //this.value = value;
+        targetGrid.setCellValue(this.x, this.y, value);
         this.potentialValues.clear();
         for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
             Grid.Region region = targetGrid.getRegionAt(regionType, this.x, this.y);
@@ -265,7 +266,7 @@ public class Cell {
      */
     public void copyTo(Cell other) {
         assert this.x == other.x && this.y == other.y;
-        other.value = this.value;
+        //other.value = this.value;
         other.potentialValues = (BitSet)this.potentialValues.clone();
     }
 

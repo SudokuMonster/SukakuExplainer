@@ -40,7 +40,7 @@ public class NakedSet implements IndirectHintProducer {
         Grid.Region[] regions = grid.getRegions(regionType);
         // Iterate on parts
         for (Grid.Region region : regions) {
-            if (region.getEmptyCellCount() >= degree * 2) {
+            if (region.getEmptyCellCount(grid) >= degree * 2) {
                 Permutations perm = new Permutations(degree, 9);
                 // Iterate on tuples of positions
                 while (perm.hasNext()) {

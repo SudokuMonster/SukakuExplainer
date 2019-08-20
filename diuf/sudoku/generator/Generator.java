@@ -105,10 +105,11 @@ public class Generator {
                 // Remove cells
                 boolean cellRemoved = false;
                 for (Point p : points) {
-                    Cell cell = grid.getCell(p.x, p.y);
+                    //Cell cell = grid.getCell(p.x, p.y);
                     //if (cell.getValue() != 0) {
                     if (grid.getCellValue(p.x, p.y) != 0) {
-                        cell.setValue(0);
+                        //cell.setValue(0);
+                    	grid.setCellValue(p.x, p.y, 0);
                         cellRemoved = true;
                     }
                 }

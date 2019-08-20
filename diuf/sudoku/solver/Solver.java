@@ -158,9 +158,11 @@ public class Solver {
         for (Grid.Region part : parts) {
             for (int i = 0; i < 9; i++) {
                 Cell cell = part.getCell(i);
-                if (!cell.isEmpty()) {
+                //if (!cell.isEmpty()) {
+                int value = grid.getCellValue(cell.getX(), cell.getY());
+                if (value != 0) {
                     //int value = cell.getValue();
-                    int value = grid.getCellValue(cell.getX(), cell.getY());
+                    //int value = grid.getCellValue(cell.getX(), cell.getY());
                     // Remove the cell value from the potential values of other cells
                     for (int j = 0; j < 9; j++)
                         part.getCell(j).removePotentialValue(value);

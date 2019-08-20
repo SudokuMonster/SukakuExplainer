@@ -47,7 +47,7 @@ public class HiddenSet implements IndirectHintProducer {
         Grid.Region[] regions = grid.getRegions(regionType);
         // Iterate on parts
         for (Grid.Region region : regions) {
-            int nbEmptyCells = region.getEmptyCellCount();
+            int nbEmptyCells = region.getEmptyCellCount(grid);
             if (nbEmptyCells > degree * 2 || (isDirect && nbEmptyCells > degree)) {
                 Permutations perm = new Permutations(degree, 9);
                 // Iterate on tuple of values

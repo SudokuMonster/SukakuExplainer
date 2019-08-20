@@ -285,7 +285,7 @@ public class UniqueLoops implements IndirectHintProducer {
                 Grid.Region region = grid.getRegionAt(regionType, c1);
                 if (region.equals(grid.getRegionAt(regionType, c2))) {
                     // Region common to c1 and c2
-                    int nbEmptyCells = region.getEmptyCellCount();
+                    int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
                     int index2 = region.indexOf(c2);
 

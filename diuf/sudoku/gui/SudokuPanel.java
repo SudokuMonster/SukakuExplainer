@@ -197,7 +197,8 @@ public class SudokuPanel extends JPanel {
                         isProcessed = true;
                     } else if (ch == ' ' || ch == '0') {
                         engine.cellValueTyped(selectedCell, 0);
-                        selectedCell.setValue(0);
+                        //selectedCell.setValue(0);
+                        grid.setCellValue(selectedCell.getX(), selectedCell.getY(), 0);
                         repaint();
                         isProcessed = true;
                     } else if (ch == '\r' || ch == '\n') {
