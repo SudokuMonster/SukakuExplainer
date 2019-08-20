@@ -125,7 +125,7 @@ public abstract class IndirectHint extends Hint {
      * <tt>null</tt> if none
      * @see #getViewCount()
      */
-    public abstract Map<Cell, BitSet> getGreenPotentials(int viewNum);
+    public abstract Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum);
 
     /**
      * Get the cell potential values that must be highlighted in red
@@ -136,7 +136,7 @@ public abstract class IndirectHint extends Hint {
      * <tt>null</tt> if none
      * @see #getViewCount()
      */
-    public abstract Map<Cell, BitSet> getRedPotentials(int viewNum);
+    public abstract Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum);
 
     public Map<Cell, BitSet> getBluePotentials(Grid grid, int viewNum) {
         return Collections.emptyMap();

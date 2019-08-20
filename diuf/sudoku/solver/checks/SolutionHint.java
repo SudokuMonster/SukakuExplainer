@@ -27,7 +27,7 @@ public class SolutionHint extends WarningHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell,BitSet>();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
@@ -40,8 +40,8 @@ public class SolutionHint extends WarningHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return getGreenPotentials(viewNum);
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return getGreenPotentials(grid, viewNum);
     }
 
     @Override

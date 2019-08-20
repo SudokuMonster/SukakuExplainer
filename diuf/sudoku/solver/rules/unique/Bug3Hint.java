@@ -45,7 +45,7 @@ public class Bug3Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell cell : bugCells) {
             BitSet innerNaked = (BitSet)nakedSet.clone();
@@ -60,7 +60,7 @@ public class Bug3Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         for (Cell cell : nakedCells)
             result.put(cell, nakedSet); // orange

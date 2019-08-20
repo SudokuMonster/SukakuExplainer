@@ -53,16 +53,16 @@ public class BinaryChainingHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedGreenPotentials(viewNum);
+            return super.getNestedGreenPotentials(grid, viewNum);
         return getColorPotentials(viewNum, true);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedRedPotentials(viewNum);
+            return super.getNestedRedPotentials(grid, viewNum);
         return getColorPotentials(viewNum, false);
     }
 

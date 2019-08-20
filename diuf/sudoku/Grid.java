@@ -758,7 +758,7 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-            	Cell cell = cells[y][x];
+            	//Cell cell = cells[y][x];
             	//int value = cell.getValue();
             	int value = getCellValue(x, y);
             	if(value == 0) {

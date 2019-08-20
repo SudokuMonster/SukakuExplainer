@@ -55,12 +55,12 @@ public class CycleHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         return getColorPotentials(viewNum, true);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = getColorPotentials(viewNum, false);
         Map<Cell, BitSet> removable = getRemovablePotentials();
         for (Cell c : removable.keySet()) {

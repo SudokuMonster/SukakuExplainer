@@ -24,7 +24,7 @@ public class UniqueLoopType2Hint extends UniqueLoopHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         for (Cell c : cells)
             result.put(c, SingletonBitSet.create(value)); // orange
@@ -32,8 +32,8 @@ public class UniqueLoopType2Hint extends UniqueLoopHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
-        Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getGreenPotentials(viewNum));
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
+        Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getGreenPotentials(grid, viewNum));
         for (Cell c : cells) {
             BitSet b = result.get(c);
             b.set(value); // orange

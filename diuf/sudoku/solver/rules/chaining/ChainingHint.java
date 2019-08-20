@@ -122,16 +122,16 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
         return null;
     }
 
-    protected final Map<Cell, BitSet> getNestedGreenPotentials(int nestedViewNum) {
+    protected final Map<Cell, BitSet> getNestedGreenPotentials(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getGreenPotentials(nest.getValue2());
+        return nest.getValue1().getGreenPotentials(grid, nest.getValue2());
     }
 
-    protected final Map<Cell, BitSet> getNestedRedPotentials(int nestedViewNum) {
+    protected final Map<Cell, BitSet> getNestedRedPotentials(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getRedPotentials(nest.getValue2());
+        return nest.getValue1().getRedPotentials(grid, nest.getValue2());
     }
 
     @Override

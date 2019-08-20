@@ -44,9 +44,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedGreenPotentials(viewNum);
+            return super.getNestedGreenPotentials(grid, viewNum);
         Map<Cell, BitSet> result = getColorPotentials(true);
         if (!target.isOn)
             result.get(target.cell).clear(target.value); // Make target potential red
@@ -54,9 +54,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedRedPotentials(viewNum);
+            return super.getNestedRedPotentials(grid, viewNum);
         Map<Cell, BitSet> result = getColorPotentials(false);
         if (target.isOn)
             result.get(target.cell).clear(target.value); // Make target green

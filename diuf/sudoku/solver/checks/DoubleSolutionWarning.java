@@ -46,7 +46,7 @@ public class DoubleSolutionWarning extends WarningHint {
 //    }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Grid solution = (viewNum == 0 ? solution1 : solution2);
         Map<Cell,BitSet> result = new HashMap<Cell,BitSet>();
         for (int y = 0; y < 9; y++) {
@@ -61,8 +61,8 @@ public class DoubleSolutionWarning extends WarningHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return getGreenPotentials(viewNum);
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return getGreenPotentials(grid, viewNum);
     }
 
     @Override

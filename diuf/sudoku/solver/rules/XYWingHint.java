@@ -54,7 +54,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         // x and y of XY cell (orange)
         result.put(xyCell, xyCell.getPotentialValues());
@@ -66,7 +66,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         // Add x and y of XY cell (orange)
         BitSet xy = new BitSet(10);

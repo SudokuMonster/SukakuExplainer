@@ -65,12 +65,12 @@ public class UniqueLoopType3NakedHint extends UniqueLoopHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
-        return appendOrangePotentials(super.getGreenPotentials(viewNum));
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
+        return appendOrangePotentials(super.getGreenPotentials(grid, viewNum));
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         return appendOrangePotentials(result);
     }

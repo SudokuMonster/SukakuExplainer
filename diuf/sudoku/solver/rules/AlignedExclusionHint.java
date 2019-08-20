@@ -61,7 +61,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         BitSet releventValues = getReleventCombinationValues();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell cell : lockedCombinations.values()) {
@@ -71,23 +71,27 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
                     result.put(cell, values);
             }
         }
-        return appendOranges(result);
+        return appendOranges(grid, result);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return appendOranges(super.getRemovablePotentials());
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return appendOranges(grid, super.getRemovablePotentials());
     }
 
-    private Map<Cell, BitSet> appendOranges(Map<Cell, BitSet> values) {
+    private Map<Cell, BitSet> appendOranges(Grid grid, Map<Cell, BitSet> values) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(values);
         Map<Cell, BitSet> removables = super.getRemovablePotentials();
         for (Cell cell : cells) {
             if (!removables.keySet().contains(cell)) {
+                //if (result.containsKey(cell))
+                //    result.get(cell).or(cell.getPotentialValues());
+                //else
+                //    result.put(cell, (BitSet)cell.getPotentialValues().clone());
                 if (result.containsKey(cell))
-                    result.get(cell).or(cell.getPotentialValues());
+                	result.get(cell).or(grid.getCellPotentialValues(cell));
                 else
-                    result.put(cell, (BitSet)cell.getPotentialValues().clone());
+                	result.put(cell, (BitSet)grid.getCellPotentialValues(cell).clone());
             }
         }
         return result;

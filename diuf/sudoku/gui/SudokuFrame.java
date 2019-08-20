@@ -174,8 +174,8 @@ public class SudokuFrame extends JFrame implements Asker {
                 getSudokuPanel().setLinks(null);
             } else if (currentHint instanceof IndirectHint) {
                 IndirectHint iHint = (IndirectHint)currentHint;
-                sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(viewNum));
-                sudokuPanel.setRedPotentials(iHint.getRedPotentials(viewNum));
+                sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(sudokuPanel.getSudokuGrid(), viewNum));
+                sudokuPanel.setRedPotentials(iHint.getRedPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setBluePotentials(iHint.getBluePotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 if (iHint.getSelectedCells() != null)
                     sudokuPanel.setGreenCells(Arrays.asList(iHint.getSelectedCells()));

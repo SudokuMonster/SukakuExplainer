@@ -68,7 +68,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
         result.put(cell, SingletonBitSet.create(value));
@@ -76,7 +76,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
         for (Cell cell : redPotentials.keySet()) {
