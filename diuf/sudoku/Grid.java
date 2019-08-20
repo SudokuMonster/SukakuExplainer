@@ -750,34 +750,27 @@ public class Grid {
     }
     
     /**
-     * Clears potentialValues for cells with value set.
-     * First pass sets value for cells having single potential value w/o applying
-     * further direct eliminations. Clears potentials of the cells with newly set values.
-     * Second pass does direct eliminations.
+     * Applies Naked Single not causing direct eliminations.
+     * For adjustment of the board immediately after Pencilmarks loading.
      */
     public void adjustPencilmarks() {
-    	//first pass: apply Naked Single
-    	List<Cell> forEliminations = new ArrayList<Cell>();
-    	for(int x = 0; x < 9; x++) {
-    		for(int y = 0; y < 9; y++) {
-    			Cell cell = cells[x][y];
-    			if(cell.getValue() != 0) {
-    				cell.clearPotentialValues();
-    			}
-    			else {
-    				BitSet values = cell.getPotentialValues();
-    				if(values.cardinality() == 1) {
-    					cell.setValue(values.nextSetBit(0));
-    					cell.clearPotentialValues();
-    					forEliminations.add(cell);
-    				}
-    			}
-    		}
-    	}
-    	//second pass: apply direct eliminations
-    	for(Cell cell : forEliminations) {
-    		cell.setValueAndCancel(cell.getValue(), this);
-    	}
+        for (int i = 0; i < 81; i++) {
+            Cell cell = getCell(i % 9, i / 9);
+            if ( cell.getPotentialValues().cardinality() ==  1 ) {
+                int singleclue = cell.getPotentialValues().nextSetBit(0);
+                boolean isnakedsingle = true;
+                for (Cell housecell : cell.getHouseCells(this)) {
+                    if ( housecell.hasPotentialValue(singleclue) ) {
+                        isnakedsingle = false;
+                        break;
+                    }
+                }
+                if ( isnakedsingle ) {
+                    cell.setValue(singleclue);
+                    cell.clearPotentialValues();
+                }
+            }
+        }               
     }
 
     /**

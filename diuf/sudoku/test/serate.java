@@ -296,7 +296,7 @@ public class serate {
                     Grid grid = new Grid();
                     grid.fromString(puzzle);
                     formatter.setPuzzleLine(puzzle);
-                    grid.adjustPencilmarks(); //experimental <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    grid.adjustPencilmarks();
                     t = System.currentTimeMillis();
 	                Solver solver = new Solver(grid);
 	                solver.want = want;

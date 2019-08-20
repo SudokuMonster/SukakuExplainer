@@ -123,23 +123,7 @@ public class hints {
                         }
                     }
                     // fixup naked singles
-                    for (int i = 0; i < 81; i++) {
-                        Cell cell = grid.getCell(i % 9, i / 9);
-                        if ( cell.getPotentialValues().cardinality() ==  1 ) {
-                            int singleclue = cell.getPotentialValues().nextSetBit(0);
-                            boolean isnakedsingle = true;
-                            for (Cell housecell : cell.getHouseCells(grid)) {
-                                if ( housecell.hasPotentialValue(singleclue) ) {
-                                    isnakedsingle = false;
-                                    break;
-                                }
-                            }
-                            if ( isnakedsingle ) {
-                                cell.setValue(singleclue);
-                                cell.clearPotentialValues();
-                            }
-                        }
-                    }               
+                    grid.adjustPencilmarks();
                 }
                 else
                 {
