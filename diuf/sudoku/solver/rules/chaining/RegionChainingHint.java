@@ -149,7 +149,7 @@ public class RegionChainingHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (getChainingRule().isDynamic())
             result = HtmlLoader.loadHtml(this, "DynamicRegionReductionHint.html");

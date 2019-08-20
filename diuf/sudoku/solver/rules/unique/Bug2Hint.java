@@ -73,7 +73,7 @@ public class Bug2Hint extends BugHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave2.html");
         String andBugCells = ValuesFormatter.formatCells(bugCells, " and ");
         return HtmlLoader.format(result, bugValue, andBugCells);

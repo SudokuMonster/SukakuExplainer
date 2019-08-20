@@ -161,7 +161,7 @@ public class BinaryChainingHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isNishio)
             result = HtmlLoader.loadHtml(this, "NishioHint.html");

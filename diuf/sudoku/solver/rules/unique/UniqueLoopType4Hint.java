@@ -47,7 +47,7 @@ public class UniqueLoopType4Hint extends UniqueLoopHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "UniqueLoopType4.html");
         String type = getTypeName();
         Cell[] cells = new Cell[loop.size()];

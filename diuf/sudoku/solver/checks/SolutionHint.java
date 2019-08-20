@@ -55,7 +55,7 @@ public class SolutionHint extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         return HtmlLoader.loadHtml(this, "Solution.html");
     }
 

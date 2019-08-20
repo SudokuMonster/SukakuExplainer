@@ -69,7 +69,7 @@ public class HiddenSet implements IndirectHintProducer {
                         CommonTuples.searchCommonTuple(potentialIndexes, degree);
                     if (commonPotentialPositions != null) {
                         // Hint found
-                        IndirectHint hint = createHiddenSetHint(region, values, commonPotentialPositions);
+                        IndirectHint hint = createHiddenSetHint(grid, region, values, commonPotentialPositions);
                         if (hint != null && hint.isWorth())
                             accu.add(hint);
                     }
@@ -78,7 +78,7 @@ public class HiddenSet implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createHiddenSetHint(Grid.Region region, int[] values,
+    private IndirectHint createHiddenSetHint(Grid grid, Grid.Region region, int[] values,
             BitSet commonPotentialPositions) {
         // Create set of fixed values, and set of other values
         BitSet valueSet = new BitSet(10);
@@ -109,7 +109,7 @@ public class HiddenSet implements IndirectHintProducer {
             // Look for Hidden Single
             for (int value = 1; value <= 9; value++) {
                 if (!valueSet.get(value)) {
-                    BitSet positions = region.copyPotentialPositions(value);
+                    BitSet positions = region.copyPotentialPositions(grid, value);
                     if (positions.cardinality() > 1) {
                         positions.andNot(commonPotentialPositions);
                         if (positions.cardinality() == 1) {

@@ -189,7 +189,7 @@ public class SudokuFrame extends JFrame implements Asker {
         sudokuPanel.repaint();
     }
 
-    public void setCurrentHint(Hint hint, boolean isApplyEnabled) {
+    public void setCurrentHint(Grid grid, Hint hint, boolean isApplyEnabled) {
         this.currentHint = hint;
         btnApplyHint.setEnabled(isApplyEnabled);
         mitApplyHint.setEnabled(isApplyEnabled);
@@ -205,7 +205,7 @@ public class SudokuFrame extends JFrame implements Asker {
             }
             repaintViews();
             // Set explanations
-            setExplanations(hint.toHtml());
+            setExplanations(hint.toHtml(grid));
             if (hint instanceof Rule) {
                 Rule rule = (Rule)hint;
                 DecimalFormat format = new DecimalFormat("#0.0");

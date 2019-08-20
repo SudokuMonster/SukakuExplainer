@@ -178,7 +178,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         return result;
     }
 
-    private void appendCombination(StringBuilder builder, int[] combination,
+    private void appendCombination(Grid grid, StringBuilder builder, int[] combination,
             Cell lockCell) {
         for (int i = 0; i < combination.length; i++) {
             if (i == combination.length - 1)
@@ -199,14 +199,15 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
             builder.append("the same value cannot occur twice in the same row, column or block");
         } else {
             builder.append("the cell <b>" + lockCell.toString() + "</b> must already contain <g><b>");
-            builder.append(ValuesFormatter.formatValues(lockCell.getPotentialValues(), " or "));
+            //builder.append(ValuesFormatter.formatValues(lockCell.getPotentialValues(), " or "));
+            builder.append(ValuesFormatter.formatValues(grid.getCellPotentialValues(lockCell), " or "));
             builder.append("</b></g>");
         }
         builder.append("<br>");
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (cells.length == 2)
             result = HtmlLoader.loadHtml(this, "AlignedPairExclusionHint.html");
@@ -220,7 +221,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         for (int[] combination : lockedCombinations.keySet()) {
             Cell lockCell = lockedCombinations.get(combination);
             if (isRelevent(combination))
-                appendCombination(rules, combination, lockCell);
+                appendCombination(grid, rules, combination, lockCell);
         }
         String ruleList = HtmlLoader.formatColors(rules.toString());
         Cell[] exclCells = new Cell[super.getRemovablePotentials().size()];

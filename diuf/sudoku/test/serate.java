@@ -414,7 +414,7 @@ public class serate {
                             s += puzzleLine;
                             break;
                         case 'h':
-                            s += hint.toHtml();
+                            s += hint.toHtml(solver.getGrid());
                             break;
                         case 'i':
                             s += solver.getGrid().toString81();

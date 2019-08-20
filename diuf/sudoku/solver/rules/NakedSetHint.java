@@ -122,7 +122,7 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         final String[] numberNames = new String[] {"two", "three", "four"};
         String result = HtmlLoader.loadHtml(this, "NakedSetHint.html");
         String counter = numberNames[values.length - 2];

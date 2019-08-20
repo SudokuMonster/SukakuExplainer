@@ -641,7 +641,8 @@ public class Solver {
 
                 int crd = 1;
                 for (int i = 0; i < 81; i++) {
-                    int n = grid.getCell(i % 9, i / 9).getPotentialValues().cardinality();
+                    //int n = grid.getCell(i % 9, i / 9).getPotentialValues().cardinality();
+                    int n = grid.getCellPotentialValues(i).cardinality();
                     if ( n > crd ) { crd = n; }
                 }
                 if ( crd > 1 )

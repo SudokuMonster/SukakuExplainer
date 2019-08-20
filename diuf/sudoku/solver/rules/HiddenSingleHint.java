@@ -52,7 +52,7 @@ public class HiddenSingleHint extends DirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isAlone)
             result = HtmlLoader.loadHtml(this, "Single.html");

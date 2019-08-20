@@ -86,7 +86,7 @@ public class UniqueLoopType3NakedHint extends UniqueLoopHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "UniqueLoopType3Naked.html");
         String type = getTypeName();
         Cell[] loopCells = new Cell[loop.size()];

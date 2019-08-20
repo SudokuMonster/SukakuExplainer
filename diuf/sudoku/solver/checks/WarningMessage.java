@@ -37,7 +37,7 @@ public class WarningMessage extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, htmlFile);
         return HtmlLoader.format(result, args);
     }

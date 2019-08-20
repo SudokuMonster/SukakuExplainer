@@ -128,7 +128,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "DirectLockingHint.html");
         String valueName = Integer.toString(value);
         String firstRegion = regions[0].toString();

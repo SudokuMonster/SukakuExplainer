@@ -198,9 +198,9 @@ public class SudokuExplainer {
 
     private void repaintHints() {
         if (selectedHints.size() == 1)
-            frame.setCurrentHint(selectedHints.get(0), true);
+            frame.setCurrentHint(grid, selectedHints.get(0), true);
         else {
-            frame.setCurrentHint(null, !selectedHints.isEmpty());
+            frame.setCurrentHint(grid, null, !selectedHints.isEmpty());
             if (selectedHints.size() > 1)
                 paintMultipleHints(selectedHints);
         }

@@ -620,7 +620,8 @@ public class Chaining implements IndirectHintProducer {
 //        }
 
         Grid.Region box = grid.getRegionAt(Grid.Block.class, p.cell.getX(), p.cell.getY());
-        BitSet boxPositions = box.copyPotentialPositions(p.value);
+        //BitSet boxPositions = box.copyPotentialPositions(p.value);
+        BitSet boxPositions = box.copyPotentialPositions(grid, p.value);
         boxPositions.clear(box.indexOf(p.cell));
         for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
             Cell cell = box.getCell(i);
@@ -629,7 +630,8 @@ public class Chaining implements IndirectHintProducer {
                     "the value can occur only once in the " + box.toString()));
         }
         Grid.Region row = grid.getRegionAt(Grid.Row.class, p.cell.getX(), p.cell.getY());
-        BitSet rowPositions = row.copyPotentialPositions(p.value);
+        //BitSet rowPositions = row.copyPotentialPositions(p.value);
+        BitSet rowPositions = row.copyPotentialPositions(grid, p.value);
         rowPositions.clear(row.indexOf(p.cell));
         for (int i = rowPositions.nextSetBit(0); i >= 0; i = rowPositions.nextSetBit(i + 1)) {
             Cell cell = row.getCell(i);
@@ -639,7 +641,8 @@ public class Chaining implements IndirectHintProducer {
                     "the value can occur only once in the " + row.toString()));
         }
         Grid.Region col = grid.getRegionAt(Grid.Column.class, p.cell.getX(), p.cell.getY());
-        BitSet colPositions = col.copyPotentialPositions(p.value);
+        //BitSet colPositions = col.copyPotentialPositions(p.value);
+        BitSet colPositions = col.copyPotentialPositions(grid, p.value);
         colPositions.clear(col.indexOf(p.cell));
         for (int i = colPositions.nextSetBit(0); i >= 0; i = colPositions.nextSetBit(i + 1)) {
             Cell cell = col.getCell(i);
@@ -674,8 +677,10 @@ public class Chaining implements IndirectHintProducer {
             Grid.Region curRegion, LinkedSet<Potential> offPotentials) {
         Grid.Region srcRegion = source.getRegionAt(curRegion.getClass(),
                 p.cell.getX(), p.cell.getY());
-        BitSet curPositions = curRegion.copyPotentialPositions(p.value);
-        BitSet srcPositions = srcRegion.copyPotentialPositions(p.value);
+        //BitSet curPositions = curRegion.copyPotentialPositions(p.value);
+        //BitSet srcPositions = srcRegion.copyPotentialPositions(p.value);
+        BitSet curPositions = curRegion.copyPotentialPositions(source, p.value);
+        BitSet srcPositions = srcRegion.copyPotentialPositions(source, p.value);
         // Get positions of the potential value that have been removed
         srcPositions.andNot(curPositions);
         for (int i = srcPositions.nextSetBit(0); i >= 0; i = srcPositions.nextSetBit(i + 1)) {

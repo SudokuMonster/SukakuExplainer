@@ -86,7 +86,7 @@ public class DoubleSolutionWarning extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         return HtmlLoader.loadHtml(this, "DoubleSolution.html");
     }
 

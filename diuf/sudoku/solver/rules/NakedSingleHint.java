@@ -40,7 +40,7 @@ public class NakedSingleHint extends DirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "NakedSingleHint.html");
         return HtmlLoader.format(result, Integer.toString(super.getValue()),
                 super.getCell().toString());

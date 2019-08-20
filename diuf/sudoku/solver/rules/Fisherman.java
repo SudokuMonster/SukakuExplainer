@@ -124,7 +124,7 @@ public class Fisherman implements IndirectHintProducer {
         for (int i = 0; i < 9; i++) {
             if (myIndexes.get(i)) {
                 // Check if value appears outside from otherIndexes
-                BitSet potentialPositions = myParts[i].copyPotentialPositions(value);
+                BitSet potentialPositions = myParts[i].copyPotentialPositions(grid, value);
                 potentialPositions.andNot(otherIndexes);
                 if (!potentialPositions.isEmpty()) {
                     for (int j = 0; j < 9; j++) {

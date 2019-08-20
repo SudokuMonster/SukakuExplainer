@@ -22,7 +22,7 @@ public class Cell {
 
     private final int x;
     private final int y;
-    private int value = 0;
+    //private int value = 0;
     private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
 
 

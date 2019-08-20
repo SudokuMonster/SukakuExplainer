@@ -185,7 +185,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isXYZ)
             result = HtmlLoader.loadHtml(this, "XYZWingHint.html");

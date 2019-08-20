@@ -70,7 +70,7 @@ public class Bug1Hint extends BugHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave1.html");
         String andExtra = ValuesFormatter.formatValues(bugValues, " and ");
         String orExtra = ValuesFormatter.formatValues(bugValues, " or ");

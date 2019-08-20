@@ -47,7 +47,7 @@ public class UniqueLoopType2Hint extends UniqueLoopHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid g) {
         String result = HtmlLoader.loadHtml(this, "UniqueLoopType2.html");
         String type = getTypeName();
         Cell[] loopCells = new Cell[loop.size()];

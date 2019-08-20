@@ -352,7 +352,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                 values[degree - 1] = v2;
                                 BitSet[] potentialIndexes = new BitSet[degree];
                                 for (int i = 0; i < degree; i++) {
-                                    potentialIndexes[i] = region.copyPotentialPositions(values[i]);
+                                    potentialIndexes[i] = region.copyPotentialPositions(grid, values[i]);
                                     potentialIndexes[i].clear(index2); // Remove one of the two cells
                                 }
                                 BitSet commonPotentialPositions =

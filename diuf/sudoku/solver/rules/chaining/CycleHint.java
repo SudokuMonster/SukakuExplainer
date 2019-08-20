@@ -169,7 +169,7 @@ public class CycleHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String fileName;
         if (isXChain && isYChain)
             fileName = "XY-Cycle.html";

@@ -151,8 +151,59 @@ public class Grid {
 //    public int getCellValue(int x, int y) {
 //        return this.cells[y][x].getValue();
 //    }
+
     public int getCellValue(int x, int y) {
         return cellValues[9 * y + x];
+    }
+    /**
+     * Get the value of a cell
+     * @param index the cell index [0 .. 80]
+     * @return the value of the cell, or 0 if the cell is empty
+     */
+    public int getCellValue(int index) {
+        return cellValues[index];
+    }
+
+    /**
+     * Get the potential values for the given cell index.
+     * <p>
+     * The result is returned as a bitset. Each of the
+     * bit number 1 to 9 is set if the corresponding
+     * value is a potential value for this cell. Bit number
+     * <tt>0</tt> is not used and ignored.
+     * @param cell the cell
+     * @return the potential values for unresolved cell, empty for resolved
+     */
+    public BitSet getCellPotentialValues(int cellIndex) {
+        return cells[cellIndex / 9][cellIndex % 9].getPotentialValues();
+    }
+
+    /**
+     * Get the potential values for the given cell coordinates.
+     * <p>
+     * The result is returned as a bitset. Each of the
+     * bit number 1 to 9 is set if the corresponding
+     * value is a potential value for this cell. Bit number
+     * <tt>0</tt> is not used and ignored.
+     * @param cell the cell
+     * @return the potential values for unresolved cell, empty for resolved
+     */
+    public BitSet getCellPotentialValues(int x, int y) {
+        return cells[y][x].getPotentialValues();
+    }
+
+    /**
+     * Get the potential values for the given cell.
+     * <p>
+     * The result is returned as a bitset. Each of the
+     * bit number 1 to 9 is set if the corresponding
+     * value is a potential value for this cell. Bit number
+     * <tt>0</tt> is not used and ignored.
+     * @param cell the cell
+     * @return the potential values for unresolved cell, empty for resolved
+     */
+    public BitSet getCellPotentialValues(Cell cell) {
+        return cell.getPotentialValues();
     }
 
     /**
@@ -302,8 +353,29 @@ public class Grid {
             return result;
         }
 
-        public BitSet copyPotentialPositions(int value) {
-            return getPotentialPositions(value); // No need to clone, this is alreay hand-made
+        /**
+         * Get the potential positions of the given value within this region.
+         * The bits of the returned bitset correspond to indexes of cells, as
+         * in {@link #getCell(int)}. Only the indexes of cells that have the given
+         * value as a potential value are included in the bitset (see
+         * {@link Grid#getCellPotentialValues(Cell cell)}).
+         * @param grid the grid
+         * @param value the value whose potential positions to get
+         * @return the potential positions of the given value within this region
+         */
+        public BitSet getPotentialPositions(Grid grid, int value) {
+            BitSet result = new BitSet(9);
+            for (int index = 0; index < 9; index++) {
+                result.set(index, getCell(index).hasPotentialValue(value));
+            }
+            return result;
+        }
+
+//        public BitSet copyPotentialPositions(int value) {
+//            return getPotentialPositions(value); // No need to clone, this is alreay hand-made
+//        }
+        public BitSet copyPotentialPositions(Grid grid, int value) {
+            return getPotentialPositions(grid, value); // No need to clone, this is alreay hand-made
         }
 
         /**
@@ -686,11 +758,12 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-            	Cell cell = cells[x][y];
+            	Cell cell = cells[y][x];
             	//int value = cell.getValue();
             	int value = getCellValue(x, y);
             	if(value == 0) {
-	                BitSet values = cell.getPotentialValues();
+	                //BitSet values = cell.getPotentialValues();
+	                BitSet values = getCellPotentialValues(x, y);
 	                for (int v = 1; v < 10; v++) {
 		                if (values.get(v))
 		                    result.append(v);
@@ -714,13 +787,15 @@ public class Grid {
     /**
      * Get a multi-line pencilmark-string representation of this grid.
      */
+    //public String toStringMultilinePencilmarks() {
     public String toStringMultilinePencilmarks() {
     	String res = "";
         String s = "";
 
         int crd = 1;
         for (int i = 0; i < 81; i++) {
-            int n = getCell(i % 9, i / 9).getPotentialValues().cardinality();
+            //int n = getCell(i % 9, i / 9).getPotentialValues().cardinality();
+            int n = getCellPotentialValues(i).cardinality();
             if ( n > crd ) { crd = n; }
         }
         if ( crd > 1 )
@@ -821,8 +896,10 @@ public class Grid {
     public void adjustPencilmarks() {
         for (int i = 0; i < 81; i++) {
             Cell cell = getCell(i % 9, i / 9);
-            if ( cell.getPotentialValues().cardinality() ==  1 ) {
-                int singleclue = cell.getPotentialValues().nextSetBit(0);
+            //if ( cell.getPotentialValues().cardinality() ==  1 ) {
+            BitSet values = getCellPotentialValues(i);
+            if ( values.cardinality() ==  1 ) {
+                int singleclue = values.nextSetBit(0);
                 boolean isnakedsingle = true;
                 for (Cell housecell : cell.getHouseCells(this)) {
                     if ( housecell.hasPotentialValue(singleclue) ) {
@@ -853,7 +930,8 @@ public class Grid {
                 if (getCellValue(x, y) != other.getCellValue(x, y)) return false;
                 Cell thisCell = this.getCell(x, y);
                 Cell otherCell = other.getCell(x, y);
-                if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
+                //if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
+                if (!getCellPotentialValues(thisCell).equals(getCellPotentialValues(otherCell)))
                     return false;
             }
         }
@@ -863,13 +941,18 @@ public class Grid {
     @Override
     public int hashCode() {
         int result = 0;
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = getCell(x, y);
-                //result ^= cell.getValue();
-                result ^= getCellValue(x, y);
-                result ^= cell.getPotentialValues().hashCode();
-            }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                //Cell cell = getCell(x, y);
+//                //result ^= cell.getValue();
+//                result ^= getCellValue(x, y);
+//                //result ^= cell.getPotentialValues().hashCode();
+//                result ^= getCellPotentialValues(x, y).hashCode();
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            result ^= getCellValue(i);
+            result ^= getCellPotentialValues(i).hashCode();
         }
         return result;
     }

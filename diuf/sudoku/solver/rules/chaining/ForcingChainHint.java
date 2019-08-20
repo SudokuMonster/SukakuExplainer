@@ -159,7 +159,7 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String fileName = (isYChain ? "ForcingChain.html" : "ForcingXChain.html");
         String result = HtmlLoader.loadHtml(this, fileName);
         Potential reverse = new Potential(target.cell, target.value, !target.isOn);

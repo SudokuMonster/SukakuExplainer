@@ -165,7 +165,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         int degree = regions.length / 2;
         if (degree == 1)
             return toHtml1();
