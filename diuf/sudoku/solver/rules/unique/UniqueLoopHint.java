@@ -46,7 +46,7 @@ public abstract class UniqueLoopHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<Link>();
         for (int i = 0; i < loop.size(); i++) {
             Cell cell = loop.get(i);
@@ -98,7 +98,7 @@ public abstract class UniqueLoopHint extends IndirectHint implements Rule {
         return result; // 5.5 - 5.8
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " on the values <b>" + v1 + "</b> and <b>" + v2 + "</b>";

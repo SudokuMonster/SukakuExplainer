@@ -67,9 +67,9 @@ public class BinaryChainingHint extends ChainingHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential start = (viewNum == 0 ? this.dstOnPotential : this.dstOffPotential);
         return getLinks(start);
     }
@@ -137,7 +137,7 @@ public class BinaryChainingHint extends ChainingHint {
             return dstOnPotential;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " starting on the cell <b>" + srcPotential.cell.toString()

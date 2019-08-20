@@ -41,7 +41,8 @@ public class NakedSingle implements DirectHintProducer {
                 Cell cell = grid.getCell(x, y);
                 //if(cell.getValue() != 0) continue;
                 if(grid.getCellValue(x, y) != 0) continue;
-                BitSet potentialValues = cell.getPotentialValues();
+                //BitSet potentialValues = cell.getPotentialValues();
+                BitSet potentialValues = grid.getCellPotentialValues(cell);
                 if (potentialValues.cardinality() == 1) {
                     // One potential value -> solution found
                     int uniqueValue = potentialValues.nextSetBit(0);

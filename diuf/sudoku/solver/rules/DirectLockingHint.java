@@ -80,7 +80,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -103,7 +103,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
             return "Direct Claiming";
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " on the value <b>" + value + "<b>";

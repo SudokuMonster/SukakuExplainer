@@ -5,6 +5,8 @@
  */
 package diuf.sudoku.solver;
 
+import diuf.sudoku.Grid;
+
 /**
  * A "classified hint" that can be used to advance one step in the
  * solving process of a Sudoku.
@@ -64,7 +66,7 @@ public interface Rule {
      * that is, a very partial hint.
      * @return a clue, in HTML
      */
-    public String getClueHtml(boolean isBig);
+    public String getClueHtml(Grid grid, boolean isBig);
 
 
 }

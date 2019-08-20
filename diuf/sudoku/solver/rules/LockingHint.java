@@ -53,7 +53,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -121,7 +121,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
         return result;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " on the value <b>" + value + "<b>";

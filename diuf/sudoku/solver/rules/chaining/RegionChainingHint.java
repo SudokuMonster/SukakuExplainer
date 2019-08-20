@@ -74,9 +74,9 @@ public class RegionChainingHint extends ChainingHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential target = getTargetPotential(viewNum);
         return super.getLinks(target);
     }
@@ -129,7 +129,7 @@ public class RegionChainingHint extends ChainingHint {
         return chains.values().iterator().next();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " with the value " + value + " on the <b1>" + region.toFullString() + "</b1>";

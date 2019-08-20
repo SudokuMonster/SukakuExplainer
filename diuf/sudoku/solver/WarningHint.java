@@ -35,7 +35,7 @@ public abstract class WarningHint extends IndirectHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 

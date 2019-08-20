@@ -567,7 +567,7 @@ public class SudokuExplainer {
                 Rule rule = (Rule)hint;
                 String clueFile = (isBig ? "BigClue.html" : "SmallClue.html");
                 String htmlText = HtmlLoader.loadHtml(this, clueFile);
-                String clueHtml = rule.getClueHtml(isBig);
+                String clueHtml = rule.getClueHtml(grid, isBig);
                 htmlText = htmlText.replace("{0}", clueHtml);
                 // This is rather hacky...
                 if (htmlText.indexOf("<b1>") >= 0) {

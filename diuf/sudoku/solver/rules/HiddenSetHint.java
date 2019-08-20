@@ -54,7 +54,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -98,7 +98,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
         return result;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " in the <b1>" + getRegions()[0].toFullString() + "</b1>";

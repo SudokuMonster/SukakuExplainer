@@ -55,14 +55,15 @@ public class NakedSet implements IndirectHintProducer {
                     // Build potential values for each position of the tuple
                     BitSet[] potentialValues = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        potentialValues[i] = cells[i].getPotentialValues();
+                        //potentialValues[i] = cells[i].getPotentialValues();
+                        potentialValues[i] = grid.getCellPotentialValues(cells[i]);
 
                     // Look for a common tuple of potential values, with same degree
                     BitSet commonPotentialValues = 
                         CommonTuples.searchCommonTuple(potentialValues, degree);
                     if (commonPotentialValues != null) {
                         // Potential hint found
-                        IndirectHint hint = createValueUniquenessHint(region, cells, commonPotentialValues);
+                        IndirectHint hint = createValueUniquenessHint(grid, region, cells, commonPotentialValues);
                         if (hint.isWorth())
                             accu.add(hint);
                     }
@@ -71,7 +72,7 @@ public class NakedSet implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createValueUniquenessHint(Grid.Region region, Cell[] cells,
+    private IndirectHint createValueUniquenessHint(Grid grid, Grid.Region region, Cell[] cells,
             BitSet commonPotentialValues) {
         // Build value list
         int[] values = new int[degree];
@@ -85,7 +86,8 @@ public class NakedSet implements IndirectHintProducer {
         for (Cell cell : cells) {
             BitSet potentials = new BitSet(10);
             potentials.or(commonPotentialValues);
-            potentials.and(cell.getPotentialValues());
+            //potentials.and(cell.getPotentialValues());
+            potentials.and(grid.getCellPotentialValues(cell));
             cellPValues.put(cell, potentials);
         }
         // Build removable potentials

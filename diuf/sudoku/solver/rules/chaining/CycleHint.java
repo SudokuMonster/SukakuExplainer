@@ -76,7 +76,7 @@ public class CycleHint extends ChainingHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         Potential start = (viewNum == 0 ? this.dstOn : this.dstOff);
         return getLinks(start);
     }
@@ -149,7 +149,7 @@ public class CycleHint extends ChainingHint {
         }
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             if (isXChain && !isYChain) {
                 return "Look for a " + getName() +

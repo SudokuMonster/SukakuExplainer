@@ -64,9 +64,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential start = this.target;
         return getLinks(start);
     }
@@ -142,7 +142,7 @@ public class ForcingChainHint extends ChainingHint {
         return target;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " on the cell <b>" + target.cell.toString()

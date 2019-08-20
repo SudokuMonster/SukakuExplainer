@@ -182,7 +182,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 if (iHint instanceof WarningHint)
                     sudokuPanel.setRedCells(((WarningHint)iHint).getRedCells());
                 // Set links (rendered as arrows)
-                getSudokuPanel().setLinks(iHint.getLinks(viewNum));
+                getSudokuPanel().setLinks(iHint.getLinks(sudokuPanel.getSudokuGrid(), viewNum));
             }
             getSudokuPanel().setBlueRegions(currentHint.getRegions());
         }

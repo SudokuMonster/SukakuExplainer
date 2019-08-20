@@ -31,14 +31,15 @@ public class AlignedPairExclusion extends AlignedExclusion {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getPotentialValues().cardinality() >= 2) {
+                //if (cell.getPotentialValues().cardinality() >= 2) {
+                if (grid.getCellPotentialValues(x, y).cardinality() >= 2) {
                     boolean hasNakedSingle = false;
                     // Look for potentially excluding cells (whose number of candidates <=
                     // degree)
                     Collection<Cell> excludingCells = new ArrayList<Cell>();
                     for (Cell excludingCell : cell.getHouseCells(grid)) {
-                        int exclCardinality = excludingCell.getPotentialValues()
-                                .cardinality();
+                        //int exclCardinality = excludingCell.getPotentialValues().cardinality();
+                        int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
                         if (exclCardinality == 1)
                             hasNakedSingle = true;
                         else if (exclCardinality == 2)
@@ -69,9 +70,11 @@ public class AlignedPairExclusion extends AlignedExclusion {
             Cell[] cells = new Cell[2];
             int[] cardinalities = new int[2];
             cells[0] = candidateList.get(indexes[0]);
-            cardinalities[0] = cells[0].getPotentialValues().cardinality();
+            //cardinalities[0] = cells[0].getPotentialValues().cardinality();
+            cardinalities[0] = grid.getCellPotentialValues(cells[0]).cardinality();
             cells[1] = candidateList.get(indexes[1]);
-            cardinalities[1] = cells[1].getPotentialValues().cardinality();
+            //cardinalities[1] = cells[1].getPotentialValues().cardinality();
+            cardinalities[1] = grid.getCellPotentialValues(cells[1]).cardinality();
 
             // Build the list of common excluding cells for the base cells 'cells'
             Set<Cell> commonExcluders = new LinkedHashSet<Cell>();
@@ -83,8 +86,10 @@ public class AlignedPairExclusion extends AlignedExclusion {
 
                 List<int[]> allowedPotentialCombinations = new ArrayList<int[]>();
                 Map<int[], Cell> lockedPotentialCombinations = new LinkedHashMap<int[], Cell>();
-                BitSet v0 = cells[0].getPotentialValues();
-                BitSet v1 = cells[1].getPotentialValues();
+                //BitSet v0 = cells[0].getPotentialValues();
+                //BitSet v1 = cells[1].getPotentialValues();
+                BitSet v0 = grid.getCellPotentialValues(cells[0]);
+                BitSet v1 = grid.getCellPotentialValues(cells[1]);
 
                 // Iterate on combinations of potentials accross the base cells
                 for (int pt0 = v0.nextSetBit(0); pt0 >= 0; pt0 = v0.nextSetBit(pt0 + 1)) {
@@ -103,8 +108,8 @@ public class AlignedPairExclusion extends AlignedExclusion {
                         // excluder cells
                         if (isAllowed) {
                             for (Cell excludingCell : commonExcluders) {
-                                BitSet values = (BitSet)excludingCell.getPotentialValues()
-                                .clone();
+                                //BitSet values = (BitSet)excludingCell.getPotentialValues().clone();
+                                BitSet values = (BitSet)grid.getCellPotentialValues(excludingCell).clone();
                                 for (int i = 0; i < 2; i++)
                                     values.clear(potentials[i]);
                                 if (values.isEmpty()) {
@@ -129,7 +134,8 @@ public class AlignedPairExclusion extends AlignedExclusion {
                  */
                 for (int i = 0; i < 2; i++) {
                     Cell cell = cells[i];
-                    BitSet values = cell.getPotentialValues();
+                    //BitSet values = cell.getPotentialValues();
+                    BitSet values = grid.getCellPotentialValues(cell);
                     for (int p = values.nextSetBit(0); p >= 0; p = values
                     .nextSetBit(p + 1)) {
                         boolean isValueAllowed = false;

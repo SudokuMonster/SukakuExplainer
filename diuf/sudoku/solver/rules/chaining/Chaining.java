@@ -194,7 +194,8 @@ public class Chaining implements IndirectHintProducer {
                 Cell cell = grid.getCell(x, y);
                 //if (cell.getValue() == 0) { // the cell is empty
                 if (grid.getCellValue(x, y) == 0) { // the cell is empty
-                	int cardinality = cell.getPotentialValues().cardinality();
+                	//int cardinality = cell.getPotentialValues().cardinality();
+                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
                     if (cardinality > 1) {
                         // Iterate on all potential values that are not alone
                         for (int value = 1; value <= 9; value++) {
@@ -283,7 +284,8 @@ public class Chaining implements IndirectHintProducer {
                 Cell cell = grid.getCell(x, y);
                 //if (cell.getValue() == 0) { // the cell is empty
                 if (grid.getCellValue(x, y) == 0) { // the cell is empty
-                	int cardinality = cell.getPotentialValues().cardinality();
+                	//int cardinality = cell.getPotentialValues().cardinality();
+                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
                     if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
                     	if (noParallel) {
                     		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
@@ -378,7 +380,8 @@ public class Chaining implements IndirectHintProducer {
     private void doUnaryChaining(Grid grid, final Potential pOn, List<ChainingHint> result,
             boolean isYChainEnabled, boolean isXChainEnabled) {
 
-        if (pOn.cell.getPotentialValues().cardinality() > 2
+        //if (pOn.cell.getPotentialValues().cardinality() > 2
+        if (grid.getCellPotentialValues(pOn.cell).cardinality() > 2
                 && !isXChainEnabled)
             return; // Y-Cycles can only start if cell has 2 potential values
 

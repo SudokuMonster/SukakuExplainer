@@ -36,17 +36,19 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         this.value = value;
     }
 
-    private int getX() {
-        BitSet xyPotentials = xyCell.getPotentialValues();
+    private int getX(Grid grid) {
+        //BitSet xyPotentials = xyCell.getPotentialValues();
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell);
         int x = xyPotentials.nextSetBit(0);
         if (x == this.value)
             x = xyPotentials.nextSetBit(x + 1);
         return x;
     }
 
-    private int getY() {
-        BitSet xyPotentials = xyCell.getPotentialValues();
-        int x = getX();
+    private int getY(Grid grid) {
+        //BitSet xyPotentials = xyCell.getPotentialValues();
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell);
+        int x = getX(grid);
         int y = xyPotentials.nextSetBit(x + 1);
         if (y == this.value)
             y = xyPotentials.nextSetBit(y + 1);
@@ -57,7 +59,8 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         // x and y of XY cell (orange)
-        result.put(xyCell, xyCell.getPotentialValues());
+        //result.put(xyCell, xyCell.getPotentialValues());
+        result.put(xyCell, grid.getCellPotentialValues(xyCell));
         // z value (green)
         BitSet zSet = SingletonBitSet.create(value);
         result.put(xzCell, zSet);
@@ -70,8 +73,8 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         // Add x and y of XY cell (orange)
         BitSet xy = new BitSet(10);
-        xy.set(getX());
-        xy.set(getY());
+        xy.set(getX(grid));
+        xy.set(getY(grid));
         result.put(xyCell, xy);
         return result;
     }
@@ -94,19 +97,20 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
             return "XY-Wing";
     }
 
-    private int getRemainingValue(Cell c) {
-        BitSet result = (BitSet)c.getPotentialValues().clone();
+    private int getRemainingValue(Grid grid, Cell c) {
+        //BitSet result = (BitSet)c.getPotentialValues().clone();
+        BitSet result = (BitSet)grid.getCellPotentialValues(c).clone();
         result.clear(value);
         return result.nextSetBit(0);
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<Link>();
-        int xValue = getRemainingValue(xzCell);
+        int xValue = getRemainingValue(grid, xzCell);
         Link xLink = new Link(xyCell, xValue, xzCell, xValue);
         result.add(xLink);
-        int yValue = getRemainingValue(yzCell);
+        int yValue = getRemainingValue(grid, yzCell);
         Link yLink = new Link(xyCell, yValue, yzCell, yValue);
         result.add(yLink);
         return result;
@@ -164,10 +168,10 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         return xyCell.hashCode() ^ yzCell.hashCode() ^ xzCell.hashCode();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
-            " on the values " + getX() + ", " + getY() + " and <b>" + value + "</b>";
+            " on the values " + getX(grid) + ", " + getY(grid) + " and <b>" + value + "</b>";
         } else {
             return "Look for a " + getName();
         }
@@ -194,7 +198,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         String cell1 = xyCell.toString();
         String cell2 = xzCell.toString();
         String cell3 = yzCell.toString();
-        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(), getY());
+        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(grid), getY(grid));
         return result;
     }
 

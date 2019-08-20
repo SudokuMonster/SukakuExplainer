@@ -92,7 +92,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -117,7 +117,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
         return "Direct Hidden " + groupNames[degree - 2];
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " in the <b1>" + getRegions()[0].toFullString() + "</b1>";

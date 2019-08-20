@@ -168,10 +168,10 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
         return result;
     }
 
-    protected final Collection<Link> getNestedLinks(int nestedViewNum) {
+    protected final Collection<Link> getNestedLinks(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getLinks(nest.getValue2());
+        return nest.getValue1().getLinks(grid, nest.getValue2());
     }
 
     protected final int getNestedComplexity() {

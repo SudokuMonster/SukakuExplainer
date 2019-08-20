@@ -149,6 +149,6 @@ public abstract class IndirectHint extends Hint {
      * @see #getViewCount()
      * @see Link
      */
-    public abstract Collection<Link> getLinks(int viewNum);
+    public abstract Collection<Link> getLinks(Grid grid, int viewNum);
 
 }

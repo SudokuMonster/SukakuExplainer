@@ -66,7 +66,8 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell cell : lockedCombinations.values()) {
             if (cell != null) {
-                BitSet values = (BitSet)cell.getPotentialValues().clone();
+                //BitSet values = (BitSet)cell.getPotentialValues().clone();
+                BitSet values = (BitSet)grid.getCellPotentialValues(cell).clone();
                 if (contains(releventValues, values))
                     result.put(cell, values);
             }
@@ -98,7 +99,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -129,7 +130,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
             throw new UnsupportedOperationException();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig)
             return "Look for an " + getName() + " on the cells " + Cell.toString(cells);
         else
