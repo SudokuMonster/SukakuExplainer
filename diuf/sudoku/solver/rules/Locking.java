@@ -55,7 +55,8 @@ public class Locking implements IndirectHintProducer {
                     for (int value = 1; value <= 9; value++) {
                         boolean isInCommonSet = true;
                         // Get the potential positions of the value in part1
-                        BitSet potentialPositions = region1.getPotentialPositions(value);
+                        //BitSet potentialPositions = region1.getPotentialPositions(value);
+                        BitSet potentialPositions = region1.getPotentialPositions(grid, value);
                         // Note: if cardinality == 1, this is Hidden Single in part1
                         if (potentialPositions.cardinality() > 1) {
                             // Test if all potential positions are also in part2
@@ -94,7 +95,8 @@ public class Locking implements IndirectHintProducer {
                 if (region3.crosses(region2)) {
                     // Region <> region1 but crosses region2
                     Set<Cell> region2Cells = region2.getCellSet();
-                    BitSet potentialPositions3 = region3.getPotentialPositions(value);
+                    //BitSet potentialPositions3 = region3.getPotentialPositions(value);
+                    BitSet potentialPositions3 = region3.getPotentialPositions(grid, value);
                     if (potentialPositions3.cardinality() > 1) {
                         int nbRemainInRegion3 = 0;
                         Cell hcell = null;

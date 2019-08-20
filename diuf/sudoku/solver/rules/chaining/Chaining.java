@@ -258,12 +258,12 @@ public class Chaining implements IndirectHintProducer {
             // Do Cell reduction
             if (cardinality == 2 || (isMultipleEnabled && cardinality > 2)) {
                 for (Potential p : cellToOn) {
-                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOn);
+                    CellChainingHint hint = createCellReductionHint(grid, cell, p, valueToOn);
                     if (hint.isWorth())
                         result.add(hint);
                 }
                 for (Potential p : cellToOff) {
-                    CellChainingHint hint = createCellReductionHint(cell, p, valueToOff);
+                    CellChainingHint hint = createCellReductionHint(grid, cell, p, valueToOff);
                     if (hint.isWorth())
                         result.add(hint);
                 }
@@ -343,7 +343,8 @@ public class Chaining implements IndirectHintProducer {
     		this.cell = gridClone.getCell(cell.getX(), cell.getY());
     	}
     	public void run() {
-    		int cardinality = cell.getPotentialValues().cardinality();
+    		//int cardinality = cell.getPotentialValues().cardinality();
+    		int cardinality = gridClone.getCellPotentialValues(cell).cardinality();
     		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
     	}
     }
@@ -497,7 +498,7 @@ public class Chaining implements IndirectHintProducer {
         absurdPotential = doChaining(grid, offToOn, offToOff);
         if (doContradiction && absurdPotential != null) {
             // p must hold its value, because else it would lead to a contradiction
-            BinaryChainingHint hint = createChainingOnHint(absurdPotential[0], absurdPotential[1],
+            BinaryChainingHint hint = createChainingOnHint(grid, absurdPotential[0], absurdPotential[1],
                     pOff, pOff, true);
             if (hint.isWorth())
                 result.add(hint);
@@ -508,7 +509,7 @@ public class Chaining implements IndirectHintProducer {
             for (Potential pFromOn : onToOn) {
                 Potential pFromOff = offToOn.get(pFromOn);
                 if (pFromOff != null) {
-                    BinaryChainingHint hint = createChainingOnHint(pFromOn, pFromOff, pOn, pFromOn, false);
+                    BinaryChainingHint hint = createChainingOnHint(grid, pFromOn, pFromOff, pOn, pFromOn, false);
                     if (hint.isWorth())
                         result.add(hint);
                 }
@@ -531,7 +532,8 @@ public class Chaining implements IndirectHintProducer {
             int value, LinkedSet<Potential> onToOn, LinkedSet<Potential> onToOff) {
         for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
             Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
-            BitSet potentialPositions = region.getPotentialPositions(value);
+            //BitSet potentialPositions = region.getPotentialPositions(value);
+            BitSet potentialPositions = region.getPotentialPositions(grid, value);
 
             // Is this region worth ?
             int cardinality = potentialPositions.cardinality();
@@ -572,13 +574,13 @@ public class Chaining implements IndirectHintProducer {
 
                     // Gather results
                     for (Potential p : regionToOn) {
-                        RegionChainingHint hint = createRegionReductionHint(region, value,
+                        RegionChainingHint hint = createRegionReductionHint(grid, region, value,
                                 p, posToOn);
                         if (hint.isWorth())
                             result.add(hint);
                     }
                     for (Potential p : regionToOff) {
-                        RegionChainingHint hint = createRegionReductionHint(region, value,
+                        RegionChainingHint hint = createRegionReductionHint(grid, region, value,
                                 p, posToOff);
                         if (hint.isWorth())
                             result.add(hint);
@@ -601,7 +603,8 @@ public class Chaining implements IndirectHintProducer {
 
         if (isYChainEnabled) { // This rule is not used with X-Chains
             // First rule: other potential values for this cell get off
-            BitSet potentialValues = p.cell.getPotentialValues();
+            //BitSet potentialValues = p.cell.getPotentialValues();
+            BitSet potentialValues = grid.getCellPotentialValues(p.cell);
             for (int value = 1; value <= 9; value++) {
                 if (value != p.value && potentialValues.get(value))
                     result.add(new Potential(p.cell, value, false, p,
@@ -721,7 +724,8 @@ public class Chaining implements IndirectHintProducer {
 
         if (isYChainEnabled) {
             // First rule: if there is only two potentials in this cell, the other one gets on
-            BitSet potentialValues = p.cell.getPotentialValues();
+            //BitSet potentialValues = p.cell.getPotentialValues();
+            BitSet potentialValues = grid.getCellPotentialValues(p.cell); //grid or source?
             if (potentialValues.cardinality() == 2) {
                 int otherValue = potentialValues.nextSetBit(0);
                 if (otherValue == p.value)
@@ -741,7 +745,8 @@ public class Chaining implements IndirectHintProducer {
             partTypes.add(Grid.Column.class);
             for (Class<? extends Grid.Region> partType : partTypes) {
                 Grid.Region region = grid.getRegionAt(partType, p.cell.getX(), p.cell.getY());
-                BitSet potentialPositions = region.getPotentialPositions(p.value);
+                //BitSet potentialPositions = region.getPotentialPositions(p.value);
+                BitSet potentialPositions = region.getPotentialPositions(grid, p.value);
                 if (potentialPositions.cardinality() == 2) {
                     int otherPosition = potentialPositions.nextSetBit(0);
                     Cell otherCell = region.getCell(otherPosition);
@@ -1073,12 +1078,13 @@ public class Chaining implements IndirectHintProducer {
         return new ForcingChainHint(this, removable, isYChain, isXChain, target);
     }
 
-    private BinaryChainingHint createChainingOnHint(Potential dstOn, Potential dstOff,
+    private BinaryChainingHint createChainingOnHint(Grid grid, Potential dstOn, Potential dstOff,
             Potential source, Potential target, boolean isAbsurd) {
 
         // Build removable potentials (all values different that target value)
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
-        BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+        //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+        BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
         removable.set(target.value, false);
         if (!removable.isEmpty())
             cellRemovablePotentials.put(target.cell, removable);
@@ -1098,13 +1104,14 @@ public class Chaining implements IndirectHintProducer {
                 isAbsurd, isNisho);
     }
 
-    private CellChainingHint createCellReductionHint(Cell srcCell, Potential target,
+    private CellChainingHint createCellReductionHint(Grid grid, Cell srcCell, Potential target,
             Map<Integer, LinkedSet<Potential>> outcomes) {
 
         // Build removable potentials
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         if (target.isOn) {
-            BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+            //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
             removable.set(target.value, false);
             if (!removable.isEmpty())
                 cellRemovablePotentials.put(target.cell, removable);
@@ -1125,13 +1132,14 @@ public class Chaining implements IndirectHintProducer {
         return new CellChainingHint(this, cellRemovablePotentials, srcCell, chains);
     }
 
-    private RegionChainingHint createRegionReductionHint(Grid.Region region, int value,
+    private RegionChainingHint createRegionReductionHint(Grid grid, Grid.Region region, int value,
             Potential target, Map<Integer, LinkedSet<Potential>> outcomes) {
 
         // Build removable potentials
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         if (target.isOn) {
-            BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+            //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
+            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
             removable.set(target.value, false);
             if (!removable.isEmpty())
                 cellRemovablePotentials.put(target.cell, removable);
@@ -1141,7 +1149,8 @@ public class Chaining implements IndirectHintProducer {
 
         // Build chains
         LinkedHashMap<Integer, Potential> chains = new LinkedHashMap<Integer, Potential>();
-        BitSet potentialPositions = region.getPotentialPositions(value);
+        //BitSet potentialPositions = region.getPotentialPositions(value);
+        BitSet potentialPositions = region.getPotentialPositions(grid, value);
         for (int pos = 0; pos < 9; pos++) {
             if (potentialPositions.get(pos)) {
                 // Get corresponding value with the matching parents

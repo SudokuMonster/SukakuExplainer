@@ -32,7 +32,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
                     // Possible positions of a value in a region (row/column/block):
-                    BitSet positions = region.getPotentialPositions(value);
+                    //BitSet positions = region.getPotentialPositions(value);
+                    BitSet positions = region.getPotentialPositions(grid, value);
                     int cardinality = positions.cardinality();
                     if (cardinality != 0 && cardinality != 2) {
                         // The value has not zero or two positions in the region
@@ -41,7 +42,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                         for (int index = positions.nextSetBit(0); index >= 0;
                                 index = positions.nextSetBit(index + 1)) {
                             Cell cell = region.getCell(index);
-                            int cellCardinality = cell.getPotentialValues().cardinality();
+                            //int cellCardinality = cell.getPotentialValues().cardinality();
+                            int cellCardinality = grid.getCellPotentialValues(cell).cardinality();
                             if (cellCardinality >= 3)
                                 newBugCells.add(cell);
                         }
@@ -85,7 +87,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             for (int x = 0; x < 9; x++) {
                 Cell cell = temp.getCell(x, y);
                 //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
-                if (grid.getCellValue(x, y) == 0 && cell.getPotentialValues().cardinality() != 2)
+                if (grid.getCellValue(x, y) == 0 && grid.getCellPotentialValues(cell).cardinality() != 2)
                     return; // Not a BUG
             }
         }
@@ -97,7 +99,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
                     // Possible positions of a value in a region (row/column/block):
-                    BitSet positions = region.getPotentialPositions(value);
+                    //BitSet positions = region.getPotentialPositions(value);
+                    BitSet positions = region.getPotentialPositions(grid, value);
                     int cardinality = positions.cardinality();
                     if (cardinality != 0 && cardinality != 2)
                         return; // Not a BUG
@@ -107,7 +110,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         
         if (bugCells.size() == 1) {
             // Yeah, potential BUG type-1 pattern found
-            addBug1Hint(accu, bugCells, allBugValues);
+            addBug1Hint(grid, accu, bugCells, allBugValues);
         } else if (allBugValues.cardinality() == 1) {
             // Yeah, potential BUG type-2 or type-4 pattern found
             addBug2Hint(accu, bugCells, allBugValues, commonCells);
@@ -123,10 +126,11 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         }
     }
 
-    private void addBug1Hint(HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues) throws InterruptedException {
+    private void addBug1Hint(Grid grid, HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues) throws InterruptedException {
         Cell bugCell = bugCells.get(0);
         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
-        BitSet removable = (BitSet)bugCell.getPotentialValues().clone();
+        //BitSet removable = (BitSet)bugCell.getPotentialValues().clone();
+        BitSet removable = (BitSet)grid.getCellPotentialValues(bugCell).clone();
         removable.andNot(extraValues);
         removablePotentials.put(bugCell, removable);
         IndirectHint hint = new Bug1Hint(this, removablePotentials, bugCell, extraValues);
@@ -191,7 +195,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 Cell cell = regionCells.get(indexes[i]);
                                 // Fill array of missing naked cells
                                 nakedCells[i] = cell;
-                                BitSet potential = cell.getPotentialValues();
+                                //BitSet potential = cell.getPotentialValues();
+                                BitSet potential = grid.getCellPotentialValues(cell);
                                 // Fill potential values array
                                 potentials[i] = potential;
                                 // Gather union of potentials
@@ -214,7 +219,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                         // Ok, some cells in a common region. Look for removable potentials
                                         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
                                         for (Cell cell : erasable) {
-                                            BitSet removable = (BitSet)cell.getPotentialValues().clone();
+                                            //BitSet removable = (BitSet)cell.getPotentialValues().clone();
+                                            BitSet removable = (BitSet)grid.getCellPotentialValues(cell).clone();
                                             removable.and(nakedSet);
                                             if (!removable.isEmpty())
                                                 removablePotentials.put(cell, removable);
@@ -244,8 +250,10 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         Cell c1 = bugCells.get(0);
         Cell c2 = bugCells.get(1);
         BitSet common = new BitSet(10);
-        common.or(c1.getPotentialValues());
-        common.and(c2.getPotentialValues());
+        //common.or(c1.getPotentialValues());
+        //common.and(c2.getPotentialValues());
+        common.or(grid.getCellPotentialValues(c1));
+        common.and(grid.getCellPotentialValues(c2));
         common.andNot(allExtraValues);
         if (common.cardinality() != 1)
             return; // No BUG type 4
@@ -268,11 +276,13 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 assert common.cardinality() == 1;
                 int value = common.nextSetBit(0);
                 Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
-                BitSet b1 = (BitSet)c1.getPotentialValues().clone();
+                //BitSet b1 = (BitSet)c1.getPotentialValues().clone();
+                BitSet b1 = (BitSet)grid.getCellPotentialValues(c1).clone();
                 b1.andNot(extraValues.get(c1));
                 b1.clear(value);
                 removablePotentials.put(c1, b1);
-                BitSet b2 = (BitSet)c2.getPotentialValues().clone();
+                //BitSet b2 = (BitSet)c2.getPotentialValues().clone();
+                BitSet b2 = (BitSet)grid.getCellPotentialValues(c2).clone();
                 b2.andNot(extraValues.get(c2));
                 b2.clear(value);
                 removablePotentials.put(c2, b2);

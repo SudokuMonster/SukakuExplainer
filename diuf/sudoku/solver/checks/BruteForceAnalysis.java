@@ -231,7 +231,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
                     //if (!region.contains(value) && region.getPotentialPositions(value).isEmpty())
-                    if (!region.contains(grid, value) && region.getPotentialPositions(value).isEmpty())
+                    if (!region.contains(grid, value) && region.getPotentialPositions(grid, value).isEmpty())
                         return false; // No room for the value in the region
                 }
             }

@@ -335,23 +335,23 @@ public class Grid {
          */
         public abstract boolean contains(Cell cell);
 
-        /**
-         * Get the potential positions of the given value within this region.
-         * The bits of the returned bitset correspond to indexes of cells, as
-         * in {@link #getCell(int)}. Only the indexes of cells that have the given
-         * value as a potential value are included in the bitset (see
-         * {@link Cell#getPotentialValues()}).
-         * @param value the value whose potential positions to get
-         * @return the potential positions of the given value within this region
-         * @see Cell#getPotentialValues()
-         */
-        public BitSet getPotentialPositions(int value) {
-            BitSet result = new BitSet(9);
-            for (int index = 0; index < 9; index++) {
-                result.set(index, getCell(index).hasPotentialValue(value));
-            }
-            return result;
-        }
+//        /**
+//         * Get the potential positions of the given value within this region.
+//         * The bits of the returned bitset correspond to indexes of cells, as
+//         * in {@link #getCell(int)}. Only the indexes of cells that have the given
+//         * value as a potential value are included in the bitset (see
+//         * {@link Cell#getPotentialValues()}).
+//         * @param value the value whose potential positions to get
+//         * @return the potential positions of the given value within this region
+//         * @see Cell#getPotentialValues()
+//         */
+//        public BitSet getPotentialPositions(int value) {
+//            BitSet result = new BitSet(9);
+//            for (int index = 0; index < 9; index++) {
+//                result.set(index, getCell(index).hasPotentialValue(value));
+//            }
+//            return result;
+//        }
 
         /**
          * Get the potential positions of the given value within this region.

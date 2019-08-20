@@ -66,7 +66,8 @@ public class Fisherman implements IndirectHintProducer {
                     // Check for exactly the same positions of the value in all lines
                     BitSet[] positions = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        positions[i] = parts[indexes[i]].getPotentialPositions(value);
+                        //positions[i] = parts[indexes[i]].getPotentialPositions(value);
+                        positions[i] = parts[indexes[i]].getPotentialPositions(grid, value);
                     BitSet common = CommonTuples.searchCommonTuple(positions, degree);
 
                     if (common != null) {

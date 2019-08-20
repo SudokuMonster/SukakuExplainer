@@ -62,7 +62,8 @@ public class HiddenSet implements IndirectHintProducer {
                     // Build potential positions for each value of the tuple
                     BitSet[] potentialIndexes = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        potentialIndexes[i] = region.getPotentialPositions(values[i]);
+                        //potentialIndexes[i] = region.getPotentialPositions(values[i]);
+                        potentialIndexes[i] = region.getPotentialPositions(grid, values[i]);
 
                     // Look for a common tuple of potential positions, with same degree
                     BitSet commonPotentialPositions =

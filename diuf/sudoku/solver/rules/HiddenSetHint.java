@@ -83,7 +83,8 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
         Collection<Potential> result = new ArrayList<Potential>();
         BitSet myPositions = new BitSet(9);
         for (int i = 0; i < values.length; i++)
-            myPositions.or(region.getPotentialPositions(values[i]));
+            //myPositions.or(region.getPotentialPositions(values[i]));
+        	myPositions.or(region.getPotentialPositions(currentGrid, values[i]));
         for (int i = 0; i < 9; i++) {
             if (!myPositions.get(i)) {
                 Cell cell = region.getCell(i);

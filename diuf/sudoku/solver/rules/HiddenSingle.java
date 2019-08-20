@@ -40,7 +40,8 @@ public class HiddenSingle implements DirectHintProducer {
             // Iterate on values
             for (int value = 1; value <= 9; value++) {
                 // Get value's potential position
-                BitSet potentialIndexes = region.getPotentialPositions(value);
+                //BitSet potentialIndexes = region.getPotentialPositions(value);
+                BitSet potentialIndexes = region.getPotentialPositions(grid, value);
                 if (potentialIndexes.cardinality() == 1) {
                     // One potential position -> solution found
                     int uniqueIndex = potentialIndexes.nextSetBit(0);
