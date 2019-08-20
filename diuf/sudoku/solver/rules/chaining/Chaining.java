@@ -192,7 +192,8 @@ public class Chaining implements IndirectHintProducer {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) { // the cell is empty
+                //if (cell.getValue() == 0) { // the cell is empty
+                if (grid.getCellValue(x, y) == 0) { // the cell is empty
                 	int cardinality = cell.getPotentialValues().cardinality();
                     if (cardinality > 1) {
                         // Iterate on all potential values that are not alone
@@ -280,7 +281,8 @@ public class Chaining implements IndirectHintProducer {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) { // the cell is empty
+                //if (cell.getValue() == 0) { // the cell is empty
+                if (grid.getCellValue(x, y) == 0) { // the cell is empty
                 	int cardinality = cell.getPotentialValues().cardinality();
                     if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
                     	if (noParallel) {

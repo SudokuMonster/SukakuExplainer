@@ -23,8 +23,9 @@ public class NumberOfValues implements WarningHintProducer {
         BitSet values = new BitSet(10);
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                int value = cell.getValue();
+                //Cell cell = grid.getCell(x, y);
+                //int value = cell.getValue();
+            	int value = grid.getCellValue(x, y);
                 if (value != 0)
                     values.set(value);
             }

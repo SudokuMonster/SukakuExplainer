@@ -19,7 +19,8 @@ public class NumberOfFilledCells implements WarningHintProducer {
         int countEmpty = 0;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                if (grid.getCell(x, y).getValue() == 0)
+                //if (grid.getCell(x, y).getValue() == 0)
+                if (grid.getCellValue(x, y) == 0)
                     countEmpty++;
             }
         }

@@ -159,7 +159,8 @@ public class Solver {
             for (int i = 0; i < 9; i++) {
                 Cell cell = part.getCell(i);
                 if (!cell.isEmpty()) {
-                    int value = cell.getValue();
+                    //int value = cell.getValue();
+                    int value = grid.getCellValue(cell.getX(), cell.getY());
                     // Remove the cell value from the potential values of other cells
                     for (int j = 0; j < 9; j++)
                         part.getCell(j).removePotentialValue(value);
@@ -175,7 +176,8 @@ public class Solver {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) {
+                //if (cell.getValue() == 0) {
+                if (grid.getCellValue(x, y) == 0) {
                     for (int value = 1; value <= 9; value++)
                         cell.addPotentialValue(value);
                 }
@@ -193,7 +195,8 @@ public class Solver {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getValue() != 0)
+//                if (cell.getValue() != 0)
+                if (grid.getCellValue(x, y) != 0)
                     cell.clearPotentialValues();
             }
         }
@@ -661,7 +664,8 @@ public class Solver {
                                     int cnt = 0;
                                     int c = ((((i*3)+j)*3)+k)*3+l;
                                     Cell cell = grid.getCell(c % 9, c / 9);
-                                    int n = cell.getValue();
+                                    //int n = cell.getValue();
+                                    int n = grid.getCellValue(c % 9, c / 9);
                                     if ( n != 0 ) {
                                         s += n;
                                         cnt += 1;

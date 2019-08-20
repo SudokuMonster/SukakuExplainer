@@ -177,7 +177,8 @@ public class BruteForceAnalysis implements WarningHintProducer {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) {
+                //if (cell.getValue() == 0) {
+                if (grid.getCellValue(x, y) == 0) {
                     int cardinality = cell.getPotentialValues().cardinality();
                     if (cardinality < leastCardinality) {
                         leastCardinality = cardinality;
@@ -228,7 +229,8 @@ public class BruteForceAnalysis implements WarningHintProducer {
             for (int i = 0; i < 9; i++) {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
-                    if (!region.contains(value) && region.getPotentialPositions(value).isEmpty())
+                    //if (!region.contains(value) && region.getPotentialPositions(value).isEmpty())
+                    if (!region.contains(grid, value) && region.getPotentialPositions(value).isEmpty())
                         return false; // No room for the value in the region
                 }
             }

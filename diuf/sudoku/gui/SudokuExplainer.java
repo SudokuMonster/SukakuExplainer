@@ -242,7 +242,8 @@ public class SudokuExplainer {
      * the cell's value was erased.
      */
     public void cellValueTyped(Cell cell, int value) {
-        int oldValue = cell.getValue();
+        //int oldValue = cell.getValue();
+        int oldValue = grid.getCellValue(cell.getX(), cell.getY());
         cell.setValue(value);
         if (value == 0 || oldValue != 0)
             solver.rebuildPotentialValues();

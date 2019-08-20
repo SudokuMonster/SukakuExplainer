@@ -104,7 +104,8 @@ public class SudokuPanel extends JPanel {
                             repaintCell(target);
                         }
                     } else {
-                        if (target.getValue() == 0) {
+                        //if (target.getValue() == 0) {
+                        if (grid.getCellValue(target.getX(), target.getY()) == 0) {
                             // Set the cell's value
                             engine.cellValueTyped(target, value);
                             repaint();
@@ -235,7 +236,8 @@ public class SudokuPanel extends JPanel {
         Cell cell = grid.getCell(cx, cy);
         if (!cell.equals(this.selectedCell))
             return 0;
-        if (this.selectedCell != null && this.selectedCell.getValue() != 0)
+        //if (this.selectedCell != null && this.selectedCell.getValue() != 0)
+        if (this.selectedCell != null && grid.getCellValue(this.selectedCell.getX(), this.selectedCell.getY()) != 0)
             return 0;
         // Substract cell's corner
         x = x - cx * CELL_OUTER_SIZE - LEGEND_GAP_SIZE;
@@ -642,12 +644,14 @@ public class SudokuPanel extends JPanel {
                 if (clip.intersects(cellRect)) {
                     Cell cell = grid.getCell(x, y);
                     // Paint cell value
-                    if (cell.getValue() != 0) {
+                    //if (cell.getValue() != 0) {
+                    if (grid.getCellValue(x, y) != 0) {
                         g.setFont(bigFont);
                         int cx = x * CELL_OUTER_SIZE + CELL_PAD + CELL_INNER_SIZE / 2;
                         int cy = y * CELL_OUTER_SIZE + CELL_PAD + CELL_INNER_SIZE / 2;          
                         initValueColor(g, cell);
-                        drawStringCentered(g, "" + cell.getValue(), cx, cy);
+                        //drawStringCentered(g, "" + cell.getValue(), cx, cy);
+                        drawStringCentered(g, "" + grid.getCellValue(x, y), cx, cy);
                     }
                 }
             }

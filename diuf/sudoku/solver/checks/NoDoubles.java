@@ -32,7 +32,8 @@ public class NoDoubles implements WarningHintProducer {
                 // Iterate on cells of a region
                 for (int j = 0; j < 9; j++) {
                     final Cell cell = region.getCell(j);
-                    int value = cell.getValue();
+                    //int value = cell.getValue();
+                    int value = grid.getCellValue(cell.getX(), cell.getY());
                     if (value != 0) {
                         if (values.get(value)) {
                             // Value appear twice in this region
@@ -46,7 +47,8 @@ public class NoDoubles implements WarningHintProducer {
                                     result.add(cell);
                                     for (int i = 0; i < 9; i++) {
                                         Cell other = region.getCell(i);
-                                        if (!other.equals(cell) && cell.getValue() == other.getValue())
+                                        //if (!other.equals(cell) && cell.getValue() == other.getValue())
+                                        if (!other.equals(cell) && grid.getCellValue(cell.getX(), cell.getY()) == grid.getCellValue(other.getX(), other.getY()))
                                             result.add(other);
                                     }
                                     return result;
@@ -79,7 +81,8 @@ public class NoDoubles implements WarningHintProducer {
                 // Iterate on cells of a region
                 for (int j = 0; j < 9; j++) {
                     final Cell cell = region.getCell(j);
-                    int value = cell.getValue();
+                    //int value = cell.getValue();
+                    int value = grid.getCellValue(cell.getX(), cell.getY());
                     if (value != 0) {
                         if (values.get(value)) {
                             return false;

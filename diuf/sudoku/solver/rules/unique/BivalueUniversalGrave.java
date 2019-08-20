@@ -84,7 +84,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = temp.getCell(x, y);
-                if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
+                //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
+                if (grid.getCellValue(x, y) == 0 && cell.getPotentialValues().cardinality() != 2)
                     return; // Not a BUG
             }
         }

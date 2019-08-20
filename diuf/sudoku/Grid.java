@@ -226,15 +226,32 @@ public class Grid {
          */
         public abstract int indexOf(Cell cell);
 
+//        /**
+//         * Test whether this region contains the given value, that is,
+//         * is a cell of this region is filled with the given value.
+//         * @param value the value to check for
+//         * @return whether this region contains the given value
+//         */
+//
+//        public boolean contains(int value) {
+//            for (int i = 0; i < 9; i++) {
+//                if (getCell(i).getValue() == value)
+//                    return true;
+//            }
+//            return false;
+//        }
+        
         /**
          * Test whether this region contains the given value, that is,
          * is a cell of this region is filled with the given value.
+         * @param grid the grid
          * @param value the value to check for
          * @return whether this region contains the given value
          */
-        public boolean contains(int value) {
+        public boolean contains(Grid grid, int value) {
             for (int i = 0; i < 9; i++) {
-                if (getCell(i).getValue() == value)
+            	Cell cell = getCell(i);
+                if (grid.getCellValue(cell.getX(), cell.getY()) == value)
                     return true;
             }
             return false;
@@ -542,7 +559,8 @@ public class Grid {
             Region region = getRegionAt(regionType, target.getX(), target.getY());
             for (int i = 0; i < 9; i++) {
                 Cell cell = region.getCell(i);
-                if (!cell.equals(target) && cell.getValue() == value)
+                //if (!cell.equals(target) && cell.getValue() == value)
+                if (!cell.equals(target) && getCellValue(target.getX(), target.getY()) == value)
                     return cell;
             }
         }
@@ -572,7 +590,8 @@ public class Grid {
         int result = 0;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                if (cells[y][x].getValue() == value)
+                //if (cells[y][x].getValue() == value)
+                if (getCellValue(y, x) == value)
                     result++;
             }
         }
@@ -624,7 +643,8 @@ public class Grid {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
             	Cell cell = cells[x][y];
-            	int value = cell.getValue();
+            	//int value = cell.getValue();
+            	int value = getCellValue(x, y);
             	if(value == 0) {
 	                BitSet values = cell.getPotentialValues();
 	                for (int v = 1; v < 10; v++) {
@@ -679,7 +699,8 @@ public class Grid {
                             int cnt = 0;
                             int c = ((((i*3)+j)*3)+k)*3+l;
                             Cell cell = getCell(c % 9, c / 9);
-                            int n = cell.getValue();
+                            //int n = cell.getValue();
+                            int n = getCellValue(c % 9, c / 9);
                             if ( n != 0 ) {
                                 s += n;
                                 cnt += 1;
@@ -784,10 +805,9 @@ public class Grid {
         Grid other = (Grid)o;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
+                if (getCellValue(x, y) != other.getCellValue(x, y)) return false;
                 Cell thisCell = this.getCell(x, y);
                 Cell otherCell = other.getCell(x, y);
-                if (thisCell.getValue() != otherCell.getValue())
-                    return false;
                 if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
                     return false;
             }
@@ -801,7 +821,8 @@ public class Grid {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 Cell cell = getCell(x, y);
-                result ^= cell.getValue();
+                //result ^= cell.getValue();
+                result ^= getCellValue(x, y);
                 result ^= cell.getPotentialValues().hashCode();
             }
         }
