@@ -136,21 +136,56 @@ public class SudokuIO {
         String newLines = allLines.replace(".", "/").replace("/", "0").replaceAll("[^1-9]", " ").trim();
         String[] parts = newLines.split("\\s+");
         int y = 0, x = 0;
-     
-        for (String part : parts) {
-            Cell cell = grid.getCell(x, y);
-           
+        //Start of Dirty fix for Loading Multiline Sukaku naked singles
+        for (String part : parts)
+		{
+			int a = (x / 3) + (y / 3) * 3;
+            Cell cell = grid.getCell(x, y);          
             HashSet<Integer> possible = new HashSet<Integer>();
-            for (char ch : part.toCharArray()) {
+            for (char ch : part.toCharArray())
+			{
                 if (ch >= '1' && ch <= '9')
                     possible.add(ch - '0');
             }
-            for (int i = 1; i <= 9; i++)
-            {
-                if (!possible.contains(i))
-                    cell.removePotentialValue(i);
-            }
-           
+			if (possible.size() == 1)
+			{					
+				loop:
+				for (int i = 1; i <= 9; i++)
+				{
+					if (possible.contains(i))
+					{
+						int c = 0, b = 0;
+						for (String spare : parts) {
+							int d = (b / 3) + (c / 3) * 3;
+							if ((c == y || b == x || d == a) && (!(c == y && b == x)))
+							{	
+								HashSet<Integer> current = new HashSet<Integer>();
+								for (char ch : spare.toCharArray())
+								{
+									if (ch >= '1' && ch <= '9')
+										current.add(ch - '0');
+								}
+								if (current.contains(i))
+									break loop;
+							}
+							b++;
+							if (b == 9) {
+								c++;
+								b = 0;
+								if (c == 9)
+									break; //ignore if more than 81 found
+							}
+						}
+						grid.setCellValue(x, y, i);
+						break loop;
+					}
+				}
+			}
+			for (int i = 1; i <= 9; i++)
+			{
+				if (!possible.contains(i))
+					cell.removePotentialValue(i);
+			}
             x++;
             if (x == 9) {
                 y++;
@@ -159,6 +194,7 @@ public class SudokuIO {
                     break; //ignore if more than 81 found
             }
         }
+        //End of Dirty fix for Loading Multiline Sukaku naked singles
         return parts.length == 81 ? RES_OK : RES_WARN;
     }
 
