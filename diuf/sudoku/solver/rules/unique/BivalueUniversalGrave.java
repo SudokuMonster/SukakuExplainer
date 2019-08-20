@@ -87,7 +87,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             for (int x = 0; x < 9; x++) {
                 Cell cell = temp.getCell(x, y);
                 //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
-                if (grid.getCellValue(x, y) == 0 && grid.getCellPotentialValues(cell).cardinality() != 2)
+                if (temp.getCellValue(x, y) == 0 && temp.getCellPotentialValues(cell).cardinality() != 2)
                     return; // Not a BUG
             }
         }
@@ -100,7 +100,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 for (int value = 1; value <= 9; value++) {
                     // Possible positions of a value in a region (row/column/block):
                     //BitSet positions = region.getPotentialPositions(value);
-                    BitSet positions = region.getPotentialPositions(grid, value);
+                    BitSet positions = region.getPotentialPositions(temp, value);
                     int cardinality = positions.cardinality();
                     if (cardinality != 0 && cardinality != 2)
                         return; // Not a BUG
@@ -113,7 +113,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             addBug1Hint(grid, accu, bugCells, allBugValues);
         } else if (allBugValues.cardinality() == 1) {
             // Yeah, potential BUG type-2 or type-4 pattern found
-            addBug2Hint(accu, bugCells, allBugValues, commonCells);
+            addBug2Hint(grid, accu, bugCells, allBugValues, commonCells);
             if (bugCells.size() == 2)
                 // Potential BUG type-4 pattern found
                 addBug4Hint(accu, bugCells, bugValues, allBugValues, commonCells, grid);
@@ -137,14 +137,15 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         accu.add(hint);
     }
 
-    private void addBug2Hint(HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues,
+    private void addBug2Hint(Grid grid, HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues,
             Set<Cell> commonCells) throws InterruptedException {
         int value = extraValues.nextSetBit(0);
         // Cells found ?
         if (commonCells != null && !commonCells.isEmpty()) {
             Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
             for (Cell cell : commonCells) {
-                if (cell.hasPotentialValue(value))
+                //if (cell.hasPotentialValue(value))
+                if (grid.hasCellPotentialValue(cell, value))
                     removablePotentials.put(cell, SingletonBitSet.create(value));
             }
             if (!removablePotentials.isEmpty()) {

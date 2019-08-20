@@ -84,7 +84,8 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
         for (Cell cell : this.cells) {
             Cell initialCell = initialGrid.getCell(cell.getX(), cell.getY());
             for (int value = 1; value <= 9; value++) {
-                if (initialCell.hasPotentialValue(value) && !myValues.get(value))
+                //if (initialCell.hasPotentialValue(value) && !myValues.get(value))
+                if (initialGrid.hasCellPotentialValue(initialCell, value) && !myValues.get(value))
                     // This potential must go off before I can be applied
                     result.add(new Potential(cell, value, false));
             }

@@ -137,11 +137,14 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         Cell xzCell = initialGrid.getCell(this.xzCell.getX(), this.xzCell.getY());
         Cell yzCell = initialGrid.getCell(this.yzCell.getX(), this.yzCell.getY());
         for (int p = 1; p <= 9; p++) {
-            if (xyCell.hasPotentialValue(p) && !this.xyCell.hasPotentialValue(p))
+            //if (xyCell.hasPotentialValue(p) && !this.xyCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(xyCell, p) && !currentGrid.hasCellPotentialValue(this.xyCell, p))
                 result.add(new Potential(this.xyCell, p, false));
-            if (xzCell.hasPotentialValue(p) && !this.xzCell.hasPotentialValue(p))
+            //if (xzCell.hasPotentialValue(p) && !this.xzCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(xzCell, p) && !currentGrid.hasCellPotentialValue(this.xzCell, p))
                 result.add(new Potential(this.xzCell, p, false));
-            if (yzCell.hasPotentialValue(p) && !this.yzCell.hasPotentialValue(p))
+            //if (yzCell.hasPotentialValue(p) && !this.yzCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(yzCell, p) && !currentGrid.hasCellPotentialValue(this.yzCell, p))
                 result.add(new Potential(this.yzCell, p, false));
         }
         return result;

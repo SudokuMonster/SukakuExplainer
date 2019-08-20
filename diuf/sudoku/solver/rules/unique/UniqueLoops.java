@@ -258,7 +258,8 @@ public class UniqueLoops implements IndirectHintProducer {
         }
         for (Cell cell : commonCells) {
             if (!extraCells.contains(cell)) {
-                if (cell.hasPotentialValue(value))
+                //if (cell.hasPotentialValue(value))
+                if (grid.hasCellPotentialValue(cell, value))
                     removable.put(cell, SingletonBitSet.create(value));
             }
         }
@@ -336,7 +337,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                         CommonTuples.searchCommonTuple(potentials, degree);
                                     if (commonPotentialValues != null) {
                                         // Potential naked set found
-                                        UniqueLoopHint hint = createType3NakedHint(loop, v1, v2, extra, region, c1, c2,
+                                        UniqueLoopHint hint = createType3NakedHint(grid, loop, v1, v2, extra, region, c1, c2,
                                                 otherCells, commonPotentialValues);
                                         if (hint.isWorth())
                                             result.add(hint);
@@ -374,7 +375,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                     BitSet hiddenValues = new BitSet(10);
                                     for (int i = 0; i < values.length; i++)
                                         hiddenValues.set(values[i]);
-                                    UniqueLoopHint hint = createType3HiddenHint(loop, v1, v2, extra, hiddenValues, region,
+                                    UniqueLoopHint hint = createType3HiddenHint(grid, loop, v1, v2, extra, hiddenValues, region,
                                             c1, c2, commonPotentialPositions);
                                     if (hint.isWorth())
                                         result.add(hint);
@@ -389,7 +390,7 @@ public class UniqueLoops implements IndirectHintProducer {
         return result;
     }
 
-    private UniqueLoopHint createType3HiddenHint(List<Cell> loop, int v1, int v2,
+    private UniqueLoopHint createType3HiddenHint(Grid grid, List<Cell> loop, int v1, int v2,
             BitSet otherValues, BitSet hiddenValues,
             Grid.Region region, Cell c1, Cell c2, BitSet potentialIndexes) {
         // Build other value list
@@ -410,7 +411,8 @@ public class UniqueLoops implements IndirectHintProducer {
                 if (!cell.equals(c1) && !cell.equals(c2)) {
                     BitSet values = new BitSet(10);
                     for (int value = 1; value <= 9; value++) {
-                        if (!hiddenValues.get(value) && cell.hasPotentialValue(value)) {
+                        //if (!hiddenValues.get(value) && cell.hasPotentialValue(value)) {
+                        if (!hiddenValues.get(value) && grid.hasCellPotentialValue(cell, value)) {
                             values.set(value);
                         }
                     }
@@ -428,7 +430,7 @@ public class UniqueLoops implements IndirectHintProducer {
                 region, indexes);
     }
 
-    private UniqueLoopHint createType3NakedHint(List<Cell> loop, int v1, int v2, BitSet otherValues,
+    private UniqueLoopHint createType3NakedHint(Grid grid, List<Cell> loop, int v1, int v2, BitSet otherValues,
             Grid.Region region, Cell c1, Cell c2, Cell[] cells, BitSet commonPotentialValues) {
         // Build other value list
         int[] oValues = new int[otherValues.cardinality()];
@@ -453,7 +455,8 @@ public class UniqueLoops implements IndirectHintProducer {
                 // Get removable potentials
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell, value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())
@@ -478,9 +481,11 @@ public class UniqueLoops implements IndirectHintProducer {
                 for (int i = 0; i < 9; i++) {
                     Cell cell = region.getCell(i);
                     if (!cell.equals(c1) && !cell.equals(c2)) {
-                        if (cell.hasPotentialValue(v1))
+                        //if (cell.hasPotentialValue(v1))
+                        if (grid.hasCellPotentialValue(cell, v1))
                             hasValue1 = true;
-                        if (cell.hasPotentialValue(v2))
+                        //if (cell.hasPotentialValue(v2))
+                        if (grid.hasCellPotentialValue(cell, v2))
                             hasValue2 = true;
                     }
                 }

@@ -207,6 +207,17 @@ public class Grid {
     }
 
     /**
+     * Test whether the given value is a potential
+     * value for the given cell.
+     * @param cell the cell to test
+     * @param value the potential value to test, between 1 and 9, inclusive
+     * @return whether the given value is a potential value for this cell
+     */
+    public boolean hasCellPotentialValue(Cell cell, int value) {
+        return cell.hasPotentialValue(value);
+    }
+
+    /**
      * Get the row at the given location
      * @param x the horizontal coordinate
      * @param y the vertical coordinate

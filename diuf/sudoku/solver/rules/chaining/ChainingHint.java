@@ -255,7 +255,8 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                             Cell actCell = currentGrid.getCell(curCell.getX(), curCell.getY());
                             Cell initCell = initialGrid.getCell(curCell.getX(), curCell.getY());
                             for (int value = 1; value <= 9; value++) {
-                                if (initCell.hasPotentialValue(value) && !actCell.hasPotentialValue(value))
+                                //if (initCell.hasPotentialValue(value) && !actCell.hasPotentialValue(value))
+                                if (initialGrid.hasCellPotentialValue(initCell, value) && !currentGrid.hasCellPotentialValue(actCell, value))
                                     result.add(new Potential(actCell, value, false));
                             }
                         } else { // Hidden single
@@ -263,7 +264,8 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                             for (int i = 0; i < 9; i++) {
                                 Cell actCell = r.getCell(i);
                                 Cell initCell = initialGrid.getCell(actCell.getX(), actCell.getY());
-                                if (initCell.hasPotentialValue(p.value) && !actCell.hasPotentialValue(p.value))
+                                //if (initCell.hasPotentialValue(p.value) && !actCell.hasPotentialValue(p.value))
+                                if (initialGrid.hasCellPotentialValue(initCell, p.value) && !currentGrid.hasCellPotentialValue(actCell, p.value))
                                     result.add(new Potential(actCell, p.value, false));
                             }
                         }
