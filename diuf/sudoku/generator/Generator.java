@@ -30,7 +30,6 @@ public class Generator {
      * @param maxDifficulty the maximum difficulty of the grid
      * @return the generated grid
      */
-01
     public Grid generate(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3) {
         assert !symmetries.isEmpty() : "No symmetries specified";
         Random random = new Random();
@@ -49,7 +48,6 @@ public class Generator {
             grid.copyTo(copy);
             Solver solver = new Solver(copy);
             solver.rebuildPotentialValues();
-01
             double difficulty = solver.analyseDifficulty(minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
             if (difficulty >= minDifficulty && difficulty <= maxDifficulty)
                 return grid;
