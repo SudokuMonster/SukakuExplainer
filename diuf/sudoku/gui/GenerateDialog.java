@@ -23,7 +23,6 @@ public class GenerateDialog extends JDialog {
 
     private static final long serialVersionUID = 8620081149465721387L;
 
- 01
     private enum Difficulty {
         Easy {
 
@@ -506,7 +505,6 @@ public class GenerateDialog extends JDialog {
             }
         };
 
- 01
         public abstract double getMinDifficulty();
         public abstract double getMaxDifficulty();
 		public abstract double getincludeDifficulty1();
@@ -779,7 +777,6 @@ public class GenerateDialog extends JDialog {
         // Gather parameters
         double minDifficulty = difficulty.getMinDifficulty();
         double maxDifficulty = difficulty.getMaxDifficulty();
- 01
 		double includeDifficulty1 = difficulty.getincludeDifficulty1();
 		double includeDifficulty2 = difficulty.getincludeDifficulty2();
 		double includeDifficulty3 = difficulty.getincludeDifficulty3();
@@ -794,7 +791,6 @@ public class GenerateDialog extends JDialog {
         List<Symmetry> symList = new ArrayList<Symmetry>(symmetries);
 
         // Generate grid
- 01
         generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
         generator.start();
     }
@@ -807,7 +803,6 @@ public class GenerateDialog extends JDialog {
         private final List<Symmetry> symmetries;
         private final double minDifficulty;
         private final double maxDifficulty;
- 01
 		private final double includeDifficulty1;
 		private final double includeDifficulty2;
 		private final double includeDifficulty3;
@@ -821,7 +816,6 @@ public class GenerateDialog extends JDialog {
         private Generator generator;
 
 
- 01
        public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3) {
             this.symmetries = symmetries;
             this.minDifficulty = minDifficulty;
@@ -853,7 +847,6 @@ public class GenerateDialog extends JDialog {
                 }
             });
             generator = new Generator();
-01
             final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
