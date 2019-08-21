@@ -120,7 +120,7 @@ public class Cell {
         targetGrid.setCellValue(this.getX(), this.getY(), value);
         //this.potentialValues.clear();
         targetGrid.clearCellPotentialValues(this);
-        for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region region = targetGrid.getRegionAt(regionType, this.getX(), this.getY());
             for (int i = 0; i < 9; i++) {
                 Cell cell = region.getCell(i);
@@ -192,7 +192,7 @@ public class Cell {
         // Use a set to prevent duplicates (cells in both block and row/column)
         Collection<Cell> result = new LinkedHashSet<Cell>();
         // Iterate on region types (Block, Row, Column)
-        for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             // Get region on which this cell is
             Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
             // Add all cell of that region

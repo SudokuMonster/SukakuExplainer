@@ -226,7 +226,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
      * imply that the sudoku has no solution.
      */
     private boolean isFillable(Grid grid) {
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region[] regions = grid.getRegions(regionType);
             for (int i = 0; i < 9; i++) {
                 Grid.Region region = regions[i];

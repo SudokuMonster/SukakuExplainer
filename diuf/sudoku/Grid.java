@@ -48,10 +48,12 @@ public class Grid {
     		};
 
     // Views
-    private Row[] rows = new Row[9];
-    private Column[] columns = new Column[9];
-    private Block[] blocks = new Block[9];
+    private static final Row[] rows = {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
+    private static final Column[] columns = {new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
+    private static final Block[] blocks = {new Block(0,0), new Block(0,1), new Block(0,2), new Block(1,0), new Block(1,1), new Block(1,2), new Block(2,0), new Block(2,1), new Block(2,2)};
 
+    //private static final List<Class<? extends Grid.Region>> _regionTypes = null;
+    private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
 
     /**
      * Create a new 9x9 Sudoku grid. All cells are set to empty
@@ -67,11 +69,11 @@ public class Grid {
         	cellPotentialValues[i] = new BitSet(10);
         }
         // Build subparts views
-        for (int i = 0; i < 9; i++) {
-            rows[i] = new Row(i);
-            columns[i] = new Column(i);
-            blocks[i] = new Block(i / 3, i % 3);
-        }
+//        for (int i = 0; i < 9; i++) {
+//            rows[i] = new Row(i);
+//            columns[i] = new Column(i);
+//            blocks[i] = new Block(i / 3, i % 3);
+//        }
     }
 
     /**
@@ -100,54 +102,12 @@ public class Grid {
      */
     public Region[] getRegions(Class<? extends Region> regionType) {
         if (regionType == Row.class)
-            return this.rows;
+            return Grid.rows;
         else if (regionType == Column.class)
-            return this.columns;
+            return Grid.columns;
         else
-            return this.blocks;
+            return Grid.blocks;
     }
-
-//    /**
-//     * Get the row at the given index.
-//     * Rows are numbered from top to bottom.
-//     * @param num the index of the row to get, between 0 and 8, inclusive
-//     * @return the row at the given index
-//     */
-//    public Row getRow(int num) {
-//        return this.rows[num];
-//    }
-
-//    /**
-//     * Get the column at the given index.
-//     * Columns are numbered from left to right.
-//     * @param num the index of the column to get, between 0 and 8, inclusive
-//     * @return the column at the given index
-//     */
-//    public Column getColumn(int num) {
-//        return this.columns[num];
-//    }
-
-//    /**
-//     * Get the block at the given index.
-//     * Blocks are numbered from left to right, top to bottom.
-//     * @param num the index of the block to get, between 0 and 8, inclusive
-//     * @return the block at the given index
-//     */
-//    public Block getBlock(int num) {
-//        return this.blocks[num];
-//    }
-
-//    /**
-//     * Get the block at the given location
-//     * @param vPos the vertical position, between 0 to 2, inclusive
-//     * @param hPos the horizontal position, between 0 to 2, inclusive
-//     * @return the block at the given location
-//     */
-//    public Block getBlock(int vPos, int hPos) {
-//        return this.blocks[vPos * 3 + hPos];
-//    }
-
-    // Cell values
 
     /**
      * Set the value of a cell
@@ -305,7 +265,7 @@ public class Grid {
      * @return the row at the given coordinates
      */
     public Row getRowAt(int x, int y) {
-        return this.rows[y];
+        return Grid.rows[y];
     }
 
     /**
@@ -315,7 +275,7 @@ public class Grid {
      * @return the column at the given location
      */
     public Column getColumnAt(int x, int y) {
-        return this.columns[x];
+        return Grid.columns[x];
     }
 
     /**
@@ -325,8 +285,8 @@ public class Grid {
      * @return the block at the given coordinates (the coordinates
      * are coordinates of a cell)
      */
-    public Block getBlockAt(int x, int y) {
-        return this.blocks[(y / 3) * 3 + (x / 3)];
+    public static Block getBlockAt(int x, int y) {
+        return Grid.blocks[(y / 3) * 3 + (x / 3)];
     }
 
     public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, int x, int y) {
@@ -342,23 +302,22 @@ public class Grid {
         return getRegionAt(regionType, cell.getX(), cell.getY());
     }
 
-    private List<Class<? extends Grid.Region>> _regionTypes = null;
-
     /**
      * Get a list containing the three classes corresponding to the
      * three region types (row, column and block)
      * @return a list of the three region types. The resulting list
      * can not be modified
      */
-    public List<Class<? extends Grid.Region>> getRegionTypes() {
-        if (_regionTypes == null) {
-            _regionTypes = new ArrayList<Class<? extends Grid.Region>>(3);
-            _regionTypes.add(Grid.Block.class);
-            _regionTypes.add(Grid.Row.class);
-            _regionTypes.add(Grid.Column.class);
-            _regionTypes = Collections.unmodifiableList(_regionTypes);
-        }
-        return _regionTypes;
+    public static Class<? extends Grid.Region>[] getRegionTypes() {
+//    public List<Class<? extends Grid.Region>> getRegionTypes() {
+//        if (_regionTypes == null) {
+//            _regionTypes = new ArrayList<Class<? extends Grid.Region>>(3);
+//            _regionTypes.add(Grid.Block.class);
+//            _regionTypes.add(Grid.Row.class);
+//            _regionTypes.add(Grid.Column.class);
+//            _regionTypes = Collections.unmodifiableList(_regionTypes);
+//        }
+        return regionTypes;
     }
 
     // Grid regions implementation (rows, columns, 3x3 squares)
@@ -367,7 +326,7 @@ public class Grid {
      * Abstract class representing a region of a sudoku grid. A region
      * is either a row, a column or a 3x3 block.
      */
-    public abstract class Region {
+    public static abstract class Region {
 
         /**
          * Get a cell of this region by index. The order in which cells are
@@ -389,21 +348,6 @@ public class Grid {
          */
         public abstract int indexOf(Cell cell);
 
-//        /**
-//         * Test whether this region contains the given value, that is,
-//         * is a cell of this region is filled with the given value.
-//         * @param value the value to check for
-//         * @return whether this region contains the given value
-//         */
-//
-//        public boolean contains(int value) {
-//            for (int i = 0; i < 9; i++) {
-//                if (getCell(i).getValue() == value)
-//                    return true;
-//            }
-//            return false;
-//        }
-        
         /**
          * Test whether this region contains the given value, that is,
          * is a cell of this region is filled with the given value.
@@ -426,24 +370,6 @@ public class Grid {
          * @return whether this region contains the given cell
          */
         public abstract boolean contains(Cell cell);
-
-//        /**
-//         * Get the potential positions of the given value within this region.
-//         * The bits of the returned bitset correspond to indexes of cells, as
-//         * in {@link #getCell(int)}. Only the indexes of cells that have the given
-//         * value as a potential value are included in the bitset (see
-//         * {@link Cell#getPotentialValues()}).
-//         * @param value the value whose potential positions to get
-//         * @return the potential positions of the given value within this region
-//         * @see Cell#getPotentialValues()
-//         */
-//        public BitSet getPotentialPositions(int value) {
-//            BitSet result = new BitSet(9);
-//            for (int index = 0; index < 9; index++) {
-//                result.set(index, getCell(index).hasPotentialValue(value));
-//            }
-//            return result;
-//        }
 
         /**
          * Get the potential positions of the given value within this region.
@@ -506,18 +432,6 @@ public class Grid {
             return !commonCells(other).isEmpty();
         }
 
-//        /**
-//         * Get the number of cells of this region that are still empty.
-//         * @return the number of cells of this region that are still empty
-//         */
-//        public int getEmptyCellCount() {
-//            int result = 0;
-//            for (int i = 0; i < 9; i++)
-//                if (getCell(i).isEmpty())
-//                    result++;
-//            return result;
-//        }
-
         /**
          * Get the number of cells of this region that are still empty.
          * @return the number of cells of this region that are still empty
@@ -543,15 +457,14 @@ public class Grid {
          * @return a string representation of this region
          */
         public abstract String toFullString();
-
     }
 
     /**
      * A row of a sudoku grid.
      */
-    public class Row extends Region {
+    public static class Row extends Region {
 
-        private int rowNum;
+        private final int rowNum;
 
         public Row(int rowNum) {
             this.rowNum = rowNum;
@@ -611,9 +524,9 @@ public class Grid {
     /**
      * A column a sudoku grid
      */
-    public class Column extends Region {
+    public static class Column extends Region {
 
-        private int columnNum;
+        private final int columnNum;
 
         public Column(int columnNum) {
             this.columnNum = columnNum;
@@ -672,9 +585,9 @@ public class Grid {
     /**
      * A 3x3 block of a sudoku grid.
      */
-    public class Block extends Region {
+    public static class Block extends Region {
 
-        private int vNum, hNum;
+        private final int vNum, hNum;
 
         public Block(int vNum, int hNum) {
             this.vNum = vNum;

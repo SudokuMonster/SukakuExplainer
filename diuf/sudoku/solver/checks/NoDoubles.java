@@ -21,7 +21,7 @@ public class NoDoubles implements WarningHintProducer {
     public void getHints(Grid grid, HintsAccumulator accu)
             throws InterruptedException {
         // Iterate on region types
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region[] regions = grid.getRegions(regionType);
 
             // Iterate on occurances of a region
@@ -70,7 +70,7 @@ public class NoDoubles implements WarningHintProducer {
 
     public boolean isValid(Grid grid) {
         // Iterate on region types
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region[] regions = grid.getRegions(regionType);
 
             // Iterate on occurances of a region
