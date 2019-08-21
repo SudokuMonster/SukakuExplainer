@@ -442,7 +442,8 @@ public class Solver {
      * @return The actual difficulty if it is between the
      * given bounds. An arbitrary out-of-bounds value else.
      */
-    public double analyseDifficulty(double min, double max) {
+//Tarek01
+    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3) {
         int oldPriority = lowerPriority();
         try {
             double difficulty = Double.NEGATIVE_INFINITY;
@@ -467,15 +468,18 @@ public class Solver {
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
-                    difficulty = ruleDiff;
+                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3)
+					return 0.0;
+				if (ruleDiff > difficulty)
+					if (!(notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff))
+						difficulty = ruleDiff;
                 if (difficulty >= min && max >= 11.0)
                     break;
                 if (difficulty > max)
                     break;
                 hint.apply(grid);
             }
-            return difficulty;
+			return difficulty;
         } finally {
             normalPriority(oldPriority);
         }
