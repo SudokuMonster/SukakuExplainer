@@ -123,10 +123,9 @@ public class Cell {
         for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
             Grid.Region region = targetGrid.getRegionAt(regionType, this.getX(), this.getY());
             for (int i = 0; i < 9; i++) {
-                Cell original = region.getCell(i);
-                Cell other = targetGrid.getCell(original.getX(), original.getY());
+                Cell cell = region.getCell(i);
                 //other.removePotentialValue(value);
-                targetGrid.removeCellPotentialValue(other, value);
+                targetGrid.removeCellPotentialValue(cell, value);
             }
         }
     }

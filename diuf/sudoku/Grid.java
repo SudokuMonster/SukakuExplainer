@@ -80,9 +80,16 @@ public class Grid {
      * @param y the y coordinate (0=topmost, 8=bottommost)
      * @return the cell at the given coordinates
      */
-    public Cell getCell(int x, int y) {
+    public static Cell getCell(int x, int y) {
         //return this.cells[y][x];
-        return this.cells[9 * y + x];
+        return cells[9 * y + x];
+    }
+
+    /**
+     * Get the cell at the given index 8 .. 80
+     */
+    public static Cell getCell(int index) {
+        return cells[index];
     }
 
     /**
@@ -228,7 +235,6 @@ public class Grid {
      */
     public BitSet getCellPotentialValues(Cell cell) {
         //return cell.getPotentialValues();
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
         return cellPotentialValues[cell.getIndex()];
     }
 
@@ -241,7 +247,6 @@ public class Grid {
      */
     public boolean hasCellPotentialValue(Cell cell, int value) {
         //return cell.hasPotentialValue(value);
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
     	return cellPotentialValues[cell.getIndex()].get(value);
     }
 
@@ -252,7 +257,6 @@ public class Grid {
      */
     public void addCellPotentialValue(Cell cell, int value) {
         //cell.addPotentialValue(value);
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
         cellPotentialValues[cell.getIndex()].set(value);
     }
 
@@ -263,7 +267,6 @@ public class Grid {
      */
     public void removeCellPotentialValue(Cell cell, int value) {
         //cell.removePotentialValue(value);
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
         cellPotentialValues[cell.getIndex()].clear(value);
     }
 
@@ -274,7 +277,6 @@ public class Grid {
      */
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
     	//cell.removePotentialValues(valuesToRemove);
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
         cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
     }
 
@@ -284,7 +286,6 @@ public class Grid {
      */
     public void clearCellPotentialValues(Cell cell) {
         //cell.clearPotentialValues();
-    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
         cellPotentialValues[cell.getIndex()].clear();
     }
 
@@ -977,7 +978,7 @@ public class Grid {
                 if (ch >= '1' && ch <= '9') {
                     int value = (ch - '0');
                     assert value == 1 + i % 9; //exact positional mapping
-                    Cell cell = getCell(cl % 9, cl / 9);
+                    Cell cell = getCell(cl);
                     //cell.addPotentialValue(value);
                     addCellPotentialValue(cell, value);
                 }
@@ -991,7 +992,7 @@ public class Grid {
      */
     public void adjustPencilmarks() {
         for (int i = 0; i < 81; i++) {
-            Cell cell = getCell(i % 9, i / 9);
+            Cell cell = getCell(i);
             //if ( cell.getPotentialValues().cardinality() ==  1 ) {
             BitSet values = getCellPotentialValues(i);
             if ( values.cardinality() ==  1 ) {
@@ -1021,15 +1022,19 @@ public class Grid {
         if (!(o instanceof Grid))
             return false;
         Grid other = (Grid)o;
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                if (getCellValue(x, y) != other.getCellValue(x, y)) return false;
-                Cell thisCell = this.getCell(x, y);
-                Cell otherCell = other.getCell(x, y);
-                //if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
-                if (!getCellPotentialValues(thisCell).equals(other.getCellPotentialValues(otherCell)))
-                    return false;
-            }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                if (getCellValue(x, y) != other.getCellValue(x, y)) return false;
+//                Cell thisCell = this.getCell(x, y);
+//                Cell otherCell = other.getCell(x, y);
+//                //if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
+//                if (!getCellPotentialValues(thisCell).equals(other.getCellPotentialValues(otherCell)))
+//                    return false;
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            if (getCellValue(i) != other.getCellValue(i)) return false;
+            if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
         }
         return true;
     }

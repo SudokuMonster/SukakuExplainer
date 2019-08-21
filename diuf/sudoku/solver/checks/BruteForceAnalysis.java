@@ -176,7 +176,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
         int leastCardinality = 10;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 //if (cell.getValue() == 0) {
                 if (grid.getCellValue(x, y) == 0) {
                     //int cardinality = cell.getPotentialValues().cardinality();

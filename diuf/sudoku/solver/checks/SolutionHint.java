@@ -17,12 +17,12 @@ import diuf.sudoku.tools.*;
  */
 public class SolutionHint extends WarningHint {
 
-    private final Grid grid;
+    //private final Grid grid;
     private final Grid solution;
 
     public SolutionHint(WarningHintProducer rule, Grid grid, Grid solution) {
         super(rule);
-        this.grid = grid;
+        //this.grid = grid;
         this.solution = solution;
     }
 
@@ -32,7 +32,7 @@ public class SolutionHint extends WarningHint {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 int value = solution.getCellValue(x, y);
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 result.put(cell, SingletonBitSet.create(value));
             }
         }

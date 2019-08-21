@@ -67,52 +67,50 @@ public class XYWing implements IndirectHintProducer {
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
         int targetCardinality = (isXYZ ? 3 : 2);
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell xyCell = grid.getCell(x, y);
-                //BitSet xyValues = xyCell.getPotentialValues();
-                BitSet xyValues = grid.getCellPotentialValues(xyCell);
-                if (xyValues.cardinality() == targetCardinality) {
-                    // Potential XY cell found
-                    for (Cell xzCell : xyCell.getHouseCells(grid)) {
-                        //BitSet xzValues = xzCell.getPotentialValues();
-                        BitSet xzValues = grid.getCellPotentialValues(xzCell);
-                        if (xzValues.cardinality() == 2) {
-                            // Potential XZ cell found. Do small test
-                            BitSet remValues = (BitSet)xyValues.clone();
-                            remValues.andNot(xzValues);
-                            if (remValues.cardinality() == 1) {
-                                // We have found XZ cell, look for YZ cell
-                                for (Cell yzCell : xyCell.getHouseCells(grid)) {
-                                    //BitSet yzValues = yzCell.getPotentialValues();
-                                    BitSet yzValues = grid.getCellPotentialValues(yzCell);
-                                    if (yzValues.cardinality() == 2) {
-                                        // Potential YZ cell found
-                                        if (isXYZ) {
-                                            if (isXYZWing(xyValues, xzValues, yzValues)) {
-                                                // Found XYZ-Wing pattern
-                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
-                                                        xzValues, yzValues);
-                                                if (hint.isWorth())
-                                                    accu.add(hint);
-                                            }
-                                        } else {
-                                            if (isXYWing(xyValues, xzValues, yzValues)) {
-                                                // Found XY-Wing pattern
-                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
-                                                        xzValues, yzValues);
-                                                if (hint.isWorth())
-                                                    accu.add(hint);
-                                            }
+        for (int i = 0; i < 81; i++) {
+            Cell xyCell = Grid.getCell(i);
+            //BitSet xyValues = xyCell.getPotentialValues();
+            BitSet xyValues = grid.getCellPotentialValues(xyCell);
+            if (xyValues.cardinality() == targetCardinality) {
+                // Potential XY cell found
+                for (Cell xzCell : xyCell.getHouseCells(grid)) {
+                    //BitSet xzValues = xzCell.getPotentialValues();
+                    BitSet xzValues = grid.getCellPotentialValues(xzCell);
+                    if (xzValues.cardinality() == 2) {
+                        // Potential XZ cell found. Do small test
+                        BitSet remValues = (BitSet)xyValues.clone();
+                        remValues.andNot(xzValues);
+                        if (remValues.cardinality() == 1) {
+                            // We have found XZ cell, look for YZ cell
+                            for (Cell yzCell : xyCell.getHouseCells(grid)) {
+                                //BitSet yzValues = yzCell.getPotentialValues();
+                                BitSet yzValues = grid.getCellPotentialValues(yzCell);
+                                if (yzValues.cardinality() == 2) {
+                                    // Potential YZ cell found
+                                    if (isXYZ) {
+                                        if (isXYZWing(xyValues, xzValues, yzValues)) {
+                                            // Found XYZ-Wing pattern
+                                            XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
+                                                    xzValues, yzValues);
+                                            if (hint.isWorth())
+                                                accu.add(hint);
                                         }
-                                    } // yzValues.cardinality() == 2
-                                } // for yzCell
-                            } // xy - xz test
-                        } // xzValues.cardinality() == 2
-                    } // for xzCell
-                } // xyValues.cardinality() == 2
-            } // for x
-        } // for y
+                                    } else {
+                                        if (isXYWing(xyValues, xzValues, yzValues)) {
+                                            // Found XY-Wing pattern
+                                            XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
+                                                    xzValues, yzValues);
+                                            if (hint.isWorth())
+                                                accu.add(hint);
+                                        }
+                                    }
+                                } // yzValues.cardinality() == 2
+                            } // for yzCell
+                        } // xy - xz test
+                    } // xzValues.cardinality() == 2
+                } // for xzCell
+            } // xyValues.cardinality() == 2
+    	} // for i
     }
 
     private XYWingHint createHint(Grid grid, Cell xyCell, Cell xzCell, Cell yzCell,

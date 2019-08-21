@@ -28,28 +28,26 @@ public class AlignedPairExclusion extends AlignedExclusion {
          */
         List<Cell> candidateList = new ArrayList<Cell>();
         Map<Cell, Collection<Cell>> cellExcluders = new LinkedHashMap<Cell, Collection<Cell>>();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                //if (cell.getPotentialValues().cardinality() >= 2) {
-                if (grid.getCellPotentialValues(x, y).cardinality() >= 2) {
-                    boolean hasNakedSingle = false;
-                    // Look for potentially excluding cells (whose number of candidates <=
-                    // degree)
-                    Collection<Cell> excludingCells = new ArrayList<Cell>();
-                    for (Cell excludingCell : cell.getHouseCells(grid)) {
-                        //int exclCardinality = excludingCell.getPotentialValues().cardinality();
-                        int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
-                        if (exclCardinality == 1)
-                            hasNakedSingle = true;
-                        else if (exclCardinality == 2)
-                            excludingCells.add(excludingCell);
-                    }
-                    // Optimization: Skip this technique if naked singles are remaining
-                    if (!hasNakedSingle && !excludingCells.isEmpty()) {
-                        candidateList.add(cell);
-                        cellExcluders.put(cell, excludingCells);
-                    }
+        for (int i = 0; i < 81; i++) {
+            Cell cell = Grid.getCell(i);
+            //if (cell.getPotentialValues().cardinality() >= 2) {
+            if (grid.getCellPotentialValues(i).cardinality() >= 2) {
+                boolean hasNakedSingle = false;
+                // Look for potentially excluding cells (whose number of candidates <=
+                // degree)
+                Collection<Cell> excludingCells = new ArrayList<Cell>();
+                for (Cell excludingCell : cell.getHouseCells(grid)) {
+                    //int exclCardinality = excludingCell.getPotentialValues().cardinality();
+                    int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
+                    if (exclCardinality == 1)
+                        hasNakedSingle = true;
+                    else if (exclCardinality == 2)
+                        excludingCells.add(excludingCell);
+                }
+                // Optimization: Skip this technique if naked singles are remaining
+                if (!hasNakedSingle && !excludingCells.isEmpty()) {
+                    candidateList.add(cell);
+                    cellExcluders.put(cell, excludingCells);
                 }
             }
         }

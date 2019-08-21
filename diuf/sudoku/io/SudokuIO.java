@@ -117,7 +117,7 @@ public class SudokuIO {
                                 possible.add(ch - '0');
                         }
                        
-                        Cell cell = grid.getCell(x, y);
+                        Cell cell = Grid.getCell(x, y);
                         for (int i = 1; i <= 9; i++)
                         {
                             if (!possible.contains(i))
@@ -140,7 +140,7 @@ public class SudokuIO {
         //Start of Dirty fix for Loading Multiline Sukaku naked singles
         for (String part : parts) {
 			int a = (x / 3) + (y / 3) * 3;
-            Cell cell = grid.getCell(x, y);          
+            Cell cell = Grid.getCell(x, y);          
             HashSet<Integer> possible = new HashSet<Integer>();
             for (char ch : part.toCharArray()) {
                 if (ch >= '1' && ch <= '9')

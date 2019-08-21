@@ -54,7 +54,7 @@ public class UniqueLoops implements IndirectHintProducer {
         List<UniqueLoopHint> result = new ArrayList<UniqueLoopHint>();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 //BitSet potentials = cell.getPotentialValues();
                 BitSet potentials = grid.getCellPotentialValues(cell);
                 if (potentials.cardinality() == 2) {

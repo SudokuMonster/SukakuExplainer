@@ -85,14 +85,12 @@ public abstract class IndirectHint extends Hint {
     public void apply(Grid targetGrid) {
         for (Cell cell : removablePotentials.keySet()) {
             BitSet cellRemovablePotentials = removablePotentials.get(cell);
-            Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
             //targetCell.removePotentialValues(cellRemovablePotentials);
-            targetGrid.removeCellPotentialValues(targetCell, cellRemovablePotentials);
+            targetGrid.removeCellPotentialValues(cell, cellRemovablePotentials);
         }
     	Cell cell = getCell();
         if (cell != null) {
-        	Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
-        	targetCell.setValueAndCancel(getValue(), targetGrid);
+        	cell.setValueAndCancel(getValue(), targetGrid);
         }
     }
 

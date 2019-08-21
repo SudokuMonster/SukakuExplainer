@@ -189,26 +189,41 @@ public class Chaining implements IndirectHintProducer {
             boolean isXChainEnabled) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         // Iterate on all empty cells
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                //if (cell.getValue() == 0) { // the cell is empty
-                if (grid.getCellValue(x, y) == 0) { // the cell is empty
-                	//int cardinality = cell.getPotentialValues().cardinality();
-                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
-                    if (cardinality > 1) {
-                        // Iterate on all potential values that are not alone
-                        for (int value = 1; value <= 9; value++) {
-                            //if (cell.hasPotentialValue(value)) {
-                            if (grid.hasCellPotentialValue(cell, value)) {
-                                Potential pOn = new Potential(cell, value, true);
-                                doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled);
-                            }
-                        } 
-                    }
-                } // if empty
-            } // for x
-        } // for y
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0) { // the cell is empty
+//                if (grid.getCellValue(x, y) == 0) { // the cell is empty
+//                	//int cardinality = cell.getPotentialValues().cardinality();
+//                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
+//                    if (cardinality > 1) {
+//                        // Iterate on all potential values that are not alone
+//                        for (int value = 1; value <= 9; value++) {
+//                            //if (cell.hasPotentialValue(value)) {
+//                            if (grid.hasCellPotentialValue(cell, value)) {
+//                                Potential pOn = new Potential(cell, value, true);
+//                                doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled);
+//                            }
+//                        } 
+//                    }
+//                } // if empty
+//            } // for x
+//        } // for y
+        for (int i = 0; i < 81; i++) {
+            if (grid.getCellValue(i) == 0) { // the cell is empty
+            	int cardinality = grid.getCellPotentialValues(i).cardinality();
+                if (cardinality > 1) {
+                    // Iterate on all potential values that are not alone
+		            Cell cell = Grid.getCell(i);
+                    for (int value = 1; value <= 9; value++) {
+                        if (grid.hasCellPotentialValue(cell, value)) {
+                            Potential pOn = new Potential(cell, value, true);
+                            doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled);
+                        }
+                    } 
+                }
+            } // if empty
+         } // for i
         return result;
     }
 
@@ -225,7 +240,6 @@ public class Chaining implements IndirectHintProducer {
         // Iterate on all potential values that are not alone
         for (int value = 1; value <= 9; value++) {
             //if (cell.hasPotentialValue(value)) {
-        	assert grid.getCell(cell.getX(), cell.getY()) == cell;
             if (grid.hasCellPotentialValue(cell, value)) {
                 // Do Binary chaining (same potential either on or off)
                 Potential pOn = new Potential(cell, value, true);
@@ -282,24 +296,38 @@ public class Chaining implements IndirectHintProducer {
         boolean noParallel = this.noParallel || Settings.getInstance().getNumThreads() == 1;
         List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                //if (cell.getValue() == 0) { // the cell is empty
-                if (grid.getCellValue(x, y) == 0) { // the cell is empty
-                	//int cardinality = cell.getPotentialValues().cardinality();
-                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
-                    if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
-                    	if (noParallel) {
-                    		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
-                    	}
-                    	else {
-                    		cellsToProcess.add(cell);
-                    	}
-                    } // Cardinality > 1
-                } // if empty
-            } // for x
-        } // for y
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0) { // the cell is empty
+//                if (grid.getCellValue(x, y) == 0) { // the cell is empty
+//                	//int cardinality = cell.getPotentialValues().cardinality();
+//                	int cardinality = grid.getCellPotentialValues(cell).cardinality();
+//                    if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
+//                    	if (noParallel) {
+//                    		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
+//                    	}
+//                    	else {
+//                    		cellsToProcess.add(cell);
+//                    	}
+//                    } // Cardinality > 1
+//                } // if empty
+//            } // for x
+//        } // for y
+        for (int i = 0; i < 81; i++) {
+            if (grid.getCellValue(i) == 0) { // the cell is empty
+            	int cardinality = grid.getCellPotentialValues(i).cardinality();
+                if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
+		            Cell cell = Grid.getCell(i);
+                	if (noParallel) {
+                		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
+                	}
+                	else {
+                		cellsToProcess.add(cell);
+                	}
+                } // Cardinality > 1
+            } // if empty
+        } // for i
         if (noParallel) {
         	return result;
         }
@@ -343,10 +371,9 @@ public class Chaining implements IndirectHintProducer {
     		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true, caller.nestingLimit);
     		grid.copyTo(gridClone);
     		accumulator = result;
-    		this.cell = gridClone.getCell(cell.getX(), cell.getY());
+    		this.cell = cell;
     	}
     	public void run() {
-    		//int cardinality = cell.getPotentialValues().cardinality();
     		int cardinality = gridClone.getCellPotentialValues(cell).cardinality();
     		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
     	}
@@ -385,7 +412,6 @@ public class Chaining implements IndirectHintProducer {
             boolean isYChainEnabled, boolean isXChainEnabled) {
 
         //if (pOn.cell.getPotentialValues().cardinality() > 2
-    	assert grid.getCell(pOn.cell.getX(), pOn.cell.getY()) == pOn.cell;
         if (grid.getCellPotentialValues(pOn.cell).cardinality() > 2
                 && !isXChainEnabled)
             return; // Y-Cycles can only start if cell has 2 potential values
@@ -667,15 +693,26 @@ public class Chaining implements IndirectHintProducer {
 
     private void addHiddenParentsOfCell(Potential p, Grid grid, Grid source,
             LinkedSet<Potential> offPotentials) {
-        int x = p.cell.getX();
-        int y = p.cell.getY();
-        Cell curCell = grid.getCell(x, y);
-        Cell srcCell = source.getCell(x, y);
-        for (int value = 1; value <= 9; value++) {
-            //if (srcCell.hasPotentialValue(value) && !curCell.hasPotentialValue(value)) {
-            if (source.hasCellPotentialValue(srcCell, value) && !grid.hasCellPotentialValue(curCell, value)) {
+//        int i = p.cell.getIndex();
+//        Cell cell = Grid.getCell(i);
+//        //Cell srcCell = source.getCell(x, y);
+//        for (int value = 1; value <= 9; value++) {
+//            //if (srcCell.hasPotentialValue(value) && !curCell.hasPotentialValue(value)) {
+//            //if (source.hasCellPotentialValue(srcCell, value) && !grid.hasCellPotentialValue(curCell, value)) {
+//            if (source.hasCellPotentialValue(cell, value) && !grid.hasCellPotentialValue(cell, value)) {
+//                // Add a hidden parent
+//                Potential parent = new Potential(cell, value, false);
+//                parent = offPotentials.get(parent); // Retrieve complete version
+//                if (parent == null)
+//                    throw new RuntimeException("Parent not found");
+//                p.parents.add(parent);
+//            }
+//        }
+
+    	for (int value = 1; value <= 9; value++) {
+            if (source.hasCellPotentialValue(p.cell, value) && !grid.hasCellPotentialValue(p.cell, value)) {
                 // Add a hidden parent
-                Potential parent = new Potential(curCell, value, false);
+                Potential parent = new Potential(p.cell, value, false);
                 parent = offPotentials.get(parent); // Retrieve complete version
                 if (parent == null)
                     throw new RuntimeException("Parent not found");
@@ -1038,8 +1075,9 @@ public class Chaining implements IndirectHintProducer {
         p = dstOn;
         while (!p.parents.isEmpty()) {
             assert p.parents.size() == 1;
-            Cell srcCell = grid.getCell(p.cell.getX(), p.cell.getY());
-            for (Cell cell : srcCell.getHouseCells(grid)) {
+            //Cell srcCell = Grid.getCell(p.cell.getX(), p.cell.getY());
+            //for (Cell cell : srcCell.getHouseCells(grid)) {
+            for (Cell cell : p.cell.getHouseCells(grid)) {
                 //if (!cells.contains(cell) && cell.hasPotentialValue(p.value)) {
                 if (!cells.contains(cell) && grid.hasCellPotentialValue(cell, p.value)) {
                     if (p.isOn)

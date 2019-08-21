@@ -61,9 +61,10 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 bugValues.put(cell, new BitSet(10));
                             bugValues.get(cell).set(value);
                             allBugValues.set(value);
-                            Cell twin = temp.getCell(cell.getX(), cell.getY());
+                            //Cell twin = Grid.getCell(cell.getX(), cell.getY());
                             //twin.removePotentialValue(value);
-                            temp.removeCellPotentialValue(twin, value);
+                            //temp.removeCellPotentialValue(twin, value);
+                            temp.removeCellPotentialValue(cell, value);
                             if (commonCells == null)
                                 commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
                             else
@@ -86,7 +87,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         // exactly two potential values. Check it
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                Cell cell = temp.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
                 if (temp.getCellValue(x, y) == 0 && temp.getCellPotentialValues(cell).cardinality() != 2)
                     return; // Not a BUG

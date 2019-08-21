@@ -18,15 +18,15 @@ import diuf.sudoku.tools.*;
  */
 public class DoubleSolutionWarning extends WarningHint {
 
-    private Grid grid;
+    //private Grid grid;
     private Grid solution1;
     private Grid solution2;
-    private int lastViewNum = 0;
+    //private int lastViewNum = 0;
 
     public DoubleSolutionWarning(WarningHintProducer rule, Grid source, Grid solution1,
             Grid solution2) {
         super(rule);
-        this.grid = source;
+        //this.grid = source;
         this.solution1 = solution1;
         this.solution2 = solution2;
     }
@@ -52,11 +52,11 @@ public class DoubleSolutionWarning extends WarningHint {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 int value = solution.getCellValue(x, y);
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 result.put(cell, SingletonBitSet.create(value));
             }
         }
-        lastViewNum = viewNum;
+        //lastViewNum = viewNum;
         return result;
     }
 
