@@ -27,7 +27,7 @@ public class Grid {
     /*
      * Cell values of the grid [0 .. 9].
      */
-    private BitSet[] potentialValues = new BitSet[81];
+    private BitSet[] cellPotentialValues = new BitSet[81];
      
     /*
      * Cells of the grid. First array index is the vertical index (from top
@@ -51,7 +51,7 @@ public class Grid {
             }
         }
         for (int i = 0; i < 81; i++) {
-        	potentialValues[i] = new BitSet(10);
+        	cellPotentialValues[i] = new BitSet(10);
         }
         // Build subparts views
         for (int i = 0; i < 9; i++) {
@@ -183,7 +183,8 @@ public class Grid {
      * @return the potential values for unresolved cell, empty for resolved
      */
     public BitSet getCellPotentialValues(int cellIndex) {
-        return cells[cellIndex / 9][cellIndex % 9].getPotentialValues();
+        //return cells[cellIndex / 9][cellIndex % 9].getPotentialValues();
+        return cellPotentialValues[cellIndex];
     }
 
     /**
@@ -197,7 +198,8 @@ public class Grid {
      * @return the potential values for unresolved cell, empty for resolved
      */
     public BitSet getCellPotentialValues(int x, int y) {
-        return cells[y][x].getPotentialValues();
+        //return cells[y][x].getPotentialValues();
+        return cellPotentialValues[y * 9 + x];
     }
 
     /**
@@ -211,7 +213,9 @@ public class Grid {
      * @return the potential values for unresolved cell, empty for resolved
      */
     public BitSet getCellPotentialValues(Cell cell) {
-        return cell.getPotentialValues();
+        //return cell.getPotentialValues();
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+        return cellPotentialValues[cell.getIndex()];
     }
 
     /**
@@ -222,7 +226,9 @@ public class Grid {
      * @return whether the given value is a potential value for this cell
      */
     public boolean hasCellPotentialValue(Cell cell, int value) {
-        return cell.hasPotentialValue(value);
+        //return cell.hasPotentialValue(value);
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+    	return cellPotentialValues[cell.getIndex()].get(value);
     }
 
     /**
@@ -231,7 +237,9 @@ public class Grid {
      * @param value the value to add, between 1 and 9, inclusive
      */
     public void addCellPotentialValue(Cell cell, int value) {
-        cell.addPotentialValue(value);
+        //cell.addPotentialValue(value);
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+        cellPotentialValues[cell.getIndex()].set(value);
     }
 
     /**
@@ -240,7 +248,9 @@ public class Grid {
      * @param value the value to remove, between 1 and 9, inclusive
      */
     public void removeCellPotentialValue(Cell cell, int value) {
-        cell.removePotentialValue(value);
+        //cell.removePotentialValue(value);
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+        cellPotentialValues[cell.getIndex()].clear(value);
     }
 
     /**
@@ -249,7 +259,9 @@ public class Grid {
      * @param valuesToRemove bitset with values to remove
      */
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
-    	cell.removePotentialValues(valuesToRemove);
+    	//cell.removePotentialValues(valuesToRemove);
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+        cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
     }
 
     /**
@@ -257,7 +269,18 @@ public class Grid {
      * @param cell the cell
      */
     public void clearCellPotentialValues(Cell cell) {
-        cell.clearPotentialValues();
+        //cell.clearPotentialValues();
+    	assert getCell(cell.getX(), cell.getY()) == cell; //is the cell from the same grid?
+        cellPotentialValues[cell.getIndex()].clear();
+    }
+
+    /**
+     * Set the value of a cell
+     * @param index the cell index [0..80]
+     * @param value the value to set the cell to. Use 0 to clear the cell.
+     */
+    public void setCellPotentialValues(int index, BitSet values) {
+        cellPotentialValues[index] = (BitSet)values.clone();
     }
 
     /**
@@ -743,12 +766,13 @@ public class Grid {
     public void copyTo(Grid other) {
         for (int i = 0; i < 81; i++) {
             other.setCellValue(i, this.cellValues[i]);
+            other.setCellPotentialValues(i, cellPotentialValues[i]);
         }
-		for (int y = 0; y < 9; y++) {
-			for (int x = 0; x < 9; x++) {
-				this.cells[y][x].copyTo(other.cells[y][x]);
-			}
-		}
+//		for (int y = 0; y < 9; y++) {
+//			for (int x = 0; x < 9; x++) {
+//				this.cells[y][x].copyTo(other.cells[y][x]);
+//			}
+//		}
     }
 
     /**
@@ -958,7 +982,7 @@ public class Grid {
                 int singleclue = values.nextSetBit(0);
                 boolean isnakedsingle = true;
                 for (Cell housecell : cell.getHouseCells(this)) {
-                    if ( housecell.hasPotentialValue(singleclue) ) {
+                    if ( hasCellPotentialValue(housecell, singleclue) ) {
                         isnakedsingle = false;
                         break;
                     }

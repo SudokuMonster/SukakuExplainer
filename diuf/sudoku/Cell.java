@@ -23,7 +23,7 @@ public class Cell {
     private final int x;
     private final int y;
     //private int value = 0;
-    private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
+    //private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
 
 
     /**
@@ -53,6 +53,15 @@ public class Cell {
      */
     public int getY() {
         return this.y;
+    }
+
+    /**
+     * Get the index of this cell.
+     * 0 ..8 = top row, ... 81 = bottom right
+     * @return the index of this cell
+     */
+    public int getIndex() {
+        return 9 * y + x;
     }
 
 //    /**
@@ -107,52 +116,52 @@ public class Cell {
         }
     }
 
-    /**
-     * Get the potential values for this cell.
-     * <p>
-     * The result is returned as a bitset. Each of the
-     * bit number 1 to 9 is set if the corresponding
-     * value is a potential value for this cell. Bit number
-     * <tt>0</tt> is not used and ignored.
-     * @return the potential values for unresolved cell, empty for resolved
-     */
-    public BitSet getPotentialValues() {
-        return this.potentialValues;
-    }
+//    /**
+//     * Get the potential values for this cell.
+//     * <p>
+//     * The result is returned as a bitset. Each of the
+//     * bit number 1 to 9 is set if the corresponding
+//     * value is a potential value for this cell. Bit number
+//     * <tt>0</tt> is not used and ignored.
+//     * @return the potential values for unresolved cell, empty for resolved
+//     */
+//    public BitSet getPotentialValues() {
+//        return this.potentialValues;
+//    }
 
-    /**
-     * Test whether the given value is a potential
-     * value for this cell.
-     * @param value the potential value to test, between 1 and 9, inclusive
-     * @return whether the given value is a potential value for this cell
-     */
-    public boolean hasPotentialValue(int value) {
-        return this.potentialValues.get(value);
-    }
+//    /**
+//     * Test whether the given value is a potential
+//     * value for this cell.
+//     * @param value the potential value to test, between 1 and 9, inclusive
+//     * @return whether the given value is a potential value for this cell
+//     */
+//    public boolean hasPotentialValue(int value) {
+//        return this.potentialValues.get(value);
+//    }
 
-    /**
-     * Add the given value as a potential value for this cell
-     * @param value the value to add, between 1 and 9, inclusive
-     */
-    public void addPotentialValue(int value) {
-        this.potentialValues.set(value, true);
-    }
+//    /**
+//     * Add the given value as a potential value for this cell
+//     * @param value the value to add, between 1 and 9, inclusive
+//     */
+//    public void addPotentialValue(int value) {
+//        this.potentialValues.set(value, true);
+//    }
 
-    /**
-     * Remove the given value from the potential values of this cell.
-     * @param value the value to remove, between 1 and 9, inclusive
-     */
-    public void removePotentialValue(int value) {
-        this.potentialValues.set(value, false);
-    }
+//    /**
+//     * Remove the given value from the potential values of this cell.
+//     * @param value the value to remove, between 1 and 9, inclusive
+//     */
+//    public void removePotentialValue(int value) {
+//        this.potentialValues.set(value, false);
+//    }
 
-    public void removePotentialValues(BitSet valuesToRemove) {
-        this.potentialValues.andNot(valuesToRemove);
-    }
+//    public void removePotentialValues(BitSet valuesToRemove) {
+//        this.potentialValues.andNot(valuesToRemove);
+//    }
 
-    public void clearPotentialValues() {
-        this.potentialValues.clear();
-    }
+//    public void clearPotentialValues() {
+//        this.potentialValues.clear();
+//    }
 
     /**
      * Get the cells that form the "house" of this cell. The
@@ -261,16 +270,16 @@ public class Cell {
         return builder.toString();
     }
 
-    /**
-     * Copy this cell to another one. The value and potential values
-     * are copied, but the grid reference and the coordinates are not.
-     * @param other the cell to copy this cell to
-     */
-    public void copyTo(Cell other) {
-        assert this.x == other.x && this.y == other.y;
-        //other.value = this.value;
-        other.potentialValues = (BitSet)this.potentialValues.clone();
-    }
+//    /**
+//     * Copy this cell to another one. The value and potential values
+//     * are copied, but the grid reference and the coordinates are not.
+//     * @param other the cell to copy this cell to
+//     */
+//    public void copyTo(Cell other) {
+//        assert this.x == other.x && this.y == other.y;
+//        //other.value = this.value;
+//        other.potentialValues = (BitSet)this.potentialValues.clone();
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -285,6 +294,6 @@ public class Cell {
     
     @Override
     public int hashCode() {
-    	return 9 * y + x;
+    	return getIndex();
     }
 }

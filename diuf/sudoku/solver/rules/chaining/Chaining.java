@@ -225,6 +225,7 @@ public class Chaining implements IndirectHintProducer {
         // Iterate on all potential values that are not alone
         for (int value = 1; value <= 9; value++) {
             //if (cell.hasPotentialValue(value)) {
+        	assert grid.getCell(cell.getX(), cell.getY()) == cell;
             if (grid.hasCellPotentialValue(cell, value)) {
                 // Do Binary chaining (same potential either on or off)
                 Potential pOn = new Potential(cell, value, true);
@@ -384,6 +385,7 @@ public class Chaining implements IndirectHintProducer {
             boolean isYChainEnabled, boolean isXChainEnabled) {
 
         //if (pOn.cell.getPotentialValues().cardinality() > 2
+    	assert grid.getCell(pOn.cell.getX(), pOn.cell.getY()) == pOn.cell;
         if (grid.getCellPotentialValues(pOn.cell).cardinality() > 2
                 && !isXChainEnabled)
             return; // Y-Cycles can only start if cell has 2 potential values
@@ -688,7 +690,7 @@ public class Chaining implements IndirectHintProducer {
                 p.cell.getX(), p.cell.getY());
         //BitSet curPositions = curRegion.copyPotentialPositions(p.value);
         //BitSet srcPositions = srcRegion.copyPotentialPositions(p.value);
-        BitSet curPositions = curRegion.copyPotentialPositions(source, p.value);
+        BitSet curPositions = curRegion.copyPotentialPositions(grid, p.value);
         BitSet srcPositions = srcRegion.copyPotentialPositions(source, p.value);
         // Get positions of the potential value that have been removed
         srcPositions.andNot(curPositions);
