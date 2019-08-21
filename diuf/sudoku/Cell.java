@@ -27,18 +27,28 @@ public class Cell {
 
     private final int index;
 
+//    /**
+//     * Create a new cell
+//     * @param grid the grid this cell is part of
+//     * @param x the x coordinate of this cell (0=leftmost, 8=rightmost)
+//     * @param y the y coordinate of this cell (0=topmost, 8=bottommost)
+//     */
+//    public Cell(Grid grid, int x, int y) {
+//        //this.x = x;
+//        //this.y = y;
+//        index = 9 * y + x;
+//    }
+
     /**
      * Create a new cell
      * @param grid the grid this cell is part of
      * @param x the x coordinate of this cell (0=leftmost, 8=rightmost)
      * @param y the y coordinate of this cell (0=topmost, 8=bottommost)
      */
-    public Cell(Grid grid, int x, int y) {
-        //this.x = x;
-        //this.y = y;
-        index = 9 * y + x;
+    public Cell(int index) {
+        this.index = index;
     }
-
+    
     /**
      * Get the x coordinate of this cell.
      * 0 = leftmost, 8 = rightmost

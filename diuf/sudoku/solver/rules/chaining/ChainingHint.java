@@ -524,5 +524,4 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
     public int hashCode() {
         return getRemovablePotentials().hashCode();
     }
-
 }

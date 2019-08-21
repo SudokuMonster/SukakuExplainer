@@ -33,7 +33,8 @@ public class Grid {
      * Cells of the grid. First array index is the vertical index (from top
      * to bottom), and second index is horizontal index (from left to right).
      */
-    private Cell[][] cells = new Cell[9][9];
+    //private Cell[][] cells = new Cell[9][9];
+    private Cell[] cells = new Cell[81];
 
     // Views
     private Row[] rows = new Row[9];
@@ -45,9 +46,10 @@ public class Grid {
      * Create a new 9x9 Sudoku grid. All cells are set to empty
      */
     public Grid() {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                cells[y][x] = new Cell(this, x, y);
+        for (int y = 0, i = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++, i++) {
+                //cells[y][x] = new Cell(i);
+                cells[i] = new Cell(i);
             }
         }
         for (int i = 0; i < 81; i++) {
@@ -68,7 +70,8 @@ public class Grid {
      * @return the cell at the given coordinates
      */
     public Cell getCell(int x, int y) {
-        return this.cells[y][x];
+        //return this.cells[y][x];
+        return this.cells[9 * y + x];
     }
 
     /**
@@ -86,45 +89,45 @@ public class Grid {
             return this.blocks;
     }
 
-    /**
-     * Get the row at the given index.
-     * Rows are numbered from top to bottom.
-     * @param num the index of the row to get, between 0 and 8, inclusive
-     * @return the row at the given index
-     */
-    public Row getRow(int num) {
-        return this.rows[num];
-    }
+//    /**
+//     * Get the row at the given index.
+//     * Rows are numbered from top to bottom.
+//     * @param num the index of the row to get, between 0 and 8, inclusive
+//     * @return the row at the given index
+//     */
+//    public Row getRow(int num) {
+//        return this.rows[num];
+//    }
 
-    /**
-     * Get the column at the given index.
-     * Columns are numbered from left to right.
-     * @param num the index of the column to get, between 0 and 8, inclusive
-     * @return the column at the given index
-     */
-    public Column getColumn(int num) {
-        return this.columns[num];
-    }
+//    /**
+//     * Get the column at the given index.
+//     * Columns are numbered from left to right.
+//     * @param num the index of the column to get, between 0 and 8, inclusive
+//     * @return the column at the given index
+//     */
+//    public Column getColumn(int num) {
+//        return this.columns[num];
+//    }
 
-    /**
-     * Get the block at the given index.
-     * Blocks are numbered from left to right, top to bottom.
-     * @param num the index of the block to get, between 0 and 8, inclusive
-     * @return the block at the given index
-     */
-    public Block getBlock(int num) {
-        return this.blocks[num];
-    }
+//    /**
+//     * Get the block at the given index.
+//     * Blocks are numbered from left to right, top to bottom.
+//     * @param num the index of the block to get, between 0 and 8, inclusive
+//     * @return the block at the given index
+//     */
+//    public Block getBlock(int num) {
+//        return this.blocks[num];
+//    }
 
-    /**
-     * Get the block at the given location
-     * @param vPos the vertical position, between 0 to 2, inclusive
-     * @param hPos the horizontal position, between 0 to 2, inclusive
-     * @return the block at the given location
-     */
-    public Block getBlock(int vPos, int hPos) {
-        return this.blocks[vPos * 3 + hPos];
-    }
+//    /**
+//     * Get the block at the given location
+//     * @param vPos the vertical position, between 0 to 2, inclusive
+//     * @param hPos the horizontal position, between 0 to 2, inclusive
+//     * @return the block at the given location
+//     */
+//    public Block getBlock(int vPos, int hPos) {
+//        return this.blocks[vPos * 3 + hPos];
+//    }
 
     // Cell values
 
@@ -548,7 +551,8 @@ public class Grid {
 
         @Override
         public Cell getCell(int index) {
-            return cells[rowNum][index];
+            //return cells[rowNum][index];
+            return cells[9 * rowNum + index];
         }
 
         @Override
@@ -609,7 +613,7 @@ public class Grid {
 
         @Override
         public Cell getCell(int index) {
-            return cells[index][columnNum];
+            return cells[9 * index + columnNum];
         }
 
         @Override
@@ -675,7 +679,8 @@ public class Grid {
 
         @Override
         public Cell getCell(int index) {
-            return cells[vNum * 3 + index / 3][hNum * 3 + index % 3];
+            //return cells[vNum * 3 + index / 3][hNum * 3 + index % 3];
+            return cells[9 * (vNum * 3 + index / 3) + (hNum * 3 + index % 3)];
         }
 
         @Override
