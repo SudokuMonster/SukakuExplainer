@@ -264,7 +264,8 @@ public class SudokuExplainer {
         if (grid.hasCellPotentialValue(cell, candidate))
             cell.removePotentialValue(candidate);
         else
-            cell.addPotentialValue(candidate);
+            //cell.addPotentialValue(candidate);
+        	grid.addCellPotentialValue(cell, candidate);
         solver.cancelPotentialValues();
     }
 

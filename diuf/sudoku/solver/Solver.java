@@ -181,7 +181,8 @@ public class Solver {
                 //if (cell.getValue() == 0) {
                 if (grid.getCellValue(x, y) == 0) {
                     for (int value = 1; value <= 9; value++)
-                        cell.addPotentialValue(value);
+                        //cell.addPotentialValue(value);
+                    	grid.addCellPotentialValue(cell, value);
                 }
             }
         }

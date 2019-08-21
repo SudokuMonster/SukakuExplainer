@@ -218,6 +218,15 @@ public class Grid {
     }
 
     /**
+     * Add the given value as a potential value for the given cell
+     * @param cell the cell
+     * @param value the value to add, between 1 and 9, inclusive
+     */
+    public void addCellPotentialValue(Cell cell, int value) {
+        cell.addPotentialValue(value);
+    }
+
+   /**
      * Get the row at the given location
      * @param x the horizontal coordinate
      * @param y the vertical coordinate
@@ -895,7 +904,8 @@ public class Grid {
                     int value = (ch - '0');
                     assert value == 1 + i % 9; //exact positional mapping
                     Cell cell = getCell(cl % 9, cl / 9);
-                    cell.addPotentialValue(value);
+                    //cell.addPotentialValue(value);
+                    addCellPotentialValue(cell, value);
                 }
             }
     	}
