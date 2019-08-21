@@ -20,11 +20,12 @@ import java.util.*;
  */
 public class Cell {
 
-    private final int x;
-    private final int y;
+    //private final int x;
+    //private final int y;
     //private int value = 0;
     //private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
 
+    private final int index;
 
     /**
      * Create a new cell
@@ -33,8 +34,9 @@ public class Cell {
      * @param y the y coordinate of this cell (0=topmost, 8=bottommost)
      */
     public Cell(Grid grid, int x, int y) {
-        this.x = x;
-        this.y = y;
+        //this.x = x;
+        //this.y = y;
+        index = 9 * y + x;
     }
 
     /**
@@ -43,7 +45,8 @@ public class Cell {
      * @return the x coordinate of this cell
      */
     public int getX() {
-        return this.x;
+        //return this.x;
+        return this.index % 9;
     }
 
     /**
@@ -52,7 +55,8 @@ public class Cell {
      * @return the y coordinate of this cell
      */
     public int getY() {
-        return this.y;
+        //return this.y;
+        return this.index / 9;
     }
 
     /**
@@ -61,7 +65,8 @@ public class Cell {
      * @return the index of this cell
      */
     public int getIndex() {
-        return 9 * y + x;
+        //return 9 * y + x;
+    	return index;
     }
 
 //    /**
@@ -102,11 +107,11 @@ public class Cell {
     public void setValueAndCancel(int value, Grid targetGrid) {
         assert value != 0;
         //this.value = value;
-        targetGrid.setCellValue(this.x, this.y, value);
+        targetGrid.setCellValue(this.getX(), this.getY(), value);
         //this.potentialValues.clear();
         targetGrid.clearCellPotentialValues(this);
         for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
-            Grid.Region region = targetGrid.getRegionAt(regionType, this.x, this.y);
+            Grid.Region region = targetGrid.getRegionAt(regionType, this.getX(), this.getY());
             for (int i = 0; i < 9; i++) {
                 Cell original = region.getCell(i);
                 Cell other = targetGrid.getCell(original.getX(), original.getY());
@@ -180,7 +185,7 @@ public class Cell {
         // Iterate on region types (Block, Row, Column)
         for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
             // Get region on which this cell is
-            Grid.Region region = targetGrid.getRegionAt(regionType, x, y);
+            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
             // Add all cell of that region
             for (int i = 0; i < 9; i++)
                 result.add(region.getCell(i));
@@ -212,7 +217,7 @@ public class Cell {
      * @return a complete string representation of this cell.
      */
     public String toFullString() {
-        return "Cell " + toString(x, y);
+        return "Cell " + toString(getX(), getY());
     }
 
     /**
@@ -224,7 +229,7 @@ public class Cell {
      */
     @Override
     public String toString() {
-        return toString(x, y);
+        return toString(getX(), getY());
     }
 
     /**
@@ -246,7 +251,7 @@ public class Cell {
             if (i > 0)
                 builder.append(",");
             Cell cell = cells[i];
-            builder.append(toString(cell.x, cell.y));      
+            builder.append(toString(cell.getX(), cell.getY()));      
         }
         return builder.toString();
     }
@@ -265,7 +270,7 @@ public class Cell {
             if (i > 0)
                 builder.append(",");
             Cell cell = cells[i];
-            builder.append(toString(cell.x, cell.y));      
+            builder.append(toString(cell.getX(), cell.getY()));      
         }
         return builder.toString();
     }
@@ -287,8 +292,10 @@ public class Cell {
             return false;
     	if(this == o) return true;
     	Cell other = (Cell)o;
-    	if(x != other.getX()) return false;
-    	if(y != other.getY()) return false;
+    	//if(x != other.getX()) return false;
+    	//if(y != other.getY()) return false;
+    	if(index != other.getIndex()) return false;
+    	
     	return true;
     }
     
