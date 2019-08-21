@@ -442,7 +442,6 @@ public class Solver {
      * @return The actual difficulty if it is between the
      * given bounds. An arbitrary out-of-bounds value else.
      */
-01
     public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3) {
         int oldPriority = lowerPriority();
         try {
