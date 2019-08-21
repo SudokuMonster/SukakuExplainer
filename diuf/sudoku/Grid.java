@@ -236,6 +236,15 @@ public class Grid {
     }
 
     /**
+     * Removes at once several potential values of the given cell.
+     * @param cell the cell
+     * @param valuesToRemove bitset with values to remove
+     */
+    public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
+    	cell.removePotentialValues(valuesToRemove);
+    }
+
+    /**
      * Clears the potential values of the given cell.
      * @param cell the cell
      */
