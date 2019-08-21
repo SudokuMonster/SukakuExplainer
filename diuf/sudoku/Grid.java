@@ -34,7 +34,18 @@ public class Grid {
      * to bottom), and second index is horizontal index (from left to right).
      */
     //private Cell[][] cells = new Cell[9][9];
-    private Cell[] cells = new Cell[81];
+    //private Cell[] cells = new Cell[81];
+    private static final Cell cells[] = {
+    		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
+    		new Cell(9), new Cell(10), new Cell(11), new Cell(12), new Cell(13), new Cell(14), new Cell(15), new Cell(16), new Cell(17),
+    		new Cell(18), new Cell(19), new Cell(20), new Cell(21), new Cell(22), new Cell(23), new Cell(24), new Cell(25), new Cell(26),
+    		new Cell(27), new Cell(28), new Cell(29), new Cell(30), new Cell(31), new Cell(32), new Cell(33), new Cell(34), new Cell(35),
+    		new Cell(36), new Cell(37), new Cell(38), new Cell(39), new Cell(40), new Cell(41), new Cell(42), new Cell(43), new Cell(44),
+    		new Cell(45), new Cell(46), new Cell(47), new Cell(48), new Cell(49), new Cell(50), new Cell(51), new Cell(52), new Cell(53),
+    		new Cell(54), new Cell(55), new Cell(56), new Cell(57), new Cell(58), new Cell(59), new Cell(60), new Cell(61), new Cell(62),
+    		new Cell(63), new Cell(64), new Cell(65), new Cell(66), new Cell(67), new Cell(68), new Cell(69), new Cell(70), new Cell(71),
+    		new Cell(72), new Cell(73), new Cell(74), new Cell(75), new Cell(76), new Cell(77), new Cell(78), new Cell(79), new Cell(80)
+    		};
 
     // Views
     private Row[] rows = new Row[9];
@@ -46,12 +57,12 @@ public class Grid {
      * Create a new 9x9 Sudoku grid. All cells are set to empty
      */
     public Grid() {
-        for (int y = 0, i = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++, i++) {
-                //cells[y][x] = new Cell(i);
-                cells[i] = new Cell(i);
-            }
-        }
+//        for (int y = 0, i = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++, i++) {
+//                //cells[y][x] = new Cell(i);
+//                cells[i] = new Cell(i);
+//            }
+//        }
         for (int i = 0; i < 81; i++) {
         	cellPotentialValues[i] = new BitSet(10);
         }
