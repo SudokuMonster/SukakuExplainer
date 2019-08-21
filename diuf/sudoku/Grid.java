@@ -23,7 +23,12 @@ public class Grid {
      * Cell values of the grid [0 .. 9].
      */
     private int[] cellValues = new int[81];
-    
+
+    /*
+     * Cell values of the grid [0 .. 9].
+     */
+    private BitSet[] potentialValues = new BitSet[81];
+     
     /*
      * Cells of the grid. First array index is the vertical index (from top
      * to bottom), and second index is horizontal index (from left to right).
@@ -44,6 +49,9 @@ public class Grid {
             for (int x = 0; x < 9; x++) {
                 cells[y][x] = new Cell(this, x, y);
             }
+        }
+        for (int i = 0; i < 81; i++) {
+        	potentialValues[i] = new BitSet(10);
         }
         // Build subparts views
         for (int i = 0; i < 9; i++) {
@@ -979,7 +987,7 @@ public class Grid {
                 Cell thisCell = this.getCell(x, y);
                 Cell otherCell = other.getCell(x, y);
                 //if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
-                if (!getCellPotentialValues(thisCell).equals(getCellPotentialValues(otherCell)))
+                if (!getCellPotentialValues(thisCell).equals(other.getCellPotentialValues(otherCell)))
                     return false;
             }
         }

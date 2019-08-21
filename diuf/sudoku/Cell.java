@@ -94,7 +94,8 @@ public class Cell {
         assert value != 0;
         //this.value = value;
         targetGrid.setCellValue(this.x, this.y, value);
-        this.potentialValues.clear();
+        //this.potentialValues.clear();
+        targetGrid.clearCellPotentialValues(this);
         for (Class<? extends Grid.Region> regionType : targetGrid.getRegionTypes()) {
             Grid.Region region = targetGrid.getRegionAt(regionType, this.x, this.y);
             for (int i = 0; i < 9; i++) {
