@@ -98,7 +98,8 @@ public class NakedSet implements IndirectHintProducer {
                 // Get removable potentials
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell, value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())

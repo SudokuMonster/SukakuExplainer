@@ -73,7 +73,7 @@ public class Locking implements IndirectHintProducer {
                                             region1, region2, value);
                                 } else {
                                     // Potential solution found
-                                    IndirectHint hint = createLockingHint(region1, region2, null, value);
+                                    IndirectHint hint = createLockingHint(grid, region1, region2, null, value);
                                     if (hint.isWorth())
                                         accu.add(hint);
                                 }
@@ -110,7 +110,7 @@ public class Locking implements IndirectHintProducer {
                             }
                         }
                         if (nbRemainInRegion3 == 1) {
-                            IndirectHint hint = createLockingHint(region1, region2, hcell, value);
+                            IndirectHint hint = createLockingHint(grid, region1, region2, hcell, value);
                             if (hint.isWorth())
                                 accu.add(hint);
                         }
@@ -120,12 +120,13 @@ public class Locking implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createLockingHint(Grid.Region p1, Grid.Region p2, Cell hcell, int value) {
+    private IndirectHint createLockingHint(Grid grid, Grid.Region p1, Grid.Region p2, Cell hcell, int value) {
         // Build highlighted potentials
         Map<Cell,BitSet> cellPotentials = new HashMap<Cell,BitSet>();
         for (int i = 0; i < 9; i++) {
             Cell cell = p1.getCell(i);
-            if (cell.hasPotentialValue(value))
+            //if (cell.hasPotentialValue(value))
+            if (grid.hasCellPotentialValue(cell, value))
                 cellPotentials.put(cell, SingletonBitSet.create(value));
         }
         // Build removable potentials
@@ -135,9 +136,11 @@ public class Locking implements IndirectHintProducer {
         for (int i = 0; i < 9; i++) {
             Cell cell = p2.getCell(i);
             if (!p1Cells.contains(cell)) {
-                if (cell.hasPotentialValue(value))
+                //if (cell.hasPotentialValue(value))
+                if (grid.hasCellPotentialValue(cell, value))
                     cellRemovablePotentials.put(cell, SingletonBitSet.create(value));
-            } else if (cell.hasPotentialValue(value))
+            //} else if (cell.hasPotentialValue(value))
+            } else if (grid.hasCellPotentialValue(cell, value))
                 highlightedCells.add(cell);
         }
         // Build list of cells

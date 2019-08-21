@@ -377,7 +377,7 @@ public class Grid {
         public BitSet getPotentialPositions(Grid grid, int value) {
             BitSet result = new BitSet(9);
             for (int index = 0; index < 9; index++) {
-                result.set(index, getCell(index).hasPotentialValue(value));
+                result.set(index, grid.hasCellPotentialValue(getCell(index), value));
             }
             return result;
         }
@@ -837,7 +837,8 @@ public class Grid {
                             }
                             if ( n == 0 ) {
                                 for (int pv=1; pv<=9; pv++ ) {
-                                    if ( cell.hasPotentialValue( pv) ) {
+                                    //if ( cell.hasPotentialValue( pv) ) {
+                                    if ( hasCellPotentialValue(cell, pv) ) {
                                         s += pv;
                                         cnt += 1;
                                     }

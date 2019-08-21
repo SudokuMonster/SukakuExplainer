@@ -200,7 +200,8 @@ public class BruteForceAnalysis implements WarningHintProducer {
             int value = value0 + 1;
             if (rnd != null) // Combine with random choice if random generator given
                 value = ((value0 + firstValue) % 9) + 1;
-            if (leastCell.hasPotentialValue(value)) {
+            //if (leastCell.hasPotentialValue(value)) {
+            if (grid.hasCellPotentialValue(leastCell, value)) {
                 grid.copyTo(savePoint);
                 leastCell.setValueAndCancel(value, grid);
                 boolean result = analyse(grid, isReverse, rnd, hiddenSingle, nakedSingle);
