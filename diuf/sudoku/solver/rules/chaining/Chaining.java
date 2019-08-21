@@ -913,7 +913,8 @@ public class Chaining implements IndirectHintProducer {
                     Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff,
                             !isNisho, true);
                     if (isDynamic)
-                        p.off(); // memorize the shutted down potentials
+                        //p.off(); // memorize the shutted down potentials
+                        p.off(grid); // writes to grid
                     for (Potential pOn : makeOn) {
                         Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
                         if (toOff.contains(pOff)) {

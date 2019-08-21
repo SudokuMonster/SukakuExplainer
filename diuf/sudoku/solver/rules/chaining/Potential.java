@@ -76,8 +76,9 @@ public class Potential {
         this.nestedChain = null;
     }
 
-    public void off() {
-        this.cell.removePotentialValue(this.value);
+    public void off(Grid grid) {
+        //this.cell.removePotentialValue(this.value);
+    	grid.removeCellPotentialValue(this.cell, this.value);
     }
 
     @Override

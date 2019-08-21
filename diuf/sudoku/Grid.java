@@ -226,7 +226,24 @@ public class Grid {
         cell.addPotentialValue(value);
     }
 
-   /**
+    /**
+     * Remove the given value from the potential values of the given cell.
+     * @param cell the cell
+     * @param value the value to remove, between 1 and 9, inclusive
+     */
+    public void removeCellPotentialValue(Cell cell, int value) {
+        cell.removePotentialValue(value);
+    }
+
+    /**
+     * Clears the potential values of the given cell.
+     * @param cell the cell
+     */
+    public void clearCellPotentialValues(Cell cell) {
+        cell.clearPotentialValues();
+    }
+
+    /**
      * Get the row at the given location
      * @param x the horizontal coordinate
      * @param y the vertical coordinate
@@ -932,7 +949,7 @@ public class Grid {
                 if ( isnakedsingle ) {
                     //cell.setValue(singleclue);
                 	setCellValue(i, singleclue);
-                    cell.clearPotentialValues();
+                	clearCellPotentialValues(cell);
                 }
             }
         }               

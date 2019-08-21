@@ -121,7 +121,8 @@ public class SudokuIO {
                         for (int i = 1; i <= 9; i++)
                         {
                             if (!possible.contains(i))
-                                cell.removePotentialValue(i);
+                                //cell.removePotentialValue(i);
+                            	grid.removeCellPotentialValue(cell, i);
                         }
                     }
                 }
@@ -148,7 +149,8 @@ public class SudokuIO {
             for (int i = 1; i <= 9; i++)
             {
                 if (!possible.contains(i))
-                    cell.removePotentialValue(i);
+                    //cell.removePotentialValue(i);
+                	grid.removeCellPotentialValue(cell, i);
             }
            
             x++;

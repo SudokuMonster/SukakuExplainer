@@ -165,7 +165,8 @@ public class Solver {
                     //int value = grid.getCellValue(cell.getX(), cell.getY());
                     // Remove the cell value from the potential values of other cells
                     for (int j = 0; j < 9; j++)
-                        part.getCell(j).removePotentialValue(value);
+                        //part.getCell(j).removePotentialValue(value);
+                    	grid.removeCellPotentialValue(part.getCell(j), value);
                 }
             }
         }
@@ -200,7 +201,8 @@ public class Solver {
                 Cell cell = grid.getCell(x, y);
 //                if (cell.getValue() != 0)
                 if (grid.getCellValue(x, y) != 0)
-                    cell.clearPotentialValues();
+                    //cell.clearPotentialValues();
+                	grid.clearCellPotentialValues(cell);
             }
         }
         cancelBy(Grid.Block.class);

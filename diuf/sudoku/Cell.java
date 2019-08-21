@@ -100,7 +100,8 @@ public class Cell {
             for (int i = 0; i < 9; i++) {
                 Cell original = region.getCell(i);
                 Cell other = targetGrid.getCell(original.getX(), original.getY());
-                other.removePotentialValue(value);
+                //other.removePotentialValue(value);
+                targetGrid.removeCellPotentialValue(other, value);
             }
         }
     }
