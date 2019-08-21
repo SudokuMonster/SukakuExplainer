@@ -138,38 +138,30 @@ public class SudokuIO {
         String[] parts = newLines.split("\\s+");
         int y = 0, x = 0;
         //Start of Dirty fix for Loading Multiline Sukaku naked singles
-        for (String part : parts)
-		{
+        for (String part : parts) {
 			int a = (x / 3) + (y / 3) * 3;
             Cell cell = grid.getCell(x, y);          
             HashSet<Integer> possible = new HashSet<Integer>();
-            for (char ch : part.toCharArray())
-			{
+            for (char ch : part.toCharArray()) {
                 if (ch >= '1' && ch <= '9')
                     possible.add(ch - '0');
             }
-            for (int i = 1; i <= 9; i++)
-            {
+            for (int i = 1; i <= 9; i++) {
                 if (!possible.contains(i))
                     //cell.removePotentialValue(i);
                 	grid.removeCellPotentialValue(cell, i);
             }
            
-			if (possible.size() == 1)
-			{					
+			if (possible.size() == 1) {					
 				loop:
-				for (int i = 1; i <= 9; i++)
-				{
-					if (possible.contains(i))
-					{
+				for (int i = 1; i <= 9; i++) {
+					if (possible.contains(i)) {
 						int c = 0, b = 0;
 						for (String spare : parts) {
 							int d = (b / 3) + (c / 3) * 3;
-							if ((c == y || b == x || d == a) && (!(c == y && b == x)))
-							{	
+							if ((c == y || b == x || d == a) && (!(c == y && b == x))) {	
 								HashSet<Integer> current = new HashSet<Integer>();
-								for (char ch : spare.toCharArray())
-								{
+								for (char ch : spare.toCharArray()) {
 									if (ch >= '1' && ch <= '9')
 										current.add(ch - '0');
 								}
@@ -189,8 +181,7 @@ public class SudokuIO {
 					}
 				}
 			}
-			for (int i = 1; i <= 9; i++)
-			{
+			for (int i = 1; i <= 9; i++) {
 				if (!possible.contains(i))
                     //cell.removePotentialValue(i);
                 	grid.removeCellPotentialValue(cell, i);
