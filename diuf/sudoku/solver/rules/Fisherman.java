@@ -110,7 +110,7 @@ public class Fisherman implements IndirectHintProducer {
             for (int j = 0; j < 9; j++) {
                 if (myIndexes.get(i) && otherIndexes.get(j)) {
                     Cell cell = myParts[i].getCell(j);
-                    if (grid.hasCellPotentialValue(cell, value)) {
+                    if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
                         cells.add(cell);
                         cellPotentials.put(cell, SingletonBitSet.create(value));
                     }

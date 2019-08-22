@@ -131,7 +131,7 @@ public class XYWing implements IndirectHintProducer {
         victims.remove(yzCell);
         for (Cell cell : victims) {
             //if (cell.hasPotentialValue(zValue))
-            if (grid.hasCellPotentialValue(cell, zValue))
+            if (grid.hasCellPotentialValue(cell.getIndex(), zValue))
                 removablePotentials.put(cell, SingletonBitSet.create(zValue));
         }
 

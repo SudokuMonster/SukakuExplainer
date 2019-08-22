@@ -261,7 +261,7 @@ public class SudokuExplainer {
 
     public void candidateTyped(Cell cell, int candidate) {
         //if (cell.hasPotentialValue(candidate))
-        if (grid.hasCellPotentialValue(cell, candidate))
+        if (grid.hasCellPotentialValue(cell.getIndex(), candidate))
             //cell.removePotentialValue(candidate);
         	grid.removeCellPotentialValue(cell, candidate);
         else

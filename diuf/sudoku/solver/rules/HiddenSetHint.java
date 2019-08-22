@@ -92,7 +92,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
                 for (int j = 0; j < values.length; j++) {
                     //if (initialCell.hasPotentialValue(values[j]))
                     //if (initialGrid.hasCellPotentialValue(initialCell, values[j]))
-                    if (initialGrid.hasCellPotentialValue(cell, values[j]))
+                    if (initialGrid.hasCellPotentialValue(cell.getIndex(), values[j]))
                         // This potential must go off before I can be applied
                         result.add(new Potential(cell, values[j], false));
                 }

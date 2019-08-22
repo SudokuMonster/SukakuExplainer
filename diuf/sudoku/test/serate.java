@@ -328,6 +328,8 @@ public class serate {
                 ex.printStackTrace();
             }
         }
+        //debug/improve counters
+        System.err.printf("Update = %d\tRead = %d\n", Grid.numCellPencilmarksUpdate, Grid.numCellPencilmarksRead);
     } //main
     
     public static class Formatter {

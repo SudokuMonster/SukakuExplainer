@@ -106,7 +106,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
                 //Cell initCell = initialGrid.getCell(cell.getX(), cell.getY());
                 //if (initCell.hasPotentialValue(value) && !cell.hasPotentialValue(value)) {
                 //if (initialGrid.hasCellPotentialValue(initCell, value) && !currentGrid.hasCellPotentialValue(cell, value)) {
-                if (initialGrid.hasCellPotentialValue(cell, value) && !currentGrid.hasCellPotentialValue(cell, value)) {
+                if (initialGrid.hasCellPotentialValue(cell.getIndex(), value) && !currentGrid.hasCellPotentialValue(cell.getIndex(), value)) {
                     boolean isInRegion2 = false;
                     for (int j = 1; j < regions.length; j+= 2) {
                         for (int pos2 = 0; pos2 < 9; pos2++) {

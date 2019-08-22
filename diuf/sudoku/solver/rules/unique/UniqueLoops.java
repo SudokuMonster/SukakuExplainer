@@ -259,7 +259,7 @@ public class UniqueLoops implements IndirectHintProducer {
         for (Cell cell : commonCells) {
             if (!extraCells.contains(cell)) {
                 //if (cell.hasPotentialValue(value))
-                if (grid.hasCellPotentialValue(cell, value))
+                if (grid.hasCellPotentialValue(cell.getIndex(), value))
                     removable.put(cell, SingletonBitSet.create(value));
             }
         }
@@ -412,7 +412,7 @@ public class UniqueLoops implements IndirectHintProducer {
                     BitSet values = new BitSet(10);
                     for (int value = 1; value <= 9; value++) {
                         //if (!hiddenValues.get(value) && cell.hasPotentialValue(value)) {
-                        if (!hiddenValues.get(value) && grid.hasCellPotentialValue(cell, value)) {
+                        if (!hiddenValues.get(value) && grid.hasCellPotentialValue(cell.getIndex(), value)) {
                             values.set(value);
                         }
                     }
@@ -456,7 +456,7 @@ public class UniqueLoops implements IndirectHintProducer {
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
                     //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
-                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell, value))
+                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())
@@ -482,10 +482,10 @@ public class UniqueLoops implements IndirectHintProducer {
                     Cell cell = region.getCell(i);
                     if (!cell.equals(c1) && !cell.equals(c2)) {
                         //if (cell.hasPotentialValue(v1))
-                        if (grid.hasCellPotentialValue(cell, v1))
+                        if (grid.hasCellPotentialValue(cell.getIndex(), v1))
                             hasValue1 = true;
                         //if (cell.hasPotentialValue(v2))
-                        if (grid.hasCellPotentialValue(cell, v2))
+                        if (grid.hasCellPotentialValue(cell.getIndex(), v2))
                             hasValue2 = true;
                     }
                 }

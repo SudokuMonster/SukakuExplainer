@@ -99,7 +99,7 @@ public class HiddenSet implements IndirectHintProducer {
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
                     //if (!valueSet.get(value) && cell.hasPotentialValue(value))
-                    if (!valueSet.get(value) && grid.hasCellPotentialValue(cell, value))
+                    if (!valueSet.get(value) && grid.hasCellPotentialValue(cell.getIndex(), value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())

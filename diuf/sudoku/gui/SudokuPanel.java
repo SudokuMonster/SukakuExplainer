@@ -619,7 +619,7 @@ public class SudokuPanel extends JPanel {
                             paintIt = true;
                         }
                         //if (cell.hasPotentialValue(value)) {
-                        if (grid.hasCellPotentialValue(cell, value)) {
+                        if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
                             int cx = x * CELL_OUTER_SIZE + CELL_PAD
                             + (index % 3) * (CELL_INNER_SIZE / 3) + CELL_INNER_SIZE / 6;
                             int cy = y * CELL_OUTER_SIZE + CELL_PAD

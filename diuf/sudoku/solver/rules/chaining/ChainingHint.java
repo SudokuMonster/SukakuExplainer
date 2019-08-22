@@ -255,10 +255,11 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                         if (cause.equals(Potential.Cause.NakedSingle)) {
                             //Cell actCell = Grid.getCell(curCell.getX(), curCell.getY());
                             //Cell initCell = Grid.getCell(curCell.getX(), curCell.getY());
+                        	int currCellIndex = curCell.getIndex();
                             for (int value = 1; value <= 9; value++) {
                                 //if (initCell.hasPotentialValue(value) && !actCell.hasPotentialValue(value))
                                 //if (initialGrid.hasCellPotentialValue(initCell, value) && !currentGrid.hasCellPotentialValue(actCell, value))
-                                if (initialGrid.hasCellPotentialValue(curCell, value) && !currentGrid.hasCellPotentialValue(curCell, value))
+                                if (initialGrid.hasCellPotentialValue(currCellIndex, value) && !currentGrid.hasCellPotentialValue(currCellIndex, value))
                                     //result.add(new Potential(actCell, value, false));
                                     result.add(new Potential(curCell, value, false));
                             }
@@ -269,8 +270,9 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                                 //Cell initCell = Grid.getCell(actCell.getX(), actCell.getY());
                                 //if (initCell.hasPotentialValue(p.value) && !actCell.hasPotentialValue(p.value))
                                 //if (initialGrid.hasCellPotentialValue(initCell, p.value) && !currentGrid.hasCellPotentialValue(actCell, p.value))
-                                if (initialGrid.hasCellPotentialValue(actCell, p.value) && !currentGrid.hasCellPotentialValue(actCell, p.value))
+                                if (initialGrid.hasCellPotentialValue(actCell.getIndex(), p.value) && !currentGrid.hasCellPotentialValue(actCell.getIndex(), p.value)) {
                                     result.add(new Potential(actCell, p.value, false));
+                                }
                             }
                         }
                     }

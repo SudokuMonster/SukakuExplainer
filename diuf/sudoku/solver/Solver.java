@@ -689,7 +689,7 @@ public class Solver {
                                     if ( n == 0 ) {
                                         for (int pv=1; pv<=9; pv++ ) {
                                             //if ( cell.hasPotentialValue( pv) ) {
-                                            if ( grid.hasCellPotentialValue(cell, pv) ) {
+                                            if ( grid.hasCellPotentialValue(cell.getIndex(), pv) ) {
                                                 s += pv;
                                                 cnt += 1;
                                             }

@@ -216,7 +216,7 @@ public class Chaining implements IndirectHintProducer {
                     // Iterate on all potential values that are not alone
 		            Cell cell = Grid.getCell(i);
                     for (int value = 1; value <= 9; value++) {
-                        if (grid.hasCellPotentialValue(cell, value)) {
+                        if (grid.hasCellPotentialValue(i, value)) {
                             Potential pOn = new Potential(cell, value, true);
                             doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled);
                         }
@@ -240,7 +240,7 @@ public class Chaining implements IndirectHintProducer {
         // Iterate on all potential values that are not alone
         for (int value = 1; value <= 9; value++) {
             //if (cell.hasPotentialValue(value)) {
-            if (grid.hasCellPotentialValue(cell, value)) {
+            if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
                 // Do Binary chaining (same potential either on or off)
                 Potential pOn = new Potential(cell, value, true);
                 Potential pOff = new Potential(cell, value, false);
@@ -710,7 +710,7 @@ public class Chaining implements IndirectHintProducer {
 //        }
 
     	for (int value = 1; value <= 9; value++) {
-            if (source.hasCellPotentialValue(p.cell, value) && !grid.hasCellPotentialValue(p.cell, value)) {
+            if (source.hasCellPotentialValue(p.cell.getIndex(), value) && !grid.hasCellPotentialValue(p.cell.getIndex(), value)) {
                 // Add a hidden parent
                 Potential parent = new Potential(p.cell, value, false);
                 parent = offPotentials.get(parent); // Retrieve complete version
@@ -1079,7 +1079,7 @@ public class Chaining implements IndirectHintProducer {
             //for (Cell cell : srcCell.getHouseCells(grid)) {
             for (Cell cell : p.cell.getHouseCells(grid)) {
                 //if (!cells.contains(cell) && cell.hasPotentialValue(p.value)) {
-                if (!cells.contains(cell) && grid.hasCellPotentialValue(cell, p.value)) {
+                if (!cells.contains(cell) && grid.hasCellPotentialValue(cell.getIndex(), p.value)) {
                     if (p.isOn)
                         cancelForw.add(new Potential(cell, p.value, false));
                     else
@@ -1115,7 +1115,7 @@ public class Chaining implements IndirectHintProducer {
             BitSet values = new BitSet(10);
             for (int value = 1; value <= 9; value++) {
                 //if (value != target.value && target.cell.hasPotentialValue(value))
-                if (value != target.value && grid.hasCellPotentialValue(target.cell, value))
+                if (value != target.value && grid.hasCellPotentialValue(target.cell.getIndex(), value))
                     values.set(value);
             }
             removable.put(target.cell, values);
@@ -1169,7 +1169,7 @@ public class Chaining implements IndirectHintProducer {
         LinkedHashMap<Integer, Potential> chains = new LinkedHashMap<Integer, Potential>();
         for (int value = 1; value <= 9; value++) {
             //if (srcCell.hasPotentialValue(value)) {
-            if (grid.hasCellPotentialValue(srcCell, value)) {
+            if (grid.hasCellPotentialValue(srcCell.getIndex(), value)) {
                 // Get corresponding value with the matching parents
                 Potential valueTarget = outcomes.get(value).get(target);
                 chains.put(value, valueTarget);

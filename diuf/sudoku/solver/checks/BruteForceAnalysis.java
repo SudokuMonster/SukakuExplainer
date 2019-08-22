@@ -174,17 +174,26 @@ public class BruteForceAnalysis implements WarningHintProducer {
          */
         Cell leastCell = null;
         int leastCardinality = 10;
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = Grid.getCell(x, y);
-                //if (cell.getValue() == 0) {
-                if (grid.getCellValue(x, y) == 0) {
-                    //int cardinality = cell.getPotentialValues().cardinality();
-                    int cardinality = grid.getCellPotentialValues(x, y).cardinality();
-                    if (cardinality < leastCardinality) {
-                        leastCardinality = cardinality;
-                        leastCell = cell;
-                    }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0) {
+//                if (grid.getCellValue(x, y) == 0) {
+//                    //int cardinality = cell.getPotentialValues().cardinality();
+//                    int cardinality = grid.getCellPotentialValues(x, y).cardinality();
+//                    if (cardinality < leastCardinality) {
+//                        leastCardinality = cardinality;
+//                        leastCell = cell;
+//                    }
+//                }
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            if (grid.getCellValue(i) == 0) {
+                int cardinality = grid.getCellPotentialValues(i).cardinality();
+                if (cardinality < leastCardinality) {
+                    leastCardinality = cardinality;
+                    leastCell = Grid.getCell(i);
                 }
             }
         }
@@ -201,7 +210,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
             if (rnd != null) // Combine with random choice if random generator given
                 value = ((value0 + firstValue) % 9) + 1;
             //if (leastCell.hasPotentialValue(value)) {
-            if (grid.hasCellPotentialValue(leastCell, value)) {
+            if (grid.hasCellPotentialValue(leastCell.getIndex(), value)) {
                 grid.copyTo(savePoint);
                 leastCell.setValueAndCancel(value, grid);
                 boolean result = analyse(grid, isReverse, rnd, hiddenSingle, nakedSingle);

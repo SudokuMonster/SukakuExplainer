@@ -142,6 +142,10 @@ public class Grid {
     //private static final List<Class<? extends Grid.Region>> _regionTypes = null;
     private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
     
+    //temporary development/debug counters
+    public static long numCellPencilmarksUpdate = 0;
+    public static long numCellPencilmarksRead = 0;
+    
     /**
      * Create a new 9x9 Sudoku grid. All cells are set to empty
      */
@@ -247,27 +251,13 @@ public class Grid {
      * bit number 1 to 9 is set if the corresponding
      * value is a potential value for this cell. Bit number
      * <tt>0</tt> is not used and ignored.
-     * @param cell the cell
+     * @param cellIndex the cell index 0 to 80
      * @return the potential values for unresolved cell, empty for resolved
      */
     public BitSet getCellPotentialValues(int cellIndex) {
         //return cells[cellIndex / 9][cellIndex % 9].getPotentialValues();
+        numCellPencilmarksRead++;
         return cellPotentialValues[cellIndex];
-    }
-
-    /**
-     * Get the potential values for the given cell coordinates.
-     * <p>
-     * The result is returned as a bitset. Each of the
-     * bit number 1 to 9 is set if the corresponding
-     * value is a potential value for this cell. Bit number
-     * <tt>0</tt> is not used and ignored.
-     * @param cell the cell
-     * @return the potential values for unresolved cell, empty for resolved
-     */
-    public BitSet getCellPotentialValues(int x, int y) {
-        //return cells[y][x].getPotentialValues();
-        return cellPotentialValues[y * 9 + x];
     }
 
     /**
@@ -282,19 +272,21 @@ public class Grid {
      */
     public BitSet getCellPotentialValues(Cell cell) {
         //return cell.getPotentialValues();
+        numCellPencilmarksRead++;
         return cellPotentialValues[cell.getIndex()];
     }
 
     /**
      * Test whether the given value is a potential
      * value for the given cell.
-     * @param cell the cell to test
+     * @param cellIndex the cell to test
      * @param value the potential value to test, between 1 and 9, inclusive
      * @return whether the given value is a potential value for this cell
      */
-    public boolean hasCellPotentialValue(Cell cell, int value) {
+    public boolean hasCellPotentialValue(int cellIndex, int value) {
         //return cell.hasPotentialValue(value);
-    	return cellPotentialValues[cell.getIndex()].get(value);
+        numCellPencilmarksRead++;
+    	return cellPotentialValues[cellIndex].get(value);
     }
 
     /**
@@ -305,6 +297,7 @@ public class Grid {
     public void addCellPotentialValue(Cell cell, int value) {
         //cell.addPotentialValue(value);
         cellPotentialValues[cell.getIndex()].set(value);
+        numCellPencilmarksUpdate++;
     }
 
     /**
@@ -315,6 +308,7 @@ public class Grid {
     public void removeCellPotentialValue(Cell cell, int value) {
         //cell.removePotentialValue(value);
         cellPotentialValues[cell.getIndex()].clear(value);
+        numCellPencilmarksUpdate++;
     }
 
     /**
@@ -325,6 +319,7 @@ public class Grid {
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
     	//cell.removePotentialValues(valuesToRemove);
         cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
+        numCellPencilmarksUpdate++;
     }
 
     /**
@@ -334,6 +329,7 @@ public class Grid {
     public void clearCellPotentialValues(Cell cell) {
         //cell.clearPotentialValues();
         cellPotentialValues[cell.getIndex()].clear();
+        numCellPencilmarksUpdate++;
     }
 
     /**
@@ -343,6 +339,7 @@ public class Grid {
      */
     public void setCellPotentialValues(int index, BitSet values) {
         cellPotentialValues[index] = (BitSet)values.clone();
+        numCellPencilmarksUpdate++;
     }
 
     /**
@@ -473,7 +470,7 @@ public class Grid {
          * The bits of the returned bitset correspond to indexes of cells, as
          * in {@link #getCell(int)}. Only the indexes of cells that have the given
          * value as a potential value are included in the bitset (see
-         * {@link Grid#getCellPotentialValues(Cell cell)}).
+         * {@link Grid#getCellPotentialValues(int cellIndex)}).
          * @param grid the grid
          * @param value the value whose potential positions to get
          * @return the potential positions of the given value within this region
@@ -481,7 +478,7 @@ public class Grid {
         public BitSet getPotentialPositions(Grid grid, int value) {
             BitSet result = new BitSet(9);
             for (int index = 0; index < 9; index++) {
-                result.set(index, grid.hasCellPotentialValue(getCell(index), value));
+                result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
             }
             return result;
         }
@@ -895,29 +892,24 @@ public class Grid {
      */
     public String toStringPencilmarks() {
         StringBuilder result = new StringBuilder();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-            	//Cell cell = cells[y][x];
-            	//int value = cell.getValue();
-            	int value = getCellValue(x, y);
-            	if(value == 0) {
-	                //BitSet values = cell.getPotentialValues();
-	                BitSet values = getCellPotentialValues(x, y);
-	                for (int v = 1; v < 10; v++) {
-		                if (values.get(v))
-		                    result.append(v);
-		                else
-		                    result.append('.');
-	                }
-            	}
-            	else {
-	                for (int v = 1; v < 10; v++) {
-		                if (v == value)
-		                    result.append(v);
-		                else
-		                    result.append('.');
-	                }
-            	}
+        for (int i = 0; i < 81; i++) {
+        	int value = getCellValue(i);
+        	if(value == 0) {
+                BitSet values = getCellPotentialValues(i);
+                for (int v = 1; v < 10; v++) {
+	                if (values.get(v))
+	                    result.append(v);
+	                else
+	                    result.append('.');
+                }
+        	}
+        	else {
+                for (int v = 1; v < 10; v++) {
+	                if (v == value)
+	                    result.append(v);
+	                else
+	                    result.append('.');
+                }
             }
         }
         return result.toString();
@@ -966,7 +958,7 @@ public class Grid {
                             if ( n == 0 ) {
                                 for (int pv=1; pv<=9; pv++ ) {
                                     //if ( cell.hasPotentialValue( pv) ) {
-                                    if ( hasCellPotentialValue(cell, pv) ) {
+                                    if ( hasCellPotentialValue(cell.getIndex(), pv) ) {
                                         s += pv;
                                         cnt += 1;
                                     }
@@ -1043,7 +1035,7 @@ public class Grid {
                 int singleclue = values.nextSetBit(0);
                 boolean isnakedsingle = true;
                 for (Cell housecell : cell.getHouseCells(this)) {
-                    if ( hasCellPotentialValue(housecell, singleclue) ) {
+                    if ( hasCellPotentialValue(housecell.getIndex(), singleclue) ) {
                         isnakedsingle = false;
                         break;
                     }

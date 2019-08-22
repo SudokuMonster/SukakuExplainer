@@ -147,7 +147,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
             for (Cell cell : commonCells) {
                 //if (cell.hasPotentialValue(value))
-                if (grid.hasCellPotentialValue(cell, value))
+                if (grid.hasCellPotentialValue(cell.getIndex(), value))
                     removablePotentials.put(cell, SingletonBitSet.create(value));
             }
             if (!removablePotentials.isEmpty()) {
