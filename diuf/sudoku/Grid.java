@@ -47,14 +47,101 @@ public class Grid {
     		new Cell(72), new Cell(73), new Cell(74), new Cell(75), new Cell(76), new Cell(77), new Cell(78), new Cell(79), new Cell(80)
     		};
 
+    private static final int[][] regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
+
+    //private static final int[][] visibleCellIndex = new int[81][20];
+    public static final int[][] visibleCellIndex = {
+    		{ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,27,36,45,54,63,72},
+    		{ 0, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,28,37,46,55,64,73},
+    		{ 0, 1, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,29,38,47,56,65,74},
+    		{ 0, 1, 2, 4, 5, 6, 7, 8,12,13,14,21,22,23,30,39,48,57,66,75},
+    		{ 0, 1, 2, 3, 5, 6, 7, 8,12,13,14,21,22,23,31,40,49,58,67,76},
+    		{ 0, 1, 2, 3, 4, 6, 7, 8,12,13,14,21,22,23,32,41,50,59,68,77},
+    		{ 0, 1, 2, 3, 4, 5, 7, 8,15,16,17,24,25,26,33,42,51,60,69,78},
+    		{ 0, 1, 2, 3, 4, 5, 6, 8,15,16,17,24,25,26,34,43,52,61,70,79},
+    		{ 0, 1, 2, 3, 4, 5, 6, 7,15,16,17,24,25,26,35,44,53,62,71,80},
+    		{ 0, 1, 2,10,11,12,13,14,15,16,17,18,19,20,27,36,45,54,63,72},
+    		{ 0, 1, 2, 9,11,12,13,14,15,16,17,18,19,20,28,37,46,55,64,73},
+    		{ 0, 1, 2, 9,10,12,13,14,15,16,17,18,19,20,29,38,47,56,65,74},
+    		{ 3, 4, 5, 9,10,11,13,14,15,16,17,21,22,23,30,39,48,57,66,75},
+    		{ 3, 4, 5, 9,10,11,12,14,15,16,17,21,22,23,31,40,49,58,67,76},
+    		{ 3, 4, 5, 9,10,11,12,13,15,16,17,21,22,23,32,41,50,59,68,77},
+    		{ 6, 7, 8, 9,10,11,12,13,14,16,17,24,25,26,33,42,51,60,69,78},
+    		{ 6, 7, 8, 9,10,11,12,13,14,15,17,24,25,26,34,43,52,61,70,79},
+    		{ 6, 7, 8, 9,10,11,12,13,14,15,16,24,25,26,35,44,53,62,71,80},
+    		{ 0, 1, 2, 9,10,11,19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+    		{ 0, 1, 2, 9,10,11,18,20,21,22,23,24,25,26,28,37,46,55,64,73},
+    		{ 0, 1, 2, 9,10,11,18,19,21,22,23,24,25,26,29,38,47,56,65,74},
+    		{ 3, 4, 5,12,13,14,18,19,20,22,23,24,25,26,30,39,48,57,66,75},
+    		{ 3, 4, 5,12,13,14,18,19,20,21,23,24,25,26,31,40,49,58,67,76},
+    		{ 3, 4, 5,12,13,14,18,19,20,21,22,24,25,26,32,41,50,59,68,77},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,25,26,33,42,51,60,69,78},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,24,26,34,43,52,61,70,79},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,24,25,35,44,53,62,71,80},
+    		{ 0, 9,18,28,29,30,31,32,33,34,35,36,37,38,45,46,47,54,63,72},
+    		{ 1,10,19,27,29,30,31,32,33,34,35,36,37,38,45,46,47,55,64,73},
+    		{ 2,11,20,27,28,30,31,32,33,34,35,36,37,38,45,46,47,56,65,74},
+    		{ 3,12,21,27,28,29,31,32,33,34,35,39,40,41,48,49,50,57,66,75},
+    		{ 4,13,22,27,28,29,30,32,33,34,35,39,40,41,48,49,50,58,67,76},
+    		{ 5,14,23,27,28,29,30,31,33,34,35,39,40,41,48,49,50,59,68,77},
+    		{ 6,15,24,27,28,29,30,31,32,34,35,42,43,44,51,52,53,60,69,78},
+    		{ 7,16,25,27,28,29,30,31,32,33,35,42,43,44,51,52,53,61,70,79},
+    		{ 8,17,26,27,28,29,30,31,32,33,34,42,43,44,51,52,53,62,71,80},
+    		{ 0, 9,18,27,28,29,37,38,39,40,41,42,43,44,45,46,47,54,63,72},
+    		{ 1,10,19,27,28,29,36,38,39,40,41,42,43,44,45,46,47,55,64,73},
+    		{ 2,11,20,27,28,29,36,37,39,40,41,42,43,44,45,46,47,56,65,74},
+    		{ 3,12,21,30,31,32,36,37,38,40,41,42,43,44,48,49,50,57,66,75},
+    		{ 4,13,22,30,31,32,36,37,38,39,41,42,43,44,48,49,50,58,67,76},
+    		{ 5,14,23,30,31,32,36,37,38,39,40,42,43,44,48,49,50,59,68,77},
+    		{ 6,15,24,33,34,35,36,37,38,39,40,41,43,44,51,52,53,60,69,78},
+    		{ 7,16,25,33,34,35,36,37,38,39,40,41,42,44,51,52,53,61,70,79},
+    		{ 8,17,26,33,34,35,36,37,38,39,40,41,42,43,51,52,53,62,71,80},
+    		{ 0, 9,18,27,28,29,36,37,38,46,47,48,49,50,51,52,53,54,63,72},
+    		{ 1,10,19,27,28,29,36,37,38,45,47,48,49,50,51,52,53,55,64,73},
+    		{ 2,11,20,27,28,29,36,37,38,45,46,48,49,50,51,52,53,56,65,74},
+    		{ 3,12,21,30,31,32,39,40,41,45,46,47,49,50,51,52,53,57,66,75},
+    		{ 4,13,22,30,31,32,39,40,41,45,46,47,48,50,51,52,53,58,67,76},
+    		{ 5,14,23,30,31,32,39,40,41,45,46,47,48,49,51,52,53,59,68,77},
+    		{ 6,15,24,33,34,35,42,43,44,45,46,47,48,49,50,52,53,60,69,78},
+    		{ 7,16,25,33,34,35,42,43,44,45,46,47,48,49,50,51,53,61,70,79},
+    		{ 8,17,26,33,34,35,42,43,44,45,46,47,48,49,50,51,52,62,71,80},
+    		{ 0, 9,18,27,36,45,55,56,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 1,10,19,28,37,46,54,56,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 2,11,20,29,38,47,54,55,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 3,12,21,30,39,48,54,55,56,58,59,60,61,62,66,67,68,75,76,77},
+    		{ 4,13,22,31,40,49,54,55,56,57,59,60,61,62,66,67,68,75,76,77},
+    		{ 5,14,23,32,41,50,54,55,56,57,58,60,61,62,66,67,68,75,76,77},
+    		{ 6,15,24,33,42,51,54,55,56,57,58,59,61,62,69,70,71,78,79,80},
+    		{ 7,16,25,34,43,52,54,55,56,57,58,59,60,62,69,70,71,78,79,80},
+    		{ 8,17,26,35,44,53,54,55,56,57,58,59,60,61,69,70,71,78,79,80},
+    		{ 0, 9,18,27,36,45,54,55,56,64,65,66,67,68,69,70,71,72,73,74},
+    		{ 1,10,19,28,37,46,54,55,56,63,65,66,67,68,69,70,71,72,73,74},
+    		{ 2,11,20,29,38,47,54,55,56,63,64,66,67,68,69,70,71,72,73,74},
+    		{ 3,12,21,30,39,48,57,58,59,63,64,65,67,68,69,70,71,75,76,77},
+    		{ 4,13,22,31,40,49,57,58,59,63,64,65,66,68,69,70,71,75,76,77},
+    		{ 5,14,23,32,41,50,57,58,59,63,64,65,66,67,69,70,71,75,76,77},
+    		{ 6,15,24,33,42,51,60,61,62,63,64,65,66,67,68,70,71,78,79,80},
+    		{ 7,16,25,34,43,52,60,61,62,63,64,65,66,67,68,69,71,78,79,80},
+    		{ 8,17,26,35,44,53,60,61,62,63,64,65,66,67,68,69,70,78,79,80},
+    		{ 0, 9,18,27,36,45,54,55,56,63,64,65,73,74,75,76,77,78,79,80},
+    		{ 1,10,19,28,37,46,54,55,56,63,64,65,72,74,75,76,77,78,79,80},
+    		{ 2,11,20,29,38,47,54,55,56,63,64,65,72,73,75,76,77,78,79,80},
+    		{ 3,12,21,30,39,48,57,58,59,66,67,68,72,73,74,76,77,78,79,80},
+    		{ 4,13,22,31,40,49,57,58,59,66,67,68,72,73,74,75,77,78,79,80},
+    		{ 5,14,23,32,41,50,57,58,59,66,67,68,72,73,74,75,76,78,79,80},
+    		{ 6,15,24,33,42,51,60,61,62,69,70,71,72,73,74,75,76,77,79,80},
+    		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
+    		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
+			};
+
     // Views
+    private static final Block[] blocks = {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     private static final Row[] rows = {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
     private static final Column[] columns = {new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
-    private static final Block[] blocks = {new Block(0,0), new Block(0,1), new Block(0,2), new Block(1,0), new Block(1,1), new Block(1,2), new Block(2,0), new Block(2,1), new Block(2,2)};
 
     //private static final List<Class<? extends Grid.Region>> _regionTypes = null;
     private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
-
+    
     /**
      * Create a new 9x9 Sudoku grid. All cells are set to empty
      */
@@ -328,6 +415,9 @@ public class Grid {
      */
     public static abstract class Region {
     	protected final int[] regionCells = new int[9];
+    	protected final BitSet regionCellsSet = new BitSet(81);
+    	
+    	public abstract int getRegionTypeIndex();
 
         /**
          * Get a cell of this region by index. The order in which cells are
@@ -349,7 +439,9 @@ public class Grid {
          * @return the index of the cell. If the cell does not belong to
          * this region the result is undetermined.
          */
-        public abstract int indexOf(Cell cell);
+        public int indexOf(Cell cell) {
+        	return regionCellIndex[cell.getIndex()][getRegionTypeIndex()];
+        }
 
         /**
          * Test whether this region contains the given value, that is,
@@ -372,7 +464,9 @@ public class Grid {
          * @param cell the cell to check
          * @return whether this region contains the given cell
          */
-        public abstract boolean contains(Cell cell);
+        public boolean contains(Cell cell) {
+        	return regionCellsSet.get(cell.getIndex());
+        }
 
         /**
          * Get the potential positions of the given value within this region.
@@ -431,8 +525,11 @@ public class Grid {
          * @param other the other region
          * @return whether this region crosses the other region.
          */
-        public boolean crosses(Region other) {
-            return !commonCells(other).isEmpty();
+        public boolean crosses(Region other) { //can be implemented as static table
+            //return !commonCells(other).isEmpty();
+        	BitSet intersection = (BitSet)regionCellsSet.clone();
+        	intersection.and(other.regionCellsSet);
+        	return !intersection.isEmpty();
         }
 
         /**
@@ -473,7 +570,14 @@ public class Grid {
             this.rowNum = rowNum;
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * rowNum + i;
-            }
+            	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
+            	regionCellsSet.set(regionCells[i]);
+        	}
+        }
+        //regionCellIndex
+        
+        public int getRegionTypeIndex() {
+        	return 1;
         }
 
         public int getRowNum() {
@@ -486,30 +590,30 @@ public class Grid {
 //            return cells[9 * rowNum + index];
 //        }
 
-        @Override
-        public int indexOf(Cell cell) {
-            return cell.getX();
-        }
+//        @Override
+//        public int indexOf(Cell cell) {
+//            return cell.getX();
+//        }
 
-        @Override
-        public boolean contains(Cell cell) {
-        	return cell.getY() == rowNum;
-        }
+//        @Override
+//        public boolean contains(Cell cell) {
+//        	return cell.getY() == rowNum;
+//        }
 
-        @Override
-        public boolean crosses(Region other) {
-            if (other instanceof Block) {
-                Block square = (Block)other;
-                return rowNum / 3 == square.vNum;
-            } else if (other instanceof Column) {
-                return true;
-            } else if (other instanceof Row) {
-                Row row = (Row)other;
-                return this.rowNum == row.rowNum;
-            } else {
-                return super.crosses(other);
-            }
-        }
+//        @Override
+//        public boolean crosses(Region other) {
+//            if (other instanceof Block) {
+//                Block square = (Block)other;
+//                return rowNum / 3 == square.vNum;
+//            } else if (other instanceof Column) {
+//                return true;
+//            } else if (other instanceof Row) {
+//                Row row = (Row)other;
+//                return this.rowNum == row.rowNum;
+//            } else {
+//                return super.crosses(other);
+//            }
+//        }
 
         @Override
         public String toString() {
@@ -538,9 +642,15 @@ public class Grid {
             this.columnNum = columnNum;
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * i + columnNum;
+            	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
+            	regionCellsSet.set(regionCells[i]);
             }
         }
 
+        public int getRegionTypeIndex() {
+        	return 2;
+        }
+        
         public int getColumnNum() {
             return this.columnNum;
         }
@@ -550,30 +660,30 @@ public class Grid {
 //            return cells[9 * index + columnNum];
 //        }
 
-        @Override
-        public int indexOf(Cell cell) {
-            return cell.getY();
-        }
+//        @Override
+//        public int indexOf(Cell cell) {
+//            return cell.getY();
+//        }
 
-        @Override
-        public boolean contains(Cell cell) {
-        	return cell.getX() == columnNum;
-        }
+//        @Override
+//        public boolean contains(Cell cell) {
+//        	return cell.getX() == columnNum;
+//        }
 
-        @Override
-        public boolean crosses(Region other) {
-            if (other instanceof Block) {
-                Block square = (Block)other;
-                return columnNum / 3 == square.hNum;
-            } else if (other instanceof Row) {
-                return true;
-            } else if (other instanceof Column) {
-                Column column = (Column)other;
-                return this.columnNum == column.columnNum;
-            } else {
-                return super.crosses(other);
-            }
-        }
+//        @Override
+//        public boolean crosses(Region other) {
+//            if (other instanceof Block) {
+//                Block square = (Block)other;
+//                return columnNum / 3 == square.hNum;
+//            } else if (other instanceof Row) {
+//                return true;
+//            } else if (other instanceof Column) {
+//                Column column = (Column)other;
+//                return this.columnNum == column.columnNum;
+//            } else {
+//                return super.crosses(other);
+//            }
+//        }
 
         @Override
         public String toString() {
@@ -598,14 +708,22 @@ public class Grid {
 
         private final int vNum, hNum;
 
-        public Block(int vNum, int hNum) {
-            this.vNum = vNum;
-            this.hNum = hNum;
+        public Block(int index) {
+        	final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
+        	final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
+            this.vNum = vNums[index];
+            this.hNum = hNums[index];
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * (vNum * 3 + i / 3) + (hNum * 3 + i % 3);
+            	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
+            	regionCellsSet.set(regionCells[i]);
             }
         }
 
+        public int getRegionTypeIndex() {
+        	return 0;
+        }
+        
         public int getVIndex() {
             return this.vNum;
         }
@@ -621,37 +739,37 @@ public class Grid {
 //            return cells[regionCells[index]];
 //        }
 
-        @Override
-        public int indexOf(Cell cell) {
-            return (cell.getY() % 3) * 3 + (cell.getX() % 3);
-        }
+//        @Override
+//        public int indexOf(Cell cell) {
+//            return (cell.getY() % 3) * 3 + (cell.getX() % 3);
+//        }
 
-        @Override
-        public boolean contains(Cell cell) {
-        	int x = cell.getX();
-        	int hStart = hNum * 3;
-        	if(x < hStart) return false;
-        	if(x > hStart + 2) return false;
-        	int y = cell.getY();
-        	int vStart = vNum * 3;
-        	if(y < vStart) return false;
-        	if(y > vStart + 2) return false;
-        	return true;
-        }
+//        @Override
+//        public boolean contains(Cell cell) {
+//        	int x = cell.getX();
+//        	int hStart = hNum * 3;
+//        	if(x < hStart) return false;
+//        	if(x > hStart + 2) return false;
+//        	int y = cell.getY();
+//        	int vStart = vNum * 3;
+//        	if(y < vStart) return false;
+//        	if(y > vStart + 2) return false;
+//        	return true;
+//        }
 
-       @Override
-        public boolean crosses(Region other) {
-            if (other instanceof Row) {
-                return ((Row)other).crosses(this);
-            } else if (other instanceof Column) {
-                return ((Column)other).crosses(this);
-            } else if (other instanceof Block) {
-                Block square = (Block)other;
-                return this.vNum == square.vNum && this.hNum == square.hNum;
-            } else {
-                return super.crosses(other);
-            }
-        }
+//       @Override
+//        public boolean crosses(Region other) {
+//            if (other instanceof Row) {
+//                return ((Row)other).crosses(this);
+//            } else if (other instanceof Column) {
+//                return ((Column)other).crosses(this);
+//            } else if (other instanceof Block) {
+//                Block square = (Block)other;
+//                return this.vNum == square.vNum && this.hNum == square.hNum;
+//            } else {
+//                return super.crosses(other);
+//            }
+//        }
 
         @Override
         public String toString() {
