@@ -35,6 +35,42 @@ public class GenerateDialog extends JDialog {
             public double getMaxDifficulty() {
                 return 1.2;
             }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
         },
         Medium {
 
@@ -46,6 +82,42 @@ public class GenerateDialog extends JDialog {
             @Override
             public double getMaxDifficulty() {
                 return 1.5;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
             }
         },
         Hard {
@@ -59,6 +131,42 @@ public class GenerateDialog extends JDialog {
             public double getMaxDifficulty() {
                 return 2.5;
             }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
         },
         Superior {
 
@@ -70,6 +178,42 @@ public class GenerateDialog extends JDialog {
             @Override
             public double getMaxDifficulty() {
                 return 4.0;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 3.8;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 3.4;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
             }
         },
         Fiendish {
@@ -83,8 +227,92 @@ public class GenerateDialog extends JDialog {
             public double getMaxDifficulty() {
                 return 6.0;
             }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
         },
 		SuperiorPlus {
+
+            @Override
+            public double getMinDifficulty() {
+                return 3.8;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 6.1;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 4.2;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 4.4;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 4.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+        },
+		Uniqueness {
 
             @Override
             public double getMinDifficulty() {
@@ -93,7 +321,91 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMaxDifficulty() {
-                return 6.0;
+                return 4.9;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+        },
+		BUGs {
+
+            @Override
+            public double getMinDifficulty() {
+                return 5.6;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 6.1;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
             }
         },
 		AdvancedPlayer {
@@ -107,6 +419,42 @@ public class GenerateDialog extends JDialog {
             public double getMaxDifficulty() {
                 return 8.0;
             }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
         },
          Diabolical {
 
@@ -119,10 +467,55 @@ public class GenerateDialog extends JDialog {
             public double getMaxDifficulty() {
                 return 11.0;
             }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
         };
 
         public abstract double getMinDifficulty();
         public abstract double getMaxDifficulty();
+		public abstract double getincludeDifficulty1();
+		public abstract double getincludeDifficulty2();
+		public abstract double getincludeDifficulty3();
+		public abstract double getexcludeDifficulty1();
+		public abstract double getexcludeDifficulty2();
+		public abstract double getexcludeDifficulty3();
+		public abstract double getnotMaxDifficulty1();
+		public abstract double getnotMaxDifficulty2();
+		public abstract double getnotMaxDifficulty3();
 
         public String getHtmlDescription() {
             return HtmlLoader.loadHtml(this, this.name() + ".html");
@@ -384,12 +777,21 @@ public class GenerateDialog extends JDialog {
         // Gather parameters
         double minDifficulty = difficulty.getMinDifficulty();
         double maxDifficulty = difficulty.getMaxDifficulty();
+		double includeDifficulty1 = difficulty.getincludeDifficulty1();
+		double includeDifficulty2 = difficulty.getincludeDifficulty2();
+		double includeDifficulty3 = difficulty.getincludeDifficulty3();
+		double excludeDifficulty1 = difficulty.getexcludeDifficulty1();
+		double excludeDifficulty2 = difficulty.getexcludeDifficulty2();
+		double excludeDifficulty3 = difficulty.getexcludeDifficulty3();
+		double notMaxDifficulty1 = difficulty.getnotMaxDifficulty1();
+		double notMaxDifficulty2 = difficulty.getnotMaxDifficulty2();
+		double notMaxDifficulty3 = difficulty.getnotMaxDifficulty3();
         if (!isExact)
             minDifficulty = 1.0;
         List<Symmetry> symList = new ArrayList<Symmetry>(symmetries);
 
         // Generate grid
-        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty);
+        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
         generator.start();
     }
 
@@ -401,14 +803,32 @@ public class GenerateDialog extends JDialog {
         private final List<Symmetry> symmetries;
         private final double minDifficulty;
         private final double maxDifficulty;
+		private final double includeDifficulty1;
+		private final double includeDifficulty2;
+		private final double includeDifficulty3;
+		private final double excludeDifficulty1;
+		private final double excludeDifficulty2;
+		private final double excludeDifficulty3;
+		private final double notMaxDifficulty1;
+		private final double notMaxDifficulty2;
+		private final double notMaxDifficulty3;
 
         private Generator generator;
 
 
-        public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty) {
+       public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3) {
             this.symmetries = symmetries;
             this.minDifficulty = minDifficulty;
             this.maxDifficulty = maxDifficulty;
+			this.includeDifficulty1 = includeDifficulty1;
+ 			this.includeDifficulty2 = includeDifficulty2;
+			this.includeDifficulty3 = includeDifficulty3;
+			this.excludeDifficulty1 = excludeDifficulty1;
+ 			this.excludeDifficulty2 = excludeDifficulty2;
+			this.excludeDifficulty3 = excludeDifficulty3;
+			this.notMaxDifficulty1 = notMaxDifficulty1;
+ 			this.notMaxDifficulty2 = notMaxDifficulty2;
+			this.notMaxDifficulty3 = notMaxDifficulty3;
         }
 
         @Override
@@ -427,7 +847,7 @@ public class GenerateDialog extends JDialog {
                 }
             });
             generator = new Generator();
-            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty);
+            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (result != null) {
