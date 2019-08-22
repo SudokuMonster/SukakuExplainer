@@ -41,7 +41,7 @@ public class AboutDialog extends JDialog {
         this.setSize(new java.awt.Dimension(255,203));
         this.setResizable(false);
         this.setContentPane(getJContentPane());
-        this.setTitle("Sudoku Explainer - About");
+        this.setTitle("Sukaku Explainer - About");
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowDeactivated(java.awt.event.WindowEvent e) {
