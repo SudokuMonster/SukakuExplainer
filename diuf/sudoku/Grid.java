@@ -327,6 +327,7 @@ public class Grid {
      * is either a row, a column or a 3x3 block.
      */
     public static abstract class Region {
+    	protected final int[] regionCells = new int[9];
 
         /**
          * Get a cell of this region by index. The order in which cells are
@@ -336,7 +337,9 @@ public class Grid {
          * and 9 (exclusive).
          * @return the cell at the given index
          */
-        public abstract Cell getCell(int index);
+        public Cell getCell(int index) {
+            return cells[regionCells[index]];
+        }
 
         /**
          * Get the index of the given cell within this region.
@@ -468,17 +471,20 @@ public class Grid {
 
         public Row(int rowNum) {
             this.rowNum = rowNum;
+            for(int i = 0; i < 9; i++) {
+            	regionCells[i] = 9 * rowNum + i;
+            }
         }
 
         public int getRowNum() {
             return this.rowNum;
         }
 
-        @Override
-        public Cell getCell(int index) {
-            //return cells[rowNum][index];
-            return cells[9 * rowNum + index];
-        }
+//        @Override
+//        public Cell getCell(int index) {
+//            //return cells[rowNum][index];
+//            return cells[9 * rowNum + index];
+//        }
 
         @Override
         public int indexOf(Cell cell) {
@@ -530,16 +536,19 @@ public class Grid {
 
         public Column(int columnNum) {
             this.columnNum = columnNum;
+            for(int i = 0; i < 9; i++) {
+            	regionCells[i] = 9 * i + columnNum;
+            }
         }
 
         public int getColumnNum() {
             return this.columnNum;
         }
 
-        @Override
-        public Cell getCell(int index) {
-            return cells[9 * index + columnNum];
-        }
+//        @Override
+//        public Cell getCell(int index) {
+//            return cells[9 * index + columnNum];
+//        }
 
         @Override
         public int indexOf(Cell cell) {
@@ -592,6 +601,9 @@ public class Grid {
         public Block(int vNum, int hNum) {
             this.vNum = vNum;
             this.hNum = hNum;
+            for(int i = 0; i < 9; i++) {
+            	regionCells[i] = 9 * (vNum * 3 + i / 3) + (hNum * 3 + i % 3);
+            }
         }
 
         public int getVIndex() {
@@ -602,11 +614,12 @@ public class Grid {
             return this.hNum;
         }
 
-        @Override
-        public Cell getCell(int index) {
-            //return cells[vNum * 3 + index / 3][hNum * 3 + index % 3];
-            return cells[9 * (vNum * 3 + index / 3) + (hNum * 3 + index % 3)];
-        }
+//        @Override
+//        public Cell getCell(int index) {
+//            //return cells[vNum * 3 + index / 3][hNum * 3 + index % 3];
+//            //return cells[9 * (vNum * 3 + index / 3) + (hNum * 3 + index % 3)];
+//            return cells[regionCells[index]];
+//        }
 
         @Override
         public int indexOf(Cell cell) {
