@@ -36,13 +36,20 @@ public class AlignedPairExclusion extends AlignedExclusion {
                 // Look for potentially excluding cells (whose number of candidates <=
                 // degree)
                 Collection<Cell> excludingCells = new ArrayList<Cell>();
-                for (Cell excludingCell : cell.getHouseCells(grid)) {
-                    //int exclCardinality = excludingCell.getPotentialValues().cardinality();
-                    int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
+//                for (Cell excludingCell : cell.getHouseCells(grid)) {
+//                    //int exclCardinality = excludingCell.getPotentialValues().cardinality();
+//                    int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
+//                    if (exclCardinality == 1)
+//                        hasNakedSingle = true;
+//                    else if (exclCardinality == 2)
+//                        excludingCells.add(excludingCell);
+//                }
+                for (int excludingCellIndex : cell.getVisibleCellIndexes()) {
+                    int exclCardinality = grid.getCellPotentialValues(excludingCellIndex).cardinality();
                     if (exclCardinality == 1)
                         hasNakedSingle = true;
                     else if (exclCardinality == 2)
-                        excludingCells.add(excludingCell);
+                        excludingCells.add(Grid.getCell(excludingCellIndex));
                 }
                 // Optimization: Skip this technique if naked singles are remaining
                 if (!hasNakedSingle && !excludingCells.isEmpty()) {

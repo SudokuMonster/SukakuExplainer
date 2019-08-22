@@ -73,24 +73,24 @@ public class XYWing implements IndirectHintProducer {
             BitSet xyValues = grid.getCellPotentialValues(xyCell);
             if (xyValues.cardinality() == targetCardinality) {
                 // Potential XY cell found
-                for (Cell xzCell : xyCell.getHouseCells(grid)) {
+                for (int xzCellIndex : xyCell.getVisibleCellIndexes()) {
                     //BitSet xzValues = xzCell.getPotentialValues();
-                    BitSet xzValues = grid.getCellPotentialValues(xzCell);
+                    BitSet xzValues = grid.getCellPotentialValues(xzCellIndex);
                     if (xzValues.cardinality() == 2) {
                         // Potential XZ cell found. Do small test
                         BitSet remValues = (BitSet)xyValues.clone();
                         remValues.andNot(xzValues);
                         if (remValues.cardinality() == 1) {
                             // We have found XZ cell, look for YZ cell
-                            for (Cell yzCell : xyCell.getHouseCells(grid)) {
+                            for (int yzCellIndex : xyCell.getVisibleCellIndexes()) {
                                 //BitSet yzValues = yzCell.getPotentialValues();
-                                BitSet yzValues = grid.getCellPotentialValues(yzCell);
+                                BitSet yzValues = grid.getCellPotentialValues(yzCellIndex);
                                 if (yzValues.cardinality() == 2) {
                                     // Potential YZ cell found
                                     if (isXYZ) {
                                         if (isXYZWing(xyValues, xzValues, yzValues)) {
                                             // Found XYZ-Wing pattern
-                                            XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
+                                            XYWingHint hint = createHint(grid, xyCell, Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
                                                     xzValues, yzValues);
                                             if (hint.isWorth())
                                                 accu.add(hint);
@@ -98,7 +98,7 @@ public class XYWing implements IndirectHintProducer {
                                     } else {
                                         if (isXYWing(xyValues, xzValues, yzValues)) {
                                             // Found XY-Wing pattern
-                                            XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
+                                            XYWingHint hint = createHint(grid, xyCell, Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
                                                     xzValues, yzValues);
                                             if (hint.isWorth())
                                                 accu.add(hint);

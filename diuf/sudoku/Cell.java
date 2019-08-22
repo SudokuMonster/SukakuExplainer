@@ -191,17 +191,35 @@ public class Cell {
     public Collection<Cell> getHouseCells(Grid targetGrid) {
         // Use a set to prevent duplicates (cells in both block and row/column)
         Collection<Cell> result = new LinkedHashSet<Cell>();
-        // Iterate on region types (Block, Row, Column)
-        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-            // Get region on which this cell is
-            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
-            // Add all cell of that region
-            for (int i = 0; i < 9; i++)
-                result.add(region.getCell(i));
+//        // Iterate on region types (Block, Row, Column)
+//        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+//            // Get region on which this cell is
+//            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
+//            // Add all cell of that region
+//            for (int i = 0; i < 9; i++)
+//                result.add(region.getCell(i));
+//        }
+//        // Remove this cell
+//        result.remove(this);
+        for(int cellIndex : Grid.visibleCellIndex[index]) {
+        	result.add(Grid.getCell(cellIndex));
         }
-        // Remove this cell
-        result.remove(this);
         return result;
+    }
+
+    /**
+     * Get the cell idexes that form the "house" of this cell. The
+     * "house" cells are all the cells that are in the
+     * same block, row or column.
+     * <p>
+     * The iteration order is guaranted to be the same on each
+     * invocation of this method for the same cell. (this is
+     * necessary to ensure that hints of the same difficulty
+     * are always returned in the same order).
+     * @return array of the cell indexes that are controlled by this cell
+     */
+    public int[] getVisibleCellIndexes() {
+        return Grid.visibleCellIndex[index];
     }
 
     /**

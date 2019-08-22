@@ -1034,8 +1034,14 @@ public class Grid {
             if ( values.cardinality() ==  1 ) {
                 int singleclue = values.nextSetBit(0);
                 boolean isnakedsingle = true;
-                for (Cell housecell : cell.getHouseCells(this)) {
-                    if ( hasCellPotentialValue(housecell.getIndex(), singleclue) ) {
+//                for (Cell housecell : cell.getHouseCells(this)) {
+//                    if ( hasCellPotentialValue(housecell.getIndex(), singleclue) ) {
+//                        isnakedsingle = false;
+//                        break;
+//                    }
+//                }
+                for (int cellIndex : cell.getVisibleCellIndexes()) {
+                    if ( hasCellPotentialValue(cellIndex, singleclue) ) {
                         isnakedsingle = false;
                         break;
                     }
