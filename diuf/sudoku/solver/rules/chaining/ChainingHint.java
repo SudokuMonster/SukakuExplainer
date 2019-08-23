@@ -527,6 +527,18 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
 
     @Override
     public int hashCode() {
-        return getRemovablePotentials().hashCode();
+        //return getRemovablePotentials().hashCode();
+        Map<Cell, BitSet> rp = getRemovablePotentials();
+        if(rp.isEmpty()) {
+        	return (isYChain ? 2 : 0) + (isXChain ? 1 : 0);
+        }
+        //return rp.entrySet().iterator().next().getKey().hashCode();
+        int ret = 0;
+        int n = 3;
+        for(Map.Entry<Cell, BitSet> iter : rp.entrySet()) {
+        	ret ^= iter.getKey().hashCode();
+        	if(--n == 0) break;
+        }
+        return ret;
     }
 }
