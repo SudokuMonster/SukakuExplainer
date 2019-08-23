@@ -177,9 +177,9 @@ public class Grid {
     private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
     
     //temporary development/debug counters
-    public static long numCellPencilmarksUpdate = 0;
-    public static long numCellPencilmarksRead = 0;
-    public static long numGetPP = 0;
+    //public static long numCellPencilmarksUpdate = 0;
+    //public static long numCellPencilmarksRead = 0;
+    //public static long numGetPP = 0;
     
     /**
      * Create a new 9x9 Sudoku grid. All cells are set to empty
@@ -291,7 +291,7 @@ public class Grid {
      */
     public BitSet getCellPotentialValues(int cellIndex) {
         //return cells[cellIndex / 9][cellIndex % 9].getPotentialValues();
-        numCellPencilmarksRead++;
+        //numCellPencilmarksRead++;
         return cellPotentialValues[cellIndex];
     }
 
@@ -320,7 +320,7 @@ public class Grid {
      */
     public boolean hasCellPotentialValue(int cellIndex, int value) {
         //return cell.hasPotentialValue(value);
-        numCellPencilmarksRead++;
+        //numCellPencilmarksRead++;
     	return cellPotentialValues[cellIndex].get(value);
     }
 
@@ -333,8 +333,8 @@ public class Grid {
         //cell.addPotentialValue(value);
 //        if(cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32382541)
         cellPotentialValues[cell.getIndex()].set(value);
-        valueCellsCache.invalidateCellValue(cell.getIndex(), value);
-        numCellPencilmarksUpdate++;
+        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
+        //numCellPencilmarksUpdate++;
     }
 
     /**
@@ -346,8 +346,8 @@ public class Grid {
         //cell.removePotentialValue(value);
         //if(!cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32380479)
         cellPotentialValues[cell.getIndex()].clear(value);
-        valueCellsCache.invalidateCellValue(cell.getIndex(), value);
-        numCellPencilmarksUpdate++;
+        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
+        //numCellPencilmarksUpdate++;
     }
 
     /**
@@ -362,8 +362,8 @@ public class Grid {
     	//cl.and(valuesToRemove);
     	//if(cl.isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
         cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
-        valueCellsCache.invalidateCell(cell.getIndex());
-        numCellPencilmarksUpdate++;
+        //valueCellsCache.invalidateCell(cell.getIndex());
+        //numCellPencilmarksUpdate++;
     }
 
     /**
@@ -374,8 +374,8 @@ public class Grid {
         //cell.clearPotentialValues();
         //if(cellPotentialValues[cell.getIndex()].isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
         cellPotentialValues[cell.getIndex()].clear();
-        valueCellsCache.invalidateCell(cell.getIndex());
-        numCellPencilmarksUpdate++;
+        //valueCellsCache.invalidateCell(cell.getIndex());
+        //numCellPencilmarksUpdate++;
     }
 
     /**
@@ -385,8 +385,8 @@ public class Grid {
      */
     public void setCellPotentialValues(int index, BitSet values) {
         cellPotentialValues[index] = (BitSet)values.clone();
-        valueCellsCache.invalidateCell(index);
-        numCellPencilmarksUpdate++;
+        //valueCellsCache.invalidateCell(index);
+        //numCellPencilmarksUpdate++;
     }
 
     /**
@@ -525,11 +525,11 @@ public class Grid {
          */
         public BitSet getPotentialPositions(Grid grid, int value) {
             BitSet result = new BitSet(9);
-            //for (int index = 0; index < 9; index++) {
-            //    result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
-            //}
-            result.or(grid.valueCellsCache.getRegionValueCells(this, value));
-            numGetPP++;
+            for (int index = 0; index < 9; index++) {
+                result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
+            }
+            //result.or(grid.valueCellsCache.getRegionValueCells(this, value));
+            //numGetPP++;
             return result;
         }
 
