@@ -31,37 +31,37 @@ public class Grid {
      */
     private BitSet[] cellPotentialValues = new BitSet[81];
 
-    //cache for Region.getPotentialPositions(value)
-    private valueCells valueCellsCache = new valueCells();
-    private class valueCells {
-        private BitSet[][][] valuePotentialCells = new BitSet[3][9][9]; //region type, region, value
-
-        public void invalidateCellValue(int cellIndex, int value) {
-        	for(int t = 0; t < 3; t++) { //region types
-        		valuePotentialCells[t][cellRegions[cellIndex][t]][value - 1] = null;
-        	}
-        }
-        public void invalidateCell(int cellIndex) {
-        	for(int t = 0; t < 3; t++) { //region types
-        		for(int v = 0; v < 9; v++) { //values
-        			valuePotentialCells[t][cellRegions[cellIndex][t]][v] = null;
-        		}
-        	}
-        }
-        public BitSet getRegionValueCells(Region region, int value) {
-        	int regionType = region.getRegionTypeIndex();
-        	int regionIndex = region.getRegionIndex();
-        	BitSet result = valuePotentialCells[regionType][regionIndex][value - 1];
-        	if(result == null) { //build
-        		result = new BitSet(9);
-                for (int index = 0; index < 9; index++) {
-                    result.set(index, hasCellPotentialValue(region.getCell(index).getIndex(), value));
-                }
-                valuePotentialCells[regionType][regionIndex][value - 1] = result; //store to cache
-        	}
-        	return result;
-        }
-    }
+//    //cache for Region.getPotentialPositions(value)
+//    private valueCells valueCellsCache = new valueCells();
+//    private class valueCells {
+//        private BitSet[][][] valuePotentialCells = new BitSet[3][9][9]; //region type, region, value
+//
+//        public void invalidateCellValue(int cellIndex, int value) {
+//        	for(int t = 0; t < 3; t++) { //region types
+//        		valuePotentialCells[t][cellRegions[cellIndex][t]][value - 1] = null;
+//        	}
+//        }
+//        public void invalidateCell(int cellIndex) {
+//        	for(int t = 0; t < 3; t++) { //region types
+//        		for(int v = 0; v < 9; v++) { //values
+//        			valuePotentialCells[t][cellRegions[cellIndex][t]][v] = null;
+//        		}
+//        	}
+//        }
+//        public BitSet getRegionValueCells(Region region, int value) {
+//        	int regionType = region.getRegionTypeIndex();
+//        	int regionIndex = region.getRegionIndex();
+//        	BitSet result = valuePotentialCells[regionType][regionIndex][value - 1];
+//        	if(result == null) { //build
+//        		result = new BitSet(9);
+//                for (int index = 0; index < 9; index++) {
+//                    result.set(index, hasCellPotentialValue(region.getCell(index).getIndex(), value));
+//                }
+//                valuePotentialCells[regionType][regionIndex][value - 1] = result; //store to cache
+//        	}
+//        	return result;
+//        }
+//    }
      
     /*
      * Cells of the grid. First array index is the vertical index (from top
