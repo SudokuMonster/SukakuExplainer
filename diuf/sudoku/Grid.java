@@ -374,7 +374,7 @@ public class Grid {
     public void addCellPotentialValue(Cell cell, int value) {
         //cell.addPotentialValue(value);
 //        if(cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32382541)
-//        cellPotentialValues[cell.getIndex()].set(value);
+        cellPotentialValues[cell.getIndex()].set(value);
         valueCellsCache.invalidateCellValue(cell.getIndex(), value);
         numCellPencilmarksUpdate++;
     }
@@ -567,10 +567,10 @@ public class Grid {
          */
         public BitSet getPotentialPositions(Grid grid, int value) {
             BitSet result = new BitSet(9);
-            for (int index = 0; index < 9; index++) {
-                result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
-            }
-            //result.or(grid.valueCellsCache.getRegionValueCells(this, value));
+            //for (int index = 0; index < 9; index++) {
+            //    result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
+            //}
+            result.or(grid.valueCellsCache.getRegionValueCells(this, value));
             numGetPP++;
             return result;
         }
