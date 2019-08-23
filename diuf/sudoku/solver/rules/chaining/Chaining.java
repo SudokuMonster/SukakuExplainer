@@ -630,6 +630,7 @@ public class Chaining implements IndirectHintProducer {
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
         Set<Potential> result = new LinkedHashSet<Potential>();
+        //Set<Potential> result = new TreeSet<Potential>();
 
         if (isYChainEnabled) { // This rule is not used with X-Chains
             // First rule: other potential values for this cell get off
@@ -767,7 +768,7 @@ public class Chaining implements IndirectHintProducer {
         if (isYChainEnabled) {
             // First rule: if there is only two potentials in this cell, the other one gets on
             //BitSet potentialValues = p.cell.getPotentialValues();
-            BitSet potentialValues = grid.getCellPotentialValues(p.cell.getIndex()); //grid or source?
+            BitSet potentialValues = grid.getCellPotentialValues(p.cell.getIndex());
             if (potentialValues.cardinality() == 2) {
                 int otherValue = potentialValues.nextSetBit(0);
                 if (otherValue == p.value)

@@ -540,7 +540,7 @@ public class Grid {
         public boolean contains(Grid grid, int value) {
             for (int i = 0; i < 9; i++) {
             	Cell cell = getCell(i);
-                if (grid.getCellValue(cell.getX(), cell.getY()) == value)
+                if (grid.getCellValue(cell.getIndex()) == value)
                     return true;
             }
             return false;

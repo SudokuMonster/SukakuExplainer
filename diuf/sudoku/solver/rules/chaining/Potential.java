@@ -19,6 +19,7 @@ import diuf.sudoku.*;
  * the parent references. Hence this class is also used to represent an entire chain.
  */
 public class Potential {
+//public class Potential implements Comparable<Potential> {
 
     public enum Cause {
         NakedSingle,
@@ -81,6 +82,17 @@ public class Potential {
     	grid.removeCellPotentialValue(this.cell, this.value);
     }
 
+//    @Override
+//    public int compareTo(Potential other) {
+//    	if(this.cell.getIndex() > other.cell.getIndex()) return +1;
+//    	if(this.cell.getIndex() < other.cell.getIndex()) return -1;
+//    	if(this.value > other.value) return +1;
+//    	if(this.value < other.value) return -1;
+//    	if(this.isOn == other.isOn) return 0;
+//    	if(this.isOn) return +1;
+//    	return -1;
+//    }
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Potential))
