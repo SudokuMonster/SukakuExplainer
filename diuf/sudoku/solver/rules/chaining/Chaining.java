@@ -998,9 +998,9 @@ public class Chaining implements IndirectHintProducer {
             otherRules.add(new Fisherman(2));
             if (level < 4) {
                 if (level >= 2)
-                    otherRules.add(new Chaining(false, false, false, 0)); // Forcing chains
+                    otherRules.add(new Chaining(false, false, false, 0, true, 0)); // Forcing chains
                 if (level >= 3)
-                    otherRules.add(new Chaining(true, false, false, 0)); // Multiple forcing chains
+                    otherRules.add(new Chaining(true, false, false, 0, true, 0)); // Multiple forcing chains
             } else {
 //                // Dynamic Forcing Chains already cover Simple and Multiple Forcing Chains
 //                if (level >= 4)
@@ -1263,8 +1263,17 @@ public class Chaining implements IndirectHintProducer {
         List<ChainingHint> result = getHintList(grid);
         lastGrid = new Grid();
         grid.copyTo(lastGrid);
-        // This filters hints that are equal:
-        lastHints = new LinkedHashSet<ChainingHint>(result);
+        //if(Settings.getInstance().getBestHintOnly()) {
+        if(accu instanceof SingleHintAccumulator) { 
+            lastHints = new LinkedHashSet<ChainingHint>();
+            if(! result.isEmpty()) {
+            	lastHints.add(result.get(0));
+            }
+        }
+        else {
+	        // This filters hints that are equal:
+	        lastHints = new LinkedHashSet<ChainingHint>(result);
+        }
         for (IndirectHint hint : lastHints)
             accu.add(hint);
     }

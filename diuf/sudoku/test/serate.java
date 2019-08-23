@@ -329,7 +329,7 @@ public class serate {
             }
         }
         //debug/improve counters
-        System.err.printf("Update = %d\tRead = %d\tGetPP = %d\n", Grid.numCellPencilmarksUpdate, Grid.numCellPencilmarksRead, Grid.numGetPP);
+        //System.err.printf("Update = %d\tRead = %d\tGetPP = %d\n", Grid.numCellPencilmarksUpdate, Grid.numCellPencilmarksRead, Grid.numGetPP);
     } //main
     
     public static class Formatter {
