@@ -50,7 +50,7 @@ public class Locking implements IndirectHintProducer {
                 Grid.Region region1 = grid.getRegions(regionType1)[i1];
                 Grid.Region region2 = grid.getRegions(regionType2)[i2];
                 if (region1.crosses(region2)) {
-                    Set<Cell> region2Cells = region2.getCellSet();
+                    CellSet region2Cells = region2.getCellSet();
                     // Iterate on values
                     for (int value = 1; value <= 9; value++) {
                         boolean isInCommonSet = true;
@@ -94,7 +94,7 @@ public class Locking implements IndirectHintProducer {
                 Grid.Region region3 = grid.getRegions(regionType1)[i3];
                 if (region3.crosses(region2)) {
                     // Region <> region1 but crosses region2
-                    Set<Cell> region2Cells = region2.getCellSet();
+                    CellSet region2Cells = region2.getCellSet();
                     //BitSet potentialPositions3 = region3.getPotentialPositions(value);
                     BitSet potentialPositions3 = region3.getPotentialPositions(grid, value);
                     if (potentialPositions3.cardinality() > 1) {
@@ -132,7 +132,8 @@ public class Locking implements IndirectHintProducer {
         // Build removable potentials
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         List<Cell> highlightedCells = new ArrayList<Cell>();
-        Set<Cell> p1Cells = p1.getCellSet();
+        //Set<Cell> p1Cells = p1.getCellSet();
+        CellSet p1Cells = p1.getCellSet();
         for (int i = 0; i < 9; i++) {
             Cell cell = p2.getCell(i);
             if (!p1Cells.contains(cell)) {

@@ -7,6 +7,8 @@ package diuf.sudoku;
 
 import java.util.*;
 
+import diuf.sudoku.tools.CellSet;
+
 /**
  * A cell of a sudoku grid.
  * <p>
@@ -188,23 +190,26 @@ public class Cell {
      * are always returned in the same order).
      * @return the cells that are controlled by this cell
      */
-    public Collection<Cell> getHouseCells(Grid targetGrid) {
+    //public Collection<Cell> getHouseCells(Grid targetGrid) {
+    public CellSet getHouseCells(Grid targetGrid) {
         // Use a set to prevent duplicates (cells in both block and row/column)
-        Collection<Cell> result = new LinkedHashSet<Cell>();
-//        // Iterate on region types (Block, Row, Column)
-//        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-//            // Get region on which this cell is
-//            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
-//            // Add all cell of that region
-//            for (int i = 0; i < 9; i++)
-//                result.add(region.getCell(i));
+//        Collection<Cell> result = new LinkedHashSet<Cell>();
+////        // Iterate on region types (Block, Row, Column)
+////        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+////            // Get region on which this cell is
+////            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
+////            // Add all cell of that region
+////            for (int i = 0; i < 9; i++)
+////                result.add(region.getCell(i));
+////        }
+////        // Remove this cell
+////        result.remove(this);
+//        
+//        for(int cellIndex : Grid.visibleCellIndex[index]) {
+//        	result.add(Grid.getCell(cellIndex));
 //        }
-//        // Remove this cell
-//        result.remove(this);
-        for(int cellIndex : Grid.visibleCellIndex[index]) {
-        	result.add(Grid.getCell(cellIndex));
-        }
-        return result;
+//        return result;
+    	return new CellSet(Grid.visibleCellIndex[index]);
     }
 
     /**

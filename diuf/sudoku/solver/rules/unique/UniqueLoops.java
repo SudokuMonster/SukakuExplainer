@@ -249,10 +249,11 @@ public class UniqueLoops implements IndirectHintProducer {
         int value = common.nextSetBit(0);
         // Get removable potentials
         Map<Cell, BitSet> removable = new HashMap<Cell, BitSet>();
-        Set<Cell> commonCells = null;
+        //Set<Cell> commonCells = null;
+        CellSet commonCells = null;
         for (Cell extraCell : extraCells) {
             if (commonCells == null)
-                commonCells = new LinkedHashSet<Cell>(extraCell.getHouseCells(grid));
+                commonCells = new CellSet(extraCell.getHouseCells(grid));
             else
                 commonCells.retainAll(extraCell.getHouseCells(grid));
         }

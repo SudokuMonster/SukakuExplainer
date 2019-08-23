@@ -7,6 +7,8 @@ package diuf.sudoku;
 
 import java.util.*;
 
+import diuf.sudoku.tools.CellSet;
+
 /**
  * A Sudoku grid.
  * <p>
@@ -495,24 +497,27 @@ public class Grid {
          * matches the order of the cells returned by {@link #getCell(int)}.
          * @return the cells of this region.
          */
-        public Set<Cell> getCellSet() {
-            Set<Cell> result = new LinkedHashSet<Cell>();
-            for (int i = 0; i < 9; i++)
-                result.add(getCell(i));
-            return result;
+//        public Set<Cell> getCellSet() {
+//            Set<Cell> result = new LinkedHashSet<Cell>();
+//            for (int i = 0; i < 9; i++)
+//                result.add(getCell(i));
+//            return result;
+//        }
+        public CellSet getCellSet() {
+            return new CellSet(regionCells);
         }
 
-        /**
-         * Return the cells that are common to this region and the
-         * given region
-         * @param other the other region
-         * @return the cells belonging to this region and to the other region
-         */
-        public Set<Cell> commonCells(Region other) {
-            Set<Cell> result = this.getCellSet();
-            result.retainAll(other.getCellSet());
-            return result;
-        }
+//        /**
+//         * Return the cells that are common to this region and the
+//         * given region
+//         * @param other the other region
+//         * @return the cells belonging to this region and to the other region
+//         */
+//        public Set<Cell> commonCells(Region other) {
+//            Set<Cell> result = this.getCellSet();
+//            result.retainAll(other.getCellSet());
+//            return result;
+//        }
 
         /**
          * Test whether thsi region crosses an other region.

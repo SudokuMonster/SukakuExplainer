@@ -25,7 +25,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         List<Cell> bugCells = new ArrayList<Cell>();
         Map<Cell, BitSet> bugValues = new HashMap<Cell, BitSet>();
         BitSet allBugValues = new BitSet(10);
-        Set<Cell> commonCells = null;
+        //Set<Cell> commonCells = null;
+        CellSet commonCells = null;
         for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region[] regions = grid.getRegions(regionType);
             for (int i = 0; i < regions.length; i++) {
@@ -66,7 +67,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             //temp.removeCellPotentialValue(twin, value);
                             temp.removeCellPotentialValue(cell, value);
                             if (commonCells == null)
-                                commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
+                                //commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
+                                commonCells = new CellSet(cell.getHouseCells(grid));
                             else
                                 commonCells.retainAll(cell.getHouseCells(grid));
                             commonCells.removeAll(bugCells);

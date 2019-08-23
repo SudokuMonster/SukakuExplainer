@@ -122,7 +122,8 @@ public class XYWing implements IndirectHintProducer {
 
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-        Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
+        //Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
+        CellSet victims = new CellSet(xzCell.getHouseCells(grid));
         victims.retainAll(yzCell.getHouseCells(grid));
         if (isXYZ)
             victims.retainAll(xyCell.getHouseCells(grid));
