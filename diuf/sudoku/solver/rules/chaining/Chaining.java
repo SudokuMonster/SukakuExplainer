@@ -782,28 +782,53 @@ public class Chaining implements IndirectHintProducer {
 
         if (isXChainEnabled) {
             // Second rule: if there is only two positions for this potential, the other one gets on
-            List<Class<? extends Grid.Region>> partTypes = new ArrayList<Class<? extends Grid.Region>>(3);
-            partTypes.add(Grid.Block.class);
-            partTypes.add(Grid.Row.class);
-            partTypes.add(Grid.Column.class);
-            for (Class<? extends Grid.Region> partType : partTypes) {
-                Grid.Region region = grid.getRegionAt(partType, p.cell.getX(), p.cell.getY());
-                //BitSet potentialPositions = region.getPotentialPositions(p.value);
-                BitSet potentialPositions = region.getPotentialPositions(grid, p.value);
-                if (potentialPositions.cardinality() == 2) {
-                    int otherPosition = potentialPositions.nextSetBit(0);
-                    Cell otherCell = region.getCell(otherPosition);
-                    if (otherCell.equals(p.cell)) {
-                        otherPosition = potentialPositions.nextSetBit(otherPosition + 1);
-                        otherCell = region.getCell(otherPosition);
-                    }
-                    Potential pOn = new Potential(otherCell, p.value, true, p,
-                            getRegionCause(region),
-                            "only remaining possible position in the " + region.toString());
-                    addHiddenParentsOfRegion(pOn, grid, source, region, offPotentials);
+
+//        	List<Class<? extends Grid.Region>> partTypes = new ArrayList<Class<? extends Grid.Region>>(3);
+//            partTypes.add(Grid.Block.class);
+//            partTypes.add(Grid.Row.class);
+//            partTypes.add(Grid.Column.class);
+//            for (Class<? extends Grid.Region> partType : partTypes) {
+//                Grid.Region region = grid.getRegionAt(partType, p.cell.getX(), p.cell.getY());
+//                //BitSet potentialPositions = region.getPotentialPositions(p.value);
+//                BitSet potentialPositions = region.getPotentialPositions(grid, p.value);
+//                if (potentialPositions.cardinality() == 2) {
+//                    int otherPosition = potentialPositions.nextSetBit(0);
+//                    Cell otherCell = region.getCell(otherPosition);
+//                    if (otherCell.equals(p.cell)) {
+//                        otherPosition = potentialPositions.nextSetBit(otherPosition + 1);
+//                        otherCell = region.getCell(otherPosition);
+//                    }
+//                    Potential pOn = new Potential(otherCell, p.value, true, p,
+//                            getRegionCause(region),
+//                            "only remaining possible position in the " + region.toString());
+//                    addHiddenParentsOfRegion(pOn, grid, source, region, offPotentials);
+//                    result.add(pOn);
+//                }
+//            }
+        	int thisCellIndex = p.cell.getIndex();
+        	int thisValue = p.value;
+        	for(int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        		Region r = Grid.regions[regionTypeIndex][Grid.cellRegions[thisCellIndex][regionTypeIndex]];
+	        	int otherPosition = -1;
+	        	for(int regionCellIndex = 0; regionCellIndex < 9; regionCellIndex++) {
+	        		int cellIndex = r.getCell(regionCellIndex).getIndex();
+	        		if(cellIndex == thisCellIndex) continue;
+	        		if(grid.hasCellPotentialValue(cellIndex, thisValue)) {
+	        			if(otherPosition >= 0) { //third cell in a house has this candidate
+	        				otherPosition = -1;
+	        				break;
+	        			}
+	        			otherPosition = cellIndex;
+	        		}
+	        	} //region cells
+	        	if(otherPosition >= 0) { //exactly one other position
+                    Potential pOn = new Potential(Grid.getCell(otherPosition), thisValue, true, p,
+                            getRegionCause(r),
+                            "only remaining possible position in the " + r.toString());
+                    addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);
                     result.add(pOn);
-                }
-            }
+	        	}
+        	} // region types
         }
 
         return result;

@@ -81,8 +81,8 @@ public class Grid {
     		new Cell(72), new Cell(73), new Cell(74), new Cell(75), new Cell(76), new Cell(77), new Cell(78), new Cell(79), new Cell(80)
     		};
 
-    private static final int[][] regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
-    private static final int[][] cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
+    public static final int[][] regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
+    public static final int[][] cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
 
     //private static final int[][] visibleCellIndex = new int[81][20];
     public static final int[][] visibleCellIndex = {
@@ -173,6 +173,7 @@ public class Grid {
     private static final Block[] blocks = {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     private static final Row[] rows = {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
     private static final Column[] columns = {new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
+    public static final Region[][] regions = {blocks, rows, columns}; 
 
     private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
     
