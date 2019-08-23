@@ -38,7 +38,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
 
     private int getX(Grid grid) {
         //BitSet xyPotentials = xyCell.getPotentialValues();
-        BitSet xyPotentials = grid.getCellPotentialValues(xyCell);
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell.getIndex());
         int x = xyPotentials.nextSetBit(0);
         if (x == this.value)
             x = xyPotentials.nextSetBit(x + 1);
@@ -47,7 +47,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
 
     private int getY(Grid grid) {
         //BitSet xyPotentials = xyCell.getPotentialValues();
-        BitSet xyPotentials = grid.getCellPotentialValues(xyCell);
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell.getIndex());
         int x = getX(grid);
         int y = xyPotentials.nextSetBit(x + 1);
         if (y == this.value)
@@ -60,7 +60,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         // x and y of XY cell (orange)
         //result.put(xyCell, xyCell.getPotentialValues());
-        result.put(xyCell, grid.getCellPotentialValues(xyCell));
+        result.put(xyCell, grid.getCellPotentialValues(xyCell.getIndex()));
         // z value (green)
         BitSet zSet = SingletonBitSet.create(value);
         result.put(xzCell, zSet);
@@ -99,7 +99,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
 
     private int getRemainingValue(Grid grid, Cell c) {
         //BitSet result = (BitSet)c.getPotentialValues().clone();
-        BitSet result = (BitSet)grid.getCellPotentialValues(c).clone();
+        BitSet result = (BitSet)grid.getCellPotentialValues(c.getIndex()).clone();
         result.clear(value);
         return result.nextSetBit(0);
     }

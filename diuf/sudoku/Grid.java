@@ -147,6 +147,7 @@ public class Grid {
     //temporary development/debug counters
     public static long numCellPencilmarksUpdate = 0;
     public static long numCellPencilmarksRead = 0;
+    public static long numGetPP = 0;
     
     /**
      * Create a new 9x9 Sudoku grid. All cells are set to empty
@@ -262,21 +263,21 @@ public class Grid {
         return cellPotentialValues[cellIndex];
     }
 
-    /**
-     * Get the potential values for the given cell.
-     * <p>
-     * The result is returned as a bitset. Each of the
-     * bit number 1 to 9 is set if the corresponding
-     * value is a potential value for this cell. Bit number
-     * <tt>0</tt> is not used and ignored.
-     * @param cell the cell
-     * @return the potential values for unresolved cell, empty for resolved
-     */
-    public BitSet getCellPotentialValues(Cell cell) {
-        //return cell.getPotentialValues();
-        numCellPencilmarksRead++;
-        return cellPotentialValues[cell.getIndex()];
-    }
+//    /**
+//     * Get the potential values for the given cell.
+//     * <p>
+//     * The result is returned as a bitset. Each of the
+//     * bit number 1 to 9 is set if the corresponding
+//     * value is a potential value for this cell. Bit number
+//     * <tt>0</tt> is not used and ignored.
+//     * @param cell the cell
+//     * @return the potential values for unresolved cell, empty for resolved
+//     */
+//    public BitSet getCellPotentialValues(Cell cell) {
+//        //return cell.getPotentialValues();
+//        numCellPencilmarksRead++;
+//        return cellPotentialValues[cell.getIndex()];
+//    }
 
     /**
      * Test whether the given value is a potential
@@ -482,6 +483,7 @@ public class Grid {
             for (int index = 0; index < 9; index++) {
                 result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
             }
+            numGetPP++;
             return result;
         }
 

@@ -191,7 +191,7 @@ public class Cell {
      * @return the cells that are controlled by this cell
      */
     //public Collection<Cell> getHouseCells(Grid targetGrid) {
-    public CellSet getHouseCells(Grid targetGrid) {
+    public CellSet getVisibleCells() {
         // Use a set to prevent duplicates (cells in both block and row/column)
 //        Collection<Cell> result = new LinkedHashSet<Cell>();
 ////        // Iterate on region types (Block, Row, Column)

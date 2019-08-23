@@ -374,7 +374,7 @@ public class Chaining implements IndirectHintProducer {
     		this.cell = cell;
     	}
     	public void run() {
-    		int cardinality = gridClone.getCellPotentialValues(cell).cardinality();
+    		int cardinality = gridClone.getCellPotentialValues(cell.getIndex()).cardinality();
     		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
     	}
     }
@@ -412,7 +412,7 @@ public class Chaining implements IndirectHintProducer {
             boolean isYChainEnabled, boolean isXChainEnabled) {
 
         //if (pOn.cell.getPotentialValues().cardinality() > 2
-        if (grid.getCellPotentialValues(pOn.cell).cardinality() > 2
+        if (grid.getCellPotentialValues(pOn.cell.getIndex()).cardinality() > 2
                 && !isXChainEnabled)
             return; // Y-Cycles can only start if cell has 2 potential values
 
@@ -634,7 +634,7 @@ public class Chaining implements IndirectHintProducer {
         if (isYChainEnabled) { // This rule is not used with X-Chains
             // First rule: other potential values for this cell get off
             //BitSet potentialValues = p.cell.getPotentialValues();
-            BitSet potentialValues = grid.getCellPotentialValues(p.cell);
+            BitSet potentialValues = grid.getCellPotentialValues(p.cell.getIndex());
             for (int value = 1; value <= 9; value++) {
                 if (value != p.value && potentialValues.get(value))
                     result.add(new Potential(p.cell, value, false, p,
@@ -767,7 +767,7 @@ public class Chaining implements IndirectHintProducer {
         if (isYChainEnabled) {
             // First rule: if there is only two potentials in this cell, the other one gets on
             //BitSet potentialValues = p.cell.getPotentialValues();
-            BitSet potentialValues = grid.getCellPotentialValues(p.cell); //grid or source?
+            BitSet potentialValues = grid.getCellPotentialValues(p.cell.getIndex()); //grid or source?
             if (potentialValues.cardinality() == 2) {
                 int otherValue = potentialValues.nextSetBit(0);
                 if (otherValue == p.value)
@@ -1131,7 +1131,7 @@ public class Chaining implements IndirectHintProducer {
         // Build removable potentials (all values different that target value)
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
-        BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
+        BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell.getIndex()).clone();
         removable.set(target.value, false);
         if (!removable.isEmpty())
             cellRemovablePotentials.put(target.cell, removable);
@@ -1158,7 +1158,7 @@ public class Chaining implements IndirectHintProducer {
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         if (target.isOn) {
             //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
-            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
+            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell.getIndex()).clone();
             removable.set(target.value, false);
             if (!removable.isEmpty())
                 cellRemovablePotentials.put(target.cell, removable);
@@ -1187,7 +1187,7 @@ public class Chaining implements IndirectHintProducer {
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         if (target.isOn) {
             //BitSet removable = (BitSet)target.cell.getPotentialValues().clone();
-            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell).clone();
+            BitSet removable = (BitSet)grid.getCellPotentialValues(target.cell.getIndex()).clone();
             removable.set(target.value, false);
             if (!removable.isEmpty())
                 cellRemovablePotentials.put(target.cell, removable);

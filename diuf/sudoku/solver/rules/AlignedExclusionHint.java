@@ -67,7 +67,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         for (Cell cell : lockedCombinations.values()) {
             if (cell != null) {
                 //BitSet values = (BitSet)cell.getPotentialValues().clone();
-                BitSet values = (BitSet)grid.getCellPotentialValues(cell).clone();
+                BitSet values = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
                 if (contains(releventValues, values))
                     result.put(cell, values);
             }
@@ -90,9 +90,9 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
                 //else
                 //    result.put(cell, (BitSet)cell.getPotentialValues().clone());
                 if (result.containsKey(cell))
-                	result.get(cell).or(grid.getCellPotentialValues(cell));
+                	result.get(cell).or(grid.getCellPotentialValues(cell.getIndex()));
                 else
-                	result.put(cell, (BitSet)grid.getCellPotentialValues(cell).clone());
+                	result.put(cell, (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone());
             }
         }
         return result;
@@ -205,7 +205,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         } else {
             builder.append("the cell <b>" + lockCell.toString() + "</b> must already contain <g><b>");
             //builder.append(ValuesFormatter.formatValues(lockCell.getPotentialValues(), " or "));
-            builder.append(ValuesFormatter.formatValues(grid.getCellPotentialValues(lockCell), " or "));
+            builder.append(ValuesFormatter.formatValues(grid.getCellPotentialValues(lockCell.getIndex()), " or "));
             builder.append("</b></g>");
         }
         builder.append("<br>");

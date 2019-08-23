@@ -92,10 +92,10 @@ public class AlignedExclusion implements IndirectHintProducer {
             // Setup the first two cells
             Cell cell0 = candidateList.get(indexes[0]);
             //int card0 = cell0.getPotentialValues().cardinality();
-            int card0 = grid.getCellPotentialValues(cell0).cardinality();
+            int card0 = grid.getCellPotentialValues(cell0.getIndex()).cardinality();
             Cell cell1 = candidateList.get(indexes[1]);
             //int card1 = cell1.getPotentialValues().cardinality();
-            int card1 = grid.getCellPotentialValues(cell1).cardinality();
+            int card1 = grid.getCellPotentialValues(cell1.getIndex()).cardinality();
 
             // Create the twinArea: set of cells visible by one of the two first cells
             Collection<Cell> twinArea = new LinkedHashSet<Cell>(cellExcluders.get(cell0));
@@ -126,7 +126,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                     for (int i = 0; i < tindexes.length; i++) {
                         cells[i + 2] = tailCells.get(tindexes[i]);
                         //cardinalities[i + 2] = cells[i + 2].getPotentialValues().cardinality();
-                        cardinalities[i + 2] = grid.getCellPotentialValues(cells[i + 2]).cardinality();
+                        cardinalities[i + 2] = grid.getCellPotentialValues(cells[i + 2].getIndex()).cardinality();
                     }
 
                     // Build the list of common excluding cells for the base cells 'cells'
@@ -166,7 +166,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                             int[] potentials = new int[degree];
                             for (int i = 0; i < degree; i++) {
                                 //BitSet values = cells[i].getPotentialValues();
-                                BitSet values = grid.getCellPotentialValues(cells[i]);
+                                BitSet values = grid.getCellPotentialValues(cells[i].getIndex());
                                 int p = values.nextSetBit(0);
                                 for (int j = 0; j < potIndexes[i]; j++)
                                     p = values.nextSetBit(p + 1);
@@ -190,7 +190,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                                      */
                                     Cell c1 = cells[cellIndexes[0]];
                                     Cell c2 = cells[cellIndexes[1]];
-                                    if (c1.getHouseCells(grid).contains(c2)) {
+                                    if (c1.getVisibleCells().contains(c2)) {
                                         isAllowed = false;
                                         break;
                                     }
@@ -201,7 +201,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                             if (isAllowed) {
                                 for (Cell excludingCell : commonExcluders) {
                                     //BitSet values = (BitSet)excludingCell.getPotentialValues().clone();
-                                    BitSet values = (BitSet)grid.getCellPotentialValues(excludingCell).clone();
+                                    BitSet values = (BitSet)grid.getCellPotentialValues(excludingCell.getIndex()).clone();
                                     for (int i = 0; i < degree; i++)
                                         values.clear(potentials[i]);
                                     if (values.isEmpty()) {
@@ -233,7 +233,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                         for (int i = 0; i < degree; i++) {
                             Cell cell = cells[i];
                             //BitSet values = cell.getPotentialValues();
-                            BitSet values = grid.getCellPotentialValues(cell);
+                            BitSet values = grid.getCellPotentialValues(cell.getIndex());
                             for (int p = values.nextSetBit(0); p >= 0; p = values.nextSetBit(p + 1)) {
                                 boolean isValueAllowed = false;
                                 for (int[] combinations : allowedPotentialCombinations) {

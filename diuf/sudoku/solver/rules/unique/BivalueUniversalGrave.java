@@ -44,7 +44,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 index = positions.nextSetBit(index + 1)) {
                             Cell cell = region.getCell(index);
                             //int cellCardinality = cell.getPotentialValues().cardinality();
-                            int cellCardinality = grid.getCellPotentialValues(cell).cardinality();
+                            int cellCardinality = grid.getCellPotentialValues(cell.getIndex()).cardinality();
                             if (cellCardinality >= 3)
                                 newBugCells.add(cell);
                         }
@@ -68,9 +68,9 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             temp.removeCellPotentialValue(cell, value);
                             if (commonCells == null)
                                 //commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
-                                commonCells = new CellSet(cell.getHouseCells(grid));
+                                commonCells = new CellSet(cell.getVisibleCells());
                             else
-                                commonCells.retainAll(cell.getHouseCells(grid));
+                                commonCells.retainAll(cell.getVisibleCells());
                             commonCells.removeAll(bugCells);
                             if (bugCells.size() > 1 && allBugValues.cardinality() > 1
                                     && commonCells.isEmpty())
@@ -87,13 +87,17 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 
         // When bug values have been removed, all remaining empty cells must have
         // exactly two potential values. Check it
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = Grid.getCell(x, y);
-                //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
-                if (temp.getCellValue(x, y) == 0 && temp.getCellPotentialValues(cell).cardinality() != 2)
-                    return; // Not a BUG
-            }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0 && cell.getPotentialValues().cardinality() != 2)
+//                if (temp.getCellValue(x, y) == 0 && temp.getCellPotentialValues(cell.getIndex()).cardinality() != 2)
+//                    return; // Not a BUG
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            if (temp.getCellValue(i) == 0 && temp.getCellPotentialValues(i).cardinality() != 2)
+                return; // Not a BUG
         }
         // When bug values have been removed, all remaining candidates must have
         // two positions in each region
@@ -134,7 +138,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         Cell bugCell = bugCells.get(0);
         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
         //BitSet removable = (BitSet)bugCell.getPotentialValues().clone();
-        BitSet removable = (BitSet)grid.getCellPotentialValues(bugCell).clone();
+        BitSet removable = (BitSet)grid.getCellPotentialValues(bugCell.getIndex()).clone();
         removable.andNot(extraValues);
         removablePotentials.put(bugCell, removable);
         IndirectHint hint = new Bug1Hint(this, removablePotentials, bugCell, extraValues);
@@ -201,7 +205,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 // Fill array of missing naked cells
                                 nakedCells[i] = cell;
                                 //BitSet potential = cell.getPotentialValues();
-                                BitSet potential = grid.getCellPotentialValues(cell);
+                                BitSet potential = grid.getCellPotentialValues(cell.getIndex());
                                 // Fill potential values array
                                 potentials[i] = potential;
                                 // Gather union of potentials
@@ -225,7 +229,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
                                         for (Cell cell : erasable) {
                                             //BitSet removable = (BitSet)cell.getPotentialValues().clone();
-                                            BitSet removable = (BitSet)grid.getCellPotentialValues(cell).clone();
+                                            BitSet removable = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
                                             removable.and(nakedSet);
                                             if (!removable.isEmpty())
                                                 removablePotentials.put(cell, removable);
@@ -257,8 +261,8 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         BitSet common = new BitSet(10);
         //common.or(c1.getPotentialValues());
         //common.and(c2.getPotentialValues());
-        common.or(grid.getCellPotentialValues(c1));
-        common.and(grid.getCellPotentialValues(c2));
+        common.or(grid.getCellPotentialValues(c1.getIndex()));
+        common.and(grid.getCellPotentialValues(c2.getIndex()));
         common.andNot(allExtraValues);
         if (common.cardinality() != 1)
             return; // No BUG type 4
@@ -282,12 +286,12 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 int value = common.nextSetBit(0);
                 Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
                 //BitSet b1 = (BitSet)c1.getPotentialValues().clone();
-                BitSet b1 = (BitSet)grid.getCellPotentialValues(c1).clone();
+                BitSet b1 = (BitSet)grid.getCellPotentialValues(c1.getIndex()).clone();
                 b1.andNot(extraValues.get(c1));
                 b1.clear(value);
                 removablePotentials.put(c1, b1);
                 //BitSet b2 = (BitSet)c2.getPotentialValues().clone();
-                BitSet b2 = (BitSet)grid.getCellPotentialValues(c2).clone();
+                BitSet b2 = (BitSet)grid.getCellPotentialValues(c2.getIndex()).clone();
                 b2.andNot(extraValues.get(c2));
                 b2.clear(value);
                 removablePotentials.put(c2, b2);

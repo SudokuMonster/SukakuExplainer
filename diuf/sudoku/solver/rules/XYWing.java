@@ -70,7 +70,7 @@ public class XYWing implements IndirectHintProducer {
         for (int i = 0; i < 81; i++) {
             Cell xyCell = Grid.getCell(i);
             //BitSet xyValues = xyCell.getPotentialValues();
-            BitSet xyValues = grid.getCellPotentialValues(xyCell);
+            BitSet xyValues = grid.getCellPotentialValues(i);
             if (xyValues.cardinality() == targetCardinality) {
                 // Potential XY cell found
                 for (int xzCellIndex : xyCell.getVisibleCellIndexes()) {
@@ -123,10 +123,10 @@ public class XYWing implements IndirectHintProducer {
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
         //Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
-        CellSet victims = new CellSet(xzCell.getHouseCells(grid));
-        victims.retainAll(yzCell.getHouseCells(grid));
+        CellSet victims = new CellSet(xzCell.getVisibleCells());
+        victims.retainAll(yzCell.getVisibleCells());
         if (isXYZ)
-            victims.retainAll(xyCell.getHouseCells(grid));
+            victims.retainAll(xyCell.getVisibleCells());
         victims.remove(xyCell);
         victims.remove(xzCell);
         victims.remove(yzCell);
