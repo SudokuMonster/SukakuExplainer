@@ -30,6 +30,55 @@ public class Grid {
      * Cell values of the grid [0 .. 9].
      */
     private BitSet[] cellPotentialValues = new BitSet[81];
+
+    //cache for Region.getPotentialPositions(value)
+    private valueCells valueCellsCache = null;
+    private class valueCells {
+//        private BitSet[] valuePotentialCells = new BitSet[9];
+//        public valueCells() {
+//        	for(int v = 1; v <= 9; v++) {
+//        		for(int i = 0; i < 81; i++) {
+//        			valuePotentialCells[v].set(i, cellPotentialValues[i].get(v)); 
+//        		}
+//        	}
+//        }
+        private BitSet[][][] valuePotentialCells = new BitSet[3][9][9]; //region type, region, value
+        public valueCells() {
+        	//Blocks
+        	for(int r = 0; r < 9; r++) {
+	        	for(int v = 0; v < 9; v++) {
+	        		BitSet regValCells = new BitSet(9);
+	        		valuePotentialCells[0][r][v] = regValCells;
+	        		for(int c = 0; c < 9; c++) {
+	        			int gridCellIndex = Grid.blocks[r].regionCells[c];
+	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
+	        		}
+	        	}
+        	}
+        	//Rows
+        	for(int r = 0; r < 9; r++) {
+	        	for(int v = 0; v < 9; v++) {
+	        		BitSet regValCells = new BitSet(9);
+	        		valuePotentialCells[1][r][v] = regValCells;
+	        		for(int c = 0; c < 9; c++) {
+	        			int gridCellIndex = Grid.rows[r].regionCells[c];
+	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
+	        		}
+	        	}
+        	}
+        	//Columns
+        	for(int r = 0; r < 9; r++) {
+	        	for(int v = 0; v < 9; v++) {
+	        		BitSet regValCells = new BitSet(9);
+	        		valuePotentialCells[2][r][v] = regValCells;
+	        		for(int c = 0; c < 9; c++) {
+	        			int gridCellIndex = Grid.columns[r].regionCells[c];
+	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
+	        		}
+	        	}
+        	}
+        }
+    }
      
     /*
      * Cells of the grid. First array index is the vertical index (from top
@@ -300,6 +349,7 @@ public class Grid {
     public void addCellPotentialValue(Cell cell, int value) {
         //cell.addPotentialValue(value);
         cellPotentialValues[cell.getIndex()].set(value);
+        valueCellsCache = null;
         numCellPencilmarksUpdate++;
     }
 
@@ -311,6 +361,7 @@ public class Grid {
     public void removeCellPotentialValue(Cell cell, int value) {
         //cell.removePotentialValue(value);
         cellPotentialValues[cell.getIndex()].clear(value);
+        valueCellsCache = null;
         numCellPencilmarksUpdate++;
     }
 
@@ -322,6 +373,7 @@ public class Grid {
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
     	//cell.removePotentialValues(valuesToRemove);
         cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
+        valueCellsCache = null;
         numCellPencilmarksUpdate++;
     }
 
@@ -332,6 +384,7 @@ public class Grid {
     public void clearCellPotentialValues(Cell cell) {
         //cell.clearPotentialValues();
         cellPotentialValues[cell.getIndex()].clear();
+        valueCellsCache = null;
         numCellPencilmarksUpdate++;
     }
 
@@ -342,6 +395,7 @@ public class Grid {
      */
     public void setCellPotentialValues(int index, BitSet values) {
         cellPotentialValues[index] = (BitSet)values.clone();
+        valueCellsCache = null;
         numCellPencilmarksUpdate++;
     }
 
@@ -418,6 +472,7 @@ public class Grid {
     	protected final BitSet regionCellsSet = new BitSet(81);
     	
     	public abstract int getRegionTypeIndex();
+    	public abstract int getRegionIndex();
 
         /**
          * Get a cell of this region by index. The order in which cells are
@@ -479,10 +534,14 @@ public class Grid {
          * @return the potential positions of the given value within this region
          */
         public BitSet getPotentialPositions(Grid grid, int value) {
-            BitSet result = new BitSet(9);
-            for (int index = 0; index < 9; index++) {
-                result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
+            if(grid.valueCellsCache == null) {
+            	grid.valueCellsCache = grid.new valueCells();
             }
+            BitSet result = new BitSet(9);
+            //for (int index = 0; index < 9; index++) {
+            //    result.set(index, grid.hasCellPotentialValue(getCell(index).getIndex(), value));
+            //}
+            result.or(grid.valueCellsCache.valuePotentialCells[getRegionTypeIndex()][getRegionIndex()][value - 1]);
             numGetPP++;
             return result;
         }
@@ -584,6 +643,10 @@ public class Grid {
         	return 1;
         }
 
+        public int getRegionIndex() {
+        	return rowNum;
+        }
+        
         public int getRowNum() {
             return this.rowNum;
         }
@@ -655,6 +718,10 @@ public class Grid {
         	return 2;
         }
         
+        public int getRegionIndex() {
+        	return columnNum;
+        }
+        
         public int getColumnNum() {
             return this.columnNum;
         }
@@ -710,13 +777,14 @@ public class Grid {
      */
     public static class Block extends Region {
 
-        private final int vNum, hNum;
+        private final int vNum, hNum, index;
 
         public Block(int index) {
         	final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
         	final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
             this.vNum = vNums[index];
             this.hNum = hNums[index];
+            this.index = index;
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * (vNum * 3 + i / 3) + (hNum * 3 + i % 3);
             	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
@@ -728,6 +796,10 @@ public class Grid {
         	return 0;
         }
         
+        public int getRegionIndex() {
+        	return index;
+        }
+       
         public int getVIndex() {
             return this.vNum;
         }
