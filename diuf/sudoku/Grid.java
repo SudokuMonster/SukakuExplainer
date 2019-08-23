@@ -34,50 +34,8 @@ public class Grid {
     //cache for Region.getPotentialPositions(value)
     private valueCells valueCellsCache = new valueCells();
     private class valueCells {
-//        private BitSet[] valuePotentialCells = new BitSet[9];
-//        public valueCells() {
-//        	for(int v = 1; v <= 9; v++) {
-//        		for(int i = 0; i < 81; i++) {
-//        			valuePotentialCells[v].set(i, cellPotentialValues[i].get(v)); 
-//        		}
-//        	}
-//        }
         private BitSet[][][] valuePotentialCells = new BitSet[3][9][9]; //region type, region, value
-//        public valueCells() {
-//        	//Blocks
-//        	for(int r = 0; r < 9; r++) {
-//	        	for(int v = 0; v < 9; v++) {
-//	        		BitSet regValCells = new BitSet(9);
-//	        		valuePotentialCells[0][r][v] = regValCells;
-//	        		for(int c = 0; c < 9; c++) {
-//	        			int gridCellIndex = Grid.blocks[r].regionCells[c];
-//	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
-//	        		}
-//	        	}
-//        	}
-//        	//Rows
-//        	for(int r = 0; r < 9; r++) {
-//	        	for(int v = 0; v < 9; v++) {
-//	        		BitSet regValCells = new BitSet(9);
-//	        		valuePotentialCells[1][r][v] = regValCells;
-//	        		for(int c = 0; c < 9; c++) {
-//	        			int gridCellIndex = Grid.rows[r].regionCells[c];
-//	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
-//	        		}
-//	        	}
-//        	}
-//        	//Columns
-//        	for(int r = 0; r < 9; r++) {
-//	        	for(int v = 0; v < 9; v++) {
-//	        		BitSet regValCells = new BitSet(9);
-//	        		valuePotentialCells[2][r][v] = regValCells;
-//	        		for(int c = 0; c < 9; c++) {
-//	        			int gridCellIndex = Grid.columns[r].regionCells[c];
-//	        			regValCells.set(c, cellPotentialValues[gridCellIndex].get(v + 1));
-//	        		}
-//	        	}
-//        	}
-//        }
+
         public void invalidateCellValue(int cellIndex, int value) {
         	for(int t = 0; t < 3; t++) { //region types
         		valuePotentialCells[t][cellRegions[cellIndex][t]][value - 1] = null;
