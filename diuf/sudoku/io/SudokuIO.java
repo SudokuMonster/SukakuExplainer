@@ -65,8 +65,8 @@ public class SudokuIO {
         return result;
     }
 
-    private static int loadFromLines(Grid grid, String[] lines) {
-    	String singleLine = String.join("", lines);
+
+    private static int TryParseSudoku(Grid grid, String singleLine) {
     	String[] singleLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{81})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{81})($|[^.1-9])",
@@ -75,10 +75,10 @@ public class SudokuIO {
        
         for (String pattern : singleLineFormat)
         {
-        	Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
+            Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
             if (result.find())
             {
-            	String line = result.group("key");
+                String line = result.group("key");
                 for (int y = 0; y < 9; y++)
                 {
                     for (int x = 0; x < 9; x++)
@@ -92,8 +92,11 @@ public class SudokuIO {
                 return RES_OK;
             }
         }
-       
-        String[] sukakuLineFormat = new String[] {
+        return RES_ERROR;
+    }
+    
+    private static int TryParseSukaku(Grid grid, String singleLine) {
+    	String[] sukakuLineFormat = new String[] {
                 "(^|[^01-9])(?<key>[01-9]{729})($|[^01-9])",
                 "(^|[^.1-9])(?<key>[.1-9]{729})($|[^.1-9])",
                 "(^|[^*1-9])(?<key>[*1-9]{729})($|[^*1-9])",
@@ -104,7 +107,7 @@ public class SudokuIO {
         	Matcher result = java.util.regex.Pattern.compile(pattern).matcher(singleLine);
             if (result.find())
             {
-            	String line = result.group("key");
+                String line = result.group("key");
                 for (int y = 0; y < 9; y++)
                 {
                     for (int x = 0; x < 9; x++)
@@ -121,26 +124,44 @@ public class SudokuIO {
                         for (int i = 1; i <= 9; i++)
                         {
                             if (!possible.contains(i))
-                                //cell.removePotentialValue(i);
                             	grid.removeCellPotentialValue(cell, i);
                         }
                     }
                 }
+                
                 // fixup naked singles
-                grid.adjustPencilmarks();
+                grid.adjustPencilmarks();                
                 return RES_OK;
             }
         }
+        return RES_ERROR;
+    }
+    
+    private static int loadFromLines(Grid grid, String[] lines) {
+    	String singleLine = String.join("", lines);
+        if (TryParseSudoku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
+        }
        
+        if (TryParseSukaku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
+        }
+        
+        singleLine = singleLine.replace("#", ".").replaceAll("[^._01-9]", "");
+        if (TryParseSudoku(grid, singleLine) == RES_OK) 
+        {
+        	return RES_OK;
+        }
+        
         //Last resort try first 81 parts of candidates separated by space
         String allLines = String.join(" ", lines);
-        String newLines = allLines.replace(".", "/").replace("/", "0").replaceAll("[^1-9]", " ").trim();
+        String newLines = allLines.replace(".", "0").replace("/", "0").replaceAll("[^1-9]", " ").trim();
         String[] parts = newLines.split("\\s+");
         int y = 0, x = 0;
-        //Start of Dirty fix for Loading Multiline Sukaku naked singles
         for (String part : parts) {
-			int a = (x / 3) + (y / 3) * 3;
-            Cell cell = Grid.getCell(x, y);          
+        	Cell cell = Grid.getCell(x, y);       
             HashSet<Integer> possible = new HashSet<Integer>();
             for (char ch : part.toCharArray()) {
                 if (ch >= '1' && ch <= '9')
@@ -148,44 +169,9 @@ public class SudokuIO {
             }
             for (int i = 1; i <= 9; i++) {
                 if (!possible.contains(i))
-                    //cell.removePotentialValue(i);
                 	grid.removeCellPotentialValue(cell, i);
             }
            
-			if (possible.size() == 1) {					
-				loop:
-				for (int i = 1; i <= 9; i++) {
-					if (possible.contains(i)) {
-						int c = 0, b = 0;
-						for (String spare : parts) {
-							int d = (b / 3) + (c / 3) * 3;
-							if ((c == y || b == x || d == a) && (!(c == y && b == x))) {	
-								HashSet<Integer> current = new HashSet<Integer>();
-								for (char ch : spare.toCharArray()) {
-									if (ch >= '1' && ch <= '9')
-										current.add(ch - '0');
-								}
-								if (current.contains(i))
-									break loop;
-							}
-							b++;
-							if (b == 9) {
-								c++;
-								b = 0;
-								if (c == 9)
-									break; //ignore if more than 81 found
-							}
-						}
-						grid.setCellValue(x, y, i);
-						break loop;
-					}
-				}
-			}
-			for (int i = 1; i <= 9; i++) {
-				if (!possible.contains(i))
-                    //cell.removePotentialValue(i);
-                	grid.removeCellPotentialValue(cell, i);
-			}
             x++;
             if (x == 9) {
                 y++;
@@ -194,7 +180,10 @@ public class SudokuIO {
                     break; //ignore if more than 81 found
             }
         }
-        //End of Dirty fix for Loading Multiline Sukaku naked singles
+        
+        // fixup naked singles
+        grid.adjustPencilmarks();
+        
         return parts.length == 81 ? RES_OK : RES_WARN;
     }
 
