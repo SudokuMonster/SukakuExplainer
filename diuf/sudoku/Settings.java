@@ -15,8 +15,8 @@ import java.util.prefs.*;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 2;
-    public final static String SUBREV = ".1.6";
+    public final static int REVISION = 3;
+    public final static String SUBREV = ".0.0";
 
     private static Settings instance = null;
 
