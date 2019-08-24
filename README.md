@@ -13,13 +13,10 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
   serate - Sukaku and Sudoku Explainer command line rating
 
-  hints - Sukaku and Sudoku Explainer hints display
-
-  pencilmarks - Sukaku and Sudoku Pencilmark display
-
 ### SYNOPSIS
 
-  serate [--diamond] [--format=FORMAT] [--input=FILE] [--output=FILE] [--pearl] [puzzle ...]
+  serate [--diamond] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]
+    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]
 
 ### DESCRIPTION
 
@@ -153,9 +150,8 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
 ### GUI
 
-Functionality is retained with vanilla sudoku puzzles. It also accepts parsing any
-Pencilmark grid or Sukaku
-```
+  Functionality is retained with vanilla sudoku puzzles. It also accepts parsing any
+  Pencilmark grid or Sukaku
 
 ### Examples
 
