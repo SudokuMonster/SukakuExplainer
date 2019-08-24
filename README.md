@@ -21,10 +21,6 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
   serate [--diamond] [--format=FORMAT] [--input=FILE] [--output=FILE] [--pearl] [puzzle ...]
 
-  hints [--input=FILE]
-
-  pencilmarks [--input=FILE]
-
 ### DESCRIPTION
 
   serate is a Sudoku/Sukaku Explainer command line entry point that rates one or more
@@ -55,6 +51,14 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
 ### OPTIONS (serate)
 
+  -a, --after=FORMAT
+
+      Format the output after each step according to FORMAT. Default is empty.
+
+  -b, --before=FORMAT
+
+      Format the output before each step according to FORMAT. Default is empty.
+
   -d, --diamond
 
       Terminate rating if the puzzle is not a diamond.
@@ -69,21 +73,35 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
         %d  The diamond rating.  This is the highest ER of the methods leading
 
-            to the first candidate elimination.
+            to the first candidate elimination. (F)
 
-        %e  The elapsed time to rate the puzzle.
+        %e  The elapsed time to rate the puzzle. (AF)
 
-        %g  The puzzle grid in 81-character [0-9] form.
+        %h  The long step description in multi-line HTML format. (A)
 
-        %n  The input puzzle ordinal, counting from 1.
+        %g  The input puzzle line. (SBAF)
+
+        %i  The puzzle grid in 81-character [0-9] form. (SBAF)
+
+        %l  The new line. (SBAF)
+
+        %m  The input puzzle pencilmarks in 729-char format. (SBA)
+
+        %M  The input puzzle pencilmarks in multi-line format. (SBA)
+
+        %n  The input puzzle ordinal, counting from 1. (SF)
 
         %p  The pearl rating.  This is the highest ER of the methods leading
 
-            to the first cell placement.
+            to the first cell placement. (F)
 
         %r  The puzzle rating.  This is the highest ER of the methods leading
 
-            to the puzzle solution.
+            to the puzzle solution. (AF)
+
+        %s  The short step description. (A)
+
+        %t  The tab character. (SBAF)
 
         %%  The % character.
 
@@ -111,6 +129,14 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
       Terminate rating if the puzzle is not a pearl.
 
+  -s, --start=FORMAT
+
+      Format the output before each puzzle according to FORMAT. Default is empty.
+
+  -t, --threads
+
+      Maximal degree of parrallelism. Default 0=auto. 1=no parallelism; -1=unlimited
+
   -V, --version
 
       Print the Sudoku Explainer (serate) version and exit.
@@ -125,31 +151,13 @@ Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/relea
 
         java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate ...
 
-  Display Hints:
-
-        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints ...
-
-  Display Pencilmarks:
-
-        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks ...
-
 ### GUI
 
-Functionality is retained with vanilla sudoku puzzles
-
-With Pencilmark (sukaku) puzzles functionality is currently limited to "Get next hint" and "Apply hint"
-
-With Pencilmark (sukaku) puzzles the validity check currently will assume puzzle has multiple solutions.
-
-Paste Grid (Ctrl+V) currently allows parsing the following only:
-```
-Pencilmark grid
-729-character line representation of Pencilmark (Sukaku) grid
-81-character line represtation of a vanilla sudoku grid
-Sudoku grid: only in a multi line format consisting of 81 consecutive characters
+Functionality is retained with vanilla sudoku puzzles. It also accepts parsing any
+Pencilmark grid or Sukaku
 ```
 
-### EXAMPLES
+### Examples
 
   Note: % must be entered as %% in windows .bat files and shortcut commands.
 
@@ -157,14 +165,24 @@ Sudoku grid: only in a multi line format consisting of 81 consecutive characters
 
         java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.serate
          --format=&quot;%g ED=%r/%p/%d&quot; --input=puzzles.txt --output=puzzles.rated.txt
-
-  To display explainer hints (output is to standard output):
-
-        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.hints --input=puzzle.txt
-
-  To display explainer pencilmarks (output is to standard output):
-
-        java.exe -Xrs -Xmx500m -cp SukakuExplainer.jar diuf.sudoku.test.pencilmarks --input=puzzle.txt
+		 
+  To display all supported format parameters (at the time of writing this document):
+  
+        java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
+		
+        --format="--format%l%%d: %d%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%r: %r%l--- end of final section ---" \
+		
+        --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
+		
+        --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
+		
+        --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
+		
+        --input=my_input_file.txt --output=- --threads=0 > my_output_file.txt
+  
+  To display man document:
+  
+         java -cp SukakuExplainer/SukakuExplainer.jar diuf.sudoku.test.serate --man
 
 ## Contributors:
 
