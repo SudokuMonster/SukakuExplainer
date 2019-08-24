@@ -37,7 +37,7 @@ public class HiddenSingleHint extends DirectHint implements Rule {
         return "Hidden Single";
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " in the <b1>" + getRegion().toFullString() + "</b1>";
@@ -52,7 +52,7 @@ public class HiddenSingleHint extends DirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isAlone)
             result = HtmlLoader.loadHtml(this, "Single.html");

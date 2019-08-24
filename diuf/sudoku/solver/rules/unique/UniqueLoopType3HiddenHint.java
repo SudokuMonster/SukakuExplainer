@@ -68,12 +68,12 @@ public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
-        return appendOrangePotentials(super.getGreenPotentials(viewNum));
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
+        return appendOrangePotentials(super.getGreenPotentials(grid, viewNum));
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> removables = super.getRemovablePotentials();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell c : removables.keySet())
@@ -92,7 +92,7 @@ public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "UniqueLoopType3Hidden.html");
         String type = getTypeName();
         Cell[] loopCells = new Cell[loop.size()];

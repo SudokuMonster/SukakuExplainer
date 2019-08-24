@@ -66,7 +66,8 @@ public class Fisherman implements IndirectHintProducer {
                     // Check for exactly the same positions of the value in all lines
                     BitSet[] positions = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        positions[i] = parts[indexes[i]].getPotentialPositions(value);
+                        //positions[i] = parts[indexes[i]].getPotentialPositions(value);
+                        positions[i] = parts[indexes[i]].getPotentialPositions(grid, value);
                     BitSet common = CommonTuples.searchCommonTuple(positions, degree);
 
                     if (common != null) {
@@ -109,7 +110,7 @@ public class Fisherman implements IndirectHintProducer {
             for (int j = 0; j < 9; j++) {
                 if (myIndexes.get(i) && otherIndexes.get(j)) {
                     Cell cell = myParts[i].getCell(j);
-                    if (cell.hasPotentialValue(value)) {
+                    if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
                         cells.add(cell);
                         cellPotentials.put(cell, SingletonBitSet.create(value));
                     }
@@ -124,7 +125,7 @@ public class Fisherman implements IndirectHintProducer {
         for (int i = 0; i < 9; i++) {
             if (myIndexes.get(i)) {
                 // Check if value appears outside from otherIndexes
-                BitSet potentialPositions = myParts[i].copyPotentialPositions(value);
+                BitSet potentialPositions = myParts[i].copyPotentialPositions(grid, value);
                 potentialPositions.andNot(otherIndexes);
                 if (!potentialPositions.isEmpty()) {
                     for (int j = 0; j < 9; j++) {

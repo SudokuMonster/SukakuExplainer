@@ -17,7 +17,7 @@ public abstract class BugHint extends IndirectHint implements Rule {
         super(rule, removablePotentials);
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName();
         } else {

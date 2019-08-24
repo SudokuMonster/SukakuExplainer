@@ -56,25 +56,25 @@ public class CellChainingHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedGreenPotentials(viewNum);
+            return super.getNestedGreenPotentials(grid, viewNum);
         Potential target = getTargetPotential(viewNum);
         return super.getColorPotentials(target, true, true);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedRedPotentials(viewNum);
+            return super.getNestedRedPotentials(grid, viewNum);
         Potential target = getTargetPotential(viewNum);
         return super.getColorPotentials(target, false, false);
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential target = getTargetPotential(viewNum);
         return super.getLinks(target);
     }
@@ -123,7 +123,7 @@ public class CellChainingHint extends ChainingHint {
         return chains.values().iterator().next();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " on the cell <b>" + srcCell.toString() + "</b>";
@@ -143,7 +143,7 @@ public class CellChainingHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (getChainingRule().isDynamic())
             result = HtmlLoader.loadHtml(this, "DynamicCellReductionHint.html");

@@ -328,6 +328,8 @@ public class serate {
                 ex.printStackTrace();
             }
         }
+        //debug/improve counters
+        //System.err.printf("Update = %d\tRead = %d\tGetPP = %d\n", Grid.numCellPencilmarksUpdate, Grid.numCellPencilmarksRead, Grid.numGetPP);
     } //main
     
     public static class Formatter {
@@ -414,7 +416,7 @@ public class serate {
                             s += puzzleLine;
                             break;
                         case 'h':
-                            s += hint.toHtml();
+                            s += hint.toHtml(solver.getGrid());
                             break;
                         case 'i':
                             s += solver.getGrid().toString81();

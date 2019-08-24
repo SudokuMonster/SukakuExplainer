@@ -61,40 +61,45 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         BitSet releventValues = getReleventCombinationValues();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell cell : lockedCombinations.values()) {
             if (cell != null) {
-                BitSet values = (BitSet)cell.getPotentialValues().clone();
+                //BitSet values = (BitSet)cell.getPotentialValues().clone();
+                BitSet values = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
                 if (contains(releventValues, values))
                     result.put(cell, values);
             }
         }
-        return appendOranges(result);
+        return appendOranges(grid, result);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return appendOranges(super.getRemovablePotentials());
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return appendOranges(grid, super.getRemovablePotentials());
     }
 
-    private Map<Cell, BitSet> appendOranges(Map<Cell, BitSet> values) {
+    private Map<Cell, BitSet> appendOranges(Grid grid, Map<Cell, BitSet> values) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(values);
         Map<Cell, BitSet> removables = super.getRemovablePotentials();
         for (Cell cell : cells) {
             if (!removables.keySet().contains(cell)) {
+                //if (result.containsKey(cell))
+                //    result.get(cell).or(cell.getPotentialValues());
+                //else
+                //    result.put(cell, (BitSet)cell.getPotentialValues().clone());
                 if (result.containsKey(cell))
-                    result.get(cell).or(cell.getPotentialValues());
+                	result.get(cell).or(grid.getCellPotentialValues(cell.getIndex()));
                 else
-                    result.put(cell, (BitSet)cell.getPotentialValues().clone());
+                	result.put(cell, (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone());
             }
         }
         return result;
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -125,7 +130,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
             throw new UnsupportedOperationException();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig)
             return "Look for an " + getName() + " on the cells " + Cell.toString(cells);
         else
@@ -178,7 +183,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         return result;
     }
 
-    private void appendCombination(StringBuilder builder, int[] combination,
+    private void appendCombination(Grid grid, StringBuilder builder, int[] combination,
             Cell lockCell) {
         for (int i = 0; i < combination.length; i++) {
             if (i == combination.length - 1)
@@ -199,14 +204,15 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
             builder.append("the same value cannot occur twice in the same row, column or block");
         } else {
             builder.append("the cell <b>" + lockCell.toString() + "</b> must already contain <g><b>");
-            builder.append(ValuesFormatter.formatValues(lockCell.getPotentialValues(), " or "));
+            //builder.append(ValuesFormatter.formatValues(lockCell.getPotentialValues(), " or "));
+            builder.append(ValuesFormatter.formatValues(grid.getCellPotentialValues(lockCell.getIndex()), " or "));
             builder.append("</b></g>");
         }
         builder.append("<br>");
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (cells.length == 2)
             result = HtmlLoader.loadHtml(this, "AlignedPairExclusionHint.html");
@@ -220,7 +226,7 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         for (int[] combination : lockedCombinations.keySet()) {
             Cell lockCell = lockedCombinations.get(combination);
             if (isRelevent(combination))
-                appendCombination(rules, combination, lockCell);
+                appendCombination(grid, rules, combination, lockCell);
         }
         String ruleList = HtmlLoader.formatColors(rules.toString());
         Cell[] exclCells = new Cell[super.getRemovablePotentials().size()];

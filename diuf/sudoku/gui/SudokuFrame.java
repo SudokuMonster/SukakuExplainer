@@ -174,22 +174,22 @@ public class SudokuFrame extends JFrame implements Asker {
                 getSudokuPanel().setLinks(null);
             } else if (currentHint instanceof IndirectHint) {
                 IndirectHint iHint = (IndirectHint)currentHint;
-                sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(viewNum));
-                sudokuPanel.setRedPotentials(iHint.getRedPotentials(viewNum));
+                sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(sudokuPanel.getSudokuGrid(), viewNum));
+                sudokuPanel.setRedPotentials(iHint.getRedPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setBluePotentials(iHint.getBluePotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 if (iHint.getSelectedCells() != null)
                     sudokuPanel.setGreenCells(Arrays.asList(iHint.getSelectedCells()));
                 if (iHint instanceof WarningHint)
                     sudokuPanel.setRedCells(((WarningHint)iHint).getRedCells());
                 // Set links (rendered as arrows)
-                getSudokuPanel().setLinks(iHint.getLinks(viewNum));
+                getSudokuPanel().setLinks(iHint.getLinks(sudokuPanel.getSudokuGrid(), viewNum));
             }
             getSudokuPanel().setBlueRegions(currentHint.getRegions());
         }
         sudokuPanel.repaint();
     }
 
-    public void setCurrentHint(Hint hint, boolean isApplyEnabled) {
+    public void setCurrentHint(Grid grid, Hint hint, boolean isApplyEnabled) {
         this.currentHint = hint;
         btnApplyHint.setEnabled(isApplyEnabled);
         mitApplyHint.setEnabled(isApplyEnabled);
@@ -205,7 +205,7 @@ public class SudokuFrame extends JFrame implements Asker {
             }
             repaintViews();
             // Set explanations
-            setExplanations(hint.toHtml());
+            setExplanations(hint.toHtml(grid));
             if (hint instanceof Rule) {
                 Rule rule = (Rule)hint;
                 DecimalFormat format = new DecimalFormat("#0.0");

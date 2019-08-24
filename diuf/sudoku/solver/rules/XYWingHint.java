@@ -36,17 +36,19 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         this.value = value;
     }
 
-    private int getX() {
-        BitSet xyPotentials = xyCell.getPotentialValues();
+    private int getX(Grid grid) {
+        //BitSet xyPotentials = xyCell.getPotentialValues();
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell.getIndex());
         int x = xyPotentials.nextSetBit(0);
         if (x == this.value)
             x = xyPotentials.nextSetBit(x + 1);
         return x;
     }
 
-    private int getY() {
-        BitSet xyPotentials = xyCell.getPotentialValues();
-        int x = getX();
+    private int getY(Grid grid) {
+        //BitSet xyPotentials = xyCell.getPotentialValues();
+        BitSet xyPotentials = grid.getCellPotentialValues(xyCell.getIndex());
+        int x = getX(grid);
         int y = xyPotentials.nextSetBit(x + 1);
         if (y == this.value)
             y = xyPotentials.nextSetBit(y + 1);
@@ -54,10 +56,11 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         // x and y of XY cell (orange)
-        result.put(xyCell, xyCell.getPotentialValues());
+        //result.put(xyCell, xyCell.getPotentialValues());
+        result.put(xyCell, grid.getCellPotentialValues(xyCell.getIndex()));
         // z value (green)
         BitSet zSet = SingletonBitSet.create(value);
         result.put(xzCell, zSet);
@@ -66,12 +69,12 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(super.getRemovablePotentials());
         // Add x and y of XY cell (orange)
         BitSet xy = new BitSet(10);
-        xy.set(getX());
-        xy.set(getY());
+        xy.set(getX(grid));
+        xy.set(getY(grid));
         result.put(xyCell, xy);
         return result;
     }
@@ -94,19 +97,20 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
             return "XY-Wing";
     }
 
-    private int getRemainingValue(Cell c) {
-        BitSet result = (BitSet)c.getPotentialValues().clone();
+    private int getRemainingValue(Grid grid, Cell c) {
+        //BitSet result = (BitSet)c.getPotentialValues().clone();
+        BitSet result = (BitSet)grid.getCellPotentialValues(c.getIndex()).clone();
         result.clear(value);
         return result.nextSetBit(0);
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<Link>();
-        int xValue = getRemainingValue(xzCell);
+        int xValue = getRemainingValue(grid, xzCell);
         Link xLink = new Link(xyCell, xValue, xzCell, xValue);
         result.add(xLink);
-        int yValue = getRemainingValue(yzCell);
+        int yValue = getRemainingValue(grid, yzCell);
         Link yLink = new Link(xyCell, yValue, yzCell, yValue);
         result.add(yLink);
         return result;
@@ -129,15 +133,18 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
 
     public Collection<Potential> getRuleParents(Grid initialGrid, Grid currentGrid) {
         Collection<Potential> result = new ArrayList<Potential>();
-        Cell xyCell = initialGrid.getCell(this.xyCell.getX(), this.xyCell.getY());
-        Cell xzCell = initialGrid.getCell(this.xzCell.getX(), this.xzCell.getY());
-        Cell yzCell = initialGrid.getCell(this.yzCell.getX(), this.yzCell.getY());
+        Cell xyCell = Grid.getCell(this.xyCell.getIndex());
+        Cell xzCell = Grid.getCell(this.xzCell.getIndex());
+        Cell yzCell = Grid.getCell(this.yzCell.getIndex());
         for (int p = 1; p <= 9; p++) {
-            if (xyCell.hasPotentialValue(p) && !this.xyCell.hasPotentialValue(p))
+            //if (xyCell.hasPotentialValue(p) && !this.xyCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(xyCell.getIndex(), p) && !currentGrid.hasCellPotentialValue(this.xyCell.getIndex(), p))
                 result.add(new Potential(this.xyCell, p, false));
-            if (xzCell.hasPotentialValue(p) && !this.xzCell.hasPotentialValue(p))
+            //if (xzCell.hasPotentialValue(p) && !this.xzCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(xzCell.getIndex(), p) && !currentGrid.hasCellPotentialValue(this.xzCell.getIndex(), p))
                 result.add(new Potential(this.xzCell, p, false));
-            if (yzCell.hasPotentialValue(p) && !this.yzCell.hasPotentialValue(p))
+            //if (yzCell.hasPotentialValue(p) && !this.yzCell.hasPotentialValue(p))
+            if (initialGrid.hasCellPotentialValue(yzCell.getIndex(), p) && !currentGrid.hasCellPotentialValue(this.yzCell.getIndex(), p))
                 result.add(new Potential(this.yzCell, p, false));
         }
         return result;
@@ -164,10 +171,10 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         return xyCell.hashCode() ^ yzCell.hashCode() ^ xzCell.hashCode();
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
-            " on the values " + getX() + ", " + getY() + " and <b>" + value + "</b>";
+            " on the values " + getX(grid) + ", " + getY(grid) + " and <b>" + value + "</b>";
         } else {
             return "Look for a " + getName();
         }
@@ -185,7 +192,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isXYZ)
             result = HtmlLoader.loadHtml(this, "XYZWingHint.html");
@@ -194,7 +201,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         String cell1 = xyCell.toString();
         String cell2 = xzCell.toString();
         String cell3 = yzCell.toString();
-        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(), getY());
+        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(grid), getY(grid));
         return result;
     }
 

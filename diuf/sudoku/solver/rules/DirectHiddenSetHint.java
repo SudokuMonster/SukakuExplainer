@@ -68,7 +68,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
         result.put(cell, SingletonBitSet.create(value));
@@ -76,7 +76,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
         for (Cell cell : redPotentials.keySet()) {
@@ -92,7 +92,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -117,7 +117,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
         return "Direct Hidden " + groupNames[degree - 2];
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " in the <b1>" + getRegions()[0].toFullString() + "</b1>";
@@ -147,7 +147,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         final String[] numberNames = new String[] {"two", "three", "four"};
         String result = HtmlLoader.loadHtml(this, "DirectHiddenSetHint.html");
         String counter = numberNames[values.length - 2];

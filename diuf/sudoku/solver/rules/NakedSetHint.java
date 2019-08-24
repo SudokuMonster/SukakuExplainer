@@ -42,17 +42,17 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         return highlightPotentials;
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         return super.getRemovablePotentials();
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -82,9 +82,10 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
         for (int i = 0; i < values.length; i++)
             myValues.set(values[i]);
         for (Cell cell : this.cells) {
-            Cell initialCell = initialGrid.getCell(cell.getX(), cell.getY());
+            Cell initialCell = Grid.getCell(cell.getX(), cell.getY());
             for (int value = 1; value <= 9; value++) {
-                if (initialCell.hasPotentialValue(value) && !myValues.get(value))
+                //if (initialCell.hasPotentialValue(value) && !myValues.get(value))
+                if (initialGrid.hasCellPotentialValue(initialCell.getIndex(), value) && !myValues.get(value))
                     // This potential must go off before I can be applied
                     result.add(new Potential(cell, value, false));
             }
@@ -92,7 +93,7 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
         return result;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " in the <b1>" + getRegions()[0].toFullString() + "</b1>";
@@ -122,7 +123,7 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         final String[] numberNames = new String[] {"two", "three", "four"};
         String result = HtmlLoader.loadHtml(this, "NakedSetHint.html");
         String counter = numberNames[values.length - 2];

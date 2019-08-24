@@ -64,7 +64,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
         result.put(cell, SingletonBitSet.create(value));
@@ -72,7 +72,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(redPotentials);
         result.putAll(orangePotentials);
@@ -80,7 +80,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -103,7 +103,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
             return "Direct Claiming";
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " on the value <b>" + value + "<b>";
@@ -128,7 +128,7 @@ public class DirectLockingHint extends IndirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "DirectLockingHint.html");
         String valueName = Integer.toString(value);
         String firstRegion = regions[0].toString();

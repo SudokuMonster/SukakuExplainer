@@ -52,70 +52,75 @@ public class UniqueLoops implements IndirectHintProducer {
 
     private List<UniqueLoopHint> getHints(Grid grid) {
         List<UniqueLoopHint> result = new ArrayList<UniqueLoopHint>();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                BitSet potentials = cell.getPotentialValues();
-                if (potentials.cardinality() == 2) {
-                    int v1 = potentials.nextSetBit(0);
-                    int v2 = potentials.nextSetBit(v1 + 1);
-                    assert v1 > 0 && v2 > 0;
-                    List<Cell> tempLoop = new ArrayList<Cell>();
-                    Collection<List<Cell>> results = new ArrayList<List<Cell>>();
-                    checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), null, results);
-                    for (List<Cell> loop : results) {
-                        // Potential loop found. Check validity
-                        if (isValidLoop(grid, loop)) {
-                            // This is a unique loop. Get cells with more than 2 potentials
-                            List<Cell> extraCells = new ArrayList<Cell>(2);
-                            for (Cell loopCell : loop) {
-                                if (loopCell.getPotentialValues().cardinality() > 2)
-                                    extraCells.add(loopCell);
-                            }
-                            if (extraCells.size() == 1) {
-                                // Try a type-1 hint
-                                UniqueLoopHint hint = createType1Hint(loop, extraCells.get(0), v1, v2);
-                                if (!result.contains(hint) && hint.isWorth())
-                                    result.add(hint);
-                            } else if (extraCells.size() > 2) {
-                                // Only type 2 is possible
-                                BitSet extraValues = new BitSet(10);
-                                for (Cell c : extraCells)
-                                    extraValues.or(c.getPotentialValues());
-                                extraValues.clear(v1);
-                                extraValues.clear(v2);
-                                assert extraValues.cardinality() == 1;
+        //for (int y = 0; y < 9; y++) {
+        //    for (int x = 0; x < 9; x++) {
+        for (int i = 0; i < 81; i++) {
+            //BitSet potentials = cell.getPotentialValues();
+            BitSet potentials = grid.getCellPotentialValues(i);
+            if (potentials.cardinality() == 2) {
+            	Cell cell = Grid.getCell(i);
+                int v1 = potentials.nextSetBit(0);
+                int v2 = potentials.nextSetBit(v1 + 1);
+                assert v1 > 0 && v2 > 0;
+                List<Cell> tempLoop = new ArrayList<Cell>();
+                Collection<List<Cell>> results = new ArrayList<List<Cell>>();
+                checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), null, results);
+                for (List<Cell> loop : results) {
+                    // Potential loop found. Check validity
+                    if (isValidLoop(grid, loop)) {
+                        // This is a unique loop. Get cells with more than 2 potentials
+                        List<Cell> extraCells = new ArrayList<Cell>(2);
+                        for (Cell loopCell : loop) {
+                            //if (loopCell.getPotentialValues().cardinality() > 2)
+                            if (grid.getCellPotentialValues(loopCell.getIndex()).cardinality() > 2)
+                                extraCells.add(loopCell);
+                        }
+                        if (extraCells.size() == 1) {
+                            // Try a type-1 hint
+                            UniqueLoopHint hint = createType1Hint(loop, extraCells.get(0), v1, v2);
+                            if (!result.contains(hint) && hint.isWorth())
+                                result.add(hint);
+                        } else if (extraCells.size() > 2) {
+                            // Only type 2 is possible
+                            BitSet extraValues = new BitSet(10);
+                            for (Cell c : extraCells)
+                                //extraValues.or(c.getPotentialValues());
+                                extraValues.or(grid.getCellPotentialValues(c.getIndex()));
+                            extraValues.clear(v1);
+                            extraValues.clear(v2);
+                            assert extraValues.cardinality() == 1;
+                            UniqueLoopHint hint = createType2Hint(grid, loop, extraCells, v1, v2);
+                            if (!result.contains(hint) && hint.isWorth())
+                                result.add(hint);
+                        } else if (extraCells.size() == 2) {
+                            Cell r1 = extraCells.get(0);
+                            Cell r2 = extraCells.get(1);
+                            //BitSet rPotentials = (BitSet)r1.getPotentialValues().clone();
+                            //rPotentials.or(r2.getPotentialValues());
+                            BitSet rPotentials = (BitSet)grid.getCellPotentialValues(r1.getIndex()).clone();
+                            rPotentials.or(grid.getCellPotentialValues(r2.getIndex()));
+                            rPotentials.clear(v1);
+                            rPotentials.clear(v2);
+                            if (rPotentials.cardinality() == 1) {
+                                // Try type 2 hint
                                 UniqueLoopHint hint = createType2Hint(grid, loop, extraCells, v1, v2);
                                 if (!result.contains(hint) && hint.isWorth())
                                     result.add(hint);
-                            } else if (extraCells.size() == 2) {
-                                Cell r1 = extraCells.get(0);
-                                Cell r2 = extraCells.get(1);
-                                BitSet rPotentials = (BitSet)r1.getPotentialValues().clone();
-                                rPotentials.or(r2.getPotentialValues());
-                                rPotentials.clear(v1);
-                                rPotentials.clear(v2);
-                                if (rPotentials.cardinality() == 1) {
-                                    // Try type 2 hint
-                                    UniqueLoopHint hint = createType2Hint(grid, loop, extraCells, v1, v2);
+                            } else if (rPotentials.cardinality() >= 2) {
+                                // Try type 3 hint
+                                Collection<UniqueLoopHint> hints = createType3Hints(grid, loop, r1, r2, v1, v2);
+                                for (UniqueLoopHint hint : hints) {
                                     if (!result.contains(hint) && hint.isWorth())
                                         result.add(hint);
-                                } else if (rPotentials.cardinality() >= 2) {
-                                    // Try type 3 hint
-                                    Collection<UniqueLoopHint> hints = createType3Hints(grid, loop, r1, r2, v1, v2);
-                                    for (UniqueLoopHint hint : hints) {
-                                        if (!result.contains(hint) && hint.isWorth())
-                                            result.add(hint);
-                                    }
                                 }
-                                // Try type 4 hint
-                                UniqueLoopHint hint = createType4Hint(grid, loop, r1, r2, v1, v2);
-                                if (hint != null && !result.contains(hint) && hint.isWorth())
-                                    result.add(hint);
-                            } else {
-                                // Huh ? 0 rescue cell ? Sudoku has two solutions !!
-                                // Do nothing (this is not our business)
                             }
+                            // Try type 4 hint
+                            UniqueLoopHint hint = createType4Hint(grid, loop, r1, r2, v1, v2);
+                            if (hint != null && !result.contains(hint) && hint.isWorth())
+                                result.add(hint);
+                        } else {
+                            // Huh ? 0 rescue cell ? Sudoku has two solutions !!
+                            // Do nothing (this is not our business)
                         }
                     }
                 }
@@ -144,7 +149,7 @@ public class UniqueLoops implements IndirectHintProducer {
             Class<? extends Grid.Region> lastRegionType, Collection<List<Cell>> results) {
         loop.add(cell);
         exValues = (BitSet)exValues.clone(); // Ensure we cleanup ourself
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             if (!regionType.equals(lastRegionType)) {
                 Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
                 for (int i = 0; i < 9; i++) {
@@ -153,7 +158,8 @@ public class UniqueLoops implements IndirectHintProducer {
                         // Yeah, the loop is closed. Save a copy
                         results.add(new ArrayList<Cell>(loop));
                     } else if (!loop.contains(next)) {
-                        BitSet potentials = next.getPotentialValues();
+                        //BitSet potentials = next.getPotentialValues();
+                        BitSet potentials = grid.getCellPotentialValues(next.getIndex());
                         if (potentials.get(v1) && potentials.get(v2)) {
                             exValues.or(potentials);
                             exValues.clear(v1);
@@ -201,7 +207,7 @@ public class UniqueLoops implements IndirectHintProducer {
         HashSet<Grid.Region> visitedEven = new HashSet<Grid.Region>();
         boolean isOdd = false;
         for (Cell cell : loop) {
-            for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+            for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
                 Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
                 if (isOdd) {
                     if (visitedOdd.contains(region))
@@ -236,22 +242,25 @@ public class UniqueLoops implements IndirectHintProducer {
     private UniqueLoopHint createType2Hint(Grid grid, List<Cell> loop, List<Cell> extraCells,
             int v1, int v2) {
         // Get the extra value
-        BitSet common = (BitSet)extraCells.get(0).getPotentialValues().clone();
+        //BitSet common = (BitSet)extraCells.get(0).getPotentialValues().clone();
+        BitSet common = (BitSet)grid.getCellPotentialValues(extraCells.get(0).getIndex()).clone();
         common.clear(v1);
         common.clear(v2);
         int value = common.nextSetBit(0);
         // Get removable potentials
         Map<Cell, BitSet> removable = new HashMap<Cell, BitSet>();
-        Set<Cell> commonCells = null;
+        //Set<Cell> commonCells = null;
+        CellSet commonCells = null;
         for (Cell extraCell : extraCells) {
             if (commonCells == null)
-                commonCells = new LinkedHashSet<Cell>(extraCell.getHouseCells(grid));
+                commonCells = new CellSet(extraCell.getVisibleCells());
             else
-                commonCells.retainAll(extraCell.getHouseCells(grid));
+                commonCells.retainAll(extraCell.getVisibleCells());
         }
         for (Cell cell : commonCells) {
             if (!extraCells.contains(cell)) {
-                if (cell.hasPotentialValue(value))
+                //if (cell.hasPotentialValue(value))
+                if (grid.hasCellPotentialValue(cell.getIndex(), value))
                     removable.put(cell, SingletonBitSet.create(value));
             }
         }
@@ -275,17 +284,19 @@ public class UniqueLoops implements IndirectHintProducer {
             Cell c1, Cell c2, int v1, int v2) {
         Collection<UniqueLoopHint> result = new ArrayList<UniqueLoopHint>();
         // Get the extra values
-        BitSet extra = (BitSet)c1.getPotentialValues().clone();
-        extra.or(c2.getPotentialValues());
+        //BitSet extra = (BitSet)c1.getPotentialValues().clone();
+        BitSet extra = (BitSet)grid.getCellPotentialValues(c1.getIndex()).clone();
+        //extra.or(c2.getPotentialValues());
+        extra.or(grid.getCellPotentialValues(c2.getIndex()));
         extra.clear(v1);
         extra.clear(v2);
         // Look for Naked and hidden Sets. Iterate on degree
         for (int degree = extra.cardinality(); degree <= 7; degree++) {
-            for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+            for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
                 Grid.Region region = grid.getRegionAt(regionType, c1);
                 if (region.equals(grid.getRegionAt(regionType, c2))) {
                     // Region common to c1 and c2
-                    int nbEmptyCells = region.getEmptyCellCount();
+                    int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
                     int index2 = region.indexOf(c2);
 
@@ -302,8 +313,10 @@ public class UniqueLoops implements IndirectHintProducer {
                                 // We have to ensure (c1 AND c2) OR otherCells = fullSet
                                 // else, this is not a naked set with both c1 or c2
                                 BitSet nakedSet = (BitSet)extra.clone();
-                                nakedSet.and(c1.getPotentialValues());
-                                nakedSet.and(c2.getPotentialValues()); // Common to c1 and c2
+                                //nakedSet.and(c1.getPotentialValues());
+                                //nakedSet.and(c2.getPotentialValues()); // Common to c1 and c2
+                                nakedSet.and(grid.getCellPotentialValues(c1.getIndex()));
+                                nakedSet.and(grid.getCellPotentialValues(c2.getIndex())); // Common to c1 and c2
 
                                 Cell[] otherCells = new Cell[degree - 1];
                                 int otherIndex = 0;
@@ -313,7 +326,8 @@ public class UniqueLoops implements IndirectHintProducer {
                                     else {
                                         // Other cell. Use actual potentials
                                         Cell cell = region.getCell(indexes[i]);
-                                        potentials[i] = cell.getPotentialValues();
+                                        //potentials[i] = cell.getPotentialValues();
+                                        potentials[i] = grid.getCellPotentialValues(cell.getIndex());
                                         nakedSet.or(potentials[i]);
                                         otherCells[otherIndex++] = cell;
                                     }
@@ -324,7 +338,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                         CommonTuples.searchCommonTuple(potentials, degree);
                                     if (commonPotentialValues != null) {
                                         // Potential naked set found
-                                        UniqueLoopHint hint = createType3NakedHint(loop, v1, v2, extra, region, c1, c2,
+                                        UniqueLoopHint hint = createType3NakedHint(grid, loop, v1, v2, extra, region, c1, c2,
                                                 otherCells, commonPotentialValues);
                                         if (hint.isWorth())
                                             result.add(hint);
@@ -352,7 +366,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                 values[degree - 1] = v2;
                                 BitSet[] potentialIndexes = new BitSet[degree];
                                 for (int i = 0; i < degree; i++) {
-                                    potentialIndexes[i] = region.copyPotentialPositions(values[i]);
+                                    potentialIndexes[i] = region.copyPotentialPositions(grid, values[i]);
                                     potentialIndexes[i].clear(index2); // Remove one of the two cells
                                 }
                                 BitSet commonPotentialPositions =
@@ -362,7 +376,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                     BitSet hiddenValues = new BitSet(10);
                                     for (int i = 0; i < values.length; i++)
                                         hiddenValues.set(values[i]);
-                                    UniqueLoopHint hint = createType3HiddenHint(loop, v1, v2, extra, hiddenValues, region,
+                                    UniqueLoopHint hint = createType3HiddenHint(grid, loop, v1, v2, extra, hiddenValues, region,
                                             c1, c2, commonPotentialPositions);
                                     if (hint.isWorth())
                                         result.add(hint);
@@ -377,7 +391,7 @@ public class UniqueLoops implements IndirectHintProducer {
         return result;
     }
 
-    private UniqueLoopHint createType3HiddenHint(List<Cell> loop, int v1, int v2,
+    private UniqueLoopHint createType3HiddenHint(Grid grid, List<Cell> loop, int v1, int v2,
             BitSet otherValues, BitSet hiddenValues,
             Grid.Region region, Cell c1, Cell c2, BitSet potentialIndexes) {
         // Build other value list
@@ -398,7 +412,8 @@ public class UniqueLoops implements IndirectHintProducer {
                 if (!cell.equals(c1) && !cell.equals(c2)) {
                     BitSet values = new BitSet(10);
                     for (int value = 1; value <= 9; value++) {
-                        if (!hiddenValues.get(value) && cell.hasPotentialValue(value)) {
+                        //if (!hiddenValues.get(value) && cell.hasPotentialValue(value)) {
+                        if (!hiddenValues.get(value) && grid.hasCellPotentialValue(cell.getIndex(), value)) {
                             values.set(value);
                         }
                     }
@@ -416,7 +431,7 @@ public class UniqueLoops implements IndirectHintProducer {
                 region, indexes);
     }
 
-    private UniqueLoopHint createType3NakedHint(List<Cell> loop, int v1, int v2, BitSet otherValues,
+    private UniqueLoopHint createType3NakedHint(Grid grid, List<Cell> loop, int v1, int v2, BitSet otherValues,
             Grid.Region region, Cell c1, Cell c2, Cell[] cells, BitSet commonPotentialValues) {
         // Build other value list
         int[] oValues = new int[otherValues.cardinality()];
@@ -441,7 +456,8 @@ public class UniqueLoops implements IndirectHintProducer {
                 // Get removable potentials
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())
@@ -457,7 +473,7 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for v1 or v2 locked in a region of c1 and c2
         Grid.Region r1 = null;
         Grid.Region r2 = null;
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region region = grid.getRegionAt(regionType, c1.getX(), c1.getY());
             if (region.equals(grid.getRegionAt(regionType, c2.getX(), c2.getY()))) {
                 // Region common to c1 and c2
@@ -466,9 +482,11 @@ public class UniqueLoops implements IndirectHintProducer {
                 for (int i = 0; i < 9; i++) {
                     Cell cell = region.getCell(i);
                     if (!cell.equals(c1) && !cell.equals(c2)) {
-                        if (cell.hasPotentialValue(v1))
+                        //if (cell.hasPotentialValue(v1))
+                        if (grid.hasCellPotentialValue(cell.getIndex(), v1))
                             hasValue1 = true;
-                        if (cell.hasPotentialValue(v2))
+                        //if (cell.hasPotentialValue(v2))
+                        if (grid.hasCellPotentialValue(cell.getIndex(), v2))
                             hasValue2 = true;
                     }
                 }

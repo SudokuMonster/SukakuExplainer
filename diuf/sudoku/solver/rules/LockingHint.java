@@ -43,17 +43,17 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         return highlightPotentials;
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         return super.getRemovablePotentials();
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -103,8 +103,10 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
         for (int i = 0; i < regions.length; i+= 2) {
             for (int pos1 = 0; pos1 < 9; pos1++) {
                 Cell cell = regions[i].getCell(pos1);
-                Cell initCell = initialGrid.getCell(cell.getX(), cell.getY());
-                if (initCell.hasPotentialValue(value) && !cell.hasPotentialValue(value)) {
+                //Cell initCell = initialGrid.getCell(cell.getX(), cell.getY());
+                //if (initCell.hasPotentialValue(value) && !cell.hasPotentialValue(value)) {
+                //if (initialGrid.hasCellPotentialValue(initCell, value) && !currentGrid.hasCellPotentialValue(cell, value)) {
+                if (initialGrid.hasCellPotentialValue(cell.getIndex(), value) && !currentGrid.hasCellPotentialValue(cell.getIndex(), value)) {
                     boolean isInRegion2 = false;
                     for (int j = 1; j < regions.length; j+= 2) {
                         for (int pos2 = 0; pos2 < 9; pos2++) {
@@ -121,7 +123,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
         return result;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " on the value <b>" + value + "<b>";
@@ -165,7 +167,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         int degree = regions.length / 2;
         if (degree == 1)
             return toHtml1();

@@ -47,7 +47,7 @@ public class HiddenSet implements IndirectHintProducer {
         Grid.Region[] regions = grid.getRegions(regionType);
         // Iterate on parts
         for (Grid.Region region : regions) {
-            int nbEmptyCells = region.getEmptyCellCount();
+            int nbEmptyCells = region.getEmptyCellCount(grid);
             if (nbEmptyCells > degree * 2 || (isDirect && nbEmptyCells > degree)) {
                 Permutations perm = new Permutations(degree, 9);
                 // Iterate on tuple of values
@@ -62,14 +62,15 @@ public class HiddenSet implements IndirectHintProducer {
                     // Build potential positions for each value of the tuple
                     BitSet[] potentialIndexes = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        potentialIndexes[i] = region.getPotentialPositions(values[i]);
+                        //potentialIndexes[i] = region.getPotentialPositions(values[i]);
+                        potentialIndexes[i] = region.getPotentialPositions(grid, values[i]);
 
                     // Look for a common tuple of potential positions, with same degree
                     BitSet commonPotentialPositions =
                         CommonTuples.searchCommonTuple(potentialIndexes, degree);
                     if (commonPotentialPositions != null) {
                         // Hint found
-                        IndirectHint hint = createHiddenSetHint(region, values, commonPotentialPositions);
+                        IndirectHint hint = createHiddenSetHint(grid, region, values, commonPotentialPositions);
                         if (hint != null && hint.isWorth())
                             accu.add(hint);
                     }
@@ -78,7 +79,7 @@ public class HiddenSet implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createHiddenSetHint(Grid.Region region, int[] values,
+    private IndirectHint createHiddenSetHint(Grid grid, Grid.Region region, int[] values,
             BitSet commonPotentialPositions) {
         // Create set of fixed values, and set of other values
         BitSet valueSet = new BitSet(10);
@@ -97,7 +98,8 @@ public class HiddenSet implements IndirectHintProducer {
                 // Look for the potential values we can remove
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    if (!valueSet.get(value) && cell.hasPotentialValue(value))
+                    //if (!valueSet.get(value) && cell.hasPotentialValue(value))
+                    if (!valueSet.get(value) && grid.hasCellPotentialValue(cell.getIndex(), value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())
@@ -109,7 +111,7 @@ public class HiddenSet implements IndirectHintProducer {
             // Look for Hidden Single
             for (int value = 1; value <= 9; value++) {
                 if (!valueSet.get(value)) {
-                    BitSet positions = region.copyPotentialPositions(value);
+                    BitSet positions = region.copyPotentialPositions(grid, value);
                     if (positions.cardinality() > 1) {
                         positions.andNot(commonPotentialPositions);
                         if (positions.cardinality() == 1) {

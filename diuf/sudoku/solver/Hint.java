@@ -74,6 +74,6 @@ public abstract class Hint {
      * Get an HTML explanation of this hint, understandable by human beings.
      * @return an HTML explanation of this hint
      */
-    public abstract String toHtml();
+    public abstract String toHtml(Grid grid);
 
 }

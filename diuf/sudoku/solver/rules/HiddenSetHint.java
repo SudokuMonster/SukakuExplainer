@@ -44,17 +44,17 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         return highlightPotentials;
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         return super.getRemovablePotentials();
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -83,13 +83,16 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
         Collection<Potential> result = new ArrayList<Potential>();
         BitSet myPositions = new BitSet(9);
         for (int i = 0; i < values.length; i++)
-            myPositions.or(region.getPotentialPositions(values[i]));
+            //myPositions.or(region.getPotentialPositions(values[i]));
+        	myPositions.or(region.getPotentialPositions(currentGrid, values[i]));
         for (int i = 0; i < 9; i++) {
             if (!myPositions.get(i)) {
                 Cell cell = region.getCell(i);
-                Cell initialCell = initialGrid.getCell(cell.getX(), cell.getY());
+                //Cell initialCell = initialGrid.getCell(cell.getX(), cell.getY());
                 for (int j = 0; j < values.length; j++) {
-                    if (initialCell.hasPotentialValue(values[j]))
+                    //if (initialCell.hasPotentialValue(values[j]))
+                    //if (initialGrid.hasCellPotentialValue(initialCell, values[j]))
+                    if (initialGrid.hasCellPotentialValue(cell.getIndex(), values[j]))
                         // This potential must go off before I can be applied
                         result.add(new Potential(cell, values[j], false));
                 }
@@ -98,7 +101,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
         return result;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " in the <b1>" + getRegions()[0].toFullString() + "</b1>";
@@ -128,7 +131,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         final String[] numberNames = new String[] {"two", "three", "four"};
         String result = HtmlLoader.loadHtml(this, "HiddenSetHint.html");
         String counter = numberNames[values.length - 2];

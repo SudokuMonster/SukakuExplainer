@@ -40,12 +40,13 @@ public class HiddenSingle implements DirectHintProducer {
             // Iterate on values
             for (int value = 1; value <= 9; value++) {
                 // Get value's potential position
-                BitSet potentialIndexes = region.getPotentialPositions(value);
+                //BitSet potentialIndexes = region.getPotentialPositions(value);
+                BitSet potentialIndexes = region.getPotentialPositions(grid, value);
                 if (potentialIndexes.cardinality() == 1) {
                     // One potential position -> solution found
                     int uniqueIndex = potentialIndexes.nextSetBit(0);
                     Cell cell = region.getCell(uniqueIndex);
-                    boolean isAlone = region.getEmptyCellCount() == 1;
+                    boolean isAlone = region.getEmptyCellCount(grid) == 1;
                     if (isAlone == aloneOnly)
                         accu.add(new HiddenSingleHint(this, region, cell, value, isAlone));
                 }

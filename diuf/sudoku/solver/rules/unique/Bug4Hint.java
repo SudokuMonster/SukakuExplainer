@@ -46,7 +46,7 @@ public class Bug4Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         BitSet b1 = (BitSet)extraValues.get(bugCell1).clone();
         b1.set(value); // orange
@@ -58,7 +58,7 @@ public class Bug4Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> removable = super.getRemovablePotentials();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         for (Cell cell : removable.keySet()) {
@@ -70,7 +70,7 @@ public class Bug4Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -93,7 +93,7 @@ public class Bug4Hint extends BugHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave4.html");
         String bugValuesAnd = ValuesFormatter.formatValues(allExtraValues, " and ");
         String bugCellsAnd = ValuesFormatter.formatCells(new Cell[] {bugCell1, bugCell2}, " and ");

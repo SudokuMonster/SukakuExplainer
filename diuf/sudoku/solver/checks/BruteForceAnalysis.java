@@ -174,15 +174,26 @@ public class BruteForceAnalysis implements WarningHintProducer {
          */
         Cell leastCell = null;
         int leastCardinality = 10;
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) {
-                    int cardinality = cell.getPotentialValues().cardinality();
-                    if (cardinality < leastCardinality) {
-                        leastCardinality = cardinality;
-                        leastCell = cell;
-                    }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0) {
+//                if (grid.getCellValue(x, y) == 0) {
+//                    //int cardinality = cell.getPotentialValues().cardinality();
+//                    int cardinality = grid.getCellPotentialValues(x, y).cardinality();
+//                    if (cardinality < leastCardinality) {
+//                        leastCardinality = cardinality;
+//                        leastCell = cell;
+//                    }
+//                }
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            if (grid.getCellValue(i) == 0) {
+                int cardinality = grid.getCellPotentialValues(i).cardinality();
+                if (cardinality < leastCardinality) {
+                    leastCardinality = cardinality;
+                    leastCell = Grid.getCell(i);
                 }
             }
         }
@@ -198,7 +209,8 @@ public class BruteForceAnalysis implements WarningHintProducer {
             int value = value0 + 1;
             if (rnd != null) // Combine with random choice if random generator given
                 value = ((value0 + firstValue) % 9) + 1;
-            if (leastCell.hasPotentialValue(value)) {
+            //if (leastCell.hasPotentialValue(value)) {
+            if (grid.hasCellPotentialValue(leastCell.getIndex(), value)) {
                 grid.copyTo(savePoint);
                 leastCell.setValueAndCancel(value, grid);
                 boolean result = analyse(grid, isReverse, rnd, hiddenSingle, nakedSingle);
@@ -223,12 +235,13 @@ public class BruteForceAnalysis implements WarningHintProducer {
      * imply that the sudoku has no solution.
      */
     private boolean isFillable(Grid grid) {
-        for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {
+        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             Grid.Region[] regions = grid.getRegions(regionType);
             for (int i = 0; i < 9; i++) {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
-                    if (!region.contains(value) && region.getPotentialPositions(value).isEmpty())
+                    //if (!region.contains(value) && region.getPotentialPositions(value).isEmpty())
+                    if (!region.contains(grid, value) && region.getPotentialPositions(grid, value).isEmpty())
                         return false; // No room for the value in the region
                 }
             }

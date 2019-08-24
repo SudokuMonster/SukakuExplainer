@@ -17,22 +17,22 @@ import diuf.sudoku.tools.*;
  */
 public class SolutionHint extends WarningHint {
 
-    private final Grid grid;
+    //private final Grid grid;
     private final Grid solution;
 
     public SolutionHint(WarningHintProducer rule, Grid grid, Grid solution) {
         super(rule);
-        this.grid = grid;
+        //this.grid = grid;
         this.solution = solution;
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell,BitSet>();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 int value = solution.getCellValue(x, y);
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 result.put(cell, SingletonBitSet.create(value));
             }
         }
@@ -40,8 +40,8 @@ public class SolutionHint extends WarningHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return getGreenPotentials(viewNum);
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return getGreenPotentials(grid, viewNum);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SolutionHint extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         return HtmlLoader.loadHtml(this, "Solution.html");
     }
 

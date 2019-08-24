@@ -25,7 +25,7 @@ public class Bug1Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         return null;
     }
 
@@ -35,14 +35,14 @@ public class Bug1Hint extends BugHint implements Rule {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.put(bugCell, bugValues);
         return result;
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         return super.getRemovablePotentials();
     }
 
@@ -70,7 +70,7 @@ public class Bug1Hint extends BugHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave1.html");
         String andExtra = ValuesFormatter.formatValues(bugValues, " and ");
         String orExtra = ValuesFormatter.formatValues(bugValues, " or ");

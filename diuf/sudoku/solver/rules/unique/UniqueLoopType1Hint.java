@@ -24,7 +24,7 @@ public class UniqueLoopType1Hint extends UniqueLoopHint {
 
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         BitSet removable = new BitSet(10);
         removable.set(v1);
         removable.set(v2);
@@ -37,7 +37,7 @@ public class UniqueLoopType1Hint extends UniqueLoopHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "UniqueLoopType1.html");
         String type = getTypeName();
         String cellName = target.toString();

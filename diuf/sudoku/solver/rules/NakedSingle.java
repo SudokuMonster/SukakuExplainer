@@ -36,16 +36,15 @@ public class NakedSingle implements DirectHintProducer {
 //                }
 //            }
 //        }
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 9; y++) {
-                Cell cell = grid.getCell(x, y);
-                if(cell.getValue() != 0) continue;
-                BitSet potentialValues = cell.getPotentialValues();
-                if (potentialValues.cardinality() == 1) {
-                    // One potential value -> solution found
-                    int uniqueValue = potentialValues.nextSetBit(0);
-                    accu.add(new NakedSingleHint(this, null, cell, uniqueValue));
-                }
+        for (int i = 0; i < 81; i++) {
+            if(grid.getCellValue(i) != 0) continue;
+            //BitSet potentialValues = cell.getPotentialValues();
+            BitSet potentialValues = grid.getCellPotentialValues(i);
+            if (potentialValues.cardinality() == 1) {
+                // One potential value -> solution found
+                int uniqueValue = potentialValues.nextSetBit(0);
+                Cell cell = Grid.getCell(i);
+                accu.add(new NakedSingleHint(this, null, cell, uniqueValue));
             }
         }
     }

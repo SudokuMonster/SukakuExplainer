@@ -25,7 +25,7 @@ public class NakedSingleHint extends DirectHint implements Rule {
         return "Naked Single";
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " in the cell <b>" + getCell().toString() + "</b>";
@@ -40,7 +40,7 @@ public class NakedSingleHint extends DirectHint implements Rule {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "NakedSingleHint.html");
         return HtmlLoader.format(result, Integer.toString(super.getValue()),
                 super.getCell().toString());

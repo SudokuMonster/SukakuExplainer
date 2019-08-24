@@ -18,15 +18,15 @@ import diuf.sudoku.tools.*;
  */
 public class DoubleSolutionWarning extends WarningHint {
 
-    private Grid grid;
+    //private Grid grid;
     private Grid solution1;
     private Grid solution2;
-    private int lastViewNum = 0;
+    //private int lastViewNum = 0;
 
     public DoubleSolutionWarning(WarningHintProducer rule, Grid source, Grid solution1,
             Grid solution2) {
         super(rule);
-        this.grid = source;
+        //this.grid = source;
         this.solution1 = solution1;
         this.solution2 = solution2;
     }
@@ -46,23 +46,23 @@ public class DoubleSolutionWarning extends WarningHint {
 //    }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Grid solution = (viewNum == 0 ? solution1 : solution2);
         Map<Cell,BitSet> result = new HashMap<Cell,BitSet>();
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 int value = solution.getCellValue(x, y);
-                Cell cell = grid.getCell(x, y);
+                Cell cell = Grid.getCell(x, y);
                 result.put(cell, SingletonBitSet.create(value));
             }
         }
-        lastViewNum = viewNum;
+        //lastViewNum = viewNum;
         return result;
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
-        return getGreenPotentials(viewNum);
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
+        return getGreenPotentials(grid, viewNum);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DoubleSolutionWarning extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         return HtmlLoader.loadHtml(this, "DoubleSolution.html");
     }
 

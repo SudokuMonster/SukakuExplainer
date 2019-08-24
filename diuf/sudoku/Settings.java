@@ -28,6 +28,7 @@ public class Settings {
     private EnumSet<SolvingTechnique> techniques;
     
     private int numThreads = 1;
+    private boolean bestHintOnly = false;
 
     private Settings() {
         init();
@@ -121,7 +122,15 @@ public class Settings {
     public int getNumThreads() {
         return this.numThreads;
     }
-
+    
+    public void setBestHintOnly(boolean bestHintOnly) {
+        this.bestHintOnly = bestHintOnly;
+    }
+    
+    public boolean getBestHintOnly() {
+        return this.bestHintOnly;
+    }
+    
     //  Load / Save
 
     private void init() {

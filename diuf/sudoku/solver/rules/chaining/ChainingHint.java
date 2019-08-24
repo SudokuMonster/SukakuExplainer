@@ -122,16 +122,16 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
         return null;
     }
 
-    protected final Map<Cell, BitSet> getNestedGreenPotentials(int nestedViewNum) {
+    protected final Map<Cell, BitSet> getNestedGreenPotentials(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getGreenPotentials(nest.getValue2());
+        return nest.getValue1().getGreenPotentials(grid, nest.getValue2());
     }
 
-    protected final Map<Cell, BitSet> getNestedRedPotentials(int nestedViewNum) {
+    protected final Map<Cell, BitSet> getNestedRedPotentials(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getRedPotentials(nest.getValue2());
+        return nest.getValue1().getRedPotentials(grid, nest.getValue2());
     }
 
     @Override
@@ -148,7 +148,8 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
             Potential target = getContainerTarget(nestedChain);
             for (Potential p : getChain(target)) {
                 if (!p.isOn) // Remove deductions of the container chain
-                    nestedGrid.getCell(p.cell.getX(), p.cell.getY()).removePotentialValue(p.value);
+                    //nestedGrid.getCell(p.cell.getX(), p.cell.getY()).removePotentialValue(p.value);
+                	nestedGrid.removeCellPotentialValue(Grid.getCell(p.cell.getIndex()), p.value);
             }
             // Use the rule's parent collector
             Collection<Potential> blues = new LinkedHashSet<Potential>();
@@ -158,20 +159,20 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
             for (Potential p : blues) {
                 Cell sCell = p.cell;
                 // Get corresponding cell in initial grid
-                Cell cell = grid.getCell(sCell.getX(), sCell.getY());
-                if (result.containsKey(cell))
-                    result.get(cell).set(p.value);
+                //Cell cell = Grid.getCell(sCell.getX(), sCell.getY());
+                if (result.containsKey(sCell))
+                    result.get(sCell).set(p.value);
                 else
-                    result.put(cell, SingletonBitSet.create(p.value));
+                    result.put(sCell, SingletonBitSet.create(p.value));
             }
         }
         return result;
     }
 
-    protected final Collection<Link> getNestedLinks(int nestedViewNum) {
+    protected final Collection<Link> getNestedLinks(Grid grid, int nestedViewNum) {
         nestedViewNum-= getFlatViewCount();
         Pair<ChainingHint, Integer> nest = getNestedChain(nestedViewNum);
-        return nest.getValue1().getLinks(nest.getValue2());
+        return nest.getValue1().getLinks(grid, nest.getValue2());
     }
 
     protected final int getNestedComplexity() {
@@ -252,19 +253,26 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                         assert !cause.equals(Potential.Cause.Advanced);
                         Cell curCell = p.cell;
                         if (cause.equals(Potential.Cause.NakedSingle)) {
-                            Cell actCell = currentGrid.getCell(curCell.getX(), curCell.getY());
-                            Cell initCell = initialGrid.getCell(curCell.getX(), curCell.getY());
+                            //Cell actCell = Grid.getCell(curCell.getX(), curCell.getY());
+                            //Cell initCell = Grid.getCell(curCell.getX(), curCell.getY());
+                        	int currCellIndex = curCell.getIndex();
                             for (int value = 1; value <= 9; value++) {
-                                if (initCell.hasPotentialValue(value) && !actCell.hasPotentialValue(value))
-                                    result.add(new Potential(actCell, value, false));
+                                //if (initCell.hasPotentialValue(value) && !actCell.hasPotentialValue(value))
+                                //if (initialGrid.hasCellPotentialValue(initCell, value) && !currentGrid.hasCellPotentialValue(actCell, value))
+                                if (initialGrid.hasCellPotentialValue(currCellIndex, value) && !currentGrid.hasCellPotentialValue(currCellIndex, value))
+                                    //result.add(new Potential(actCell, value, false));
+                                    result.add(new Potential(curCell, value, false));
                             }
                         } else { // Hidden single
                             Region r = currentGrid.getRegionAt(getCauseRegion(cause), curCell);
                             for (int i = 0; i < 9; i++) {
                                 Cell actCell = r.getCell(i);
-                                Cell initCell = initialGrid.getCell(actCell.getX(), actCell.getY());
-                                if (initCell.hasPotentialValue(p.value) && !actCell.hasPotentialValue(p.value))
+                                //Cell initCell = Grid.getCell(actCell.getX(), actCell.getY());
+                                //if (initCell.hasPotentialValue(p.value) && !actCell.hasPotentialValue(p.value))
+                                //if (initialGrid.hasCellPotentialValue(initCell, p.value) && !currentGrid.hasCellPotentialValue(actCell, p.value))
+                                if (initialGrid.hasCellPotentialValue(actCell.getIndex(), p.value) && !currentGrid.hasCellPotentialValue(actCell.getIndex(), p.value)) {
                                     result.add(new Potential(actCell, p.value, false));
+                                }
                             }
                         }
                     }
@@ -519,7 +527,18 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
 
     @Override
     public int hashCode() {
-        return getRemovablePotentials().hashCode();
+        //return getRemovablePotentials().hashCode();
+        Map<Cell, BitSet> rp = getRemovablePotentials();
+        if(rp.isEmpty()) {
+        	return (isYChain ? 2 : 0) + (isXChain ? 1 : 0);
+        }
+        //return rp.entrySet().iterator().next().getKey().hashCode();
+        int ret = 0;
+        int n = 3;
+        for(Map.Entry<Cell, BitSet> iter : rp.entrySet()) {
+        	ret ^= iter.getKey().hashCode();
+        	if(--n == 0) break;
+        }
+        return ret;
     }
-
 }

@@ -50,12 +50,13 @@ public class Locking implements IndirectHintProducer {
                 Grid.Region region1 = grid.getRegions(regionType1)[i1];
                 Grid.Region region2 = grid.getRegions(regionType2)[i2];
                 if (region1.crosses(region2)) {
-                    Set<Cell> region2Cells = region2.getCellSet();
+                    CellSet region2Cells = region2.getCellSet();
                     // Iterate on values
                     for (int value = 1; value <= 9; value++) {
                         boolean isInCommonSet = true;
                         // Get the potential positions of the value in part1
-                        BitSet potentialPositions = region1.getPotentialPositions(value);
+                        //BitSet potentialPositions = region1.getPotentialPositions(value);
+                        BitSet potentialPositions = region1.getPotentialPositions(grid, value);
                         // Note: if cardinality == 1, this is Hidden Single in part1
                         if (potentialPositions.cardinality() > 1) {
                             // Test if all potential positions are also in part2
@@ -72,7 +73,7 @@ public class Locking implements IndirectHintProducer {
                                             region1, region2, value);
                                 } else {
                                     // Potential solution found
-                                    IndirectHint hint = createLockingHint(region1, region2, null, value);
+                                    IndirectHint hint = createLockingHint(grid, region1, region2, null, value);
                                     if (hint.isWorth())
                                         accu.add(hint);
                                 }
@@ -93,8 +94,9 @@ public class Locking implements IndirectHintProducer {
                 Grid.Region region3 = grid.getRegions(regionType1)[i3];
                 if (region3.crosses(region2)) {
                     // Region <> region1 but crosses region2
-                    Set<Cell> region2Cells = region2.getCellSet();
-                    BitSet potentialPositions3 = region3.getPotentialPositions(value);
+                    CellSet region2Cells = region2.getCellSet();
+                    //BitSet potentialPositions3 = region3.getPotentialPositions(value);
+                    BitSet potentialPositions3 = region3.getPotentialPositions(grid, value);
                     if (potentialPositions3.cardinality() > 1) {
                         int nbRemainInRegion3 = 0;
                         Cell hcell = null;
@@ -108,7 +110,7 @@ public class Locking implements IndirectHintProducer {
                             }
                         }
                         if (nbRemainInRegion3 == 1) {
-                            IndirectHint hint = createLockingHint(region1, region2, hcell, value);
+                            IndirectHint hint = createLockingHint(grid, region1, region2, hcell, value);
                             if (hint.isWorth())
                                 accu.add(hint);
                         }
@@ -118,24 +120,28 @@ public class Locking implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createLockingHint(Grid.Region p1, Grid.Region p2, Cell hcell, int value) {
+    private IndirectHint createLockingHint(Grid grid, Grid.Region p1, Grid.Region p2, Cell hcell, int value) {
         // Build highlighted potentials
         Map<Cell,BitSet> cellPotentials = new HashMap<Cell,BitSet>();
         for (int i = 0; i < 9; i++) {
             Cell cell = p1.getCell(i);
-            if (cell.hasPotentialValue(value))
+            //if (cell.hasPotentialValue(value))
+            if (grid.hasCellPotentialValue(cell.getIndex(), value))
                 cellPotentials.put(cell, SingletonBitSet.create(value));
         }
         // Build removable potentials
         Map<Cell,BitSet> cellRemovablePotentials = new HashMap<Cell,BitSet>();
         List<Cell> highlightedCells = new ArrayList<Cell>();
-        Set<Cell> p1Cells = p1.getCellSet();
+        //Set<Cell> p1Cells = p1.getCellSet();
+        CellSet p1Cells = p1.getCellSet();
         for (int i = 0; i < 9; i++) {
             Cell cell = p2.getCell(i);
             if (!p1Cells.contains(cell)) {
-                if (cell.hasPotentialValue(value))
+                //if (cell.hasPotentialValue(value))
+                if (grid.hasCellPotentialValue(cell.getIndex(), value))
                     cellRemovablePotentials.put(cell, SingletonBitSet.create(value));
-            } else if (cell.hasPotentialValue(value))
+            //} else if (cell.hasPotentialValue(value))
+            } else if (grid.hasCellPotentialValue(cell.getIndex(), value))
                 highlightedCells.add(cell);
         }
         // Build list of cells

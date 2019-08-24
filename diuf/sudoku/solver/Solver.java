@@ -120,13 +120,13 @@ public class Solver {
         addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());
         addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
         chainingHintProducers = new ArrayList<IndirectHintProducer>();
-        addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0));
+        addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0, false, 0));
         addIfWorth(SolvingTechnique.AlignedTripletExclusion, chainingHintProducers, new AlignedExclusion(3));
-        addIfWorth(SolvingTechnique.NishioForcingChain, chainingHintProducers, new Chaining(false, true, true, 0));
-        addIfWorth(SolvingTechnique.MultipleForcingChain, chainingHintProducers, new Chaining(true, false, false, 0));
-        addIfWorth(SolvingTechnique.DynamicForcingChain, chainingHintProducers, new Chaining(true, true, false, 0));
+        addIfWorth(SolvingTechnique.NishioForcingChain, chainingHintProducers, new Chaining(false, true, true, 0, false, 0));
+        addIfWorth(SolvingTechnique.MultipleForcingChain, chainingHintProducers, new Chaining(true, false, false, 0, false, 0));
+        addIfWorth(SolvingTechnique.DynamicForcingChain, chainingHintProducers, new Chaining(true, true, false, 0, false, 0));
         chainingHintProducers2 = new ArrayList<IndirectHintProducer>();
-        addIfWorth(SolvingTechnique.DynamicForcingChainPlus, chainingHintProducers2, new Chaining(true, true, false, 1));
+        addIfWorth(SolvingTechnique.DynamicForcingChainPlus, chainingHintProducers2, new Chaining(true, true, false, 1, false, 0));
         // These rules are not really solving techs. They check the validity of the puzzle
         validatorHintProducers = new ArrayList<WarningHintProducer>();
         validatorHintProducers.add(new NoDoubles());
@@ -136,8 +136,8 @@ public class Solver {
         warningHintProducers.add(new BruteForceAnalysis(false));
         // These are very slow. We add them only as "rescue"
         advancedHintProducers = new ArrayList<IndirectHintProducer>();
-        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2));
-        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 3));
+        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2, false, 0));
+        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 3, false, 0));
         experimentalHintProducers = new ArrayList<IndirectHintProducer>(); // Two levels of nesting !?
         addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 0));
         addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 1));
@@ -158,11 +158,15 @@ public class Solver {
         for (Grid.Region part : parts) {
             for (int i = 0; i < 9; i++) {
                 Cell cell = part.getCell(i);
-                if (!cell.isEmpty()) {
-                    int value = cell.getValue();
+                //if (!cell.isEmpty()) {
+                int value = grid.getCellValue(cell.getX(), cell.getY());
+                if (value != 0) {
+                    //int value = cell.getValue();
+                    //int value = grid.getCellValue(cell.getX(), cell.getY());
                     // Remove the cell value from the potential values of other cells
                     for (int j = 0; j < 9; j++)
-                        part.getCell(j).removePotentialValue(value);
+                        //part.getCell(j).removePotentialValue(value);
+                    	grid.removeCellPotentialValue(part.getCell(j), value);
                 }
             }
         }
@@ -172,13 +176,22 @@ public class Solver {
      * Rebuild, for each empty cell, the set of potential values.
      */
     public void rebuildPotentialValues() {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                if (cell.getValue() == 0) {
-                    for (int value = 1; value <= 9; value++)
-                        cell.addPotentialValue(value);
-                }
+//        for (int y = 0; y < 9; y++) {
+//            for (int x = 0; x < 9; x++) {
+//                Cell cell = Grid.getCell(x, y);
+//                //if (cell.getValue() == 0) {
+//                if (grid.getCellValue(x, y) == 0) {
+//                    for (int value = 1; value <= 9; value++)
+//                        //cell.addPotentialValue(value);
+//                    	grid.addCellPotentialValue(cell, value);
+//                }
+//            }
+//        }
+        for (int i = 0; i < 81; i++) {
+            Cell cell = Grid.getCell(i);
+            if (grid.getCellValue(i) == 0) {
+                for (int value = 1; value <= 9; value++)
+                	grid.addCellPotentialValue(cell, value);
             }
         }
         cancelPotentialValues();
@@ -192,9 +205,11 @@ public class Solver {
     public void cancelPotentialValues() {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                if (cell.getValue() != 0)
-                    cell.clearPotentialValues();
+                Cell cell = Grid.getCell(x, y);
+//                if (cell.getValue() != 0)
+                if (grid.getCellValue(x, y) != 0)
+                    //cell.clearPotentialValues();
+                	grid.clearCellPotentialValues(cell);
             }
         }
         cancelBy(Grid.Block.class);
@@ -442,7 +457,7 @@ public class Solver {
      * @return The actual difficulty if it is between the
      * given bounds. An arbitrary out-of-bounds value else.
      */
-    public double analyseDifficulty(double min, double max) {
+    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3) {
         int oldPriority = lowerPriority();
         try {
             double difficulty = Double.NEGATIVE_INFINITY;
@@ -467,15 +482,18 @@ public class Solver {
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
-                    difficulty = ruleDiff;
+                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3)
+					return 0.0;
+				if (ruleDiff > difficulty)
+					if (!(notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff))
+						difficulty = ruleDiff;
                 if (difficulty >= min && max >= 11.0)
                     break;
                 if (difficulty > max)
                     break;
                 hint.apply(grid);
             }
-            return difficulty;
+			return difficulty;
         } finally {
             normalPriority(oldPriority);
         }
@@ -636,7 +654,8 @@ public class Solver {
 
                 int crd = 1;
                 for (int i = 0; i < 81; i++) {
-                    int n = grid.getCell(i % 9, i / 9).getPotentialValues().cardinality();
+                    //int n = grid.getCell(i % 9, i / 9).getPotentialValues().cardinality();
+                    int n = grid.getCellPotentialValues(i).cardinality();
                     if ( n > crd ) { crd = n; }
                 }
                 if ( crd > 1 )
@@ -660,15 +679,17 @@ public class Solver {
                                     s += " ";
                                     int cnt = 0;
                                     int c = ((((i*3)+j)*3)+k)*3+l;
-                                    Cell cell = grid.getCell(c % 9, c / 9);
-                                    int n = cell.getValue();
+                                    Cell cell = Grid.getCell(c % 9, c / 9);
+                                    //int n = cell.getValue();
+                                    int n = grid.getCellValue(c % 9, c / 9);
                                     if ( n != 0 ) {
                                         s += n;
                                         cnt += 1;
                                     }
                                     if ( n == 0 ) {
                                         for (int pv=1; pv<=9; pv++ ) {
-                                            if ( cell.hasPotentialValue( pv) ) {
+                                            //if ( cell.hasPotentialValue( pv) ) {
+                                            if ( grid.hasCellPotentialValue(cell.getIndex(), pv) ) {
                                                 s += pv;
                                                 cnt += 1;
                                             }

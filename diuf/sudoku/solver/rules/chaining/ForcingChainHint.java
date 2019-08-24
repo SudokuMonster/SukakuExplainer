@@ -44,9 +44,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedGreenPotentials(viewNum);
+            return super.getNestedGreenPotentials(grid, viewNum);
         Map<Cell, BitSet> result = getColorPotentials(true);
         if (!target.isOn)
             result.get(target.cell).clear(target.value); // Make target potential red
@@ -54,9 +54,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedRedPotentials(viewNum);
+            return super.getNestedRedPotentials(grid, viewNum);
         Map<Cell, BitSet> result = getColorPotentials(false);
         if (target.isOn)
             result.get(target.cell).clear(target.value); // Make target green
@@ -64,9 +64,9 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential start = this.target;
         return getLinks(start);
     }
@@ -142,7 +142,7 @@ public class ForcingChainHint extends ChainingHint {
         return target;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
             " on the cell <b>" + target.cell.toString()
@@ -159,7 +159,7 @@ public class ForcingChainHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String fileName = (isYChain ? "ForcingChain.html" : "ForcingXChain.html");
         String result = HtmlLoader.loadHtml(this, fileName);
         Potential reverse = new Potential(target.cell, target.value, !target.isOn);

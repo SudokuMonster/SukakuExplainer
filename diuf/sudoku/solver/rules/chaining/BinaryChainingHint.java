@@ -53,23 +53,23 @@ public class BinaryChainingHint extends ChainingHint {
     }
 
     @Override
-    public Map<Cell, BitSet> getGreenPotentials(int viewNum) {
+    public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedGreenPotentials(viewNum);
+            return super.getNestedGreenPotentials(grid, viewNum);
         return getColorPotentials(viewNum, true);
     }
 
     @Override
-    public Map<Cell, BitSet> getRedPotentials(int viewNum) {
+    public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedRedPotentials(viewNum);
+            return super.getNestedRedPotentials(grid, viewNum);
         return getColorPotentials(viewNum, false);
     }
 
     @Override
-    public Collection<Link> getLinks(int viewNum) {
+    public Collection<Link> getLinks(Grid grid, int viewNum) {
         if (viewNum >= getFlatViewCount())
-            return super.getNestedLinks(viewNum);
+            return super.getNestedLinks(grid, viewNum);
         Potential start = (viewNum == 0 ? this.dstOnPotential : this.dstOffPotential);
         return getLinks(start);
     }
@@ -137,7 +137,7 @@ public class BinaryChainingHint extends ChainingHint {
             return dstOnPotential;
     }
 
-    public String getClueHtml(boolean isBig) {
+    public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
                     " starting on the cell <b>" + srcPotential.cell.toString()
@@ -161,7 +161,7 @@ public class BinaryChainingHint extends ChainingHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         String result;
         if (isNishio)
             result = HtmlLoader.loadHtml(this, "NishioHint.html");

@@ -85,13 +85,12 @@ public abstract class IndirectHint extends Hint {
     public void apply(Grid targetGrid) {
         for (Cell cell : removablePotentials.keySet()) {
             BitSet cellRemovablePotentials = removablePotentials.get(cell);
-            Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
-            targetCell.removePotentialValues(cellRemovablePotentials);
+            //targetCell.removePotentialValues(cellRemovablePotentials);
+            targetGrid.removeCellPotentialValues(cell, cellRemovablePotentials);
         }
     	Cell cell = getCell();
         if (cell != null) {
-        	Cell targetCell = targetGrid.getCell(cell.getX(), cell.getY());
-        	targetCell.setValueAndCancel(getValue(), targetGrid);
+        	cell.setValueAndCancel(getValue(), targetGrid);
         }
     }
 
@@ -125,7 +124,7 @@ public abstract class IndirectHint extends Hint {
      * <tt>null</tt> if none
      * @see #getViewCount()
      */
-    public abstract Map<Cell, BitSet> getGreenPotentials(int viewNum);
+    public abstract Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum);
 
     /**
      * Get the cell potential values that must be highlighted in red
@@ -136,7 +135,7 @@ public abstract class IndirectHint extends Hint {
      * <tt>null</tt> if none
      * @see #getViewCount()
      */
-    public abstract Map<Cell, BitSet> getRedPotentials(int viewNum);
+    public abstract Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum);
 
     public Map<Cell, BitSet> getBluePotentials(Grid grid, int viewNum) {
         return Collections.emptyMap();
@@ -149,6 +148,6 @@ public abstract class IndirectHint extends Hint {
      * @see #getViewCount()
      * @see Link
      */
-    public abstract Collection<Link> getLinks(int viewNum);
+    public abstract Collection<Link> getLinks(Grid grid, int viewNum);
 
 }

@@ -67,49 +67,50 @@ public class XYWing implements IndirectHintProducer {
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
         int targetCardinality = (isXYZ ? 3 : 2);
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell xyCell = grid.getCell(x, y);
-                BitSet xyValues = xyCell.getPotentialValues();
-                if (xyValues.cardinality() == targetCardinality) {
-                    // Potential XY cell found
-                    for (Cell xzCell : xyCell.getHouseCells(grid)) {
-                        BitSet xzValues = xzCell.getPotentialValues();
-                        if (xzValues.cardinality() == 2) {
-                            // Potential XZ cell found. Do small test
-                            BitSet remValues = (BitSet)xyValues.clone();
-                            remValues.andNot(xzValues);
-                            if (remValues.cardinality() == 1) {
-                                // We have found XZ cell, look for YZ cell
-                                for (Cell yzCell : xyCell.getHouseCells(grid)) {
-                                    BitSet yzValues = yzCell.getPotentialValues();
-                                    if (yzValues.cardinality() == 2) {
-                                        // Potential YZ cell found
-                                        if (isXYZ) {
-                                            if (isXYZWing(xyValues, xzValues, yzValues)) {
-                                                // Found XYZ-Wing pattern
-                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
-                                                        xzValues, yzValues);
-                                                if (hint.isWorth())
-                                                    accu.add(hint);
-                                            }
-                                        } else {
-                                            if (isXYWing(xyValues, xzValues, yzValues)) {
-                                                // Found XY-Wing pattern
-                                                XYWingHint hint = createHint(grid, xyCell, xzCell, yzCell,
-                                                        xzValues, yzValues);
-                                                if (hint.isWorth())
-                                                    accu.add(hint);
-                                            }
+        for (int i = 0; i < 81; i++) {
+            Cell xyCell = Grid.getCell(i);
+            //BitSet xyValues = xyCell.getPotentialValues();
+            BitSet xyValues = grid.getCellPotentialValues(i);
+            if (xyValues.cardinality() == targetCardinality) {
+                // Potential XY cell found
+                for (int xzCellIndex : xyCell.getVisibleCellIndexes()) {
+                    //BitSet xzValues = xzCell.getPotentialValues();
+                    BitSet xzValues = grid.getCellPotentialValues(xzCellIndex);
+                    if (xzValues.cardinality() == 2) {
+                        // Potential XZ cell found. Do small test
+                        BitSet remValues = (BitSet)xyValues.clone();
+                        remValues.andNot(xzValues);
+                        if (remValues.cardinality() == 1) {
+                            // We have found XZ cell, look for YZ cell
+                            for (int yzCellIndex : xyCell.getVisibleCellIndexes()) {
+                                //BitSet yzValues = yzCell.getPotentialValues();
+                                BitSet yzValues = grid.getCellPotentialValues(yzCellIndex);
+                                if (yzValues.cardinality() == 2) {
+                                    // Potential YZ cell found
+                                    if (isXYZ) {
+                                        if (isXYZWing(xyValues, xzValues, yzValues)) {
+                                            // Found XYZ-Wing pattern
+                                            XYWingHint hint = createHint(grid, xyCell, Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
+                                                    xzValues, yzValues);
+                                            if (hint.isWorth())
+                                                accu.add(hint);
                                         }
-                                    } // yzValues.cardinality() == 2
-                                } // for yzCell
-                            } // xy - xz test
-                        } // xzValues.cardinality() == 2
-                    } // for xzCell
-                } // xyValues.cardinality() == 2
-            } // for x
-        } // for y
+                                    } else {
+                                        if (isXYWing(xyValues, xzValues, yzValues)) {
+                                            // Found XY-Wing pattern
+                                            XYWingHint hint = createHint(grid, xyCell, Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
+                                                    xzValues, yzValues);
+                                            if (hint.isWorth())
+                                                accu.add(hint);
+                                        }
+                                    }
+                                } // yzValues.cardinality() == 2
+                            } // for yzCell
+                        } // xy - xz test
+                    } // xzValues.cardinality() == 2
+                } // for xzCell
+            } // xyValues.cardinality() == 2
+    	} // for i
     }
 
     private XYWingHint createHint(Grid grid, Cell xyCell, Cell xzCell, Cell yzCell,
@@ -121,15 +122,17 @@ public class XYWing implements IndirectHintProducer {
 
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-        Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
-        victims.retainAll(yzCell.getHouseCells(grid));
+        //Set<Cell> victims = new LinkedHashSet<Cell>(xzCell.getHouseCells(grid));
+        CellSet victims = new CellSet(xzCell.getVisibleCells());
+        victims.retainAll(yzCell.getVisibleCells());
         if (isXYZ)
-            victims.retainAll(xyCell.getHouseCells(grid));
+            victims.retainAll(xyCell.getVisibleCells());
         victims.remove(xyCell);
         victims.remove(xzCell);
         victims.remove(yzCell);
         for (Cell cell : victims) {
-            if (cell.hasPotentialValue(zValue))
+            //if (cell.hasPotentialValue(zValue))
+            if (grid.hasCellPotentialValue(cell.getIndex(), zValue))
                 removablePotentials.put(cell, SingletonBitSet.create(zValue));
         }
 

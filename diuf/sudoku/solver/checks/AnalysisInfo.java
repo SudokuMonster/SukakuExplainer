@@ -8,6 +8,7 @@ package diuf.sudoku.solver.checks;
 import java.text.*;
 import java.util.*;
 
+import diuf.sudoku.Grid;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
@@ -38,7 +39,7 @@ public class AnalysisInfo extends WarningHint {
     }
 
     @Override
-    public String toHtml() {
+    public String toHtml(Grid grid) {
         double difficulty = getDifficulty();
         DecimalFormat format = new DecimalFormat("#0.0");
         StringBuilder details = new StringBuilder();

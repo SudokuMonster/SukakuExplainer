@@ -198,9 +198,9 @@ public class SudokuExplainer {
 
     private void repaintHints() {
         if (selectedHints.size() == 1)
-            frame.setCurrentHint(selectedHints.get(0), true);
+            frame.setCurrentHint(grid, selectedHints.get(0), true);
         else {
-            frame.setCurrentHint(null, !selectedHints.isEmpty());
+            frame.setCurrentHint(grid, null, !selectedHints.isEmpty());
             if (selectedHints.size() > 1)
                 paintMultipleHints(selectedHints);
         }
@@ -242,8 +242,10 @@ public class SudokuExplainer {
      * the cell's value was erased.
      */
     public void cellValueTyped(Cell cell, int value) {
-        int oldValue = cell.getValue();
-        cell.setValue(value);
+        //int oldValue = cell.getValue();
+        int oldValue = grid.getCellValue(cell.getX(), cell.getY());
+        //cell.setValue(value);
+        grid.setCellValue(cell.getX(), cell.getY(), value);
         if (value == 0 || oldValue != 0)
             solver.rebuildPotentialValues();
         else
@@ -258,10 +260,13 @@ public class SudokuExplainer {
     }
 
     public void candidateTyped(Cell cell, int candidate) {
-        if (cell.hasPotentialValue(candidate))
-            cell.removePotentialValue(candidate);
+        //if (cell.hasPotentialValue(candidate))
+        if (grid.hasCellPotentialValue(cell.getIndex(), candidate))
+            //cell.removePotentialValue(candidate);
+        	grid.removeCellPotentialValue(cell, candidate);
         else
-            cell.addPotentialValue(candidate);
+            //cell.addPotentialValue(candidate);
+        	grid.addCellPotentialValue(cell, candidate);
         solver.cancelPotentialValues();
     }
 
@@ -565,7 +570,7 @@ public class SudokuExplainer {
                 Rule rule = (Rule)hint;
                 String clueFile = (isBig ? "BigClue.html" : "SmallClue.html");
                 String htmlText = HtmlLoader.loadHtml(this, clueFile);
-                String clueHtml = rule.getClueHtml(isBig);
+                String clueHtml = rule.getClueHtml(grid, isBig);
                 htmlText = htmlText.replace("{0}", clueHtml);
                 // This is rather hacky...
                 if (htmlText.indexOf("<b1>") >= 0) {

@@ -40,7 +40,7 @@ public class NakedSet implements IndirectHintProducer {
         Grid.Region[] regions = grid.getRegions(regionType);
         // Iterate on parts
         for (Grid.Region region : regions) {
-            if (region.getEmptyCellCount() >= degree * 2) {
+            if (region.getEmptyCellCount(grid) >= degree * 2) {
                 Permutations perm = new Permutations(degree, 9);
                 // Iterate on tuples of positions
                 while (perm.hasNext()) {
@@ -55,14 +55,15 @@ public class NakedSet implements IndirectHintProducer {
                     // Build potential values for each position of the tuple
                     BitSet[] potentialValues = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        potentialValues[i] = cells[i].getPotentialValues();
+                        //potentialValues[i] = cells[i].getPotentialValues();
+                        potentialValues[i] = grid.getCellPotentialValues(cells[i].getIndex());
 
                     // Look for a common tuple of potential values, with same degree
                     BitSet commonPotentialValues = 
                         CommonTuples.searchCommonTuple(potentialValues, degree);
                     if (commonPotentialValues != null) {
                         // Potential hint found
-                        IndirectHint hint = createValueUniquenessHint(region, cells, commonPotentialValues);
+                        IndirectHint hint = createValueUniquenessHint(grid, region, cells, commonPotentialValues);
                         if (hint.isWorth())
                             accu.add(hint);
                     }
@@ -71,7 +72,7 @@ public class NakedSet implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createValueUniquenessHint(Grid.Region region, Cell[] cells,
+    private IndirectHint createValueUniquenessHint(Grid grid, Grid.Region region, Cell[] cells,
             BitSet commonPotentialValues) {
         // Build value list
         int[] values = new int[degree];
@@ -85,7 +86,8 @@ public class NakedSet implements IndirectHintProducer {
         for (Cell cell : cells) {
             BitSet potentials = new BitSet(10);
             potentials.or(commonPotentialValues);
-            potentials.and(cell.getPotentialValues());
+            //potentials.and(cell.getPotentialValues());
+            potentials.and(grid.getCellPotentialValues(cell.getIndex()));
             cellPValues.put(cell, potentials);
         }
         // Build removable potentials
@@ -96,7 +98,8 @@ public class NakedSet implements IndirectHintProducer {
                 // Get removable potentials
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
+                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
                         removablePotentials.set(value);
                 }
                 if (!removablePotentials.isEmpty())

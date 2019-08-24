@@ -33,25 +33,38 @@ public class AlignedExclusion implements IndirectHintProducer {
          */
         List<Cell> candidateList = new ArrayList<Cell>();
         Map<Cell, Collection<Cell>> cellExcluders = new LinkedHashMap<Cell, Collection<Cell>>();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                Cell cell = grid.getCell(x, y);
-                if (cell.getPotentialValues().cardinality() >= 2) { // 2 <-> degree
-                    boolean hasNakedSingle = false;
-                    // Look for potentially excluding cells (whose number of candidates <= degree)
-                    Collection<Cell> excludingCells = new ArrayList<Cell>();
-                    for (Cell excludingCell : cell.getHouseCells(grid)) {
-                        int exclCardinality = excludingCell.getPotentialValues().cardinality();
-                        if (exclCardinality == 1)
-                            hasNakedSingle = true;
-                        else if (exclCardinality >= 2 && exclCardinality <= degree)
-                            excludingCells.add(excludingCell);
-                    }
-                    // Optimization: Skip this technique if naked singles are remaining
-                    if (!hasNakedSingle && !excludingCells.isEmpty()) {
-                        candidateList.add(cell);
-                        cellExcluders.put(cell, excludingCells);
-                    }
+        for (int i = 0; i < 81; i++) {
+             Cell cell = Grid.getCell(i);
+            //if (cell.getPotentialValues().cardinality() >= 2) { // 2 <-> degree
+            if (grid.getCellPotentialValues(i).cardinality() >= 2) { // 2 <-> degree
+                boolean hasNakedSingle = false;
+                // Look for potentially excluding cells (whose number of candidates <= degree)
+//                Collection<Cell> excludingCells = new ArrayList<Cell>();
+//                for (Cell excludingCell : cell.getHouseCells(grid)) {
+//                    //int exclCardinality = excludingCell.getPotentialValues().cardinality();
+//                    int exclCardinality = grid.getCellPotentialValues(excludingCell).cardinality();
+//                    if (exclCardinality == 1)
+//                        hasNakedSingle = true;
+//                    else if (exclCardinality >= 2 && exclCardinality <= degree)
+//                        excludingCells.add(excludingCell);
+//                }
+//                // Optimization: Skip this technique if naked singles are remaining
+//                if (!hasNakedSingle && !excludingCells.isEmpty()) {
+//                    candidateList.add(cell);
+//                    cellExcluders.put(cell, excludingCells);
+//                }
+                Collection<Cell> excludingCells = new ArrayList<Cell>();
+                for (int excludingCellIndex : cell.getVisibleCellIndexes()) {
+                    int exclCardinality = grid.getCellPotentialValues(excludingCellIndex).cardinality();
+                    if (exclCardinality == 1)
+                        hasNakedSingle = true;
+                    else if (exclCardinality >= 2 && exclCardinality <= degree)
+                        excludingCells.add(Grid.getCell(excludingCellIndex));
+                }
+                // Optimization: Skip this technique if naked singles are remaining
+                if (!hasNakedSingle && !excludingCells.isEmpty()) {
+                    candidateList.add(cell);
+                    cellExcluders.put(cell, excludingCells);
                 }
             }
         }
@@ -78,9 +91,11 @@ public class AlignedExclusion implements IndirectHintProducer {
             int[] indexes = cellSetPerm2.nextBitNums();
             // Setup the first two cells
             Cell cell0 = candidateList.get(indexes[0]);
-            int card0 = cell0.getPotentialValues().cardinality();
+            //int card0 = cell0.getPotentialValues().cardinality();
+            int card0 = grid.getCellPotentialValues(cell0.getIndex()).cardinality();
             Cell cell1 = candidateList.get(indexes[1]);
-            int card1 = cell1.getPotentialValues().cardinality();
+            //int card1 = cell1.getPotentialValues().cardinality();
+            int card1 = grid.getCellPotentialValues(cell1.getIndex()).cardinality();
 
             // Create the twinArea: set of cells visible by one of the two first cells
             Collection<Cell> twinArea = new LinkedHashSet<Cell>(cellExcluders.get(cell0));
@@ -110,7 +125,8 @@ public class AlignedExclusion implements IndirectHintProducer {
                     assert tindexes.length == degree - 2;
                     for (int i = 0; i < tindexes.length; i++) {
                         cells[i + 2] = tailCells.get(tindexes[i]);
-                        cardinalities[i + 2] = cells[i + 2].getPotentialValues().cardinality();
+                        //cardinalities[i + 2] = cells[i + 2].getPotentialValues().cardinality();
+                        cardinalities[i + 2] = grid.getCellPotentialValues(cells[i + 2].getIndex()).cardinality();
                     }
 
                     // Build the list of common excluding cells for the base cells 'cells'
@@ -149,7 +165,8 @@ public class AlignedExclusion implements IndirectHintProducer {
                             // Build the combination of potential values
                             int[] potentials = new int[degree];
                             for (int i = 0; i < degree; i++) {
-                                BitSet values = cells[i].getPotentialValues();
+                                //BitSet values = cells[i].getPotentialValues();
+                                BitSet values = grid.getCellPotentialValues(cells[i].getIndex());
                                 int p = values.nextSetBit(0);
                                 for (int j = 0; j < potIndexes[i]; j++)
                                     p = values.nextSetBit(p + 1);
@@ -173,7 +190,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                                      */
                                     Cell c1 = cells[cellIndexes[0]];
                                     Cell c2 = cells[cellIndexes[1]];
-                                    if (c1.getHouseCells(grid).contains(c2)) {
+                                    if (c1.getVisibleCells().contains(c2)) {
                                         isAllowed = false;
                                         break;
                                     }
@@ -183,7 +200,8 @@ public class AlignedExclusion implements IndirectHintProducer {
                             // Check if this potential combination is allowed, using common excluder cells
                             if (isAllowed) {
                                 for (Cell excludingCell : commonExcluders) {
-                                    BitSet values = (BitSet)excludingCell.getPotentialValues().clone();
+                                    //BitSet values = (BitSet)excludingCell.getPotentialValues().clone();
+                                    BitSet values = (BitSet)grid.getCellPotentialValues(excludingCell.getIndex()).clone();
                                     for (int i = 0; i < degree; i++)
                                         values.clear(potentials[i]);
                                     if (values.isEmpty()) {
@@ -214,7 +232,8 @@ public class AlignedExclusion implements IndirectHintProducer {
                          */
                         for (int i = 0; i < degree; i++) {
                             Cell cell = cells[i];
-                            BitSet values = cell.getPotentialValues();
+                            //BitSet values = cell.getPotentialValues();
+                            BitSet values = grid.getCellPotentialValues(cell.getIndex());
                             for (int p = values.nextSetBit(0); p >= 0; p = values.nextSetBit(p + 1)) {
                                 boolean isValueAllowed = false;
                                 for (int[] combinations : allowedPotentialCombinations) {
