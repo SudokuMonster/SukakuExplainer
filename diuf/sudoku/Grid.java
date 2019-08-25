@@ -358,7 +358,7 @@ public class Grid {
      */
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
     	//cell.removePotentialValues(valuesToRemove);
-    	BitSet cl = new BitSet();
+    	//BitSet cl = new BitSet();
     	//cl.or(cellPotentialValues[cell.getIndex()]);
     	//cl.and(valuesToRemove);
     	//if(cl.isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)

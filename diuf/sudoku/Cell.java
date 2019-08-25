@@ -5,8 +5,6 @@
  */
 package diuf.sudoku;
 
-import java.util.*;
-
 import diuf.sudoku.tools.CellSet;
 
 /**
