@@ -9,13 +9,16 @@ package diuf.sudoku.test;
 import java.io.*;
 //import java.util.*;
 
+import static diuf.sudoku.Settings.*;
+
+
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
 
 public class serate {
     static String FORMAT = "%r/%p/%d";
     static String RELEASE = "2019-08-24";
-    static String VERSION = "1.3.0.0";
+    static String VER = "" + VERSION + "." + REVISION + SUBREV;
     static Formatter formatter;
     static void help(int html) {
         if (html != 0) {
@@ -124,7 +127,7 @@ public class serate {
         System.err.println("  ");
         System.err.println("");
         System.err.println("IMPLEMENTATION");
-        System.err.println("  version     serate 1.3.0.0 (Sudoku Explainer) 2019-08-24");
+        System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) 2019-08-24");
         System.err.println("  author      Nicolas Juillerat");
         System.err.println("  copyright   Copyright (c) 2006-2019 Nicolas Juillerat");
         System.err.println("  license     Lesser General Public License (LGPL)");
@@ -271,7 +274,7 @@ public class serate {
                 	if(numThreads < 1) numThreads = 1; //no parallel processing
                     break;
                 case 'V':
-                    System.out.println(VERSION);
+                    System.out.println(VER);
                     System.exit(0);
                     break;
                 default:
