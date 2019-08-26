@@ -13,6 +13,8 @@ import diuf.sudoku.*;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.solver.rules.*;
+//import diuf.sudoku.solver.rules.unique.BivalueUniversalGrave;
+//import diuf.sudoku.solver.rules.unique.UniqueLoops;
 import diuf.sudoku.tools.*;
 
 /**
@@ -1021,6 +1023,29 @@ public class Chaining implements IndirectHintProducer {
             otherRules.add(new HiddenSet(2, false));
             otherRules.add(new NakedSet(2));
             otherRules.add(new Fisherman(2));
+            
+//            //otherRules.add(new HiddenSingle());
+//            //otherRules.add(new Locking(true));
+//            //otherRules.add(new HiddenSet(2, true));
+//            //otherRules.add(new NakedSingle());
+//            //otherRules.add(new HiddenSet(3, true));
+//            otherRules.add(new Locking(false));
+//            otherRules.add(new NakedSet(2));
+//            otherRules.add(new Fisherman(2));
+//            otherRules.add(new HiddenSet(2, false));
+//            otherRules.add(new NakedSet(3));
+//            otherRules.add(new Fisherman(3));
+//            otherRules.add(new HiddenSet(3, false));
+//            otherRules.add(new XYWing(false));
+//            otherRules.add(new XYWing(true));
+//            //otherRules.add(new UniqueLoops());
+//            otherRules.add(new NakedSet(4));
+//            otherRules.add(new Fisherman(4));
+//            otherRules.add(new HiddenSet(4, false));
+//            //otherRules.add(new BivalueUniversalGrave());
+//            //otherRules.add(new AlignedPairExclusion());
+//            //otherRules.add(new AlignedExclusion(3));
+            
             if (level < 4) {
                 if (level >= 2)
                     otherRules.add(new Chaining(false, false, false, 0, true, 0)); // Forcing chains

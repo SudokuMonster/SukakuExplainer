@@ -56,5 +56,13 @@ public class LinkedSet<T> extends AbstractSet<T> {
     public int size() {
         return target.size();
     }
-
+    
+    @Override
+    public int hashCode() {
+    	int ret = 0;
+        for(Map.Entry<T,T> e : target.entrySet()) {
+        	ret ^= e.getKey().hashCode();
+        }
+        return ret;
+    }
 }
