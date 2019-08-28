@@ -41,17 +41,20 @@ public class AnalysisInfo extends WarningHint {
     @Override
     public String toHtml(Grid grid) {
         double difficulty = getDifficulty();
+		//New modification to add most difficult technique to Analysis windo in GUI
+		String difficultRuleName = getDifficultyRuleName();
         DecimalFormat format = new DecimalFormat("#0.0");
         StringBuilder details = new StringBuilder();
-        for (String ruleName : ruleNames.keySet()) {
+		for (String ruleName : ruleNames.keySet()) {
             int count = ruleNames.get(ruleName);
             details.append(Integer.toString(count));
-            details.append(" x ");
+			details.append(" x ");
             details.append(ruleName);
             details.append("<br>\n");
         }
+		details.append("The most difficult technique (ER): "+difficultRuleName+"<br>\n");
         String result = HtmlLoader.loadHtml(this, "Analysis.html");
-        result = HtmlLoader.format(result, format.format(difficulty), details);
+        result = HtmlLoader.format(result, format.format(difficulty)+" ("+difficultRuleName+")", details);
         return result;
     }
 
@@ -63,6 +66,18 @@ public class AnalysisInfo extends WarningHint {
         }
         return difficulty;
     }
+
+    public String getDifficultyRuleName() {
+        double difficulty = 0;
+		String RuleName = "";
+        for (Rule rule : rules.keySet()) {
+            if (rule.getDifficulty() > difficulty)
+            difficulty = rule.getDifficulty();    
+			RuleName = rule.getName();
+        }
+        return RuleName;
+    }
+	
 
     @Override
     public String toString() {
