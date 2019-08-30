@@ -1285,6 +1285,20 @@ public class Chaining implements IndirectHintProducer {
         return "";
     }
 
+    static String getShortNestedSuffix(int level) {
+        if (level == 1)
+            return "+";
+        else if (level == 2)
+            return "+FC";
+        else if (level == 3)
+            return "+MFC";
+        else if (level == 4)
+            return "+DFC";
+        else if (level >= 5)
+            return "+DFC" + getShortNestedSuffix(level - 3);
+        return "";
+    }
+
     @Override
     public String toString() {
         if (isNisho)

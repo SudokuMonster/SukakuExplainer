@@ -137,6 +137,19 @@ public class ForcingChainHint extends ChainingHint {
         }
     }
 
+    public String getShortName() {
+        if (isXChain && isYChain)
+            return "FC";
+        else if (isYChain)
+            return "FYC";
+        else {
+            if (getAncestorCount(target) == 6)
+                return "TF";
+            else
+                return "FXC";
+        }
+    }
+
     @Override
     protected Potential getResult() {
         return target;

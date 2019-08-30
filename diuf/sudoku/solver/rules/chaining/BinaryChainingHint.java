@@ -129,6 +129,17 @@ public class BinaryChainingHint extends ChainingHint {
         return super.getNamePrefix() + result + super.getNameSuffix();
     }
 
+    public String getShortName() {
+        String result;
+        if (isNishio)
+            result = "F";
+        else if (isAbsurd)
+            result = "CF";
+        else
+            result = "DF";
+        return super.getShortNamePrefix() + result + super.getShortNameSuffix();
+    }
+
     @Override
     protected Potential getResult() {
         if (isNishio || isAbsurd)
