@@ -97,6 +97,13 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
             return "XY-Wing";
     }
 
+    public String getShortName() {
+        if (isXYZ)
+            return "XYZW";
+        else
+            return "XYW";
+    }
+
     private int getRemainingValue(Grid grid, Cell c) {
         //BitSet result = (BitSet)c.getPotentialValues().clone();
         BitSet result = (BitSet)grid.getCellPotentialValues(c.getIndex()).clone();
