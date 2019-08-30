@@ -152,12 +152,12 @@ public class serate {
     }
     /*
      * An example command line that demonstrates almost all of the formatting options:
-		java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \");
-		--format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \");
-		--start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \");
-		--before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \");
-		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \");
-		--input=my_input_file.txt --output=- --threads=0 > my_output_file.txt");
+		java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
+		--format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \
+		--start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
+		--before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
+		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \
+		--input=my_input_file.txt --output=- --threads=0 > my_output_file.txt
     */
 
     static void usage(String option, int argument) {
