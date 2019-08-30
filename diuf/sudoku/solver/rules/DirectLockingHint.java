@@ -103,6 +103,13 @@ public class DirectLockingHint extends IndirectHint implements Rule {
             return "Direct Claiming";
     }
 
+    public String getShortName() {
+        if (regions[0] instanceof Grid.Block)
+            return "DP";
+        else
+            return "DC";
+    }
+
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
