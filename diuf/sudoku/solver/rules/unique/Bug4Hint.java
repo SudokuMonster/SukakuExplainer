@@ -83,6 +83,10 @@ public class Bug4Hint extends BugHint implements Rule {
         return "BUG type 4";
     }
 
+    public String getShortName() {
+        return "BUG4";
+    }
+
     public double getDifficulty() {
         return 5.7;
     }

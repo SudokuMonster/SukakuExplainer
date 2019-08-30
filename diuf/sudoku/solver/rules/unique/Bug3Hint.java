@@ -76,6 +76,10 @@ public class Bug3Hint extends BugHint implements Rule {
         return "BUG type 3";
     }
 
+    public String getShortName() {
+        return "BUG3";
+    }
+
     public double getDifficulty() {
         double toAdd = (nakedSet.cardinality() - 1) * 0.1; // Pair=0.1, Quad=0.3
         return 5.7 + toAdd;

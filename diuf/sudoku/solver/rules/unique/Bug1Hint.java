@@ -64,6 +64,10 @@ public class Bug1Hint extends BugHint implements Rule {
         return "BUG type 1";
     }
 
+    public String getShortName() {
+        return "BUG1";
+    }
+
     @Override
     public String toString() {
         return "BUG type 1: " + bugCell.toString();
