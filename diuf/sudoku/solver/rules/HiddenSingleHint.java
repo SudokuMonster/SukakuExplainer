@@ -37,6 +37,10 @@ public class HiddenSingleHint extends DirectHint implements Rule {
         return "Hidden Single";
     }
 
+    public String getShortName() {
+        return "HS";
+    }
+
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
