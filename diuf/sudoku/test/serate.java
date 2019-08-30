@@ -81,7 +81,7 @@ public class serate {
         System.err.println("        %r  The puzzle rating.  This is the highest ER of the methods leading");
         System.err.println("            to the puzzle solution. (AF)");
         System.err.println("        %R  The puzzle highest rating technique name.  This is the name of 1st technique with");
-        System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
+        System.err.println("             highest ER of the methods leading to the puzzle solution. (F)");
         System.err.println("        %s  The short step description. (A)");
         System.err.println("        %S  The puzzle highest rating technique shortened name.  This is the SHORT name of 1st technique with");
         System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
@@ -126,7 +126,7 @@ public class serate {
         System.err.println("  --format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \");
         System.err.println("  --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \");
         System.err.println("  --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \");
-        System.err.println("  --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \");
+        System.err.println("  --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \");
         System.err.println("  --input=my_input_file.txt --output=- --threads=0 > my_output_file.txt");
         System.err.println("  ");
         System.err.println("  To display man document:");
@@ -156,7 +156,7 @@ public class serate {
 		--format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \
 		--start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
 		--before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
-		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \
+		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
 		--input=my_input_file.txt --output=- --threads=0 > my_output_file.txt
     */
 
