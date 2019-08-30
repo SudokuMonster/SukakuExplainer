@@ -120,6 +120,18 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
             return "Aligned Set (" + degree + ") Exclusion";
     }
 
+    public String getShortName() {
+        int degree = cells.length;
+        if (degree == 2)
+            return "APE";
+        else if (degree == 3)
+            return "ATE";
+        else if (degree == 4)
+            return "AQE";
+        else
+            return "A" + degree + "E";
+    }
+
     public double getDifficulty() {
         int degree = cells.length;
         if (degree == 2)
