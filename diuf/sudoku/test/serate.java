@@ -17,7 +17,7 @@ import diuf.sudoku.solver.*;
 
 public class serate {
     static String FORMAT = "%r/%p/%d";
-    static String RELEASE = "2019-08-24";
+    static String RELEASE = "2019-08-30";
     static String VER = "" + VERSION + "." + REVISION + SUBREV;
     static Formatter formatter;
     static void help(int html) {
@@ -82,10 +82,8 @@ public class serate {
         System.err.println("            to the puzzle solution. (AF)");
         System.err.println("        %R  The puzzle highest rating technique name.  This is the name of 1st technique with");
         System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
-        System.err.println("        %R  The puzzle highest rating technique name.  This is the name of 1st technique with");
-        System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
         System.err.println("        %s  The short step description. (A)");
-        System.err.println("        %S  The puzzle highest rating technique shortened name.  This is the SNORT name of 1st technique with");
+        System.err.println("        %S  The puzzle highest rating technique shortened name.  This is the SHORT name of 1st technique with");
         System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
         System.err.println("        %t  The tab character. (SBAF)");
         System.err.println("        %T  The pearl rating technique shortened name.  This is the SHORT name of 1st technique with highest");
@@ -141,7 +139,7 @@ public class serate {
         System.err.println("  ");
         System.err.println("");
         System.err.println("IMPLEMENTATION");
-        System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) 2019-08-24");
+        System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) 2019-08-30");
         System.err.println("  author      Nicolas Juillerat");
         System.err.println("  copyright   Copyright (c) 2006-2019 Nicolas Juillerat");
         System.err.println("  license     Lesser General Public License (LGPL)");
