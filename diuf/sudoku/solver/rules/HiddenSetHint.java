@@ -79,6 +79,12 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
         return "Hidden " + groupNames[degree - 2];
     }
 
+    public String getShortName() {
+        final String[] groupNames = new String[] {"P", "T", "Q"};
+        int degree = values.length;
+        return "H" + groupNames[degree - 2];
+    }
+
     public Collection<Potential> getRuleParents(Grid initialGrid, Grid currentGrid) {
         Collection<Potential> result = new ArrayList<Potential>();
         BitSet myPositions = new BitSet(9);
