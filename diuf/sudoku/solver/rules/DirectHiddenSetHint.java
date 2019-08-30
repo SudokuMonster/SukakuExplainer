@@ -117,6 +117,12 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
         return "Direct Hidden " + groupNames[degree - 2];
     }
 
+    public String getShortName() {
+        final String[] groupNames = new String[] {"P", "T", "Q"};
+        int degree = values.length;
+        return "D" + groupNames[degree - 2];
+    }
+
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +

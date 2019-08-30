@@ -97,6 +97,26 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
         return null;
     }
 
+    public String getShortName() {
+        int degree = regions.length / 2;
+        if (degree == 1) {
+            if (regions[0] instanceof Grid.Block)
+                return "Po";
+            else
+                return "Cl";
+        } else if (degree == 2) {
+            if (regions[0] instanceof Grid.Block || regions[1] instanceof Grid.Block)
+                return "BXW";
+            else
+                return "XW";
+        } else if (degree == 3) {
+            return "SF";
+        } else if (degree == 4) {
+            return "JF";
+        }
+        return null;
+    }
+
     public Collection<Potential> getRuleParents(Grid initialGrid, Grid currentGrid) {
         Collection<Potential> result = new ArrayList<Potential>();
         // Add any potential of first region that are not in second region

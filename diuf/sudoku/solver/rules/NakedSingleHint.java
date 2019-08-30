@@ -24,6 +24,9 @@ public class NakedSingleHint extends DirectHint implements Rule {
     public String getName() {
         return "Naked Single";
     }
+    public String getShortName() {
+        return "NS";
+    }
 
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {

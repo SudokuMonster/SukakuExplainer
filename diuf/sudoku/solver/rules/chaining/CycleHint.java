@@ -149,6 +149,19 @@ public class CycleHint extends ChainingHint {
         }
     }
 
+    public String getShortName() {
+        if (isXChain && isYChain)
+            return "BiCy";
+        else if (isYChain)
+            return "BiYCy";
+        else {
+            if (getSelectedCells().length == 4)
+                return "GXW";
+            else
+                return "BiXCy";
+        }
+    }
+
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             if (isXChain && !isYChain) {

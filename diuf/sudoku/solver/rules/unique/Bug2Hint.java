@@ -67,6 +67,10 @@ public class Bug2Hint extends BugHint implements Rule {
         return "BUG type 2";
     }
 
+    public String getShortName() {
+        return "BUG2";
+    }
+
     @Override
     public String toString() {
         return "BUG type 2: " + Cell.toString(bugCells) + " on " + bugValue;

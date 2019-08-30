@@ -374,11 +374,32 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
             return "";
     }
 
+    protected String getShortNamePrefix() {
+        Chaining rule = getChainingRule();
+        if (rule.getLevel() > 0)
+            return "D";
+        if (rule.isNishio())
+            return "N";
+        else if (rule.isDynamic())
+            return "D";
+        else if (rule.isMultiple())
+            return "";
+        else
+            return "";
+    }
+
     protected String getNameSuffix() {
         Chaining rule = getChainingRule();
         if (rule.getLevel() >= 1)
             return " Chains" + Chaining.getNestedSuffix(rule.getLevel());
         return " Chains";
+    }
+
+    protected String getShortNameSuffix() {
+        Chaining rule = getChainingRule();
+        if (rule.getLevel() >= 1)
+            return "C" + Chaining.getShortNestedSuffix(rule.getLevel());
+        return "C";
     }
 
     protected int getAncestorCount(Potential child) {

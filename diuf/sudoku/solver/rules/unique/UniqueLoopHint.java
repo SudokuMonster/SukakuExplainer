@@ -72,13 +72,28 @@ public abstract class UniqueLoopHint extends IndirectHint implements Rule {
         else
             return "Loop";
     }
+	
+    protected String getShortTypeName() {
+        if (loop.size() == 4)
+            return "R";
+        else
+            return "L";
+    }
 
     public String getName() {
-        if (loop.size() > 6)
+        if (loop.size() > 4)
             // Include size of the loop
             return "Unique " + getTypeName() + " " + loop.size() + " type " + getType();
         else
             return "Unique " + getTypeName() + " type " + getType();
+    }
+
+    public String getShortName() {
+        if (loop.size() > 4)
+            // Include size of the loop
+            return "U" + getShortTypeName() + loop.size() + getType();
+        else
+            return "U" + getShortTypeName() + getType();
     }
 
     public String getGroup() {

@@ -51,6 +51,12 @@ public class Solver {
     public double difficulty;
     public double pearl;
     public double diamond;
+    public String ERtN;
+    public String EPtN;
+    public String EDtN;
+    public String shortERtN;
+    public String shortEPtN;
+    public String shortEDtN;
     public char want;
 
     private Grid grid;
@@ -517,7 +523,6 @@ public class Solver {
         } catch (InterruptedException willHappen) {}
         return accu.getHint();
     }
-
     public void getDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
@@ -525,6 +530,12 @@ public class Solver {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
             diamond = 0.0;
+			ERtN ="No solution";
+			EPtN ="No solution";
+			EDtN ="No solution";
+			shortERtN ="O";
+			shortEPtN ="O";
+			shortEDtN ="O";			
         	formatter.beforePuzzle(this);
             while (!isSolved()) {
             	formatter.beforeHint(this);
@@ -535,34 +546,51 @@ public class Solver {
 		                assert hint instanceof Rule;
 		                Rule rule = (Rule)hint;
 		                double ruleDiff = rule.getDifficulty();
+						String ruleName = rule.getName();
+						String ruleNameShort = rule.getShortName();						
 		                if (ruleDiff > difficulty) {
 		                    difficulty = ruleDiff;
+							ERtN = ruleName;
+							shortERtN = ruleNameShort;
 		                }
             		}
             	}
                 catch (UnsupportedOperationException ex) {
                     difficulty = pearl = diamond = 0.0;
+					ERtN = EPtN = EDtN = "No solution";
+					shortERtN = shortEPtN = shortEDtN = "O";
                 }
                 if (hint == null) {
                     difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
                 hint.apply(grid);
                 
             	formatter.afterHint(this, hint);
                 if (pearl == 0.0) {
-                    if (diamond == 0.0)
+                    if (diamond == 0.0){
                         diamond = difficulty;
+						EDtN = ERtN;
+						shortEDtN = shortERtN;
+					}
                     if (hint.getCell() != null) {
                         if (want == 'd' && difficulty > diamond) {
                             difficulty = 20.0;
-                            break;
+							ERtN = "Beyond solver";
+							shortERtN = "xx";
+                           break;
                         }
                         pearl = difficulty;
+						EPtN = ERtN;
+						shortEPtN = shortERtN;
                     }
                 }
                 else if (want != 0 && difficulty > pearl) {
                     difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
             }
@@ -579,6 +607,12 @@ public class Solver {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
             diamond = 0.0;
+			ERtN ="No solution";
+			EPtN ="No solution";
+			EDtN ="No solution";
+			shortERtN ="O";
+			shortEPtN ="O";
+			shortEDtN ="O";			
             while (!isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
@@ -597,14 +631,20 @@ public class Solver {
                 } catch (InterruptedException willHappen) {}
                 Hint hint = accu.getHint();
                 if (hint == null) {
-                    difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
+				String ruleName = rule.getName();
+				String ruleNameShort = rule.getShortName();						
+                if (ruleDiff > difficulty) {
                     difficulty = ruleDiff;
+					ERtN = ruleName;
+					shortERtN = ruleNameShort;
+				}
                 hint.apply(grid);
 
                 String s = "";
@@ -622,18 +662,27 @@ public class Solver {
                 System.out.flush();
 
                 if (pearl == 0.0) {
-                    if (diamond == 0.0)
+                    if (diamond == 0.0){
                         diamond = difficulty;
+						EDtN = ERtN;
+						shortEDtN = shortERtN;
+					}
                     if (hint.getCell() != null) {
                         if (want == 'd' && difficulty > diamond) {
                             difficulty = 20.0;
+							ERtN = "Beyond solver";
+							shortERtN = "xx";
                             break;
                         }
                         pearl = difficulty;
+						EPtN = ERtN;
+						shortEPtN = shortERtN;
                     }
                 }
                 else if (want != 0 && difficulty > pearl) {
                     difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
             }
@@ -649,6 +698,12 @@ public class Solver {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
             diamond = 0.0;
+			ERtN ="No solution";
+			EPtN ="No solution";
+			EDtN ="No solution";
+			shortERtN ="O";
+			shortEPtN ="O";
+			shortEDtN ="O";			
             while (!isSolved()) {
                 String s = "";
 
@@ -735,13 +790,20 @@ public class Solver {
                 Hint hint = accu.getHint();
                 if (hint == null) {
                     difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
-                if (ruleDiff > difficulty)
+				String ruleName = rule.getName();
+				String ruleNameShort = rule.getShortName();
+                if (ruleDiff > difficulty){
                     difficulty = ruleDiff;
+					ERtN = ruleName;
+					shortERtN = ruleNameShort;
+				}
                 hint.apply(grid);
 
                 s = "";
@@ -759,18 +821,27 @@ public class Solver {
                 System.out.flush();
 
                 if (pearl == 0.0) {
-                    if (diamond == 0.0)
+                    if (diamond == 0.0) {
                         diamond = difficulty;
+						EDtN = ERtN;
+						shortEDtN = shortERtN;
+					}
                     if (hint.getCell() != null) {
                         if (want == 'd' && difficulty > diamond) {
                             difficulty = 20.0;
+							ERtN = "Beyond solver";
+							shortERtN = "xx";
                             break;
                         }
                         pearl = difficulty;
+						EPtN = ERtN;
+						shortEPtN = shortERtN;
                     }
                 }
                 else if (want != 0 && difficulty > pearl) {
                     difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
                     break;
                 }
             }

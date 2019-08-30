@@ -118,6 +118,13 @@ public class CellChainingHint extends ChainingHint {
         return super.getNamePrefix() + "Cell Forcing" + super.getNameSuffix();
     }
 
+    public String getShortName() {
+        String name = getChainingRule().getCommonName(this);
+        if (name != null)
+            return name;
+        return super.getShortNamePrefix() + "LF" + super.getShortNameSuffix();
+    }
+
     @Override
     public Potential getResult() {
         return chains.values().iterator().next();

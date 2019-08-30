@@ -76,6 +76,11 @@ public class NakedSetHint extends IndirectHint implements Rule, HasParentPotenti
         return "Naked " + groupNames[values.length - 2];
     }
 
+    public String getShortName() {
+        final String[] groupNames = new String[] {"P", "T", "Q"};
+        return "N" + groupNames[values.length - 2];
+    }
+
     public Collection<Potential> getRuleParents(Grid initialGrid, Grid currentGrid) {
         Collection<Potential> result = new ArrayList<Potential>();
         BitSet myValues = new BitSet(10);

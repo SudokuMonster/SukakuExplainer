@@ -25,6 +25,11 @@ public interface Rule {
     public String getName();
 
     /**
+     * Get the short version of Rule Name
+     */	
+	public String getShortName();
+	
+    /**
      * Get the difficulty rating of this rule.
      * <p>
      * Currently, the following classification is used:

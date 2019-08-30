@@ -124,6 +124,13 @@ public class RegionChainingHint extends ChainingHint {
         return super.getNamePrefix() + "Region Forcing" + super.getNameSuffix();
     }
 
+    public String getShortName() {
+        String name = getChainingRule().getCommonName(this);
+        if (name != null)
+            return name;
+        return super.getShortNamePrefix() + "RF" + super.getShortNameSuffix();
+    }
+
     @Override
     protected Potential getResult() {
         return chains.values().iterator().next();
