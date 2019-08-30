@@ -64,6 +64,8 @@ public class serate {
         System.err.println("      The default format is %r/%p/%d.  The format conversions are:");
         System.err.println("        %d  The diamond rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first candidate elimination. (F)");
+        System.err.println("        %D  The diamond rating technique name.  This is the name of technique with highest rating of the methods leading");
+        System.err.println("            to the first candidate elimination. (F)");
         System.err.println("        %e  The elapsed time to rate the puzzle. (AF)");
         System.err.println("        %h  The long step description in multi-line HTML format. (A)");
         System.err.println("        %g  The input puzzle line. (SBAF)");
@@ -74,10 +76,22 @@ public class serate {
         System.err.println("        %n  The input puzzle ordinal, counting from 1. (SF)");
         System.err.println("        %p  The pearl rating.  This is the highest ER of the methods leading");
         System.err.println("            to the first cell placement. (F)");
+        System.err.println("        %P  The pearl rating technique name.  This is the name of 1st technique with highest");
+        System.err.println("             rating of the methods leading to the first cell placement. (F)");
         System.err.println("        %r  The puzzle rating.  This is the highest ER of the methods leading");
         System.err.println("            to the puzzle solution. (AF)");
+        System.err.println("        %R  The puzzle highest rating technique name.  This is the name of 1st technique with");
+        System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
+        System.err.println("        %R  The puzzle highest rating technique name.  This is the name of 1st technique with");
+        System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
         System.err.println("        %s  The short step description. (A)");
+        System.err.println("        %S  The puzzle highest rating technique shortened name.  This is the SNORT name of 1st technique with");
+        System.err.println("             highest ER of the methods leading to the puzzle solution. (AF)");
         System.err.println("        %t  The tab character. (SBAF)");
+        System.err.println("        %T  The pearl rating technique shortened name.  This is the SHORT name of 1st technique with highest");
+        System.err.println("             rating of the methods leading to the first cell placement. (F)");
+        System.err.println("        %U  The diamond rating technique shortened name.  This is the SHORT name of technique with highest rating of the methods leading");
+        System.err.println("            to the first candidate elimination. (F)");
         System.err.println("        %%  The % character.");
         System.err.println("  -h, --html");
         System.err.println("      List detailed info in html.");
@@ -111,10 +125,10 @@ public class serate {
         System.err.println("");
         System.err.println("  To display all supported format parameters (at the time of writing this document):");
         System.err.println("  java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \");
-        System.err.println("  --format="--format%l%%d: %d%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%r: %r%l--- end of final section ---" \");
+        System.err.println("  --format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \");
         System.err.println("  --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \");
         System.err.println("  --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \");
-        System.err.println("  --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \");
+        System.err.println("  --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \");
         System.err.println("  --input=my_input_file.txt --output=- --threads=0 > my_output_file.txt");
         System.err.println("  ");
         System.err.println("  To display man document:");
@@ -140,12 +154,12 @@ public class serate {
     }
     /*
      * An example command line that demonstrates almost all of the formatting options:
-    java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
-    --format="--format%l%%d: %d%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%r: %r%l--- end of final section ---" \
-    --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
-    --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
-    --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
-    --input=my_input.txt --output=- --threads=0 > my_output.txt
+		java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \");
+		--format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \");
+		--start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \");
+		--before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \");
+		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%R: %R%l%%s: %s%l--- end of after section ---" \");
+		--input=my_input_file.txt --output=- --threads=0 > my_output_file.txt");
     */
 
     static void usage(String option, int argument) {
@@ -456,6 +470,12 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
+						case 'S':
+                            s += solver.shortERtN;
+                            break;
+                        case 'R':
+                            s += solver.ERtN;
+                            break;
                         case 'r':
                             s += ratingToString(((Rule)hint).getDifficulty());
                             break;
@@ -533,7 +553,14 @@ public class serate {
                 }
                 else {
                     switch (f = formatFinal.charAt(i)) { //format specifier
-                        case 'd':
+                        
+						case 'U':
+                            s += solver.shortEDtN;
+                            break;
+                        case 'D':
+                            s += solver.EDtN;
+                            break;
+						case 'd':
                             s += ratingToString(solver.diamond);
                             break;
                         case 'e':
@@ -551,8 +578,20 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
+						case 'T':
+                            s += solver.shortEPtN;
+                            break;
+                        case 'P':
+                            s += solver.EPtN;
+                            break;
                         case 'p':
                             s += ratingToString(solver.pearl);
+                            break;
+						case 'S':
+                            s += solver.shortERtN;
+                            break;
+						case 'R':
+                            s += solver.ERtN;
                             break;
                         case 'r':
                             s += ratingToString(solver.difficulty);
