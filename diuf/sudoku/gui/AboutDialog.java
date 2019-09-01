@@ -49,6 +49,7 @@ public class AboutDialog extends JDialog {
                 AboutDialog.this.dispose();
             }
         });
+        //release
         txtVersion.setText("" + VERSION + "." + REVISION + SUBREV);
     }
 
@@ -66,7 +67,8 @@ public class AboutDialog extends JDialog {
     private JPanel getPnlTop() {
         if (pnlTop == null) {
             lblCopyright = new JLabel();
-            lblCopyright.setText("(C) 2005-2019 Nicolas Juillerat");
+            //release
+            lblCopyright.setText("(C) 2005-" + releaseYear +" Nicolas Juillerat");
             lblCopyright.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lblTitle = new JLabel();
             lblTitle.setText("Sukaku Explainer");
@@ -91,7 +93,8 @@ public class AboutDialog extends JDialog {
             gridBagConstraints6.weightx = 1.0D;
             gridBagConstraints6.gridy = 4;
             txtLicense = new JLabel();
-            txtLicense.setText("LGPL-2.1");
+            //release
+			txtLicense.setText(releaseLicenceMini + "-" + releaseLicenceVersion);
             txtLicense.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 12));
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.gridx = 0;
