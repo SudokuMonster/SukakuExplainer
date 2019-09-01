@@ -51,7 +51,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JPanel buttonsPane = null;
     private JButton btnGetAllHints = null;
     private JButton btnApplyHintAndGet = null;
-    private JButton btnQuit = null;
+    private JButton btnUndoStep = null;
     private JPanel buttonsContainer = null;
     private JScrollPane hintsTreeScrollpane = null;
     private JButton btnGetNextHint = null;
@@ -60,7 +60,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBox chkFilter = null;
     private JButton btnCheckValidity = null;
     private JButton btnApplyHint = null;
-    private JComboBox cmbViewSelector = null;
+    private JComboBox<String> cmbViewSelector = null;
     private JPanel hintsSouthPanel = null;
     private JPanel ratingPanel = null;
     private JLabel jLabel = null;
@@ -79,6 +79,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenu toolMenu = null;
     private JMenuItem mitCheckValidity = null;
     private JMenuItem mitAnalyse = null;
+    private JMenuItem mitUndoStep = null;
     private JMenuItem mitSolveStep = null;
     private JMenuItem mitGetNextHint = null;
     private JMenuItem mitApplyHint = null;
@@ -102,6 +103,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem mitShowWelcome = null;
     private JMenuItem mitGenerate = null;
     private JCheckBoxMenuItem mitShowCandidates = null;
+    private JCheckBoxMenuItem mitShowCandidateMasks = null;
     private JMenuItem mitSelectTechniques = null;
     private JPanel pnlEnabledTechniques = null;
     private JLabel lblEnabledTechniques = null;
@@ -527,7 +529,7 @@ public class SudokuFrame extends JFrame implements Asker {
             buttonsPane.add(getBtnGetNextHint(), gridBagConstraints11);
             buttonsPane.add(getBtnApplyHintAndGet(), gridBagConstraints1);
             buttonsPane.add(getBtnGetAllHints(), gridBagConstraints2);
-            buttonsPane.add(getBtnQuit(), gridBagConstraints3);
+            buttonsPane.add(getBtnUndoStep(), gridBagConstraints3);
             buttonsPane.add(getBtnApplyHint(), gridBagConstraints21);
             buttonsPane.add(getBtnCheckValidity(), gridBagConstraints);
         }
@@ -583,23 +585,7 @@ public class SudokuFrame extends JFrame implements Asker {
         return btnApplyHintAndGet;
     }
 
-    private JButton getBtnQuit() {
-        if (btnQuit == null) {
-            btnQuit = new JButton();
-            btnQuit.setText("Quit");
-            btnQuit.setToolTipText("Quit the application");
-            btnQuit.setMnemonic(java.awt.event.KeyEvent.VK_Q);
-            btnQuit.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    quit();
-                }
-            });
-        }
-        return btnQuit;
-    }
-
-    private JPanel getButtonsContainer() {
+   private JPanel getButtonsContainer() {
         if (buttonsContainer == null) {
             buttonsContainer = new JPanel();
             buttonsContainer.setLayout(new GridLayout(1, 1));
@@ -670,6 +656,21 @@ public class SudokuFrame extends JFrame implements Asker {
         return btnCheckValidity;
     }
 
+    private JButton getBtnUndoStep() {
+        if (btnUndoStep == null) {
+          btnUndoStep = new JButton();
+          btnUndoStep.setText("Undo step");
+          btnUndoStep.setToolTipText("Undo previous solve step or value selection");
+          btnUndoStep.setMnemonic(85);
+          btnUndoStep.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              SudokuFrame.this.engine.undoStep();
+            }
+          });
+        }
+        return this.btnUndoStep;
+      }
+
     private JButton getBtnApplyHint() {
         if (btnApplyHint == null) {
             btnApplyHint = new JButton();
@@ -686,9 +687,9 @@ public class SudokuFrame extends JFrame implements Asker {
         return btnApplyHint;
     }
 
-    private JComboBox getCmbViewSelector() {
+    private JComboBox<String> getCmbViewSelector() {
         if (cmbViewSelector == null) {
-            cmbViewSelector = new JComboBox();
+            cmbViewSelector = new JComboBox<String>();
             cmbViewSelector.setToolTipText("Toggle view (only for chaining hints)");
             cmbViewSelector.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -781,7 +782,12 @@ public class SudokuFrame extends JFrame implements Asker {
     }
 
     private void setCommand(JMenuItem item, char cmd) {
-        item.setAccelerator(KeyStroke.getKeyStroke(cmd, InputEvent.CTRL_MASK));
+        String vers = System.getProperty("os.name").toLowerCase();
+        if (vers.indexOf("mac") != -1) {
+            item.setAccelerator(KeyStroke.getKeyStroke(cmd, InputEvent.META_MASK));
+        } else {
+            item.setAccelerator(KeyStroke.getKeyStroke(cmd, InputEvent.CTRL_MASK));
+        }
     }
 
     private JMenu getFileMenu() {
@@ -1017,6 +1023,9 @@ public class SudokuFrame extends JFrame implements Asker {
             getMitApplyHint().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
             toolMenu.add(getMitGetAllHints());
             getMitGetAllHints().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+            toolMenu.add(getMitUndoStep());
+            getMitUndoStep().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2,
+                    InputEvent.SHIFT_MASK));
             toolMenu.addSeparator();
             toolMenu.add(getMitGetSmallClue());
             getMitGetSmallClue().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
@@ -1071,6 +1080,22 @@ public class SudokuFrame extends JFrame implements Asker {
         return mitAnalyse;
     }
 
+    private JMenuItem getMitUndoStep()
+    {
+      if (mitUndoStep == null) {
+        mitUndoStep = new JMenuItem();
+        mitUndoStep.setText("Undo step");
+        mitUndoStep.setMnemonic(85);
+        mitUndoStep.setToolTipText(getBtnUndoStep().getToolTipText());
+        mitUndoStep.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            engine.undoStep();
+          }
+        });
+      }
+      return mitUndoStep;
+    }
+    
     private JMenuItem getMitSolveStep() {
         if (mitSolveStep == null) {
             mitSolveStep = new JMenuItem();
@@ -1184,6 +1209,7 @@ public class SudokuFrame extends JFrame implements Asker {
             optionsMenu.setMnemonic(java.awt.event.KeyEvent.VK_O);
             optionsMenu.add(getMitFilter());
             optionsMenu.add(getMitShowCandidates());
+            optionsMenu.add(getMitShowCandidateMasks());
             optionsMenu.add(getMitSelectTechniques());
             optionsMenu.addSeparator();
             optionsMenu.add(getMitChessMode());
@@ -1402,6 +1428,23 @@ public class SudokuFrame extends JFrame implements Asker {
             });
         }
         return mitShowCandidates;
+    }
+
+    private JCheckBoxMenuItem getMitShowCandidateMasks() {
+        if (mitShowCandidateMasks == null) {
+            mitShowCandidateMasks = new JCheckBoxMenuItem();
+            mitShowCandidateMasks.setText("Show candidate masks");
+            mitShowCandidateMasks.setToolTipText("Highlight all possible cells that can fill the same digit");
+            mitShowCandidateMasks.setMnemonic(KeyEvent.VK_M);
+            mitShowCandidateMasks.setSelected(Settings.getInstance().isShowingCandidateMasks());
+            mitShowCandidateMasks.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    Settings.getInstance().setShowingCandidateMasks(mitShowCandidateMasks.isSelected());
+                    repaint();
+                }
+            });
+        }
+        return mitShowCandidateMasks;
     }
 
     private JMenuItem getMitSelectTechniques() {

@@ -11,6 +11,7 @@ import java.util.*;
 import javax.swing.*;
 
 import diuf.sudoku.*;
+import diuf.sudoku.Grid.*;
 import diuf.sudoku.io.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
@@ -38,7 +39,9 @@ public class SudokuExplainer {
     private List<Hint> filteredHints = null; // All hints (filtered)
     private boolean isFiltered = true;
     private List<Hint> selectedHints = new ArrayList<Hint>(); // Currently selected hint
-
+	private Stack<Grid> gridStack = new Stack<Grid>(); // Stack for undo
+	
+	
     // Cache for filter
     Set<Cell> givenCells = new HashSet<Cell>(); // Cell values already encountered
     Map<Cell, BitSet> removedPotentials = new HashMap<Cell, BitSet>(); // Removable potentials already encountered
@@ -243,6 +246,15 @@ public class SudokuExplainer {
         frame.setExplanations(HtmlLoader.loadHtml(this, "Multiple.html"));
     }
 
+    public boolean isValueAllGiven(Grid grid, int value) {
+        Region[] regions = grid.getRegions(Grid.Block.class);
+        for (Region region : regions) {
+            if (!region.contains(grid, value))
+                return false;
+        }
+        return true;
+    }
+
     /**
      * Invoked when the user manually types a value in a cell of
      * the sudoku grid.
@@ -253,9 +265,12 @@ public class SudokuExplainer {
     public void cellValueTyped(Cell cell, int value) {
         //int oldValue = cell.getValue();
         int oldValue = grid.getCellValue(cell.getX(), cell.getY());
+        boolean same = oldValue == value;
+        if (!same)
+            pushGrid();
         //cell.setValue(value);
         grid.setCellValue(cell.getX(), cell.getY(), value);
-        if (value == 0 || oldValue != 0)
+        if (!same && (value == 0 || oldValue != 0))
             solver.rebuildPotentialValues();
         else
             solver.cancelPotentialValues();
@@ -269,7 +284,8 @@ public class SudokuExplainer {
     }
 
     public void candidateTyped(Cell cell, int candidate) {
-        //if (cell.hasPotentialValue(candidate))
+        pushGrid();
+		//if (cell.hasPotentialValue(candidate))
         if (grid.hasCellPotentialValue(cell.getIndex(), candidate))
             //cell.removePotentialValue(candidate);
         	grid.removeCellPotentialValue(cell, candidate);
@@ -444,11 +460,16 @@ public class SudokuExplainer {
     }
 
     public void applySelectedHints() {
+		pushGrid();
         for (Hint hint : selectedHints)
             //hint.apply();
         	hint.apply(grid);
         clearHints();
         repaintAll();
+    }
+
+    public void undoStep() {
+    	popGrid();
     }
 
     public void applySelectedHintsAndContinue() {
@@ -483,6 +504,23 @@ public class SudokuExplainer {
             JOptionPane.showMessageDialog(frame, message.toString(), "Paste",
                     (message.isFatal() ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE));
     }
+
+    public void pushGrid() {
+        Grid copy = new Grid();
+        this.grid.copyTo(copy);
+        this.gridStack.push(copy);
+      }
+      
+      private void popGrid() {
+        if (!this.gridStack.isEmpty()) {
+          Grid prev = (Grid)this.gridStack.pop();
+          prev.copyTo(this.grid);
+		  //This next line will mess UNDO with Sukaku
+          //this.solver.rebuildPotentialValues();
+          clearHints();
+          repaintAll();
+        }
+      }
 
     public void copyGrid() {
         SudokuIO.saveToClipboard(grid);
