@@ -852,8 +852,11 @@ public class Solver {
 
     public Map<String, Integer> toNamedList(Map<Rule, Integer> rules) {
         Map<String, Integer> hints = new LinkedHashMap<String, Integer>();
-        for (Rule rule : rules.keySet()) {
-            int count = rules.get(rule);
+        //for (Rule rule : rules.keySet()) {
+            //int count = rules.get(rule);
+        for (Map.Entry<Rule, Integer> entry : rules.entrySet()) {
+        	Rule rule = entry.getKey();
+        	int count = entry.getValue();
             String name = rule.getName();
             if (hints.containsKey(name))
                 hints.put(name, hints.get(name) + count);

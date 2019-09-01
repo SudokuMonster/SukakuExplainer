@@ -63,8 +63,11 @@ public class CycleHint extends ChainingHint {
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = getColorPotentials(viewNum, false);
         Map<Cell, BitSet> removable = getRemovablePotentials();
-        for (Cell c : removable.keySet()) {
-            BitSet values = removable.get(c);
+        //for (Cell c : removable.keySet()) {
+            //BitSet values = removable.get(c);
+        for (Map.Entry<Cell, BitSet> entry : removable.entrySet()) {
+        	Cell c = entry.getKey();
+            BitSet values = entry.getValue();
             BitSet reds = result.get(c);
             if (reds == null) {
                 reds = new BitSet(10);

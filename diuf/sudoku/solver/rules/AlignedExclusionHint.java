@@ -82,13 +82,11 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
 
     private Map<Cell, BitSet> appendOranges(Grid grid, Map<Cell, BitSet> values) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>(values);
-        Map<Cell, BitSet> removables = super.getRemovablePotentials();
+        //Map<Cell, BitSet> removables = super.getRemovablePotentials();
+        Set<Cell> removables = super.getRemovablePotentials().keySet();
         for (Cell cell : cells) {
-            if (!removables.keySet().contains(cell)) {
-                //if (result.containsKey(cell))
-                //    result.get(cell).or(cell.getPotentialValues());
-                //else
-                //    result.put(cell, (BitSet)cell.getPotentialValues().clone());
+            //if (!removables.keySet().contains(cell)) {
+            if (!removables.contains(cell)) {
                 if (result.containsKey(cell))
                 	result.get(cell).or(grid.getCellPotentialValues(cell.getIndex()));
                 else
@@ -235,8 +233,11 @@ public class AlignedExclusionHint extends IndirectHint implements Rule {
         String name = names[degree - 2];
         String cellNames = ValuesFormatter.formatCells(cells, " and ");
         StringBuilder rules = new StringBuilder();
-        for (int[] combination : lockedCombinations.keySet()) {
-            Cell lockCell = lockedCombinations.get(combination);
+        //for (int[] combination : lockedCombinations.keySet()) {
+            //Cell lockCell = lockedCombinations.get(combination);
+        for (Map.Entry<int[], Cell> entry : lockedCombinations.entrySet()) {
+        	int[] combination = entry.getKey();
+        	Cell lockCell = entry.getValue();
             if (isRelevent(combination))
                 appendCombination(grid, rules, combination, lockCell);
         }

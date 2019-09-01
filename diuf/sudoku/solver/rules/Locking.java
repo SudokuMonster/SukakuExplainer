@@ -63,8 +63,10 @@ public class Locking implements IndirectHintProducer {
                             for (int i = 0; i < 9; i++) {
                                 if (potentialPositions.get(i)) {
                                     Cell cell = region1.getCell(i);
-                                    if (!region2Cells.contains(cell))
+                                    if (!region2Cells.contains(cell)) {
                                         isInCommonSet = false;
+                                        break;
+                                    }
                                 }
                             }
                             if (isInCommonSet) {

@@ -113,8 +113,11 @@ public class SudokuExplainer {
         if (hint instanceof WarningHint)
             return true;
         Map<Cell, BitSet> removablePotentials = hint.getRemovablePotentials();
-        for (Cell cell : removablePotentials.keySet()) {
-            BitSet removable = removablePotentials.get(cell);
+        //for (Cell cell : removablePotentials.keySet()) {
+        for (Map.Entry<Cell, BitSet> entry : removablePotentials.entrySet()) {
+        	Cell cell = entry.getKey();
+            //BitSet removable = removablePotentials.get(cell);
+            BitSet removable = entry.getValue();
             BitSet previous = removedPotentials.get(cell);
             if (previous == null)
                 return true;
@@ -161,8 +164,11 @@ public class SudokuExplainer {
             // Update removable potentials (candidates)
             IndirectHint iHint = (IndirectHint)hint;
             Map<Cell, BitSet> removablePotentials = iHint.getRemovablePotentials();
-            for (Cell cell : removablePotentials.keySet()) {
-                BitSet removable = removablePotentials.get(cell);
+            //for (Cell cell : removablePotentials.keySet()) {
+                //BitSet removable = removablePotentials.get(cell);
+            for (Map.Entry<Cell, BitSet> entry : removablePotentials.entrySet()) {
+            	Cell cell = entry.getKey();
+                BitSet removable = entry.getValue();
                 BitSet current = removedPotentials.get(cell);
                 if (current == null) {
                     current = new BitSet(10);
@@ -216,8 +222,11 @@ public class SudokuExplainer {
             if (hint instanceof IndirectHint) {
                 IndirectHint ihint = (IndirectHint)hint;
                 Map<Cell, BitSet> removable = ihint.getRemovablePotentials();
-                for (Cell rCell : removable.keySet()) {
-                    BitSet values = removable.get(rCell);
+                //for (Cell rCell : removable.keySet()) {
+                    //BitSet values = removable.get(rCell);
+                for (Map.Entry<Cell, BitSet> entry : removable.entrySet()) {
+                	Cell rCell = entry.getKey();
+                    BitSet values = entry.getValue();
                     if (redPotentials.containsKey(rCell))
                         redPotentials.get(rCell).or(values);
                     else

@@ -61,8 +61,11 @@ public class Bug4Hint extends BugHint implements Rule {
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> removable = super.getRemovablePotentials();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
-        for (Cell cell : removable.keySet()) {
-            BitSet values = (BitSet)removable.get(cell).clone();
+        //for (Cell cell : removable.keySet()) {
+            //BitSet values = (BitSet)removable.get(cell).clone();
+        for (Map.Entry<Cell, BitSet> entry : removable.entrySet()) {
+        	Cell cell = entry.getKey();
+            BitSet values = (BitSet)entry.getValue().clone();
             values.set(value); // orange
             result.put(cell, values);
         }

@@ -79,8 +79,11 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
         result.putAll(orangePotentials);
-        for (Cell cell : redPotentials.keySet()) {
-            BitSet values = redPotentials.get(cell);
+        //for (Cell cell : redPotentials.keySet()) {
+            //BitSet values = redPotentials.get(cell);
+        for (Map.Entry<Cell, BitSet> entry : redPotentials.entrySet()) {
+        	Cell cell = entry.getKey();
+            BitSet values = entry.getValue();
             if (result.containsKey(cell)) {
                 BitSet nvalues = (BitSet)result.get(cell).clone();
                 nvalues.or(values);

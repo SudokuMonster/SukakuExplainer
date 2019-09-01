@@ -1080,14 +1080,16 @@ public class Chaining implements IndirectHintProducer {
                             ChainingHint nested = null;
                             if (hint instanceof ChainingHint)
                                 nested = (ChainingHint)hint;
-                            Map<Cell,BitSet> removable = hint.getRemovablePotentials();
+                            Map<Cell, BitSet> removable = hint.getRemovablePotentials();
                             assert !removable.isEmpty();
-                            for (Cell cell : removable.keySet()) {
-                                BitSet values = removable.get(cell);
+                            //for (Cell cell : removable.keySet()) {
+                            for (Map.Entry<Cell, BitSet> entry : removable.entrySet()) {
+                                //BitSet values = removable.get(cell);
+                            	Cell cell = entry.getKey();
+                                BitSet values = entry.getValue();
                                 for (int value = values.nextSetBit(0); value != -1; value = values.nextSetBit(value + 1)) {
-                                    Potential.Cause cause = Potential.Cause.Advanced;
-                                    Potential toOff = new Potential(cell, value, false, cause,
-                                            hint.toString(), nested);
+                                    //Potential.Cause cause = Potential.Cause.Advanced;
+                                    Potential toOff = new Potential(cell, value, false, Potential.Cause.Advanced, hint.toString(), nested);
                                     for (Potential p : parents) {
                                         Potential real = offPotentials.get(p);
                                         assert real != null;

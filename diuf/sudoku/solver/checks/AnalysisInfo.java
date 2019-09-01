@@ -8,6 +8,7 @@ package diuf.sudoku.solver.checks;
 import java.text.*;
 import java.util.*;
 
+import diuf.sudoku.Cell;
 import diuf.sudoku.Grid;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;
@@ -45,8 +46,11 @@ public class AnalysisInfo extends WarningHint {
 		String difficultRuleName = getDifficultyRuleName();
         DecimalFormat format = new DecimalFormat("#0.0");
         StringBuilder details = new StringBuilder();
-		for (String ruleName : ruleNames.keySet()) {
-            int count = ruleNames.get(ruleName);
+		//for (String ruleName : ruleNames.keySet()) {
+            //int count = ruleNames.get(ruleName);
+        for (Map.Entry<String, Integer> entry : ruleNames.entrySet()) {
+        	String ruleName = entry.getKey();
+        	int count = entry.getValue();
             details.append(Integer.toString(count));
 			details.append(" x ");
             details.append(ruleName);
