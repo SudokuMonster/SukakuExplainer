@@ -28,6 +28,7 @@ public class SudokuPanel extends JPanel {
 
     private int CELL_OUTER_SIZE = 45;
     private int CELL_INNER_SIZE = 39;
+    private int POTENTIAL_GAP = 5;
     private int GRID_GAP_SIZE = 2;
     private int LEGEND_GAP_SIZE = 42;
     private int CELL_PAD = (CELL_OUTER_SIZE - CELL_INNER_SIZE) / 2;
@@ -56,8 +57,19 @@ public class SudokuPanel extends JPanel {
     private Font bigFont;
     private Font legendFont;
 
+    private Color redColor = Color.red;
+    private Color selectedColor = Color.orange;
+    private Color selectedTextColor = new Color(0, 55, 128);
+    private Color focusedColor = Color.yellow;
+    private Color potentialMaskColor = new Color(0, 255, 0, 100);
+    private Color potentialMaskAltColor = new Color(0, 255, 190, 150);
+    private Color sameCellValueColor = new Color(220, 0, 220);
+    private Color borderColor = Color.blue.darker();
+    private Color cellColor = new Color(170, 170, 221);
+    private Color alternativeColor = new Color(220, 244, 244);
 
-    public SudokuPanel(SudokuFrame parent) {
+
+   public SudokuPanel(SudokuFrame parent) {
         super();
         this.parent = parent;
         if (getToolkit().getScreenSize().height < 750)
@@ -92,12 +104,17 @@ public class SudokuPanel extends JPanel {
                 setFocusedCell(null);
             }
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                // Workaround mouseClicked won't be fired while moving mouse
+                // http://stackoverflow.com/questions/3382330/mouselistener-for-jpanel-missing-mouseclicked-events
+                if (!SudokuPanel.this.contains(e.getPoint()))
+                    return;
+
                 Cell target = getCellAt(e.getX(), e.getY());
                 if (target == selectedCell && target != null) {
                     int value = getCandidateAt(e.getX(), e.getY());
                     if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3
-                            || (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+                            || (e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0) {
                         if (value != 0) { // Check that the cell is empty
                             // Toggle a candidate
                             engine.candidateTyped(target, value);
@@ -119,7 +136,7 @@ public class SudokuPanel extends JPanel {
                     setFocusedCandidate(0);
                     setSelectedCell(target);
                     if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3
-                            || (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)
+                            || (e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0)
                         setFocusedCandidate(getCandidateAt(e.getX(), e.getY()));
                 }
                 SudokuPanel.super.requestFocusInWindow();
@@ -130,15 +147,18 @@ public class SudokuPanel extends JPanel {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
                 setFocusedCell(getCellAt(e.getX(), e.getY()));
-                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)
+                if ((e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0)
                     setFocusedCandidate(getCandidateAt(e.getX(), e.getY()));
                 else
                     setFocusedCandidate(0);
             }
         });
         this.addKeyListener(new java.awt.event.KeyAdapter() {   
+            private boolean isKeyPressed = false;
             @Override
             public void keyPressed(java.awt.event.KeyEvent e) {
+                isKeyPressed = false;
+
                 int code = e.getKeyCode();
                 if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT ||
                         code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
@@ -172,7 +192,8 @@ public class SudokuPanel extends JPanel {
                         repaint();
                     }
                 } else if (code >= KeyEvent.VK_1 && code <= KeyEvent.VK_9) {
-                    if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+                    if ((e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0) {
+                        isKeyPressed = true;
                         int value = (code - KeyEvent.VK_0);
                         if (selectedCell != null) {
                             engine.candidateTyped(selectedCell, value);
@@ -190,7 +211,7 @@ public class SudokuPanel extends JPanel {
                 boolean isProcessed = false;
                 if (selectedCell != null) {
                     char ch = e.getKeyChar();
-                    if (ch >= '1' && ch <= '9') {
+                    if (!isKeyPressed && ch >= '1' && ch <= '9') {
                         int value = ch - '0';
                         engine.cellValueTyped(selectedCell, value);
                         repaint();
@@ -336,7 +357,7 @@ public class SudokuPanel extends JPanel {
     private void setSelectedCell(Cell cell) {
         repaintCell(this.selectedCell);
         this.selectedCell = cell;
-        repaintCell(this.selectedCell);
+        repaint();
     }
 
     private void setFocusedCandidate(int value) {
@@ -404,39 +425,69 @@ public class SudokuPanel extends JPanel {
                 }
             }
         }
-        if (cell == selectedCell)
-            col = new Color(
-                    (col.getRed() + Color.orange.getRed()) / 2,
-                    (col.getGreen() + Color.orange.getGreen()) / 2,
-                    (col.getBlue() + Color.orange.getBlue()) / 2);
+
+
+
+
+
         if (cell == selectedCell && value == focusedCandidate)
             col = Color.black;
         g.setColor(col);
         return isHighlighted;
     }
 
-    private void initFillColor(Graphics g, Cell cell) {
+    private boolean initFillColor(Graphics g, Cell cell, boolean origin) {
         Color col;
+        boolean ret = false;
+
+        if ((cell.getX() / 3 % 2 == 0) ^ (cell.getY() / 3 % 2 == 0)) {
+            col = alternativeColor;
+        } else {
+            col = Color.white;
+        }
+        if (origin) {
+            g.setColor(col);
+            return ret;
+        }
+
         if (redCells != null && redCells.contains(cell))
-            col = Color.red;
+            col = redColor;
         else if (greenCells != null && greenCells.contains(cell))
             col = new Color(192, 255, 255);
         else if (cell == selectedCell)
-            col = Color.orange;
+            col = selectedColor;
         else if (cell == focusedCell)
-            col = Color.yellow;
-        else
-            col = Color.white;
+            col = focusedColor;
+        else {
+            // Selected candidates color
+            int value = -1;
+            if (null != selectedCell && grid.getCellValue(selectedCell.getX(), selectedCell.getY()) != 0)
+                value = grid.getCellValue(selectedCell.getX(), selectedCell.getY());
+
+            boolean showing = Settings.getInstance().isShowingCandidateMasks();
+
+            if (showing && value > 0 && grid.hasCellPotentialValue(cell.getIndex(), value)) {
+                if ((cell.getX() / 3 % 2 == 0) ^ (cell.getY() / 3 % 2 == 0)) {
+                    col = potentialMaskAltColor;
+                } else {
+                    col = potentialMaskColor;
+                }
+                ret = true;
+            }
+        }
         g.setColor(col);
+        return ret;
     }
 
-    private void initValueColor(Graphics g, Cell cell) {
+    private void initValueColor(Graphics g, Cell cell, int x, int y) {
         Color col = Color.black;
+        if (null != selectedCell && grid.getCellValue(selectedCell.getX(), selectedCell.getY()) == grid.getCellValue(x, y))
+            col = sameCellValueColor;
         if (cell == selectedCell)
-            col = new Color(
-                    (col.getRed() + Color.orange.getRed()) / 2,
-                    (col.getGreen() + Color.orange.getGreen()) / 2,
-                    (col.getBlue() + Color.orange.getBlue()) / 2);
+            col = selectedTextColor;
+															   
+																   
+																  
         g.setColor(col);
     }
 
@@ -498,7 +549,9 @@ public class SudokuPanel extends JPanel {
 
     private void paintLegend(Graphics g) {
         g.setFont(legendFont);
-        g.setColor(new Color(0, 32, 64));
+        Color normalColor = new Color(0, 32, 64);
+        Color shadowColor = new Color(140, 140, 140);
+        Color givenColor = new Color(170, 170, 170);
         Settings settings = Settings.getInstance();
         for (int i = 0; i < 9; i++) {
             String xLegend;
@@ -511,8 +564,22 @@ public class SudokuPanel extends JPanel {
                 yLegend = "R" + (i + 1);
             else
                 yLegend = Integer.toString(i + 1);
-            drawStringCentered(g, yLegend,
-                    LEGEND_GAP_SIZE / 2, CELL_OUTER_SIZE * i + GRID_GAP_SIZE + CELL_OUTER_SIZE / 2);
+            if (!engine.isValueAllGiven(grid, i + 1)) {
+                g.setColor(normalColor);
+                drawStringCentered(g, yLegend,
+                        LEGEND_GAP_SIZE / 2,
+                        CELL_OUTER_SIZE * i + GRID_GAP_SIZE + CELL_OUTER_SIZE / 2);
+            } else {
+                g.setColor(shadowColor);
+                drawStringCentered(g, yLegend,
+                        LEGEND_GAP_SIZE / 2 + 1,
+                        CELL_OUTER_SIZE * i + GRID_GAP_SIZE + CELL_OUTER_SIZE / 2 + 1);
+                g.setColor(givenColor);
+                drawStringCentered(g, yLegend,
+                        LEGEND_GAP_SIZE / 2,
+                        CELL_OUTER_SIZE * i + GRID_GAP_SIZE + CELL_OUTER_SIZE / 2);
+            }
+            g.setColor(normalColor);
             drawStringCentered(g, xLegend,
                     LEGEND_GAP_SIZE + i * CELL_OUTER_SIZE + CELL_OUTER_SIZE / 2,
                     CELL_OUTER_SIZE * 9 + GRID_GAP_SIZE + LEGEND_GAP_SIZE / 2);
@@ -527,8 +594,20 @@ public class SudokuPanel extends JPanel {
                 readCellRectangle(x, y, cellRect);
                 if (clip.intersects(cellRect)) {
                     Cell cell = Grid.getCell(x, y);
-                    initFillColor(g, cell);
+ 
+                    initFillColor(g, cell, true);
                     g.fillRect(x * CELL_OUTER_SIZE, y * CELL_OUTER_SIZE, CELL_OUTER_SIZE, CELL_OUTER_SIZE);
+
+                    boolean potential = initFillColor(g, cell, false);
+                    // Draw potential
+                    if (!potential) {
+                        g.fillRect(x * CELL_OUTER_SIZE, y * CELL_OUTER_SIZE, CELL_OUTER_SIZE, CELL_OUTER_SIZE);
+                    } else {
+                        g.fillRect(x * CELL_OUTER_SIZE + POTENTIAL_GAP,
+                                y * CELL_OUTER_SIZE + POTENTIAL_GAP,
+                                CELL_OUTER_SIZE - POTENTIAL_GAP * 2,
+                                CELL_OUTER_SIZE - POTENTIAL_GAP * 2);
+                    }
                 }
             }
         }
@@ -539,10 +618,10 @@ public class SudokuPanel extends JPanel {
             int lineWidth;
             if (i % 3 == 0) {
                 lineWidth = 4;
-                g.setColor(Color.black);
+                g.setColor(borderColor);
             } else {
                 lineWidth = 2;
-                g.setColor(Color.blue.darker());
+                g.setColor(cellColor);
             }
             int offset = lineWidth / 2;
             g.fillRect(i * CELL_OUTER_SIZE - offset, 0 - offset, lineWidth, GRID_SIZE + lineWidth);
@@ -651,7 +730,7 @@ public class SudokuPanel extends JPanel {
                         g.setFont(bigFont);
                         int cx = x * CELL_OUTER_SIZE + CELL_PAD + CELL_INNER_SIZE / 2;
                         int cy = y * CELL_OUTER_SIZE + CELL_PAD + CELL_INNER_SIZE / 2;          
-                        initValueColor(g, cell);
+                        initValueColor(g, cell, x, y);
                         //drawStringCentered(g, "" + cell.getValue(), cx, cy);
                         drawStringCentered(g, "" + grid.getCellValue(x, y), cx, cy);
                     }
