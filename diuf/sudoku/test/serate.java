@@ -17,7 +17,7 @@ import diuf.sudoku.solver.*;
 
 public class serate {
     static String FORMAT = "%r/%p/%d";
-    static String RELEASE = "2019-08-30";
+    static String RELEASE = releaseDate;
     static String VER = "" + VERSION + "." + REVISION + SUBREV;
     static Formatter formatter;
     static void help(int html) {
@@ -139,10 +139,13 @@ public class serate {
         System.err.println("  ");
         System.err.println("");
         System.err.println("IMPLEMENTATION");
-        System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) 2019-08-30");
+	//relese
+	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) " + releaseDate);
         System.err.println("  author      Nicolas Juillerat");
-        System.err.println("  copyright   Copyright (c) 2006-2019 Nicolas Juillerat");
-        System.err.println("  license     Lesser General Public License (LGPL)");
+        //relese
+	System.err.println("  copyright   Copyright (c) 2006-" + releaseYear + " Nicolas Juillerat");
+        //relese
+	System.err.println("  license     " + releaseLicence + "(" + releaseLicenceMini + ") v" + releaseLicenceVersion);
         if (html != 0) {
             System.err.println("</PRE>");
             System.err.println("</BODY>");
