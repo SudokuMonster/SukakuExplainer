@@ -84,7 +84,6 @@ public class Grid {
     public static final int[][] regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
     public static final int[][] cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
 
-    //private static final int[][] visibleCellIndex = new int[81][20];
     public static final int[][] visibleCellIndex = {
     		{ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,27,36,45,54,63,72},
     		{ 0, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,28,37,46,55,64,73},
@@ -186,21 +185,9 @@ public class Grid {
      * Create a new 9x9 Sudoku grid. All cells are set to empty
      */
     public Grid() {
-//        for (int y = 0, i = 0; y < 9; y++) {
-//            for (int x = 0; x < 9; x++, i++) {
-//                //cells[y][x] = new Cell(i);
-//                cells[i] = new Cell(i);
-//            }
-//        }
         for (int i = 0; i < 81; i++) {
         	cellPotentialValues[i] = new BitSet(10);
         }
-        // Build subparts views
-//        for (int i = 0; i < 9; i++) {
-//            rows[i] = new Row(i);
-//            columns[i] = new Column(i);
-//            blocks[i] = new Block(i / 3, i % 3);
-//        }
     }
 
     /**
@@ -210,7 +197,6 @@ public class Grid {
      * @return the cell at the given coordinates
      */
     public static Cell getCell(int x, int y) {
-        //return this.cells[y][x];
         return cells[9 * y + x];
     }
 
@@ -242,9 +228,6 @@ public class Grid {
      * @param y the vertical coordinate of the cell
      * @param value the value to set the cell to. Use 0 to clear the cell.
      */
-//    public void setCellValue(int x, int y, int value) {
-//        this.cells[y][x].setValue(value);
-//    }
     public void setCellValue(int x, int y, int value) {
     	cellValues[y * 9 + x] = value;
     }
@@ -264,13 +247,10 @@ public class Grid {
      * @param y the vertical coordinate of the cell
      * @return the value of the cell, or 0 if the cell is empty
      */
-//    public int getCellValue(int x, int y) {
-//        return this.cells[y][x].getValue();
-//    }
-
     public int getCellValue(int x, int y) {
         return cellValues[9 * y + x];
     }
+    
     /**
      * Get the value of a cell
      * @param index the cell index [0 .. 80]
@@ -296,22 +276,6 @@ public class Grid {
         return cellPotentialValues[cellIndex];
     }
 
-//    /**
-//     * Get the potential values for the given cell.
-//     * <p>
-//     * The result is returned as a bitset. Each of the
-//     * bit number 1 to 9 is set if the corresponding
-//     * value is a potential value for this cell. Bit number
-//     * <tt>0</tt> is not used and ignored.
-//     * @param cell the cell
-//     * @return the potential values for unresolved cell, empty for resolved
-//     */
-//    public BitSet getCellPotentialValues(Cell cell) {
-//        //return cell.getPotentialValues();
-//        numCellPencilmarksRead++;
-//        return cellPotentialValues[cell.getIndex()];
-//    }
-
     /**
      * Test whether the given value is a potential
      * value for the given cell.
@@ -331,7 +295,6 @@ public class Grid {
      * @param value the value to add, between 1 and 9, inclusive
      */
     public void addCellPotentialValue(Cell cell, int value) {
-        //cell.addPotentialValue(value);
 //        if(cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32382541)
         cellPotentialValues[cell.getIndex()].set(value);
         //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
@@ -344,7 +307,6 @@ public class Grid {
      * @param value the value to remove, between 1 and 9, inclusive
      */
     public void removeCellPotentialValue(Cell cell, int value) {
-        //cell.removePotentialValue(value);
         //if(!cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32380479)
         cellPotentialValues[cell.getIndex()].clear(value);
         //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
@@ -357,7 +319,6 @@ public class Grid {
      * @param valuesToRemove bitset with values to remove
      */
     public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
-    	//cell.removePotentialValues(valuesToRemove);
     	//BitSet cl = new BitSet();
     	//cl.or(cellPotentialValues[cell.getIndex()]);
     	//cl.and(valuesToRemove);
@@ -372,7 +333,6 @@ public class Grid {
      * @param cell the cell
      */
     public void clearCellPotentialValues(Cell cell) {
-        //cell.clearPotentialValues();
         //if(cellPotentialValues[cell.getIndex()].isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
         cellPotentialValues[cell.getIndex()].clear();
         //valueCellsCache.invalidateCell(cell.getIndex());
@@ -441,14 +401,6 @@ public class Grid {
      * can not be modified
      */
     public static Class<? extends Grid.Region>[] getRegionTypes() {
-//    public List<Class<? extends Grid.Region>> getRegionTypes() {
-//        if (_regionTypes == null) {
-//            _regionTypes = new ArrayList<Class<? extends Grid.Region>>(3);
-//            _regionTypes.add(Grid.Block.class);
-//            _regionTypes.add(Grid.Row.class);
-//            _regionTypes.add(Grid.Column.class);
-//            _regionTypes = Collections.unmodifiableList(_regionTypes);
-//        }
         return regionTypes;
     }
 
@@ -534,9 +486,6 @@ public class Grid {
             return result;
         }
 
-//        public BitSet copyPotentialPositions(int value) {
-//            return getPotentialPositions(value); // No need to clone, this is alreay hand-made
-//        }
         public BitSet copyPotentialPositions(Grid grid, int value) {
             return getPotentialPositions(grid, value); // No need to clone, this is alreay hand-made
         }
@@ -546,30 +495,12 @@ public class Grid {
          * matches the order of the cells returned by {@link #getCell(int)}.
          * @return the cells of this region.
          */
-//        public Set<Cell> getCellSet() {
-//            Set<Cell> result = new LinkedHashSet<Cell>();
-//            for (int i = 0; i < 9; i++)
-//                result.add(getCell(i));
-//            return result;
-//        }
         public CellSet getCellSet() {
             return new CellSet(regionCells);
         }
 
-//        /**
-//         * Return the cells that are common to this region and the
-//         * given region
-//         * @param other the other region
-//         * @return the cells belonging to this region and to the other region
-//         */
-//        public Set<Cell> commonCells(Region other) {
-//            Set<Cell> result = this.getCellSet();
-//            result.retainAll(other.getCellSet());
-//            return result;
-//        }
-
         /**
-         * Test whether thsi region crosses an other region.
+         * Test whether this region crosses an other region.
          * <p>
          * A region crosses another region if they have at least one
          * common cell. In particular, any rows cross any columns.
@@ -626,7 +557,6 @@ public class Grid {
             	cellRegions[regionCells[i]][1] = rowNum;
         	}
         }
-        //regionCellIndex
         
         public int getRegionTypeIndex() {
         	return 1;
@@ -639,37 +569,6 @@ public class Grid {
         public int getRowNum() {
             return this.rowNum;
         }
-
-//        @Override
-//        public Cell getCell(int index) {
-//            //return cells[rowNum][index];
-//            return cells[9 * rowNum + index];
-//        }
-
-//        @Override
-//        public int indexOf(Cell cell) {
-//            return cell.getX();
-//        }
-
-//        @Override
-//        public boolean contains(Cell cell) {
-//        	return cell.getY() == rowNum;
-//        }
-
-//        @Override
-//        public boolean crosses(Region other) {
-//            if (other instanceof Block) {
-//                Block square = (Block)other;
-//                return rowNum / 3 == square.vNum;
-//            } else if (other instanceof Column) {
-//                return true;
-//            } else if (other instanceof Row) {
-//                Row row = (Row)other;
-//                return this.rowNum == row.rowNum;
-//            } else {
-//                return super.crosses(other);
-//            }
-//        }
 
         @Override
         public String toString() {
@@ -684,11 +583,10 @@ public class Grid {
             else
                 return toString() + " " + (rowNum + 1);
         }
-
     }
 
     /**
-     * A column a sudoku grid
+     * A column of a sudoku grid
      */
     public static class Column extends Region {
 
@@ -716,36 +614,6 @@ public class Grid {
             return this.columnNum;
         }
 
-//        @Override
-//        public Cell getCell(int index) {
-//            return cells[9 * index + columnNum];
-//        }
-
-//        @Override
-//        public int indexOf(Cell cell) {
-//            return cell.getY();
-//        }
-
-//        @Override
-//        public boolean contains(Cell cell) {
-//        	return cell.getX() == columnNum;
-//        }
-
-//        @Override
-//        public boolean crosses(Region other) {
-//            if (other instanceof Block) {
-//                Block square = (Block)other;
-//                return columnNum / 3 == square.hNum;
-//            } else if (other instanceof Row) {
-//                return true;
-//            } else if (other instanceof Column) {
-//                Column column = (Column)other;
-//                return this.columnNum == column.columnNum;
-//            } else {
-//                return super.crosses(other);
-//            }
-//        }
-
         @Override
         public String toString() {
             return "column";
@@ -759,7 +627,6 @@ public class Grid {
             else
                 return toString() + " " + (char)('A' + columnNum);
         }
-
     }
 
     /**
@@ -799,45 +666,6 @@ public class Grid {
             return this.hNum;
         }
 
-//        @Override
-//        public Cell getCell(int index) {
-//            //return cells[vNum * 3 + index / 3][hNum * 3 + index % 3];
-//            //return cells[9 * (vNum * 3 + index / 3) + (hNum * 3 + index % 3)];
-//            return cells[regionCells[index]];
-//        }
-
-//        @Override
-//        public int indexOf(Cell cell) {
-//            return (cell.getY() % 3) * 3 + (cell.getX() % 3);
-//        }
-
-//        @Override
-//        public boolean contains(Cell cell) {
-//        	int x = cell.getX();
-//        	int hStart = hNum * 3;
-//        	if(x < hStart) return false;
-//        	if(x > hStart + 2) return false;
-//        	int y = cell.getY();
-//        	int vStart = vNum * 3;
-//        	if(y < vStart) return false;
-//        	if(y > vStart + 2) return false;
-//        	return true;
-//        }
-
-//       @Override
-//        public boolean crosses(Region other) {
-//            if (other instanceof Row) {
-//                return ((Row)other).crosses(this);
-//            } else if (other instanceof Column) {
-//                return ((Column)other).crosses(this);
-//            } else if (other instanceof Block) {
-//                Block square = (Block)other;
-//                return this.vNum == square.vNum && this.hNum == square.hNum;
-//            } else {
-//                return super.crosses(other);
-//            }
-//        }
-
         @Override
         public String toString() {
             return "block";
@@ -847,7 +675,6 @@ public class Grid {
         public String toFullString() {
             return toString() + " " + (vNum * 3 + hNum + 1);
         }
-
     }
 
     /**
@@ -884,23 +711,11 @@ public class Grid {
      * are copied.
      * @param other the grid to copy this grid to
      */
-//    public void copyTo(Grid other) {
-//        for (int y = 0; y < 9; y++) {
-//            for (int x = 0; x < 9; x++) {
-//                this.cells[y][x].copyTo(other.cells[y][x]);
-//            }
-//        }
-//    }
     public void copyTo(Grid other) {
         for (int i = 0; i < 81; i++) {
             other.setCellValue(i, this.cellValues[i]);
             other.setCellPotentialValues(i, cellPotentialValues[i]);
         }
-//		for (int y = 0; y < 9; y++) {
-//			for (int x = 0; x < 9; x++) {
-//				this.cells[y][x].copyTo(other.cells[y][x]);
-//			}
-//		}
     }
 
     /**
@@ -910,12 +725,9 @@ public class Grid {
      */
     public int getCountOccurancesOfValue(int value) {
         int result = 0;
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                //if (cells[y][x].getValue() == value)
-                if (getCellValue(y, x) == value)
-                    result++;
-            }
+        for (int i = 0; i < 81; i++) {
+            if (getCellValue(i) == value)
+                result++;
         }
         return result;
     }
@@ -988,14 +800,12 @@ public class Grid {
     /**
      * Get a multi-line pencilmark-string representation of this grid.
      */
-    //public String toStringMultilinePencilmarks() {
     public String toStringMultilinePencilmarks() {
     	String res = "";
         String s = "";
 
         int crd = 1;
         for (int i = 0; i < 81; i++) {
-            //int n = getCell(i % 9, i / 9).getPotentialValues().cardinality();
             int n = getCellPotentialValues(i).cardinality();
             if ( n > crd ) { crd = n; }
         }
@@ -1085,7 +895,6 @@ public class Grid {
                     int value = (ch - '0');
                     assert value == 1 + i % 9; //exact positional mapping
                     Cell cell = getCell(cl);
-                    //cell.addPotentialValue(value);
                     addCellPotentialValue(cell, value);
                 }
             }
@@ -1097,27 +906,19 @@ public class Grid {
      * For adjustment of the board immediately after Pencilmarks loading.
      */
     public void adjustPencilmarks() {
-        for (int i = 0; i < 81; i++) {
+        for(int i = 0; i < 81; i++) {
             Cell cell = getCell(i);
-            //if ( cell.getPotentialValues().cardinality() ==  1 ) {
             BitSet values = getCellPotentialValues(i);
-            if ( values.cardinality() ==  1 ) {
+            if(values.cardinality() == 1) {
                 int singleclue = values.nextSetBit(0);
                 boolean isnakedsingle = true;
-//                for (Cell housecell : cell.getHouseCells(this)) {
-//                    if ( hasCellPotentialValue(housecell.getIndex(), singleclue) ) {
-//                        isnakedsingle = false;
-//                        break;
-//                    }
-//                }
-                for (int cellIndex : cell.getVisibleCellIndexes()) {
-                    if ( hasCellPotentialValue(cellIndex, singleclue) ) {
+                for(int cellIndex : cell.getVisibleCellIndexes()) {
+                    if(hasCellPotentialValue(cellIndex, singleclue)) {
                         isnakedsingle = false;
                         break;
                     }
                 }
-                if ( isnakedsingle ) {
-                    //cell.setValue(singleclue);
+                if(isnakedsingle) {
                 	setCellValue(i, singleclue);
                 	clearCellPotentialValues(cell);
                 }
@@ -1134,16 +935,6 @@ public class Grid {
         if (!(o instanceof Grid))
             return false;
         Grid other = (Grid)o;
-//        for (int y = 0; y < 9; y++) {
-//            for (int x = 0; x < 9; x++) {
-//                if (getCellValue(x, y) != other.getCellValue(x, y)) return false;
-//                Cell thisCell = this.getCell(x, y);
-//                Cell otherCell = other.getCell(x, y);
-//                //if (!thisCell.getPotentialValues().equals(otherCell.getPotentialValues()))
-//                if (!getCellPotentialValues(thisCell).equals(other.getCellPotentialValues(otherCell)))
-//                    return false;
-//            }
-//        }
         for (int i = 0; i < 81; i++) {
             if (getCellValue(i) != other.getCellValue(i)) return false;
             if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
@@ -1154,20 +945,10 @@ public class Grid {
     @Override
     public int hashCode() {
         int result = 0;
-//        for (int y = 0; y < 9; y++) {
-//            for (int x = 0; x < 9; x++) {
-//                //Cell cell = getCell(x, y);
-//                //result ^= cell.getValue();
-//                result ^= getCellValue(x, y);
-//                //result ^= cell.getPotentialValues().hashCode();
-//                result ^= getCellPotentialValues(x, y).hashCode();
-//            }
-//        }
         for (int i = 0; i < 81; i++) {
             result ^= getCellValue(i);
             result ^= getCellPotentialValues(i).hashCode();
         }
         return result;
     }
-
 }

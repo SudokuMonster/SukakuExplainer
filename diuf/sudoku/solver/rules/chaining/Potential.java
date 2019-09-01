@@ -78,7 +78,6 @@ public class Potential {
     }
 
     public void off(Grid grid) {
-        //this.cell.removePotentialValue(this.value);
     	grid.removeCellPotentialValue(this.cell, this.value);
     }
 
@@ -104,7 +103,6 @@ public class Potential {
 
     @Override
     public int hashCode() {
-        //return ((cell.getY() * 9 + cell.getX()) * 9 + value) * 2 + (isOn ? 1 : 0);
         return (cell.hashCode() * 9 + value) * 2 + (isOn ? 1 : 0);
     }
 
