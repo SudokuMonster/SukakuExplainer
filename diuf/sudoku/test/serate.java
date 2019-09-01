@@ -17,7 +17,6 @@ import diuf.sudoku.solver.*;
 
 public class serate {
     static String FORMAT = "%r/%p/%d";
-    static String FORMAT = "%r/%p/%d";
     static String RELEASE = releaseDate;
     static String VER = "" + VERSION + "." + REVISION + SUBREV;
     static Formatter formatter;
