@@ -671,7 +671,7 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique2() {
-				return "Naked Quad";
+				return "Jellyfish";
 			}
             @Override
 			public String getnotMaxTechnique3() {

@@ -74,6 +74,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem mitSave = null;
     private JMenu editMenu = null;
     private JMenuItem mitCopy = null;
+    private JMenuItem mitCopyLine81 = null;
+	private JMenuItem mitCopyLine729 = null;
+	private JMenuItem mitCopyPencilmarks = null;
     private JMenuItem mitClear = null;
     private JMenuItem mitPaste = null;
     private JMenu toolMenu = null;
@@ -941,6 +944,12 @@ public class SudokuFrame extends JFrame implements Asker {
             editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
             editMenu.add(getMitCopy());
             setCommand(getMitCopy(), 'C');
+            editMenu.add(getMitCopyLine81());
+            setCommand(getMitCopyLine81(), 'K');
+            editMenu.add(getMitCopyLine729());
+            setCommand(getMitCopyLine729(), 'Z');
+            editMenu.add(getMitCopyPencilmarks());
+            setCommand(getMitCopyPencilmarks(), 'J');
             editMenu.add(getMitPaste());
             setCommand(getMitPaste(), 'V');
             editMenu.addSeparator();
@@ -953,13 +962,14 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem getMitCopy() {
         if (mitCopy == null) {
             mitCopy = new JMenuItem();
-            mitCopy.setText("Copy grid");
+            mitCopy.setText("Copy grid 81");
             mitCopy.setMnemonic(KeyEvent.VK_C);
-            mitCopy.setToolTipText("Copy the grid to the clipboard as plain text");
+            mitCopy.setToolTipText("Copy the 81 character grid to the clipboard as plain text");
+			boolean line = false;
             mitCopy.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     try {
-                        engine.copyGrid();
+                        engine.copyGrid(line);
                     } catch (AccessControlException ex) {
                         warnAccessError(ex);
                     }
@@ -967,6 +977,66 @@ public class SudokuFrame extends JFrame implements Asker {
             });
         }
         return mitCopy;
+    }
+
+    private JMenuItem getMitCopyLine81() {
+        if (mitCopyLine81 == null) {
+            mitCopyLine81 = new JMenuItem();
+            mitCopyLine81.setText("Copy line 81");
+            mitCopyLine81.setMnemonic(KeyEvent.VK_K);
+            mitCopyLine81.setToolTipText("Copy the 81 character line to the clipboard as plain text");
+			boolean line = true;
+            mitCopyLine81.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {
+                        engine.copyGrid(line);
+                    } catch (AccessControlException ex) {
+                        warnAccessError(ex);
+                    }
+                }
+            });
+        }
+        return mitCopyLine81;
+    }
+
+    private JMenuItem getMitCopyLine729() {
+        if (mitCopyLine729 == null) {
+            mitCopyLine729 = new JMenuItem();
+            mitCopyLine729.setText("Copy line 729");
+            mitCopyLine729.setMnemonic(KeyEvent.VK_Z);
+            mitCopyLine729.setToolTipText("Copy the 729 character line to the clipboard as plain text");
+			boolean line = true;
+            mitCopyLine729.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {
+                        engine.copyPencilmarkGrid(line);
+                    } catch (AccessControlException ex) {
+                        warnAccessError(ex);
+                    }
+                }
+            });
+        }
+        return mitCopyLine729;
+    }
+
+    private JMenuItem getMitCopyPencilmarks() {
+        if (mitCopyPencilmarks == null) {
+            mitCopyPencilmarks = new JMenuItem();
+            mitCopyPencilmarks.setText("Copy Pencilmark Grid");
+            mitCopyPencilmarks.setMnemonic(KeyEvent.VK_J);
+            mitCopyPencilmarks.setToolTipText("Copy the Pencilmark Grid to the clipboard as plain text");
+			boolean line = false;
+            mitCopyPencilmarks.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {
+                        engine.copyPencilmarkGrid(line);
+                    } catch (AccessControlException ex) {
+                        warnAccessError(ex);
+                    }
+                }
+            });
+        }
+        return mitCopyPencilmarks;
     }
 
     private JMenuItem getMitClear() {
@@ -1206,7 +1276,7 @@ public class SudokuFrame extends JFrame implements Asker {
         if (optionsMenu == null) {
             optionsMenu = new JMenu();
             optionsMenu.setText("Options");
-            optionsMenu.setMnemonic(java.awt.event.KeyEvent.VK_O);
+            optionsMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
             optionsMenu.add(getMitFilter());
             optionsMenu.add(getMitShowCandidates());
             optionsMenu.add(getMitShowCandidateMasks());
