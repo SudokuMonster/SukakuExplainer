@@ -174,7 +174,7 @@ public class Grid {
     private static final Column[] columns = {new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
     public static final Region[][] regions = {blocks, rows, columns}; 
 
-    private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
+    //private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
     
     //temporary development/debug counters
     //public static long numCellPencilmarksUpdate = 0;
@@ -422,15 +422,15 @@ public class Grid {
         return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
 
-    /**
-     * Get a list containing the three classes corresponding to the
-     * three region types (row, column and block)
-     * @return a list of the three region types. The resulting list
-     * can not be modified
-     */
-    public static Class<? extends Grid.Region>[] getRegionTypes() {
-        return regionTypes;
-    }
+//    /**
+//     * Get a list containing the three classes corresponding to the
+//     * three region types (row, column and block)
+//     * @return a list of the three region types. The resulting list
+//     * can not be modified
+//     */
+//    public static Class<? extends Grid.Region>[] getRegionTypes() {
+//        return regionTypes;
+//    }
 
     // Grid regions implementation (rows, columns, 3x3 squares)
 

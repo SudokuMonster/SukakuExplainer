@@ -190,7 +190,7 @@ public class AlignedExclusion implements IndirectHintProducer {
                                      */
                                     Cell c1 = cells[cellIndexes[0]];
                                     Cell c2 = cells[cellIndexes[1]];
-                                    if (c1.getVisibleCells().contains(c2)) {
+                                    if (c1.getVisibleCells().containsCell(c2)) {
                                         isAllowed = false;
                                         break;
                                     }

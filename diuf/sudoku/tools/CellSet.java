@@ -77,6 +77,10 @@ public class CellSet implements Set<Cell> {
 		throw new ClassCastException();
 		//return false;
 	}
+	
+	public boolean containsCell(Cell c) {
+		return bits.get(c.getIndex());
+	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {

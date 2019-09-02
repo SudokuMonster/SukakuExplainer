@@ -106,7 +106,7 @@ public class AlignedPairExclusion extends AlignedExclusion {
                         Cell lockingCell = null;
 
                         // Check if this potential combination is allowed, hidden single rule
-                        if (pt0 == pt1 && cells[0].getVisibleCells().contains(cells[1]))
+                        if (pt0 == pt1 && cells[0].getVisibleCells().containsCell(cells[1]))
                             isAllowed = false;
 
                         // Check if this potential combination is allowed, using common
