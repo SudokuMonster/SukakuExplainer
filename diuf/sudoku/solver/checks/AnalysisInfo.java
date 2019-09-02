@@ -8,7 +8,6 @@ package diuf.sudoku.solver.checks;
 import java.text.*;
 import java.util.*;
 
-import diuf.sudoku.Cell;
 import diuf.sudoku.Grid;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;

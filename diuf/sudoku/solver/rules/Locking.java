@@ -23,10 +23,14 @@ public class Locking implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, Grid.Block.class, Grid.Column.class, accu);
-        getHints(grid, Grid.Block.class, Grid.Row.class, accu);
-        getHints(grid, Grid.Column.class, Grid.Block.class, accu);
-        getHints(grid, Grid.Row.class, Grid.Block.class, accu);
+        //getHints(grid, Grid.Block.class, Grid.Column.class, accu);
+        //getHints(grid, Grid.Block.class, Grid.Row.class, accu);
+        //getHints(grid, Grid.Column.class, Grid.Block.class, accu);
+        //getHints(grid, Grid.Row.class, Grid.Block.class, accu);
+        getHints(grid, 0, 2, accu); //block, column
+        getHints(grid, 0, 1, accu); //block, row
+        getHints(grid, 2, 0, accu); //column, block
+        getHints(grid, 1, 0, accu); //row, block
     }
 
     /**
@@ -39,16 +43,20 @@ public class Locking implements IndirectHintProducer {
      * @param regionType1 the first part type
      * @param regionType2 the second part type
      */
+    //private <S extends Grid.Region, T extends Grid.Region> void getHints(
+    //        Grid grid, Class<S> regionType1, Class<T> regionType2,
+    //        HintsAccumulator accu) throws InterruptedException {
+    //    assert (regionType1 == Grid.Block.class) != (regionType2 == Grid.Block.class);
     private <S extends Grid.Region, T extends Grid.Region> void getHints(
-            Grid grid, Class<S> regionType1, Class<T> regionType2,
+            Grid grid, int regionType1Index, int regionType2Index,
             HintsAccumulator accu) throws InterruptedException {
-        assert (regionType1 == Grid.Block.class) != (regionType2 == Grid.Block.class);
+        assert (regionType1Index == 0) != (regionType2Index == 0);
 
         // Iterate on pairs of parts
         for (int i1 = 0; i1 < 9; i1++) {
             for (int i2 = 0; i2 < 9; i2++) {
-                Grid.Region region1 = grid.getRegions(regionType1)[i1];
-                Grid.Region region2 = grid.getRegions(regionType2)[i2];
+                Grid.Region region1 = grid.getRegions(regionType1Index)[i1];
+                Grid.Region region2 = grid.getRegions(regionType2Index)[i2];
                 if (region1.crosses(region2)) {
                     CellSet region2Cells = region2.getCellSet();
                     // Iterate on values
@@ -71,7 +79,7 @@ public class Locking implements IndirectHintProducer {
                             }
                             if (isInCommonSet) {
                                 if (isDirectMode) {
-                                    lookForFollowingHiddenSingles(grid, regionType1, accu, i1,
+                                    lookForFollowingHiddenSingles(grid, regionType1Index, accu, i1,
                                             region1, region2, value);
                                 } else {
                                     // Potential solution found
@@ -87,13 +95,16 @@ public class Locking implements IndirectHintProducer {
         }
     }
 
+    //private <S extends Grid.Region> void lookForFollowingHiddenSingles(Grid grid,
+    //        Class<S> regionType1, HintsAccumulator accu, int i1,
+    //        Grid.Region region1, Grid.Region region2, int value) throws InterruptedException {
     private <S extends Grid.Region> void lookForFollowingHiddenSingles(Grid grid,
-            Class<S> regionType1, HintsAccumulator accu, int i1,
+            int regionType1Index, HintsAccumulator accu, int i1,
             Grid.Region region1, Grid.Region region2, int value) throws InterruptedException {
         // Look if the pointing / claiming induce a hidden single
         for(int i3 = 0; i3 < 9; i3++) {
             if (i3 != i1) {
-                Grid.Region region3 = grid.getRegions(regionType1)[i3];
+                Grid.Region region3 = grid.getRegions(regionType1Index)[i3];
                 if (region3.crosses(region2)) {
                     // Region <> region1 but crosses region2
                     CellSet region2Cells = region2.getCellSet();

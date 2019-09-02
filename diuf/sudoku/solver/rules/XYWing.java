@@ -45,10 +45,11 @@ public class XYWing implements IndirectHintProducer {
         BitSet union = (BitSet)xyValues.clone();
         union.or(xzValues);
         union.or(yzValues);
+        if(union.cardinality() != 3) return false;
         BitSet inter = (BitSet)xyValues.clone();
         inter.and(xzValues);
         inter.and(yzValues);
-        return union.cardinality() == 3 && inter.cardinality() == 0;
+        return inter.cardinality() == 0;
     }
 
     private boolean isXYZWing(BitSet xyValues, BitSet xzValues, BitSet yzValues) {
@@ -59,10 +60,11 @@ public class XYWing implements IndirectHintProducer {
         BitSet union = (BitSet)xyValues.clone();
         union.or(xzValues);
         union.or(yzValues);
+        if(union.cardinality() != 3) return false;
         BitSet inter = (BitSet)xyValues.clone();
         inter.and(xzValues);
         inter.and(yzValues);
-        return union.cardinality() == 3 && inter.cardinality() == 1;
+        return inter.cardinality() == 1;
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {

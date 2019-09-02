@@ -207,19 +207,29 @@ public class Grid {
         return cells[index];
     }
 
+//    /**
+//     * Get the 9 regions of the given type
+//     * @param regionType the type of the regions to return. Must be one of
+//     * {@link Grid.Block}, {@link Grid.Row} or {@link Grid.Column}.
+//     * @return the 9 regions of the given type
+//     */
+//    public Region[] getRegions(Class<? extends Region> regionType) {
+//        if (regionType == Row.class)
+//            return Grid.rows;
+//        else if (regionType == Column.class)
+//            return Grid.columns;
+//        else
+//            return Grid.blocks;
+//    }
+
     /**
      * Get the 9 regions of the given type
-     * @param regionType the type of the regions to return. Must be one of
-     * {@link Grid.Block}, {@link Grid.Row} or {@link Grid.Column}.
+     * @param regionTypeIndex the type of the regions to return. Must be 0 for
+     * {@link Grid.Block}, 1 for {@link Grid.Row}, or 2 for {@link Grid.Column}.
      * @return the 9 regions of the given type
      */
-    public Region[] getRegions(Class<? extends Region> regionType) {
-        if (regionType == Row.class)
-            return Grid.rows;
-        else if (regionType == Column.class)
-            return Grid.columns;
-        else
-            return Grid.blocks;
+    public Region[] getRegions(int regionTypeIndex) {
+    	return regions[regionTypeIndex];
     }
 
     /**
@@ -314,6 +324,18 @@ public class Grid {
     }
 
     /**
+     * Remove the given value from the potential values of the given cell index.
+     * @param cellIndex the cell index 0 .. 80
+     * @param value the value to remove, between 1 and 9, inclusive
+     */
+    public void removeCellPotentialValue(int cellIndex, int value) {
+        //if(!cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32380479)
+        cellPotentialValues[cellIndex].clear(value);
+        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
+        //numCellPencilmarksUpdate++;
+    }
+
+    /**
      * Removes at once several potential values of the given cell.
      * @param cell the cell
      * @param valuesToRemove bitset with values to remove
@@ -345,7 +367,9 @@ public class Grid {
      * @param value the value to set the cell to. Use 0 to clear the cell.
      */
     public void setCellPotentialValues(int index, BitSet values) {
-        cellPotentialValues[index] = (BitSet)values.clone();
+        //cellPotentialValues[index] = (BitSet)values.clone();
+    	cellPotentialValues[index].clear();
+    	cellPotentialValues[index].or(values);
         //valueCellsCache.invalidateCell(index);
         //numCellPencilmarksUpdate++;
     }
@@ -381,17 +405,21 @@ public class Grid {
         return Grid.blocks[(y / 3) * 3 + (x / 3)];
     }
 
-    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, int x, int y) {
-        if (regionType.equals(Grid.Row.class))
-            return getRowAt(x, y);
-        else if (regionType.equals(Grid.Column.class))
-            return getColumnAt(x, y);
-        else
-            return getBlockAt(x, y);
-    }
+//    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, int x, int y) {
+//        if (regionType.equals(Grid.Row.class))
+//            return getRowAt(x, y);
+//        else if (regionType.equals(Grid.Column.class))
+//            return getColumnAt(x, y);
+//        else
+//            return getBlockAt(x, y);
+//    }
 
-    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, Cell cell) {
-        return getRegionAt(regionType, cell.getX(), cell.getY());
+//    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, Cell cell) {
+//        return getRegionAt(regionType, cell.getX(), cell.getY());
+//    }
+    
+    public Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
+        return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
 
     /**
@@ -508,10 +536,10 @@ public class Grid {
          * @return whether this region crosses the other region.
          */
         public boolean crosses(Region other) { //can be implemented as static table
-            //return !commonCells(other).isEmpty();
-        	BitSet intersection = (BitSet)regionCellsSet.clone();
-        	intersection.and(other.regionCellsSet);
-        	return !intersection.isEmpty();
+        	return regionCellsSet.intersects(other.regionCellsSet);
+        	//BitSet intersection = (BitSet)regionCellsSet.clone();
+        	//intersection.and(other.regionCellsSet);
+        	//return !intersection.isEmpty();
         }
 
         /**
@@ -693,14 +721,17 @@ public class Grid {
      * the given value
      */
     public Cell getFirstCancellerOf(Cell target, int value) {
-        for (Class<? extends Region> regionType : getRegionTypes()) {
-            Region region = getRegionAt(regionType, target.getX(), target.getY());
-            for (int i = 0; i < 9; i++) {
-                Cell cell = region.getCell(i);
-                //if (!cell.equals(target) && cell.getValue() == value)
-                if (!cell.equals(target) && getCellValue(target.getX(), target.getY()) == value)
-                    return cell;
-            }
+//        for (Class<? extends Region> regionType : getRegionTypes()) {
+//            Region region = getRegionAt(regionType, target.getX(), target.getY());
+//            for (int i = 0; i < 9; i++) {
+//                Cell cell = region.getCell(i);
+//                if (!cell.equals(target) && getCellValue(target.getX(), target.getY()) == value)
+//                    return cell;
+//            }
+//        }
+        int[] visible = Grid.visibleCellIndex[target.getIndex()];
+        for(int i = 0; i < 20; i++) {
+        	if(cellValues[visible[i]] == value) return Grid.getCell(visible[i]);
         }
         return null;
     }
@@ -935,8 +966,8 @@ public class Grid {
         if (!(o instanceof Grid))
             return false;
         Grid other = (Grid)o;
+        if(!this.cellValues.equals(other.cellValues)) return false;
         for (int i = 0; i < 81; i++) {
-            if (getCellValue(i) != other.getCellValue(i)) return false;
             if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
         }
         return true;

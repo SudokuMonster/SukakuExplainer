@@ -159,8 +159,10 @@ public class Solver {
      * @param partType the Class of the part to cancel in
      * (block, row or column)
      */
-    private <T extends Grid.Region> void cancelBy(Class<T> partType) {
-        Grid.Region[] parts = grid.getRegions(partType);
+    //private <T extends Grid.Region> void cancelBy(Class<T> partType) {
+    //    Grid.Region[] parts = grid.getRegions(partType);
+    private void cancelBy(int partTypeIndex) {
+        Grid.Region[] parts = grid.getRegions(partTypeIndex);
         for (Grid.Region part : parts) {
             for (int i = 0; i < 9; i++) {
                 Cell cell = part.getCell(i);
@@ -199,9 +201,12 @@ public class Solver {
             if (grid.getCellValue(i) != 0)
             	grid.clearCellPotentialValues(cell);
         }
-        cancelBy(Grid.Block.class);
-        cancelBy(Grid.Row.class);
-        cancelBy(Grid.Column.class);
+        //cancelBy(Grid.Block.class);
+        //cancelBy(Grid.Row.class);
+        //cancelBy(Grid.Column.class);
+        cancelBy(0); //block
+        cancelBy(1); //row
+        cancelBy(2); //column
     }
 
     /**

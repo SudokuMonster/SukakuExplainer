@@ -201,16 +201,29 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
         return result;
     }
 
-    private static Class<? extends Region> getCauseRegion(Potential.Cause cause) {
+//    private static Class<? extends Region> getCauseRegion(Potential.Cause cause) {
+//        switch(cause) {
+//        case HiddenBlock:
+//            return Block.class;
+//        case HiddenColumn:
+//            return Column.class;
+//        case HiddenRow:
+//            return Row.class;
+//        default:
+//            return null;
+//        }
+//    }
+
+    private static int getCauseRegionTypeIndex(Potential.Cause cause) {
         switch(cause) {
         case HiddenBlock:
-            return Block.class;
+            return 0;
         case HiddenColumn:
-            return Column.class;
+            return 2;
         case HiddenRow:
-            return Row.class;
+            return 1;
         default:
-            return null;
+            return 0;
         }
     }
 
@@ -256,7 +269,8 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
                                     result.add(new Potential(curCell, value, false));
                             }
                         } else { // Hidden single
-                            Region r = currentGrid.getRegionAt(getCauseRegion(cause), curCell);
+                            //Region r = currentGrid.getRegionAt(getCauseRegion(cause), curCell);
+                            Region r = currentGrid.getRegionAt(getCauseRegionTypeIndex(cause), curCell.getIndex());
                             for (int i = 0; i < 9; i++) {
                                 Cell actCell = r.getCell(i);
                                 if (initialGrid.hasCellPotentialValue(actCell.getIndex(), p.value) && !currentGrid.hasCellPotentialValue(actCell.getIndex(), p.value)) {

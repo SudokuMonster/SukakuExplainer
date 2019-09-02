@@ -26,18 +26,24 @@ public class NakedSet implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, Grid.Block.class, accu);
-        getHints(grid, Grid.Column.class, accu);
-        getHints(grid, Grid.Row.class, accu);
+        //getHints(grid, Grid.Block.class, accu);
+        //getHints(grid, Grid.Column.class, accu);
+        //getHints(grid, Grid.Row.class, accu);
+        getHints(grid, 0, accu);
+        getHints(grid, 2, accu);
+        getHints(grid, 1, accu);
     }
 
     /**
      * For each regions of the given type, check if a n-tuple of values have
      * a common n-tuple of potential positions, and no other potential position.
      */
-    private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //        HintsAccumulator accu) throws InterruptedException {
+    //	Grid.Region[] regions = grid.getRegions(regionType);
+    private <T extends Grid.Region> void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu) throws InterruptedException {
-        Grid.Region[] regions = grid.getRegions(regionType);
+        Grid.Region[] regions = grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
             if (region.getEmptyCellCount(grid) >= degree * 2) {

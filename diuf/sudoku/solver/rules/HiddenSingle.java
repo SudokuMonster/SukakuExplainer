@@ -17,24 +17,34 @@ import diuf.sudoku.solver.*;
 public class HiddenSingle implements DirectHintProducer {
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
+//        // First alone cells (last empty cell in a region)
+//        getHints(grid, Grid.Block.class, accu, true);
+//        getHints(grid, Grid.Column.class, accu, true);
+//        getHints(grid, Grid.Row.class, accu, true);
+//        // Then hidden cells
+//        getHints(grid, Grid.Block.class, accu, false);
+//        getHints(grid, Grid.Column.class, accu, false);
+//        getHints(grid, Grid.Row.class, accu, false);
         // First alone cells (last empty cell in a region)
-        getHints(grid, Grid.Block.class, accu, true);
-        getHints(grid, Grid.Column.class, accu, true);
-        getHints(grid, Grid.Row.class, accu, true);
+        getHints(grid, 0, accu, true); //block
+        getHints(grid, 2, accu, true); //column
+        getHints(grid, 1, accu, true); //row
         // Then hidden cells
-        getHints(grid, Grid.Block.class, accu, false);
-        getHints(grid, Grid.Column.class, accu, false);
-        getHints(grid, Grid.Row.class, accu, false);
+        getHints(grid, 0, accu, false); //block
+        getHints(grid, 2, accu, false); //column
+        getHints(grid, 1, accu, false); //row
     }
 
     /**
      * For each parts of the given type, check if a value has only one
      * possible potential position.
-     * @param regionType the type of the parts to check
+     * @param regionTypeIndex the type of the parts to check
      */  
-    private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //        HintsAccumulator accu, boolean aloneOnly) throws InterruptedException {
+    private void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu, boolean aloneOnly) throws InterruptedException {
-        Grid.Region[] regions = grid.getRegions(regionType);
+        Grid.Region[] regions = grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
             // Iterate on values

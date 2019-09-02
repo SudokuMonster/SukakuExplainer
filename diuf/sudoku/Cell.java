@@ -20,24 +20,7 @@ import diuf.sudoku.tools.CellSet;
  */
 public class Cell {
 
-    //private final int x;
-    //private final int y;
-    //private int value = 0;
-    //private BitSet potentialValues = new BitSet(10); //when resolved this is emptied
-
     private final int index;
-
-//    /**
-//     * Create a new cell
-//     * @param grid the grid this cell is part of
-//     * @param x the x coordinate of this cell (0=leftmost, 8=rightmost)
-//     * @param y the y coordinate of this cell (0=topmost, 8=bottommost)
-//     */
-//    public Cell(Grid grid, int x, int y) {
-//        //this.x = x;
-//        //this.y = y;
-//        index = 9 * y + x;
-//    }
 
     /**
      * Create a new cell
@@ -55,7 +38,6 @@ public class Cell {
      * @return the x coordinate of this cell
      */
     public int getX() {
-        //return this.x;
         return this.index % 9;
     }
 
@@ -65,7 +47,6 @@ public class Cell {
      * @return the y coordinate of this cell
      */
     public int getY() {
-        //return this.y;
         return this.index / 9;
     }
 
@@ -75,35 +56,8 @@ public class Cell {
      * @return the index of this cell
      */
     public int getIndex() {
-        //return 9 * y + x;
     	return index;
     }
-
-//    /**
-//     * Get the value of this cell. Returns <tt>0</tt>
-//     * if this cell is still empty.
-//     * @return the value of this cell.
-//     */
-//    public int getValue() {
-//        return value;
-//    }
-
-//    /**
-//     * Get whether this cell is empty
-//     * @return whether this cell is empty
-//     */
-//    public boolean isEmpty() {
-//        return (value == 0);
-//    }
-
-//    /**
-//     * Set the value of this cell.
-//     * @param value the value of this cell. Use <tt>0</tt> to
-//     * clear it.
-//     */
-//    public void setValue(int value) {
-//        this.value = value;
-//    }
 
     /**
      * Set the value of this cell, and remove that value
@@ -116,97 +70,26 @@ public class Cell {
      */
     public void setValueAndCancel(int value, Grid targetGrid) {
         assert value != 0;
-        //this.value = value;
-        targetGrid.setCellValue(this.getX(), this.getY(), value);
-        //this.potentialValues.clear();
+        targetGrid.setCellValue(this.index, value);
         targetGrid.clearCellPotentialValues(this);
-        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-            Grid.Region region = targetGrid.getRegionAt(regionType, this.getX(), this.getY());
-            for (int i = 0; i < 9; i++) {
-                Cell cell = region.getCell(i);
-                //other.removePotentialValue(value);
-                targetGrid.removeCellPotentialValue(cell, value);
-            }
+        for(int i = 0; i < 20; i++) {
+        	targetGrid.removeCellPotentialValue(Grid.visibleCellIndex[this.index][i], value);
         }
     }
-
-//    /**
-//     * Get the potential values for this cell.
-//     * <p>
-//     * The result is returned as a bitset. Each of the
-//     * bit number 1 to 9 is set if the corresponding
-//     * value is a potential value for this cell. Bit number
-//     * <tt>0</tt> is not used and ignored.
-//     * @return the potential values for unresolved cell, empty for resolved
-//     */
-//    public BitSet getPotentialValues() {
-//        return this.potentialValues;
-//    }
-
-//    /**
-//     * Test whether the given value is a potential
-//     * value for this cell.
-//     * @param value the potential value to test, between 1 and 9, inclusive
-//     * @return whether the given value is a potential value for this cell
-//     */
-//    public boolean hasPotentialValue(int value) {
-//        return this.potentialValues.get(value);
-//    }
-
-//    /**
-//     * Add the given value as a potential value for this cell
-//     * @param value the value to add, between 1 and 9, inclusive
-//     */
-//    public void addPotentialValue(int value) {
-//        this.potentialValues.set(value, true);
-//    }
-
-//    /**
-//     * Remove the given value from the potential values of this cell.
-//     * @param value the value to remove, between 1 and 9, inclusive
-//     */
-//    public void removePotentialValue(int value) {
-//        this.potentialValues.set(value, false);
-//    }
-
-//    public void removePotentialValues(BitSet valuesToRemove) {
-//        this.potentialValues.andNot(valuesToRemove);
-//    }
-
-//    public void clearPotentialValues() {
-//        this.potentialValues.clear();
-//    }
 
     /**
      * Get the cells that form the "house" of this cell. The
      * "house" cells are all the cells that are in the
      * same block, row or column.
      * <p>
-     * The iteration order is guaranted to be the same on each
+     * The iteration order is guaranteed to be the same on each
      * invocation of this method for the same cell. (this is
      * necessary to ensure that hints of the same difficulty
      * are always returned in the same order).
      * @return the cells that are controlled by this cell
      */
-    //public Collection<Cell> getHouseCells(Grid targetGrid) {
     public CellSet getVisibleCells() {
         // Use a set to prevent duplicates (cells in both block and row/column)
-//        Collection<Cell> result = new LinkedHashSet<Cell>();
-////        // Iterate on region types (Block, Row, Column)
-////        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-////            // Get region on which this cell is
-////            Grid.Region region = targetGrid.getRegionAt(regionType, getX(), getY());
-////            // Add all cell of that region
-////            for (int i = 0; i < 9; i++)
-////                result.add(region.getCell(i));
-////        }
-////        // Remove this cell
-////        result.remove(this);
-//        
-//        for(int cellIndex : Grid.visibleCellIndex[index]) {
-//        	result.add(Grid.getCell(cellIndex));
-//        }
-//        return result;
     	return new CellSet(Grid.visibleCellIndex[index]);
     }
 
@@ -305,25 +188,12 @@ public class Cell {
         return builder.toString();
     }
 
-//    /**
-//     * Copy this cell to another one. The value and potential values
-//     * are copied, but the grid reference and the coordinates are not.
-//     * @param other the cell to copy this cell to
-//     */
-//    public void copyTo(Cell other) {
-//        assert this.x == other.x && this.y == other.y;
-//        //other.value = this.value;
-//        other.potentialValues = (BitSet)this.potentialValues.clone();
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Cell))
             return false;
     	if(this == o) return true;
     	Cell other = (Cell)o;
-    	//if(x != other.getX()) return false;
-    	//if(y != other.getY()) return false;
     	if(index != other.getIndex()) return false;
     	
     	return true;

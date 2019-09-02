@@ -31,9 +31,12 @@ public class HiddenSet implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, Grid.Block.class, accu);
-        getHints(grid, Grid.Column.class, accu);
-        getHints(grid, Grid.Row.class, accu);
+        //getHints(grid, Grid.Block.class, accu);
+        //getHints(grid, Grid.Column.class, accu);
+        //getHints(grid, Grid.Row.class, accu);
+        getHints(grid, 0, accu); //block
+        getHints(grid, 2, accu); //column
+        getHints(grid, 1, accu); //row
     }
 
     /**
@@ -42,9 +45,12 @@ public class HiddenSet implements IndirectHintProducer {
      * @param regionType the type of the parts to check
      * @param degree the degree of the tuples to search
      */
-    private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
+    //        HintsAccumulator accu) throws InterruptedException {
+    //    Grid.Region[] regions = grid.getRegions(regionType);
+    private void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu) throws InterruptedException {
-        Grid.Region[] regions = grid.getRegions(regionType);
+        Grid.Region[] regions = grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
             int nbEmptyCells = region.getEmptyCellCount(grid);

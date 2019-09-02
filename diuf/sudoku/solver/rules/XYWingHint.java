@@ -105,7 +105,6 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
     }
 
     private int getRemainingValue(Grid grid, Cell c) {
-        //BitSet result = (BitSet)c.getPotentialValues().clone();
         BitSet result = (BitSet)grid.getCellPotentialValues(c.getIndex()).clone();
         result.clear(value);
         return result.nextSetBit(0);

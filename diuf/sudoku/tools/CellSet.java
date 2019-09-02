@@ -12,7 +12,7 @@ import diuf.sudoku.Cell;
 import diuf.sudoku.Grid;
 
 /**
- * @author Mladen Dobrichev
+ * @author Mladen Dobrichev, 2019
  *
  */
 public class CellSet implements Set<Cell> {

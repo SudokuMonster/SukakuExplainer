@@ -64,7 +64,8 @@ public class UniqueLoops implements IndirectHintProducer {
                 assert v1 > 0 && v2 > 0;
                 List<Cell> tempLoop = new ArrayList<Cell>();
                 Collection<List<Cell>> results = new ArrayList<List<Cell>>();
-                checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), null, results);
+                //checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), null, results);
+                checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), -1, results);
                 for (List<Cell> loop : results) {
                     // Potential loop found. Check validity
                     if (isValidLoop(grid, loop)) {
@@ -139,19 +140,25 @@ public class UniqueLoops implements IndirectHintProducer {
      * @param allowedEx the remaining number of allowed cells with more than two
      * potential values in the loop.
      * @param exValues the extra values in the current loop
-     * @param lastRegionType the region type shared by the last two cells.
+     * @param lastRegionTypeIndex the region type index shared by the last two cells, or -1.
      * This region type can be skipped for the next cell. Might by <tt>null</tt>.
      * @param results the collection to fill with all loops found
      * @throws InterruptedException
      */
+    //private void checkForLoops(Grid grid, Cell cell, int v1, int v2,
+    //        List<Cell> loop, int allowedEx, BitSet exValues,
+    //        Class<? extends Grid.Region> lastRegionType, Collection<List<Cell>> results) {
     private void checkForLoops(Grid grid, Cell cell, int v1, int v2,
             List<Cell> loop, int allowedEx, BitSet exValues,
-            Class<? extends Grid.Region> lastRegionType, Collection<List<Cell>> results) {
+            int lastRegionTypeIndex, Collection<List<Cell>> results) {
         loop.add(cell);
         exValues = (BitSet)exValues.clone(); // Ensure we cleanup ourself
-        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-            if (!regionType.equals(lastRegionType)) {
-                Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
+        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+        //    if (!regionType.equals(lastRegionType)) {
+        //		Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
+        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            if (regionTypeIndex != lastRegionTypeIndex) {
+                Grid.Region region = grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
                     Cell next = region.getCell(i);
                     if (loop.get(0).equals(next) && loop.size() >= 4) {
@@ -178,7 +185,7 @@ public class UniqueLoops implements IndirectHintProducer {
                                 if (cardinality > 2)
                                     newAllowedEx -= 1;
                                 checkForLoops(grid, next, v1, v2, loop, newAllowedEx, exValues,
-                                        regionType, results);
+                                        regionTypeIndex, results);
                             }
                         }
                     } // Not in the loop yet
@@ -207,8 +214,10 @@ public class UniqueLoops implements IndirectHintProducer {
         HashSet<Grid.Region> visitedEven = new HashSet<Grid.Region>();
         boolean isOdd = false;
         for (Cell cell : loop) {
-            for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-                Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
+            //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+            //    Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
+            for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
+                Grid.Region region = grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (isOdd) {
                     if (visitedOdd.contains(region))
                         return false;
@@ -292,9 +301,12 @@ public class UniqueLoops implements IndirectHintProducer {
         extra.clear(v2);
         // Look for Naked and hidden Sets. Iterate on degree
         for (int degree = extra.cardinality(); degree <= 7; degree++) {
-            for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-                Grid.Region region = grid.getRegionAt(regionType, c1);
-                if (region.equals(grid.getRegionAt(regionType, c2))) {
+            //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+            //    Grid.Region region = grid.getRegionAt(regionType, c1);
+            //    if (region.equals(grid.getRegionAt(regionType, c2))) {
+            for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+                Grid.Region region = grid.getRegionAt(regionTypeIndex, c1.getIndex());
+                if (region.equals(grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
                     int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
@@ -473,9 +485,12 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for v1 or v2 locked in a region of c1 and c2
         Grid.Region r1 = null;
         Grid.Region r2 = null;
-        for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-            Grid.Region region = grid.getRegionAt(regionType, c1.getX(), c1.getY());
-            if (region.equals(grid.getRegionAt(regionType, c2.getX(), c2.getY()))) {
+        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
+        for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            //Grid.Region region = grid.getRegionAt(regionType, c1.getX(), c1.getY());
+            //if (region.equals(grid.getRegionAt(regionType, c2.getX(), c2.getY()))) {
+            Grid.Region region = grid.getRegionAt(regionTypeIndex, c1.getIndex());
+            if (region.equals(grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                 // Region common to c1 and c2
                 boolean hasValue1 = false;
                 boolean hasValue2 = false;

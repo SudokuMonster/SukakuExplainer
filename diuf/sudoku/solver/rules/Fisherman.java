@@ -31,21 +31,27 @@ public class Fisherman implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, Grid.Column.class, Grid.Row.class, accu);
-        getHints(grid, Grid.Row.class, Grid.Column.class, accu);
+        //getHints(grid, Grid.Column.class, Grid.Row.class, accu);
+        //getHints(grid, Grid.Row.class, Grid.Column.class, accu);
+        getHints(grid, 2, 1, accu); //column, row
+        getHints(grid, 1, 2, accu); //row, column
     }
 
-    private <S extends Grid.Region,T extends Grid.Region> void getHints(Grid grid,
-            Class<S> partType1, Class<T> partType2,
+    //private <S extends Grid.Region,T extends Grid.Region> void getHints(Grid grid,
+    //        Class<S> partType1, Class<T> partType2,
+    //        HintsAccumulator accu) throws InterruptedException {
+    //    assert !partType1.equals(partType2);
+    private void getHints(Grid grid, int partType1Index, int partType2Index,
             HintsAccumulator accu) throws InterruptedException {
-        assert !partType1.equals(partType2);
+        assert partType1Index != partType2Index;
 
         // Get occurance count for each value
         int[] occurances = new int[10];
         for (int value = 1; value <= 9; value++)
             occurances[value] = grid.getCountOccurancesOfValue(value);
 
-        Grid.Region[] parts = grid.getRegions(partType1);
+        //Grid.Region[] parts = grid.getRegions(partType1);
+        Grid.Region[] parts = grid.getRegions(partType1Index);
         // Iterate on lines tuples
         Permutations perm = new Permutations(degree, 9);
         while (perm.hasNext()) {
@@ -72,8 +78,8 @@ public class Fisherman implements IndirectHintProducer {
 
                     if (common != null) {
                         // Potential hint found
-                        IndirectHint hint = createFishHint(grid, partType1, partType2,
-                                myIndexes, common, value);
+                        //IndirectHint hint = createFishHint(grid, partType1, partType2, myIndexes, common, value);
+                        IndirectHint hint = createFishHint(grid, partType1Index, partType2Index, myIndexes, common, value);
                         if (hint.isWorth())
                             accu.add(hint);
                     }
@@ -82,11 +88,14 @@ public class Fisherman implements IndirectHintProducer {
         }
     }
 
-    private <S extends Grid.Region,T extends Grid.Region> IndirectHint createFishHint(
-            Grid grid, Class<S> otherPartType, Class<T> myPartType, BitSet otherIndexes, 
-            BitSet myIndexes, int value) {
-        Grid.Region[] myParts = grid.getRegions(myPartType);
-        Grid.Region[] otherParts = grid.getRegions(otherPartType);
+    //private <S extends Grid.Region,T extends Grid.Region> IndirectHint createFishHint(
+    //        Grid grid, Class<S> otherPartType, Class<T> myPartType, BitSet otherIndexes, 
+    //        BitSet myIndexes, int value) {
+    //    Grid.Region[] myParts = grid.getRegions(myPartType);
+    //    Grid.Region[] otherParts = grid.getRegions(otherPartType);
+    private IndirectHint createFishHint(Grid grid, int otherPartTypeIndex, int myPartTypeIndex, BitSet otherIndexes, BitSet myIndexes, int value) {
+        Grid.Region[] myParts = grid.getRegions(myPartTypeIndex);
+        Grid.Region[] otherParts = grid.getRegions(otherPartTypeIndex);
         // Build parts
         List<Grid.Region> parts1 = new ArrayList<Grid.Region>();
         List<Grid.Region> parts2 = new ArrayList<Grid.Region>();
