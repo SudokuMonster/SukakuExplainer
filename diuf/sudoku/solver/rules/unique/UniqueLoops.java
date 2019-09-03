@@ -158,7 +158,7 @@ public class UniqueLoops implements IndirectHintProducer {
         //		Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             if (regionTypeIndex != lastRegionTypeIndex) {
-                Grid.Region region = grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
                     Cell next = region.getCell(i);
                     if (loop.get(0).equals(next) && loop.size() >= 4) {
@@ -217,7 +217,7 @@ public class UniqueLoops implements IndirectHintProducer {
             //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
             //    Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
             for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
-                Grid.Region region = grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (isOdd) {
                     if (visitedOdd.contains(region))
                         return false;
@@ -305,8 +305,8 @@ public class UniqueLoops implements IndirectHintProducer {
             //    Grid.Region region = grid.getRegionAt(regionType, c1);
             //    if (region.equals(grid.getRegionAt(regionType, c2))) {
             for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
-                Grid.Region region = grid.getRegionAt(regionTypeIndex, c1.getIndex());
-                if (region.equals(grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
+                Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
+                if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
                     int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
@@ -489,8 +489,8 @@ public class UniqueLoops implements IndirectHintProducer {
         for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
             //Grid.Region region = grid.getRegionAt(regionType, c1.getX(), c1.getY());
             //if (region.equals(grid.getRegionAt(regionType, c2.getX(), c2.getY()))) {
-            Grid.Region region = grid.getRegionAt(regionTypeIndex, c1.getIndex());
-            if (region.equals(grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
+            Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
+            if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                 // Region common to c1 and c2
                 boolean hasValue1 = false;
                 boolean hasValue2 = false;

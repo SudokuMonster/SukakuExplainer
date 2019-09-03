@@ -350,7 +350,7 @@ public class Grid {
      * @param y the vertical coordinate
      * @return the row at the given coordinates
      */
-    public Row getRowAt(int x, int y) {
+    public static Row getRowAt(int x, int y) {
         return Grid.rows[y];
     }
 
@@ -360,7 +360,7 @@ public class Grid {
      * @param y the vertical coordinate
      * @return the column at the given location
      */
-    public Column getColumnAt(int x, int y) {
+    public static Column getColumnAt(int x, int y) {
         return Grid.columns[x];
     }
 
@@ -388,7 +388,7 @@ public class Grid {
 //        return getRegionAt(regionType, cell.getX(), cell.getY());
 //    }
     
-    public Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
+    public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
         return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
 
@@ -895,7 +895,6 @@ public class Grid {
                 if (ch >= '1' && ch <= '9') {
                     int value = (ch - '0');
                     assert value == 1 + i % 9; //exact positional mapping
-                    Cell cell = getCell(cl);
                     addCellPotentialValue(cl, value);
                 }
             }

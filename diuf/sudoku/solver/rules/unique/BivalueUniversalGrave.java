@@ -164,7 +164,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             Grid.Region region = null;
             for (Cell cell : bugCells) {
                 //Grid.Region cellRegion = grid.getRegionAt(regionType, cell.getX(), cell.getY());
-                Grid.Region cellRegion = grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (region == null) {
                     region = cellRegion;
                 } else if (!region.equals(cellRegion)) {
@@ -179,7 +179,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 List<Cell> regionCells = new ArrayList<Cell>();
                 for (Cell cell : commonCells) {
                     //if (grid.getRegionAt(regionType, cell).equals(region))
-                    if (grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
+                    if (Grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
                         regionCells.add(cell);
                 }
                 // Iterate on degree
@@ -265,7 +265,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             Grid.Region region = null;
             for (Cell cell : bugCells) {
                 //Grid.Region cellRegion = grid.getRegionAt(regionType, cell.getX(), cell.getY());
-                Grid.Region cellRegion = grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (region == null) {
                     region = cellRegion;
                 } else if (!region.equals(cellRegion)) {
