@@ -521,9 +521,13 @@ public class SudokuExplainer {
         }
       }
 
-    public void copyGrid() {
-        SudokuIO.saveToClipboard(grid);
+    public void copyGrid(boolean line) {
+        SudokuIO.saveToClipboard(grid, line);
     }
+
+	public void copyPencilmarkGrid(boolean line) {	
+		SudokuIO.savePencilmarksToClipboard(grid, line);
+	}
 
     public void loadGrid(File file) {
         Grid copy = new Grid();

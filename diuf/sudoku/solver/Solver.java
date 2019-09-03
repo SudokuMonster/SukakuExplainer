@@ -442,11 +442,12 @@ public class Solver {
      * @return The actual difficulty if it is between the
      * given bounds. An arbitrary out-of-bounds value else.
      */
-    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3) {
+    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3, String excludeT1, String excludeT2, String excludeT3, String includeT1, String includeT2, String includeT3, String notMaxT1, String notMaxT2, String notMaxT3) {
         int oldPriority = lowerPriority();
         try {
             double difficulty = Double.NEGATIVE_INFINITY;
-            while (!isSolved()) {
+            int notMaxCounter = 0;
+			while (!isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
                     for (HintProducer producer : directHintProducers)
@@ -467,23 +468,29 @@ public class Solver {
                 assert hint instanceof Rule;
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
-                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3)
+				String ruleName = rule.getName();
+                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3 || Objects.equals(ruleName, excludeT1) || Objects.equals(ruleName, excludeT2) || Objects.equals(ruleName, excludeT3))
 					return 0.0;
-				if (ruleDiff > difficulty)
-					if (!(notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff))
-						difficulty = ruleDiff;
+				if (ruleDiff > difficulty) {
+					notMaxCounter = 0;
+					if (notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff || Objects.equals(ruleName, notMaxT1) || Objects.equals(ruleName, notMaxT2) || Objects.equals(ruleName, notMaxT3))
+							notMaxCounter = 1;
+					difficulty = ruleDiff;
+				}
                 if (difficulty >= min && max >= 11.0)
                     break;
                 if (difficulty > max)
                     break;
                 hint.apply(grid);
             }
+			if (notMaxCounter == 1)
+				return 0.0;
 			return difficulty;
         } finally {
             normalPriority(oldPriority);
         }
     }
-    
+        
     private Hint getSingleHint() {
         SingleHintAccumulator accu = new SingleHintAccumulator();
         try {

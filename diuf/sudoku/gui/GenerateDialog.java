@@ -19,6 +19,8 @@ import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
 
 
+//Controlling difficulty of hidden set
+//New changes
 public class GenerateDialog extends JDialog {
 
     private static final long serialVersionUID = 8620081149465721387L;
@@ -71,6 +73,40 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
         Medium {
 
@@ -119,6 +155,40 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
         Hard {
 
@@ -166,7 +236,41 @@ public class GenerateDialog extends JDialog {
             @Override
             public double getnotMaxDifficulty3() {
                 return 0.0;
+			}
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
             }
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
         Superior {
 
@@ -215,6 +319,40 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
         Fiendish {
 
@@ -263,6 +401,39 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
 		SuperiorPlus {
 
@@ -311,6 +482,39 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
 		Uniqueness {
 
@@ -359,7 +563,121 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
+		UL10 {
+            @Override
+            public double getMinDifficulty() {
+                return 5.0;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 5.3;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "Hidden Quad";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "Jellyfish";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+		},
 		BUGs {
 
             @Override
@@ -407,6 +725,39 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
 		AdvancedPlayer {
 
@@ -455,6 +806,39 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         },
          Diabolical {
 
@@ -503,6 +887,39 @@ public class GenerateDialog extends JDialog {
             public double getnotMaxDifficulty3() {
                 return 0.0;
             }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
         };
 
         public abstract double getMinDifficulty();
@@ -516,7 +933,15 @@ public class GenerateDialog extends JDialog {
 		public abstract double getnotMaxDifficulty1();
 		public abstract double getnotMaxDifficulty2();
 		public abstract double getnotMaxDifficulty3();
-
+		public abstract String getexcludeTechnique1();
+		public abstract String getexcludeTechnique2();
+		public abstract String getexcludeTechnique3();
+		public abstract String getincludeTechnique1();
+		public abstract String getincludeTechnique2();
+		public abstract String getincludeTechnique3();
+		public abstract String getnotMaxTechnique1();
+		public abstract String getnotMaxTechnique2();
+		public abstract String getnotMaxTechnique3();
         public String getHtmlDescription() {
             return HtmlLoader.loadHtml(this, this.name() + ".html");
         }
@@ -786,12 +1211,21 @@ public class GenerateDialog extends JDialog {
 		double notMaxDifficulty1 = difficulty.getnotMaxDifficulty1();
 		double notMaxDifficulty2 = difficulty.getnotMaxDifficulty2();
 		double notMaxDifficulty3 = difficulty.getnotMaxDifficulty3();
+		String excludeTechnique1 = difficulty.getexcludeTechnique1();
+		String excludeTechnique2 = difficulty.getexcludeTechnique2();
+		String excludeTechnique3 = difficulty.getexcludeTechnique3();
+		String includeTechnique1 = difficulty.getincludeTechnique1();
+		String includeTechnique2 = difficulty.getincludeTechnique2();
+		String includeTechnique3 = difficulty.getincludeTechnique3();
+		String notMaxTechnique1 = difficulty.getnotMaxTechnique1();
+		String notMaxTechnique2 = difficulty.getnotMaxTechnique2();
+		String notMaxTechnique3 = difficulty.getnotMaxTechnique3();
         if (!isExact)
             minDifficulty = 1.0;
         List<Symmetry> symList = new ArrayList<Symmetry>(symmetries);
 
         // Generate grid
-        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
+        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3);
         generator.start();
     }
 
@@ -812,11 +1246,19 @@ public class GenerateDialog extends JDialog {
 		private final double notMaxDifficulty1;
 		private final double notMaxDifficulty2;
 		private final double notMaxDifficulty3;
-
+		private final String excludeTechnique1;
+		private final String excludeTechnique2;
+		private final String excludeTechnique3;
+		private final String includeTechnique1;
+		private final String includeTechnique2;
+		private final String includeTechnique3;
+		private final String notMaxTechnique1;
+		private final String notMaxTechnique2;
+		private final String notMaxTechnique3;
         private Generator generator;
 
 
-       public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3) {
+       public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3, String excludeTechnique1, String excludeTechnique2, String excludeTechnique3, String includeTechnique1, String includeTechnique2, String includeTechnique3, String notMaxTechnique1, String notMaxTechnique2, String notMaxTechnique3) {
             this.symmetries = symmetries;
             this.minDifficulty = minDifficulty;
             this.maxDifficulty = maxDifficulty;
@@ -829,6 +1271,15 @@ public class GenerateDialog extends JDialog {
 			this.notMaxDifficulty1 = notMaxDifficulty1;
  			this.notMaxDifficulty2 = notMaxDifficulty2;
 			this.notMaxDifficulty3 = notMaxDifficulty3;
+			this.excludeTechnique1 = excludeTechnique1;
+			this.excludeTechnique2 = excludeTechnique2;
+			this.excludeTechnique3 = excludeTechnique3;
+			this.includeTechnique1 = includeTechnique1;
+			this.includeTechnique2 = includeTechnique2;
+			this.includeTechnique3 = includeTechnique3;
+			this.notMaxTechnique1 = notMaxTechnique1;
+			this.notMaxTechnique2 = notMaxTechnique2;
+			this.notMaxTechnique3 = notMaxTechnique3;
         }
 
         @Override
@@ -847,7 +1298,7 @@ public class GenerateDialog extends JDialog {
                 }
             });
             generator = new Generator();
-            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3);
+            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (result != null) {

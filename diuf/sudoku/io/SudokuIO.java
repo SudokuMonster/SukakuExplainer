@@ -226,7 +226,7 @@ public class SudokuIO {
         return RES_ERROR;
     }
 
-    private static void saveToWriter(Grid grid, Writer writer) throws IOException {
+    private static void saveToWriter(Grid grid, Writer writer, boolean line) throws IOException {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 int value = grid.getCellValue(x, y);
@@ -235,8 +235,16 @@ public class SudokuIO {
                     ch = '0' + value;
                 writer.write(ch);
             }
-            writer.write("\r\n");
+            if (!line)
+				writer.write("\r\n");
         }
+    }
+
+    private static void saveToWriterPencilmarks(Grid grid, Writer writer, boolean line) throws IOException {
+		if (line)
+			writer.write(grid.toStringPencilmarks());
+		else
+			writer.write(grid.toStringMultilinePencilmarks());
     }
 
     /**
@@ -278,10 +286,21 @@ public class SudokuIO {
         }
     }
 
-    public static void saveToClipboard(Grid grid) {
+    public static void saveToClipboard(Grid grid, boolean line) {
         StringWriter writer = new StringWriter();
         try {
-            saveToWriter(grid, writer);
+            saveToWriter(grid, writer, line);
+            StringSelection data = new StringSelection(writer.toString());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, data);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void savePencilmarksToClipboard(Grid grid, boolean line) {
+        StringWriter writer = new StringWriter();
+        try {
+            saveToWriterPencilmarks(grid, writer, line);
             StringSelection data = new StringSelection(writer.toString());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, data);
         } catch (IOException ex) {
@@ -321,7 +340,8 @@ public class SudokuIO {
         try {
             FileWriter fwriter = new FileWriter(file);
             writer = new BufferedWriter(fwriter);
-            saveToWriter(grid, writer);
+            boolean line = false;
+			saveToWriter(grid, writer, line);
             return null;
         } catch (IOException ex) {
             return new ErrorMessage("Error while writing file {0}:\n{1}", file, ex);
