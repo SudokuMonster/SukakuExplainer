@@ -939,7 +939,8 @@ public class Grid {
         if (!(o instanceof Grid))
             return false;
         Grid other = (Grid)o;
-        if(!this.cellValues.equals(other.cellValues)) return false;
+        //if(!this.cellValues.equals(other.cellValues)) return false;
+        if(!Arrays.equals(this.cellValues, other.cellValues)) return false;
         for (int i = 0; i < 81; i++) {
             if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
         }
