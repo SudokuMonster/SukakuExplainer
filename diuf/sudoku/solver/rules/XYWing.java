@@ -71,12 +71,10 @@ public class XYWing implements IndirectHintProducer {
         int targetCardinality = (isXYZ ? 3 : 2);
         for (int i = 0; i < 81; i++) {
             Cell xyCell = Grid.getCell(i);
-            //BitSet xyValues = xyCell.getPotentialValues();
             BitSet xyValues = grid.getCellPotentialValues(i);
             if (xyValues.cardinality() == targetCardinality) {
                 // Potential XY cell found
                 for (int xzCellIndex : xyCell.getVisibleCellIndexes()) {
-                    //BitSet xzValues = xzCell.getPotentialValues();
                     BitSet xzValues = grid.getCellPotentialValues(xzCellIndex);
                     if (xzValues.cardinality() == 2) {
                         // Potential XZ cell found. Do small test
@@ -85,7 +83,6 @@ public class XYWing implements IndirectHintProducer {
                         if (remValues.cardinality() == 1) {
                             // We have found XZ cell, look for YZ cell
                             for (int yzCellIndex : xyCell.getVisibleCellIndexes()) {
-                                //BitSet yzValues = yzCell.getPotentialValues();
                                 BitSet yzValues = grid.getCellPotentialValues(yzCellIndex);
                                 if (yzValues.cardinality() == 2) {
                                     // Potential YZ cell found

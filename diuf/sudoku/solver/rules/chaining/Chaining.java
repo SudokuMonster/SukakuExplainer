@@ -506,8 +506,6 @@ public class Chaining implements IndirectHintProducer {
 
     private void doRegionChainings(Grid grid, List<ChainingHint> result, Cell cell,
             int value, LinkedSet<Potential> onToOn, LinkedSet<Potential> onToOff) {
-        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-        //    Grid.Region region = grid.getRegionAt(regionType, cell.getX(), cell.getY());
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
             BitSet potentialPositions = region.getPotentialPositions(grid, value);
@@ -577,15 +575,12 @@ public class Chaining implements IndirectHintProducer {
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
         Set<Potential> result = new LinkedHashSet<Potential>();
-        //Set<Potential> result = new TreeSet<Potential>();
 
         int potentialCellIndex = p.cell.getIndex();
         if (isYChainEnabled) { // This rule is not used with X-Chains
             // First rule: other potential values for this cell get off
             BitSet potentialValues = grid.getCellPotentialValues(potentialCellIndex);
-            //for (int value = 1; value <= 9; value++) {
             for (int value = potentialValues.nextSetBit(0); value >= 0; value = potentialValues.nextSetBit(value + 1)) {
-                //if (value != p.value && potentialValues.get(value))
                 if (value != p.value)
                     result.add(new Potential(p.cell, value, false, p,
                             Potential.Cause.NakedSingle, "the cell can contain only one value"));
@@ -593,7 +588,6 @@ public class Chaining implements IndirectHintProducer {
         }
 
         // Second rule: other potential position for this value get off
-        //Grid.Region box = grid.getRegionAt(Grid.Block.class, p.cell.getX(), p.cell.getY());
         Grid.Region box = Grid.getRegionAt(0, potentialCellIndex);
         BitSet boxPositions = box.copyPotentialPositions(grid, p.value);
         boxPositions.clear(box.indexOf(p.cell));
@@ -603,7 +597,6 @@ public class Chaining implements IndirectHintProducer {
                     getRegionCause(box),
                     "the value can occur only once in the " + box.toString()));
         }
-        //Grid.Region row = grid.getRegionAt(Grid.Row.class, p.cell.getX(), p.cell.getY());
         Grid.Region row = Grid.getRegionAt(1, potentialCellIndex);
         BitSet rowPositions = row.copyPotentialPositions(grid, p.value);
         rowPositions.clear(row.indexOf(p.cell));
@@ -614,7 +607,6 @@ public class Chaining implements IndirectHintProducer {
                     getRegionCause(row),
                     "the value can occur only once in the " + row.toString()));
         }
-        //Grid.Region col = grid.getRegionAt(Grid.Column.class, p.cell.getX(), p.cell.getY());
         Grid.Region col = Grid.getRegionAt(2, potentialCellIndex);
         BitSet colPositions = col.copyPotentialPositions(grid, p.value);
         colPositions.clear(col.indexOf(p.cell));
@@ -646,7 +638,6 @@ public class Chaining implements IndirectHintProducer {
 
     private void addHiddenParentsOfRegion(Potential p, Grid grid, Grid source,
             Grid.Region curRegion, LinkedSet<Potential> offPotentials) {
-        //Grid.Region srcRegion = source.getRegionAt(curRegion.getClass(), p.cell.getX(), p.cell.getY());
         Grid.Region srcRegion = Grid.getRegionAt(curRegion.getRegionTypeIndex(), p.cell.getIndex());
         int value = p.value;
         BitSet curPositions = curRegion.copyPotentialPositions(grid, value);

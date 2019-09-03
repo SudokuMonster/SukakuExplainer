@@ -26,8 +26,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         Map<Cell, BitSet> bugValues = new HashMap<Cell, BitSet>();
         BitSet allBugValues = new BitSet(10);
         CellSet commonCells = null;
-        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-        //    Grid.Region[] regions = grid.getRegions(regionType);
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region[] regions = grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
@@ -63,7 +61,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             allBugValues.set(value);
                             temp.removeCellPotentialValue(cell.getIndex(), value);
                             if (commonCells == null)
-                                //commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
                                 commonCells = new CellSet(cell.getVisibleCells());
                             else
                                 commonCells.retainAll(cell.getVisibleCells());
@@ -89,8 +86,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         }
         // When bug values have been removed, all remaining candidates must have
         // two positions in each region
-        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-        //    Grid.Region[] regions = temp.getRegions(regionType);
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region[] regions = grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
@@ -126,7 +121,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
     private void addBug1Hint(Grid grid, HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues) throws InterruptedException {
         Cell bugCell = bugCells.get(0);
         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
-        //BitSet removable = (BitSet)bugCell.getPotentialValues().clone();
         BitSet removable = (BitSet)grid.getCellPotentialValues(bugCell.getIndex()).clone();
         removable.andNot(extraValues);
         removablePotentials.put(bugCell, removable);
@@ -141,7 +135,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         if (commonCells != null && !commonCells.isEmpty()) {
             Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
             for (Cell cell : commonCells) {
-                //if (cell.hasPotentialValue(value))
                 if (grid.hasCellPotentialValue(cell.getIndex(), value))
                     removablePotentials.put(cell, SingletonBitSet.create(value));
             }
@@ -158,12 +151,10 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
     private void addBug3Hint(HintsAccumulator accu, List<Cell> bugCells,
             Map<Cell, BitSet> extraValues, BitSet allExtraValues, Set<Cell> commonCells,
             Grid grid) throws InterruptedException {
-        //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
-                //Grid.Region cellRegion = grid.getRegionAt(regionType, cell.getX(), cell.getY());
                 Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (region == null) {
                     region = cellRegion;
@@ -178,7 +169,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 // Gather other cells of this region
                 List<Cell> regionCells = new ArrayList<Cell>();
                 for (Cell cell : commonCells) {
-                    //if (grid.getRegionAt(regionType, cell).equals(region))
                     if (Grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
                         regionCells.add(cell);
                 }
@@ -196,7 +186,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 Cell cell = regionCells.get(indexes[i]);
                                 // Fill array of missing naked cells
                                 nakedCells[i] = cell;
-                                //BitSet potential = cell.getPotentialValues();
                                 BitSet potential = grid.getCellPotentialValues(cell.getIndex());
                                 // Fill potential values array
                                 potentials[i] = potential;
@@ -220,7 +209,6 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                         // Ok, some cells in a common region. Look for removable potentials
                                         Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
                                         for (Cell cell : erasable) {
-                                            //BitSet removable = (BitSet)cell.getPotentialValues().clone();
                                             BitSet removable = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
                                             removable.and(nakedSet);
                                             if (!removable.isEmpty())

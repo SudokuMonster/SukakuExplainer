@@ -76,8 +76,6 @@ public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> removables = super.getRemovablePotentials();
         Map<Cell, BitSet> result = new HashMap<Cell, BitSet>();
-        //for (Cell c : removables.keySet())
-            //result.put(c, (BitSet)removables.get(c).clone());
         for (Map.Entry<Cell, BitSet> entry : removables.entrySet()) {
         	result.put(entry.getKey(), (BitSet)entry.getValue().clone());
         }

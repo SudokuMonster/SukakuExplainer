@@ -7,17 +7,6 @@ package diuf.sudoku;
 
 import diuf.sudoku.tools.CellSet;
 
-/**
- * A cell of a sudoku grid.
- * <p>
- * Holds:
- * <ul>
- * <li>The grid this cell belongs to
- * <li>The x and y coordinates within the grid (0 to 8)
- * <li>The current value, or <code>0</code> if the cell is empty
- * <li>The bitset of potential values for this cell (the candidates, bit 0 unused).
- * </ul>
- */
 public class Cell {
 
     private final int index;

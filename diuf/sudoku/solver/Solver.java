@@ -159,8 +159,6 @@ public class Solver {
      * @param partType the Class of the part to cancel in
      * (block, row or column)
      */
-    //private <T extends Grid.Region> void cancelBy(Class<T> partType) {
-    //    Grid.Region[] parts = grid.getRegions(partType);
     private void cancelBy(int partTypeIndex) {
         Grid.Region[] parts = grid.getRegions(partTypeIndex);
         for (Grid.Region part : parts) {
@@ -199,9 +197,6 @@ public class Solver {
             if (grid.getCellValue(i) != 0)
             	grid.clearCellPotentialValues(i);
         }
-        //cancelBy(Grid.Block.class);
-        //cancelBy(Grid.Row.class);
-        //cancelBy(Grid.Column.class);
         cancelBy(0); //block
         cancelBy(1); //row
         cancelBy(2); //column
@@ -833,8 +828,6 @@ public class Solver {
 
     public Map<String, Integer> toNamedList(Map<Rule, Integer> rules) {
         Map<String, Integer> hints = new LinkedHashMap<String, Integer>();
-        //for (Rule rule : rules.keySet()) {
-            //int count = rules.get(rule);
         for (Map.Entry<Rule, Integer> entry : rules.entrySet()) {
         	Rule rule = entry.getKey();
         	int count = entry.getValue();

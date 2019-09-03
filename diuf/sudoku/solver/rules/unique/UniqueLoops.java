@@ -52,10 +52,7 @@ public class UniqueLoops implements IndirectHintProducer {
 
     private List<UniqueLoopHint> getHints(Grid grid) {
         List<UniqueLoopHint> result = new ArrayList<UniqueLoopHint>();
-        //for (int y = 0; y < 9; y++) {
-        //    for (int x = 0; x < 9; x++) {
         for (int i = 0; i < 81; i++) {
-            //BitSet potentials = cell.getPotentialValues();
             BitSet potentials = grid.getCellPotentialValues(i);
             if (potentials.cardinality() == 2) {
             	Cell cell = Grid.getCell(i);
@@ -64,7 +61,6 @@ public class UniqueLoops implements IndirectHintProducer {
                 assert v1 > 0 && v2 > 0;
                 List<Cell> tempLoop = new ArrayList<Cell>();
                 Collection<List<Cell>> results = new ArrayList<List<Cell>>();
-                //checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), null, results);
                 checkForLoops(grid, cell, v1, v2, tempLoop, 2, new BitSet(10), -1, results);
                 for (List<Cell> loop : results) {
                     // Potential loop found. Check validity
@@ -72,7 +68,6 @@ public class UniqueLoops implements IndirectHintProducer {
                         // This is a unique loop. Get cells with more than 2 potentials
                         List<Cell> extraCells = new ArrayList<Cell>(2);
                         for (Cell loopCell : loop) {
-                            //if (loopCell.getPotentialValues().cardinality() > 2)
                             if (grid.getCellPotentialValues(loopCell.getIndex()).cardinality() > 2)
                                 extraCells.add(loopCell);
                         }
@@ -85,7 +80,6 @@ public class UniqueLoops implements IndirectHintProducer {
                             // Only type 2 is possible
                             BitSet extraValues = new BitSet(10);
                             for (Cell c : extraCells)
-                                //extraValues.or(c.getPotentialValues());
                                 extraValues.or(grid.getCellPotentialValues(c.getIndex()));
                             extraValues.clear(v1);
                             extraValues.clear(v2);
@@ -96,8 +90,6 @@ public class UniqueLoops implements IndirectHintProducer {
                         } else if (extraCells.size() == 2) {
                             Cell r1 = extraCells.get(0);
                             Cell r2 = extraCells.get(1);
-                            //BitSet rPotentials = (BitSet)r1.getPotentialValues().clone();
-                            //rPotentials.or(r2.getPotentialValues());
                             BitSet rPotentials = (BitSet)grid.getCellPotentialValues(r1.getIndex()).clone();
                             rPotentials.or(grid.getCellPotentialValues(r2.getIndex()));
                             rPotentials.clear(v1);
