@@ -147,7 +147,7 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
             Potential target = getContainerTarget(nestedChain);
             for (Potential p : getChain(target)) {
                 if (!p.isOn) // Remove deductions of the container chain
-                	nestedGrid.removeCellPotentialValue(Grid.getCell(p.cell.getIndex()), p.value);
+                	nestedGrid.removeCellPotentialValue(p.cell.getIndex(), p.value);
             }
             // Use the rule's parent collector
             Collection<Potential> blues = new LinkedHashSet<Potential>();

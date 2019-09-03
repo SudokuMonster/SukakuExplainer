@@ -120,11 +120,11 @@ public class SudokuIO {
                                 possible.add(ch - '0');
                         }
                        
-                        Cell cell = Grid.getCell(x, y);
+                        int cellIndex = Grid.getCell(x, y).getIndex();
                         for (int i = 1; i <= 9; i++)
                         {
                             if (!possible.contains(i))
-                            	grid.removeCellPotentialValue(cell, i);
+                            	grid.removeCellPotentialValue(cellIndex, i);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ public class SudokuIO {
         String[] parts = newLines.split("\\s+");
         int y = 0, x = 0;
         for (String part : parts) {
-        	Cell cell = Grid.getCell(x, y);       
+        	int cellIndex = Grid.getCell(x, y).getIndex();       
             HashSet<Integer> possible = new HashSet<Integer>();
             for (char ch : part.toCharArray()) {
                 if (ch >= '1' && ch <= '9')
@@ -169,7 +169,7 @@ public class SudokuIO {
             }
             for (int i = 1; i <= 9; i++) {
                 if (!possible.contains(i))
-                	grid.removeCellPotentialValue(cell, i);
+                	grid.removeCellPotentialValue(cellIndex, i);
             }
            
             x++;

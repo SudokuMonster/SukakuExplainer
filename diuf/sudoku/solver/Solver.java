@@ -170,7 +170,7 @@ public class Solver {
                 if (value != 0) {
                     // Remove the cell value from the potential values of other cells
                     for (int j = 0; j < 9; j++)
-                    	grid.removeCellPotentialValue(part.getCell(j), value);
+                    	grid.removeCellPotentialValue(part.getCell(j).getIndex(), value);
                 }
             }
         }
@@ -181,10 +181,9 @@ public class Solver {
      */
     public void rebuildPotentialValues() {
         for (int i = 0; i < 81; i++) {
-            Cell cell = Grid.getCell(i);
             if (grid.getCellValue(i) == 0) {
                 for (int value = 1; value <= 9; value++)
-                	grid.addCellPotentialValue(cell, value);
+                	grid.addCellPotentialValue(i, value);
             }
         }
         cancelPotentialValues();
@@ -197,9 +196,8 @@ public class Solver {
      */
     public void cancelPotentialValues() {
         for(int i = 0; i < 81; i++) {
-            Cell cell = Grid.getCell(i);
             if (grid.getCellValue(i) != 0)
-            	grid.clearCellPotentialValues(cell);
+            	grid.clearCellPotentialValues(i);
         }
         //cancelBy(Grid.Block.class);
         //cancelBy(Grid.Row.class);

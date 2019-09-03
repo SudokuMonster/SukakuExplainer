@@ -286,13 +286,11 @@ public class SudokuExplainer {
 
     public void candidateTyped(Cell cell, int candidate) {
         pushGrid();
-		//if (cell.hasPotentialValue(candidate))
-        if (grid.hasCellPotentialValue(cell.getIndex(), candidate))
-            //cell.removePotentialValue(candidate);
-        	grid.removeCellPotentialValue(cell, candidate);
+        int cellIndex = cell.getIndex();
+        if (grid.hasCellPotentialValue(cellIndex, candidate))
+        	grid.removeCellPotentialValue(cellIndex, candidate);
         else
-            //cell.addPotentialValue(candidate);
-        	grid.addCellPotentialValue(cell, candidate);
+        	grid.addCellPotentialValue(cellIndex, candidate);
         solver.cancelPotentialValues();
     }
 

@@ -61,7 +61,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                                 bugValues.put(cell, new BitSet(10));
                             bugValues.get(cell).set(value);
                             allBugValues.set(value);
-                            temp.removeCellPotentialValue(cell, value);
+                            temp.removeCellPotentialValue(cell.getIndex(), value);
                             if (commonCells == null)
                                 //commonCells = new LinkedHashSet<Cell>(cell.getHouseCells(grid));
                                 commonCells = new CellSet(cell.getVisibleCells());

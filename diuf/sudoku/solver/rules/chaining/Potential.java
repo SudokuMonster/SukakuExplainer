@@ -78,7 +78,7 @@ public class Potential {
     }
 
     public void off(Grid grid) {
-    	grid.removeCellPotentialValue(this.cell, this.value);
+    	grid.removeCellPotentialValue(this.cell.getIndex(), this.value);
     }
 
 //    @Override

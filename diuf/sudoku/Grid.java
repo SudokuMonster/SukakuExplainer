@@ -283,25 +283,13 @@ public class Grid {
 
     /**
      * Add the given value as a potential value for the given cell
-     * @param cell the cell
+     * @param cellIndex the cell index [0 .. 80]
      * @param value the value to add, between 1 and 9, inclusive
      */
-    public void addCellPotentialValue(Cell cell, int value) {
-//        if(cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32382541)
-        cellPotentialValues[cell.getIndex()].set(value);
-        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
-        //numCellPencilmarksUpdate++;
-    }
-
-    /**
-     * Remove the given value from the potential values of the given cell.
-     * @param cell the cell
-     * @param value the value to remove, between 1 and 9, inclusive
-     */
-    public void removeCellPotentialValue(Cell cell, int value) {
-        //if(!cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32380479)
-        cellPotentialValues[cell.getIndex()].clear(value);
-        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
+    public void addCellPotentialValue(int cellIndex, int value) {
+//        if(cellPotentialValues[cellIndex].get(value)) return; //no change (doesn't improve, 32382541 -> 32382541)
+        cellPotentialValues[cellIndex].set(value);
+        //valueCellsCache.invalidateCellValue(cellIndex, value);
         //numCellPencilmarksUpdate++;
     }
 
@@ -319,27 +307,27 @@ public class Grid {
 
     /**
      * Removes at once several potential values of the given cell.
-     * @param cell the cell
+     * @param cellIndex the cell index [0 .. 80]
      * @param valuesToRemove bitset with values to remove
      */
-    public void removeCellPotentialValues(Cell cell, BitSet valuesToRemove) {
+    public void removeCellPotentialValues(int cellIndex, BitSet valuesToRemove) {
     	//BitSet cl = new BitSet();
-    	//cl.or(cellPotentialValues[cell.getIndex()]);
+    	//cl.or(cellPotentialValues[cellIndex]);
     	//cl.and(valuesToRemove);
     	//if(cl.isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
-        cellPotentialValues[cell.getIndex()].andNot(valuesToRemove);
-        //valueCellsCache.invalidateCell(cell.getIndex());
+        cellPotentialValues[cellIndex].andNot(valuesToRemove);
+        //valueCellsCache.invalidateCell(cellIndex);
         //numCellPencilmarksUpdate++;
     }
 
     /**
      * Clears the potential values of the given cell.
-     * @param cell the cell
+     * @param cellIndex the cell index [0 .. 80]
      */
-    public void clearCellPotentialValues(Cell cell) {
-        //if(cellPotentialValues[cell.getIndex()].isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
-        cellPotentialValues[cell.getIndex()].clear();
-        //valueCellsCache.invalidateCell(cell.getIndex());
+    public void clearCellPotentialValues(int cellIndex) {
+        //if(cellPotentialValues[cellIndex].isEmpty()) return; //no change (doesn't improve, 32380479 -> 32380479)
+        cellPotentialValues[cellIndex].clear();
+        //valueCellsCache.invalidateCell(cellIndex);
         //numCellPencilmarksUpdate++;
     }
 
@@ -908,7 +896,7 @@ public class Grid {
                     int value = (ch - '0');
                     assert value == 1 + i % 9; //exact positional mapping
                     Cell cell = getCell(cl);
-                    addCellPotentialValue(cell, value);
+                    addCellPotentialValue(cl, value);
                 }
             }
     	}
@@ -933,7 +921,7 @@ public class Grid {
                 }
                 if(isnakedsingle) {
                 	setCellValue(i, singleclue);
-                	clearCellPotentialValues(cell);
+                	clearCellPotentialValues(i);
                 }
             }
         }               

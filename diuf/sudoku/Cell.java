@@ -71,7 +71,7 @@ public class Cell {
     public void setValueAndCancel(int value, Grid targetGrid) {
         assert value != 0;
         targetGrid.setCellValue(this.index, value);
-        targetGrid.clearCellPotentialValues(this);
+        targetGrid.clearCellPotentialValues(this.index);
         for(int i = 0; i < 20; i++) {
         	targetGrid.removeCellPotentialValue(Grid.visibleCellIndex[this.index][i], value);
         }
