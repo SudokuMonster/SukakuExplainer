@@ -22,12 +22,12 @@ import diuf.sudoku.tools.CellSet;
 public class Grid {
 
     /*
-     * Cell values of the grid [0 .. 9].
+     * Cell values of the grid [0 .. 9]. 0 = unknown.
      */
     private int[] cellValues = new int[81];
 
     /*
-     * Cell values of the grid [0 .. 9].
+     * Cell potential values of the grid, bit 0 is unused.
      */
     private BitSet[] cellPotentialValues = new BitSet[81];
 
@@ -62,14 +62,16 @@ public class Grid {
 //        	return result;
 //        }
 //    }
-     
-    /*
-     * Cells of the grid. First array index is the vertical index (from top
-     * to bottom), and second index is horizontal index (from left to right).
-     */
-    //private Cell[][] cells = new Cell[9][9];
-    //private Cell[] cells = new Cell[81];
-    private static final Cell cells[] = {
+    private static final Cell cells[];
+    public static final int[][] regionCellIndex;
+    public static final int[][] cellRegions;
+    public static final int[][] visibleCellIndex;
+    private static final Block[] blocks;
+    private static final Row[] rows;
+    private static final Column[] columns;
+    public static final Region[][] regions;
+    static {
+    	cells = new Cell[] {
     		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
     		new Cell(9), new Cell(10), new Cell(11), new Cell(12), new Cell(13), new Cell(14), new Cell(15), new Cell(16), new Cell(17),
     		new Cell(18), new Cell(19), new Cell(20), new Cell(21), new Cell(22), new Cell(23), new Cell(24), new Cell(25), new Cell(26),
@@ -80,11 +82,9 @@ public class Grid {
     		new Cell(63), new Cell(64), new Cell(65), new Cell(66), new Cell(67), new Cell(68), new Cell(69), new Cell(70), new Cell(71),
     		new Cell(72), new Cell(73), new Cell(74), new Cell(75), new Cell(76), new Cell(77), new Cell(78), new Cell(79), new Cell(80)
     		};
-
-    public static final int[][] regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
-    public static final int[][] cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
-
-    public static final int[][] visibleCellIndex = {
+    	regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
+    	cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
+    	visibleCellIndex = new int[][] {
     		{ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,27,36,45,54,63,72},
     		{ 0, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,28,37,46,55,64,73},
     		{ 0, 1, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,29,38,47,56,65,74},
@@ -167,15 +167,12 @@ public class Grid {
     		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
     		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
 			};
+    	blocks = new Block[] {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
+    	rows = new Row[] {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
+    	columns = new Column[]{new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
+    	regions = new Region[][] {blocks, rows, columns};
+    }
 
-    // Views
-    private static final Block[] blocks = {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
-    private static final Row[] rows = {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
-    private static final Column[] columns = {new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
-    public static final Region[][] regions = {blocks, rows, columns}; 
-
-    //private static final Class<? extends Grid.Region>[] regionTypes = (Class<? extends Grid.Region>[]) new Class[] {Grid.Block.class, Grid.Row.class, Grid.Column.class};
-    
     //temporary development/debug counters
     //public static long numCellPencilmarksUpdate = 0;
     //public static long numCellPencilmarksRead = 0;
@@ -206,21 +203,6 @@ public class Grid {
     public static Cell getCell(int index) {
         return cells[index];
     }
-
-//    /**
-//     * Get the 9 regions of the given type
-//     * @param regionType the type of the regions to return. Must be one of
-//     * {@link Grid.Block}, {@link Grid.Row} or {@link Grid.Column}.
-//     * @return the 9 regions of the given type
-//     */
-//    public Region[] getRegions(Class<? extends Region> regionType) {
-//        if (regionType == Row.class)
-//            return Grid.rows;
-//        else if (regionType == Column.class)
-//            return Grid.columns;
-//        else
-//            return Grid.blocks;
-//    }
 
     /**
      * Get the 9 regions of the given type
