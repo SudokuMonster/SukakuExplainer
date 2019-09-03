@@ -70,6 +70,7 @@ public class Grid {
     private static final Row[] rows;
     private static final Column[] columns;
     public static final Region[][] regions;
+    public static final CellSet[] visibleCellsSet;
     static {
     	cells = new Cell[] {
     		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
@@ -167,6 +168,17 @@ public class Grid {
     		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
     		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
 			};
+		visibleCellsSet = new CellSet[] {
+				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
+				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
+				new CellSet(visibleCellIndex[18]),new CellSet(visibleCellIndex[19]),new CellSet(visibleCellIndex[20]),new CellSet(visibleCellIndex[21]),new CellSet(visibleCellIndex[22]),new CellSet(visibleCellIndex[23]),new CellSet(visibleCellIndex[24]),new CellSet(visibleCellIndex[25]),new CellSet(visibleCellIndex[26]),
+				new CellSet(visibleCellIndex[27]),new CellSet(visibleCellIndex[28]),new CellSet(visibleCellIndex[29]),new CellSet(visibleCellIndex[30]),new CellSet(visibleCellIndex[31]),new CellSet(visibleCellIndex[32]),new CellSet(visibleCellIndex[33]),new CellSet(visibleCellIndex[34]),new CellSet(visibleCellIndex[35]),
+				new CellSet(visibleCellIndex[36]),new CellSet(visibleCellIndex[37]),new CellSet(visibleCellIndex[38]),new CellSet(visibleCellIndex[39]),new CellSet(visibleCellIndex[40]),new CellSet(visibleCellIndex[41]),new CellSet(visibleCellIndex[42]),new CellSet(visibleCellIndex[43]),new CellSet(visibleCellIndex[44]),
+				new CellSet(visibleCellIndex[45]),new CellSet(visibleCellIndex[46]),new CellSet(visibleCellIndex[47]),new CellSet(visibleCellIndex[48]),new CellSet(visibleCellIndex[49]),new CellSet(visibleCellIndex[50]),new CellSet(visibleCellIndex[51]),new CellSet(visibleCellIndex[52]),new CellSet(visibleCellIndex[53]),
+				new CellSet(visibleCellIndex[54]),new CellSet(visibleCellIndex[55]),new CellSet(visibleCellIndex[56]),new CellSet(visibleCellIndex[57]),new CellSet(visibleCellIndex[58]),new CellSet(visibleCellIndex[59]),new CellSet(visibleCellIndex[60]),new CellSet(visibleCellIndex[61]),new CellSet(visibleCellIndex[62]),
+				new CellSet(visibleCellIndex[63]),new CellSet(visibleCellIndex[64]),new CellSet(visibleCellIndex[65]),new CellSet(visibleCellIndex[66]),new CellSet(visibleCellIndex[67]),new CellSet(visibleCellIndex[68]),new CellSet(visibleCellIndex[69]),new CellSet(visibleCellIndex[70]),new CellSet(visibleCellIndex[71]),
+				new CellSet(visibleCellIndex[72]),new CellSet(visibleCellIndex[73]),new CellSet(visibleCellIndex[74]),new CellSet(visibleCellIndex[75]),new CellSet(visibleCellIndex[76]),new CellSet(visibleCellIndex[77]),new CellSet(visibleCellIndex[78]),new CellSet(visibleCellIndex[79]),new CellSet(visibleCellIndex[80])
+				};
     	blocks = new Block[] {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     	rows = new Row[] {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
     	columns = new Column[]{new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
@@ -546,7 +558,7 @@ public class Grid {
 
         private final int rowNum;
 
-        public Row(int rowNum) {
+        private Row(int rowNum) {
             this.rowNum = rowNum;
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * rowNum + i;
@@ -590,7 +602,7 @@ public class Grid {
 
         private final int columnNum;
 
-        public Column(int columnNum) {
+        private Column(int columnNum) {
             this.columnNum = columnNum;
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * i + columnNum;
@@ -634,7 +646,7 @@ public class Grid {
 
         private final int vNum, hNum, index;
 
-        public Block(int index) {
+        private Block(int index) {
         	final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
         	final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
             this.vNum = vNums[index];
@@ -691,14 +703,6 @@ public class Grid {
      * the given value
      */
     public Cell getFirstCancellerOf(Cell target, int value) {
-//        for (Class<? extends Region> regionType : getRegionTypes()) {
-//            Region region = getRegionAt(regionType, target.getX(), target.getY());
-//            for (int i = 0; i < 9; i++) {
-//                Cell cell = region.getCell(i);
-//                if (!cell.equals(target) && getCellValue(target.getX(), target.getY()) == value)
-//                    return cell;
-//            }
-//        }
         int[] visible = Grid.visibleCellIndex[target.getIndex()];
         for(int i = 0; i < 20; i++) {
         	if(cellValues[visible[i]] == value) return Grid.getCell(visible[i]);

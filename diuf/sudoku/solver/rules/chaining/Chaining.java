@@ -842,8 +842,7 @@ public class Chaining implements IndirectHintProducer {
      * @return <code>null</code> on success; the first potential that would have
      * to be both "on" and "off" else.
      */
-    private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn,
-            LinkedSet<Potential> toOff) {
+    private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
         grid.copyTo(saveGrid);
         try {
             List<Potential> pendingOn = new LinkedList<Potential>(toOn);
@@ -866,8 +865,7 @@ public class Chaining implements IndirectHintProducer {
                     }
                 } else {
                     Potential p = pendingOff.remove(0);
-                    Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff,
-                            !isNisho, true);
+                    Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true);
                     if (isDynamic)
                         p.off(grid); // writes to grid
                     for (Potential pOn : makeOn) {
@@ -883,7 +881,7 @@ public class Chaining implements IndirectHintProducer {
                         }
                     }
                 }
-                if (pendingOn.isEmpty() && pendingOff.isEmpty() && level > 0) {
+                if (level > 0 && pendingOn.isEmpty() && pendingOff.isEmpty()) {
                     for (Potential pOff : getAdvancedPotentials(grid, saveGrid, toOff)) {
                         if (!toOff.contains(pOff)) {
                             // Not processed yet

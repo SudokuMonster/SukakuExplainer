@@ -90,7 +90,8 @@ public class Cell {
      */
     public CellSet getVisibleCells() {
         // Use a set to prevent duplicates (cells in both block and row/column)
-    	return new CellSet(Grid.visibleCellIndex[index]);
+    	//return new CellSet(Grid.visibleCellIndex[index]);
+    	return Grid.visibleCellsSet[index];
     }
 
     /**
