@@ -447,6 +447,14 @@ public class Solver {
         try {
             double difficulty = Double.NEGATIVE_INFINITY;
             int notMaxCounter = 0;
+			int inRateCounter = 0;
+			if (include1 == 0.0) inRateCounter++;
+			if (include2 == 0.0) inRateCounter++;
+			if (include3 == 0.0) inRateCounter++;
+			int inTechCounter = 0;
+			if (Objects.equals(includeT1,"")) inTechCounter++;
+			if (Objects.equals(includeT2,"")) inTechCounter++;
+			if (Objects.equals(includeT3,"")) inTechCounter++;
 			while (!isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
@@ -469,11 +477,13 @@ public class Solver {
                 Rule rule = (Rule)hint;
                 double ruleDiff = rule.getDifficulty();
 				String ruleName = rule.getName();
-                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3 || Objects.equals(ruleName, excludeT1) || Objects.equals(ruleName, excludeT2) || Objects.equals(ruleName, excludeT3))
+                if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3 || (ruleName.contains(excludeT1) && (!Objects.equals(excludeT1,""))) || (ruleName.contains(excludeT2) && (!Objects.equals(excludeT2,""))) || (ruleName.contains(excludeT3) && (!Objects.equals(excludeT3,""))))
 					return 0.0;
+				if (inRateCounter < 3 && (ruleDiff == include1 || ruleDiff == include2 || ruleDiff == include3)) inRateCounter++;
+				if (inTechCounter < 3 && ((ruleName.contains(includeT1) && (!Objects.equals(includeT1,""))) || (ruleName.contains(includeT2) && (!Objects.equals(includeT2,""))) || (ruleName.contains(includeT3) && (!Objects.equals(includeT3,""))))) inTechCounter++;
 				if (ruleDiff > difficulty) {
 					notMaxCounter = 0;
-					if (notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff || Objects.equals(ruleName, notMaxT1) || Objects.equals(ruleName, notMaxT2) || Objects.equals(ruleName, notMaxT3))
+					if (notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff || (ruleName.contains(notMaxT1) && (!Objects.equals(notMaxT1,""))) || (ruleName.contains(notMaxT2) && (!Objects.equals(notMaxT2,""))) || (ruleName.contains(notMaxT3) && (!Objects.equals(notMaxT3,""))))
 							notMaxCounter = 1;
 					difficulty = ruleDiff;
 				}
@@ -483,7 +493,7 @@ public class Solver {
                     break;
                 hint.apply(grid);
             }
-			if (notMaxCounter == 1)
+			if (notMaxCounter == 1 || inRateCounter < 3 || inTechCounter < 3)
 				return 0.0;
 			return difficulty;
         } finally {
