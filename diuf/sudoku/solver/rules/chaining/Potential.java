@@ -101,6 +101,24 @@ public class Potential {
         && this.isOn == other.isOn;
     }
 
+    public int getAncestorCount() {
+		Potential child = this;
+        Collection<Potential> ancestors = new HashSet<Potential>();
+        Collection<Potential> todo = new ArrayList<Potential>();
+        todo.add(child);
+        while (!todo.isEmpty()) {
+            Collection<Potential> next = new ArrayList<Potential>();
+            for (Potential p : todo) {
+                if (!ancestors.contains(p)) {
+                    ancestors.add(p);
+                    next.addAll(p.parents);
+                }
+            }
+            todo = next;
+        }
+        return ancestors.size();
+    }
+
     @Override
     public int hashCode() {
         return (cell.hashCode() * 9 + value) * 2 + (isOn ? 1 : 0);

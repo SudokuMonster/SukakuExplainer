@@ -574,7 +574,7 @@ public class Chaining implements IndirectHintProducer {
      * @return the set of potentials that must be "off"
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
-        Set<Potential> result = new LinkedHashSet<Potential>();
+		LinkedSet<Potential> result = new LinkedSet<Potential>();
 
         int potentialCellIndex = p.cell.getIndex();
         if (isYChainEnabled) { // This rule is not used with X-Chains
@@ -714,7 +714,15 @@ public class Chaining implements IndirectHintProducer {
                             getRegionCause(r),
                             "only remaining possible position in the " + r.toString());
                     addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);
-                    result.add(pOn);
+					if (!result.contains(pOn))
+						result.add(pOn);
+					else {
+						Potential pCell = result.get(pOn);
+						if (pOn.getAncestorCount() < pCell.getAncestorCount()) {
+							result.remove(pCell);
+							result.add(pOn);
+						}
+					}
 	        	}
         	} // region types
         }
@@ -835,6 +843,9 @@ public class Chaining implements IndirectHintProducer {
      */
     private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
         grid.copyTo(saveGrid);
+		Potential[] pOnRes = new Potential[729];
+		Potential[] pOffRes = new Potential[729];
+		int numRes = 0;
         try {
             List<Potential> pendingOn = new LinkedList<Potential>(toOn);
             List<Potential> pendingOff = new LinkedList<Potential>(toOff);
@@ -842,36 +853,49 @@ public class Chaining implements IndirectHintProducer {
                 if (!pendingOn.isEmpty()) {
                     Potential p = pendingOn.remove(0);
                     Set<Potential> makeOff = getOnToOff(grid, p, !isNisho);
-                    for (Potential pOff : makeOff) {
-                        Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
-                        if (toOn.contains(pOn)) {
-                            // Contradiction found
-                            pOn = toOn.get(pOn); // Retrieve version of conjugate with parents
-                            return new Potential[] {pOn, pOff}; // Cannot be both on and off at the same time
-                        } else if (!toOff.contains(pOff)) {
-                            // Not processed yet
-                            toOff.add(pOff);
-                            pendingOff.add(pOff);
-                        }
-                    }
+	                for (Potential pOff : makeOff) {
+	                    Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
+	                    if (toOn.contains(pOn)) {
+	                        // Contradiction found
+							pOnRes[numRes] = toOn.get(pOn); // Retrieve version of conjugate with parents
+							pOffRes[numRes++] = pOff;
+	                    } else if (!toOff.contains(pOff)) {
+	                        // Not processed yet
+	                        toOff.add(pOff);
+	                        pendingOff.add(pOff);
+	                   }
+	                }
                 } else {
                     Potential p = pendingOff.remove(0);
                     Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true);
                     if (isDynamic)
                         p.off(grid); // writes to grid
-                    for (Potential pOn : makeOn) {
-                        Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
-                        if (toOff.contains(pOff)) {
-                            // Contradiction found
-                            pOff = toOff.get(pOff); // Retrieve version of conjugate with parents
-                            return new Potential[] {pOn, pOff}; // Cannot be both on and off at the same time
-                        } else if (!toOn.contains(pOn)) {
-                            // Not processed yet
-                            toOn.add(pOn);
-                            pendingOn.add(pOn);
-                        }
-                    }
-                }
+	                for (Potential pOn : makeOn) {
+	                    Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
+	                    if (toOff.contains(pOff)) {
+	                        // Contradiction found
+							pOnRes[numRes] = pOn; // Retrieve version of conjugate with parents
+							pOffRes[numRes++] = toOff.get(pOff);
+	                    } else if (!toOn.contains(pOn)) {
+	                        // Not processed yet
+	                        toOn.add(pOn);
+	                        pendingOn.add(pOn);
+						}
+	                }
+				}
+				if (numRes > 0) {
+					// Take minimal length contradiction out of all found
+					int minK = 0;
+					int minKVal = pOnRes[0].getAncestorCount() + pOffRes[0].getAncestorCount();
+					for (int k=1;k<numRes;++k) {
+						int curKVal = pOnRes[k].getAncestorCount() + pOffRes[k].getAncestorCount();
+						if ( curKVal < minKVal ) {
+							minKVal = curKVal;
+							minK = k;
+						}
+					}
+					return new Potential[] {pOnRes[minK], pOffRes[minK]}; // Cannot be both on and off at the same time 
+				}
                 if (level > 0 && pendingOn.isEmpty() && pendingOff.isEmpty()) {
                     for (Potential pOff : getAdvancedPotentials(grid, saveGrid, toOff)) {
                         if (!toOff.contains(pOff)) {
@@ -959,11 +983,52 @@ public class Chaining implements IndirectHintProducer {
                                 nested = (ChainingHint)hint;
                             Map<Cell, BitSet> removable = hint.getRemovablePotentials();
                             assert !removable.isEmpty();
-                            //for (Cell cell : removable.keySet()) {
-                            for (Map.Entry<Cell, BitSet> entry : removable.entrySet()) {
+
+//This is the start of the modified section  that needs a look into
+			                // lksudoku: We sort the rem
+							ovable potentials so that all runs will yield the 
+                            // same resulting chains, if not sorted, same puzzle may get different chains
+                            // when there are different chains for same contradition, thus causing different
+                            // rating of same puzzle at different times
+							List<Cell> sortedRemKeys=new ArrayList<Cell>(removable.keySet());
+					        Collections.sort(sortedRemKeys, new Comparator<Cell>() {
+					            public int compare(Cell c1, Cell c2) {
+					            	if (c1.getX() != c2.getX())
+					            		return c1.getX() - c2.getX();
+					            	if (c1.getY() != c2.getY())
+					            		return c1.getY() - c2.getY();
+					            	return grid.getCellPotentialValues(c1.getIndex()).nextSetBit(0)-grid.getCellPotentialValues(c2.getIndex()).nextSetBit(0);
+					            }
+					        });
+                            //for (Cell cell : sortedRemKeys) {
+							//for (Cell cell : removable.keySet()) {
+                            for (Map.Entry<Cell, BitSet> entry : sortedRemKeys) {
                                 //BitSet values = removable.get(cell);
                             	Cell cell = entry.getKey();
                                 BitSet values = entry.getValue();
+//This is the end of the modified section  that needs a look into
+
+//This is the start of the section  that shows lksudoku original code
+/*
+                            // lksudoku: We sort the removable potentials so that all runs will yield the 
+                            // same resulting chains, if not sorted, same puzzle may get different chains
+                            // when there are different chains for same contradition, thus causing different
+                            // rating of same puzzle at different times
+							List<Cell> sortedRemKeys=new ArrayList<Cell>(removable.keySet());
+					        Collections.sort(sortedRemKeys, new Comparator<Cell>() {
+					            public int compare(Cell c1, Cell c2) {
+					            	if (c1.getX() != c2.getX())
+					            		return c1.getX() - c2.getX();
+					            	if (c1.getY() != c2.getY())
+					            		return c1.getY() - c2.getY();
+					            	return c1.getPotentialValues().nextSetBit(0)-c2.getPotentialValues().nextSetBit(0);
+					            }
+					        });
+
+                            for (Cell cell : sortedRemKeys) {
+*/
+//This is the end of the section  that shows lksudoku original code
+
                                 for (int value = values.nextSetBit(0); value != -1; value = values.nextSetBit(value + 1)) {
                                     //Potential.Cause cause = Potential.Cause.Advanced;
                                     Potential toOff = new Potential(cell, value, false, Potential.Cause.Advanced, hint.toString(), nested);
