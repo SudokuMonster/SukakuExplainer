@@ -50,7 +50,9 @@ public class AboutDialog extends JDialog {
             }
         });
         //release
-        txtVersion.setText("" + VERSION + "." + REVISION + SUBREV);
+		String Experimental = "";
+		if (newRating) Experimental = ".1";
+        txtVersion.setText("" + VERSION + "." + REVISION + SUBREV + Experimental);
     }
 
     private JPanel getJContentPane() {
