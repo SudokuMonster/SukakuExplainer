@@ -18,7 +18,7 @@ import diuf.sudoku.solver.*;
 public class serate {
     static String FORMAT = "%r/%p/%d";
     static String RELEASE = releaseDate;
-    static String VER = "" + VERSION + "." + REVISION + SUBREV;
+	static String VER = "" + VERSION + "." + REVISION + SUBREV + isItExperimental();
     static Formatter formatter;
     static void help(int html) {
         if (html != 0) {
@@ -140,7 +140,9 @@ public class serate {
         System.err.println("");
         System.err.println("IMPLEMENTATION");
 	//relese
-	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV+" (Sudoku Explainer) " + releaseDate);
+	String Experimental = "";
+	if (newRating) Experimental = ".1";
+	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV + Experimental + " (Sudoku Explainer) " + releaseDate);
         System.err.println("  author      Nicolas Juillerat");
         //relese
 	System.err.println("  copyright   Copyright (c) 2006-" + releaseYear + " Nicolas Juillerat");
@@ -169,6 +171,13 @@ public class serate {
         System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]");
         System.exit(2);
     }
+	
+	private static String isItExperimental() {
+		if (newRating)
+			return ".1";
+		return "";
+	}
+	
     /**
      * Solve input puzzles and print results according to the output format.
      * @param args 81-char puzzles
@@ -373,7 +382,8 @@ public class serate {
         //System.err.printf("Update = %d\tRead = %d\tGetPP = %d\n", Grid.numCellPencilmarksUpdate, Grid.numCellPencilmarksRead, Grid.numGetPP);
     } //main
     
-    public static class Formatter {
+    
+	public static class Formatter {
     	private PrintWriter writer;
         private String formatStart; //before each puzzle
         private String formatAfter; //after each step
