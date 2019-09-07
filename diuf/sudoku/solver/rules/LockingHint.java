@@ -9,6 +9,7 @@ import java.util.*;
 
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
+import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.rules.chaining.*;
 import diuf.sudoku.tools.*;
 
@@ -64,6 +65,20 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
 
     public double getDifficulty() {
         int degree = regions.length / 2;
+if (Settings.newRating) {
+        if (degree == 1) {
+            if (regions[0] instanceof Grid.Block)
+                return 2.6; // Pointing
+            else
+                return 2.8; // Claiming
+        } else if (degree == 2)
+            return 3.2; // X-Wing
+        else if (degree == 3)
+            return 4.0; // Swordfish //New Rating
+        else
+            return 5.4; // Jellyfish //New Rating
+}
+else {
         if (degree == 1) {
             if (regions[0] instanceof Grid.Block)
                 return 2.6; // Pointing
@@ -75,6 +90,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
             return 3.8; // Swordfish
         else
             return 5.2; // Jellyfish
+}
     }
 
     public String getName() {
