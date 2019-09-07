@@ -108,7 +108,7 @@ public class Cell {
     private static String toString(int x, int y) {
         Settings settings = Settings.getInstance();
         if (settings.isRCNotation())
-            return "R" + (y + 1) + "C" + (x + 1);
+            return "r" + (y + 1) + "c" + (x + 1);
         else
             return "" + (char)('A' + x) + (y + 1);
     }
