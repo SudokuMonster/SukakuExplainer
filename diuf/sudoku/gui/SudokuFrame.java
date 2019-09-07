@@ -315,7 +315,13 @@ public class SudokuFrame extends JFrame implements Asker {
     }
 
     private void initialize() {
-        this.setTitle("Sukaku Explainer " + VERSION + "." + REVISION + SUBREV);
+        String Experimental = "";
+		String ExSuffix = "";
+		if (newRating) {
+			Experimental = ".1";
+			ExSuffix ="New Rating ";
+		}
+		this.setTitle(ExSuffix + "Sukaku Explainer " + VERSION + "." + REVISION + SUBREV + Experimental);
         JMenuBar menuBar = getJJMenuBar();
         setupLookAndFeelMenu();
         this.setJMenuBar(menuBar);
@@ -1314,7 +1320,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JRadioButtonMenuItem getMitMathMode() {
         if (mitMathMode == null) {
             mitMathMode = new JRadioButtonMenuItem();
-            mitMathMode.setText("R1C1 - R9C9 cell notation");
+            mitMathMode.setText("r1c1 - r9c9 cell notation");
             mitMathMode.setMnemonic(KeyEvent.VK_R);
             mitMathMode.setSelected(Settings.getInstance().isRCNotation());
             mitMathMode.addItemListener(new java.awt.event.ItemListener() {

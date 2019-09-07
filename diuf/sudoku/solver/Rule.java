@@ -62,6 +62,44 @@ public interface Rule {
      * Upper bound for chains is actually unbounded: the longer chain, the higher rating.
      * @return the difficulty rating of this rule.
      */
+	 
+//New changes
+    /**
+     * Get the difficulty rating of this rule.
+     * <p>
+     * Currently, the following classification is used:
+     * <ul>
+     * <li>1.2: Hidden single (1.5 if not in block)
+     * <li>1.6: Naked single//2.3 ---> 1.6
+     * <li>1.7: Direct Pointing
+     * <li>1.9: Direct Claiming
+     * <li>2.0: Direct Hidden Pair
+     * <li>2.6: Pointing
+     * <li>2.8: Claiming
+     * <li>2.9: Hidden pair//3.4 ---> 2.9
+     * <li>3.0: Naked pair//3.0 ---> 3.1 ---> 3.0
+     * <li>3.1: Direct Hidden Triplet//2.5 ---> 3.0 ---> 3.1   
+     * <li>3.2: X-Wing
+     * <li>3.6, 3.8, 4.0: Naked triplet, Hidden triplet, Swordfish//3.8 ---> 4.0 4.0 ---> 3.8
+     * <li>4.2, 4.4: XY-Wing, XYZ-Wing
+     * <li>4.5 - 5.0: Unique Rectangles and Loops
+     * <li>5.0, 5.2, 5.4: Naked quad, Hidden quad, Jellyfish//5.2 ---> 5.4 5.4 ---> 5.2
+     * <li>5.6 - 6.0: Bivalue Universal Graves
+     * <li>6.2: Aligned Pair Exclusion
+     * <li>6.5 - 7.5: X-Cycles, Y-Cycles
+     * <li>6.6 - 7.6: Forcing X-Chains
+     * <li>7.0 - 8.0: Forcing Chains, XY-Cycles
+     * <li>7.5: Aligned Triplet Exclusion
+     * <li>7.5 - 8.5: Nishio
+     * <li>8.0 - 9.0: Multiple chains
+     * <li>8.5 - 9.5: Dynamic chains
+     * <li>9.0 - 10.0: Dynamic chains (+)
+     * <li>&gt; 9.5: Nested Forcing Chains
+     * </ul>
+     * Upper bound for chains is actually unbounded: the longer chain, the higher rating.
+     * @return the difficulty rating of this rule.
+     */
+	 
     public double getDifficulty();
 
     /**

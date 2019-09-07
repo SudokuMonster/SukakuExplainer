@@ -104,13 +104,19 @@ public abstract class UniqueLoopHint extends IndirectHint implements Rule {
 
     public double getDifficulty() {
         double result = 4.5;
-        if (loop.size() >= 10)
-            result += 0.3;
-        if (loop.size() >= 8)
-            result += 0.2;
-        else if (loop.size() >= 6)
-            result += 0.1;
-        return result; // 5.5 - 5.8
+		if (Settings.newRating) {
+			result += (loop.size() / 2 - 2) * 0.1; // 4.5 for UR(UL4) - 5.0 for UL14
+		}
+		else {//Original Rating 4.5 UR, 4.6 UL6, 4.7 UL8, 5.0 UL10+
+			if (loop.size() >= 10)
+				result += 0.3;
+			if (loop.size() >= 8)
+				result += 0.2;
+			else if (loop.size() >= 6)
+				result += 0.1;			
+		}
+
+        return result;
     }
 
     public String getClueHtml(Grid grid, boolean isBig) {

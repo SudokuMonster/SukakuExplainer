@@ -13,6 +13,7 @@ import java.util.Map;
 import diuf.sudoku.Cell;
 import diuf.sudoku.Grid;
 import diuf.sudoku.tools.*;
+import diuf.sudoku.Settings;
 
 public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
 
@@ -38,7 +39,11 @@ public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
 
     @Override
     public double getDifficulty() {
-        double toAdd = (hiddenIndexes.length - 1) * 0.1; // Pair=0.1, Quad=0.3
+        double toAdd = hiddenIndexes.length;
+		if (Settings.newRating)
+			toAdd = toAdd * 0.1;//Pair=0.1, Quad=0.3
+		else
+			toAdd = (toAdd - 1) * 0.1;//Original rating Pair=0.0, Quad=0.2
         return super.getDifficulty() + toAdd;
     }
 

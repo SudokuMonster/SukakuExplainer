@@ -9,6 +9,7 @@ import java.util.*;
 
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
+import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.rules.chaining.*;
 import diuf.sudoku.tools.*;
 
@@ -65,12 +66,22 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
 
     public double getDifficulty() {
         int degree = values.length;
+if (Settings.newRating) {
+        if (degree == 2)
+            return 2.9;//New rating
+        else if (degree == 3)
+            return 3.8;//New rating
+        else
+            return 5.2;//New rating	
+}
+else {
         if (degree == 2)
             return 3.4;
         else if (degree == 3)
             return 4.0;
         else
             return 5.4;
+}
     }
 
     public String getName() {

@@ -14,6 +14,8 @@ import java.util.prefs.*;
  */
 public class Settings {
 
+	public final static boolean Fixed14Chaining = false;//lksudoku chaining fix
+	public final static boolean newRating = false;//New change in rule order and rating
     public final static int VERSION = 1;
     public final static int REVISION = 3;
     public final static String SUBREV = ".0.2";
@@ -21,7 +23,7 @@ public class Settings {
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
-	public final static String releaseLicenceVersion = "2.1";
+	public final static String releaseLicenceVersion = "2.1";		
     
     private static Settings instance = null;
 
