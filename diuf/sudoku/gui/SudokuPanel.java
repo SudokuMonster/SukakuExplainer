@@ -556,12 +556,14 @@ public class SudokuPanel extends JPanel {
         for (int i = 0; i < 9; i++) {
             String xLegend;
             if (settings.isRCNotation())
-                xLegend = "C" + (i + 1);
+//@SudokuMonster: removed c
+                xLegend = "" + (i + 1);
             else
                 xLegend = Character.toString((char)('A' + i));
             String yLegend;
             if (settings.isRCNotation())
-                yLegend = "R" + (i + 1);
+//@SudokuMonster: removed r
+                yLegend = "" + (i + 1);
             else
                 yLegend = Integer.toString(i + 1);
             if (!engine.isValueAllGiven(grid, i + 1)) {
