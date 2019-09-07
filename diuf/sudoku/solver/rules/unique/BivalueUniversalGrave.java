@@ -26,7 +26,13 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         Map<Cell, BitSet> bugValues = new HashMap<Cell, BitSet>();
         BitSet allBugValues = new BitSet(10);
         CellSet commonCells = null;
-        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+
+		// lksudoku handle the case of type 2, a cell with another on every region
+		CellSet allExtraCells = null;
+		int onlyValue = 0;
+		boolean oneValue = true;
+
+        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {																			   
             Grid.Region[] regions = grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
                 Grid.Region region = regions[i];
@@ -45,6 +51,18 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             if (cellCardinality >= 3)
                                 newBugCells.add(cell);
                         }
+
+						if (allExtraCells == null) {
+							allExtraCells = new CellSet(newBugCells);
+							onlyValue = value;
+						} else if (oneValue) {
+							if ( onlyValue == value ) {
+								allExtraCells.addAll(newBugCells);
+							} else {
+								oneValue = false;
+							}
+						}
+
                         /*
                          * If there are two or more positions falling in a bug cell, we cannot
                          * decide which one is the buggy one. Just do nothing because another
@@ -78,6 +96,25 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             } // for i
         } // for regionType
 
+		if (oneValue && allExtraCells.size() > bugCells.size()) {
+			allExtraCells.removeAll( bugCells );
+			for (Cell cell: allExtraCells) {
+				bugCells.add(cell);
+				bugValues.put(cell, new BitSet(10));
+				bugValues.get(cell).set(onlyValue);
+				temp.removeCellPotentialValue(cell.getIndex(), onlyValue);
+				
+				if (commonCells == null)
+					commonCells = new CellSet(cell.getVisibleCells());
+   				else
+					commonCells.retainAll(cell.getVisibleCells());
+				commonCells.removeAll(bugCells);
+				if (bugCells.size() > 1 && allBugValues.cardinality() > 1
+						&& commonCells.isEmpty())
+					return; // None of type 1, 2 or 3
+
+			}
+		}
         // When bug values have been removed, all remaining empty cells must have
         // exactly two potential values. Check it
         for (int i = 0; i < 81; i++) {
@@ -151,7 +188,12 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
     private void addBug3Hint(HintsAccumulator accu, List<Cell> bugCells,
             Map<Cell, BitSet> extraValues, BitSet allExtraValues, Set<Cell> commonCells,
             Grid grid) throws InterruptedException {
-        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+
+        // lksudoku: start with degree iteration to find smallest degree first
+        // Iterate on degree
+        for (int degree = 2; degree <= 6; degree++) {
+	        //for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {			
+			for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
@@ -172,8 +214,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                     if (Grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
                         regionCells.add(cell);
                 }
-                // Iterate on degree
-                for (int degree = 2; degree <= 6; degree++) {
+
                     // Iterate on permutations of the missing (degree - 1) cells
                     if (regionCells.size() >= degree) {
                         Permutations perm = new Permutations(degree - 1, regionCells.size());
@@ -227,9 +268,9 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                             } // if (otherCommon.cardinality() == degree)
                         } // while (perm.hasNext())
                     } // if (regionCells.size() >= degree)
-                } // for (degree)
-            } // if (region != null)
-        } // for (regionType)
+                } // if (region != null)
+            } // for (regionType)
+        } // for (degree)
     }
 
     private void addBug4Hint(HintsAccumulator accu, List<Cell> bugCells,
