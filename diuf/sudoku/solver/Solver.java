@@ -9,6 +9,7 @@ import java.security.*;
 import java.util.*;
 
 import diuf.sudoku.*;
+import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.checks.*;
 import diuf.sudoku.solver.rules.*;
 import diuf.sudoku.solver.rules.chaining.*;
@@ -104,6 +105,55 @@ public class Solver {
     public Solver(Grid grid) {
         this.grid = grid;
         directHintProducers = new ArrayList<HintProducer>();
+if (Settings.newRating) {
+        addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
+        addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
+        addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
+        addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
+        indirectHintProducers = new ArrayList<IndirectHintProducer>();
+        addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
+        addIfWorth(SolvingTechnique.HiddenPair, indirectHintProducers, new HiddenSet(2, false));
+        addIfWorth(SolvingTechnique.NakedPair, indirectHintProducers, new NakedSet(2));
+        addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(3, true));
+        addIfWorth(SolvingTechnique.XWing, indirectHintProducers, new Fisherman(2));
+        addIfWorth(SolvingTechnique.NakedTriplet, indirectHintProducers, new NakedSet(3));
+        addIfWorth(SolvingTechnique.HiddenTriplet, indirectHintProducers, new HiddenSet(3, false));
+        addIfWorth(SolvingTechnique.Swordfish, indirectHintProducers, new Fisherman(3));
+        addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
+        addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
+        addIfWorth(SolvingTechnique.UniqueLoop, indirectHintProducers, new UniqueLoops());
+        addIfWorth(SolvingTechnique.NakedQuad, indirectHintProducers, new NakedSet(4));
+        addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
+        addIfWorth(SolvingTechnique.Jellyfish, indirectHintProducers, new Fisherman(4));
+        addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());
+        addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
+        chainingHintProducers = new ArrayList<IndirectHintProducer>();
+        addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0, false, 0));
+		addIfWorth(SolvingTechnique.AlignedTripletExclusion, chainingHintProducers, new AlignedExclusion(3));
+        addIfWorth(SolvingTechnique.NishioForcingChain, chainingHintProducers, new Chaining(false, true, true, 0, false, 0));
+        addIfWorth(SolvingTechnique.MultipleForcingChain, chainingHintProducers, new Chaining(true, false, false, 0, false, 0));
+        addIfWorth(SolvingTechnique.DynamicForcingChain, chainingHintProducers, new Chaining(true, true, false, 0, false, 0));
+        chainingHintProducers2 = new ArrayList<IndirectHintProducer>();
+        addIfWorth(SolvingTechnique.DynamicForcingChainPlus, chainingHintProducers2, new Chaining(true, true, false, 1, false, 0));
+        // These rules are not really solving techs. They check the validity of the puzzle
+        validatorHintProducers = new ArrayList<WarningHintProducer>();
+        validatorHintProducers.add(new NoDoubles());
+        warningHintProducers = new ArrayList<WarningHintProducer>();
+        warningHintProducers.add(new NumberOfFilledCells());
+        warningHintProducers.add(new NumberOfValues());
+        warningHintProducers.add(new BruteForceAnalysis(false));
+        // These are very slow. We add them only as "rescue"
+        advancedHintProducers = new ArrayList<IndirectHintProducer>();
+        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2, false, 0));
+        addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 3, false, 0));
+        experimentalHintProducers = new ArrayList<IndirectHintProducer>(); // Two levels of nesting !?
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 0));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 1));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 2));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
+}
+else {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
         addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
@@ -150,8 +200,8 @@ public class Solver {
         addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 2));
         //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
         //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
-    }
-
+}
+	}
     /**
      * This is the basic Sudoku rule: If a cell contains a value,
      * that value can be removed from the potential values of
