@@ -675,7 +675,8 @@ public class Chaining implements IndirectHintProducer {
     private Set<Potential> getOffToOn(Grid grid, Potential p, Grid source,
             LinkedSet<Potential> offPotentials, boolean isYChainEnabled,
             boolean isXChainEnabled) {
-        Set<Potential> result = new LinkedHashSet<Potential>();
+        //Set<Potential> result = new LinkedHashSet<Potential>();
+    	LinkedSet<Potential> result = new LinkedSet<Potential>();
 
     	int thisCellIndex = p.cell.getIndex();
         if (isYChainEnabled) {
@@ -985,10 +986,9 @@ public class Chaining implements IndirectHintProducer {
                             assert !removable.isEmpty();
 
 //This is the start of the modified section  that needs a look into
-			                // lksudoku: We sort the rem
-							ovable potentials so that all runs will yield the 
+			                // lksudoku: We sort the removable potentials so that all runs will yield the 
                             // same resulting chains, if not sorted, same puzzle may get different chains
-                            // when there are different chains for same contradition, thus causing different
+                            // when there are different chains for same contradiction, thus causing different
                             // rating of same puzzle at different times
 							List<Cell> sortedRemKeys=new ArrayList<Cell>(removable.keySet());
 					        Collections.sort(sortedRemKeys, new Comparator<Cell>() {
@@ -1000,12 +1000,12 @@ public class Chaining implements IndirectHintProducer {
 					            	return grid.getCellPotentialValues(c1.getIndex()).nextSetBit(0)-grid.getCellPotentialValues(c2.getIndex()).nextSetBit(0);
 					            }
 					        });
-                            //for (Cell cell : sortedRemKeys) {
-							//for (Cell cell : removable.keySet()) {
-                            for (Map.Entry<Cell, BitSet> entry : sortedRemKeys) {
-                                //BitSet values = removable.get(cell);
-                            	Cell cell = entry.getKey();
-                                BitSet values = entry.getValue();
+							////for (Cell cell : removable.keySet()) {
+                            //for (Map.Entry<Cell, BitSet> entry : sortedRemKeys) {
+                            //	Cell cell = entry.getKey();
+                            //    BitSet values = entry.getValue();
+                            for (Cell cell : sortedRemKeys) {
+                                BitSet values = removable.get(cell);
 //This is the end of the modified section  that needs a look into
 
 //This is the start of the section  that shows lksudoku original code
