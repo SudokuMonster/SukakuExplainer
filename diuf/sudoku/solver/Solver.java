@@ -17,6 +17,8 @@ import diuf.sudoku.solver.rules.unique.*;
 import diuf.sudoku.test.serate;
 import diuf.sudoku.tools.*;
 
+import java.io.PrintWriter;
+
 /**
  * The solver for Sudoku grids.
  * Used to:
@@ -91,6 +93,32 @@ public class Solver {
         }
 
     } // class DefaultHintsAccumulator
+
+	// lksudoku: batch mode accumulator, accumulate until higher
+	// rating is added
+    private class SmallestHintsAccumulator implements HintsAccumulator {
+
+        private final List<Hint> result;
+
+		// dif is 0.0 at start, and changes to first added rating
+		private double dif = 0.0;
+
+        private SmallestHintsAccumulator(List<Hint> result) {
+            super();
+            this.result = result;
+        }
+
+        public void add(Hint hint) throws InterruptedException {
+			if (dif == 0.0) {
+				dif = ((Rule)hint).getDifficulty();
+			} else if ( ((Rule)hint).getDifficulty() != dif ) {
+				throw new InterruptedException();
+			}
+            if (!result.contains(hint))
+                result.add(hint);
+        }
+
+    } // class SmallestHintsAccumulator
 
     private void addIfWorth(SolvingTechnique technique, Collection<HintProducer> coll, HintProducer producer) {
         if (Settings.getInstance().getTechniques().contains(technique))
@@ -572,6 +600,9 @@ else {
     public void getDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
+		boolean logStep = Settings.getInstance().isLog();
+		PrintWriter logWriter = Settings.getInstance().getLogWriter();
+		int stepCount = 0;
         try {
             difficulty = Double.NEGATIVE_INFINITY;
             pearl = 0.0;
@@ -594,6 +625,12 @@ else {
 		                double ruleDiff = rule.getDifficulty();
 						String ruleName = rule.getName();
 						String ruleNameShort = rule.getShortName();						
+						//lksudoku, log steps
+						if (logStep) {
+							++stepCount;
+							logWriter.println("Step "+stepCount+": rate "+ruleDiff);
+							logWriter.println(rule.toString());
+						}
 		                if (ruleDiff > difficulty) {
 		                    difficulty = ruleDiff;
 							ERtN = ruleName;
@@ -889,6 +926,140 @@ else {
                 }
             }
         } finally {
+            backup.copyTo(grid);
+        }
+    }
+
+	// lksudoku added batch rating ability
+	// apply all concurrent moves of lowest rating
+    public void getBatchDifficulty(serate.Formatter formatter) {
+        Grid backup = new Grid();
+        grid.copyTo(backup);
+		boolean logStep = Settings.getInstance().isLog();
+		PrintWriter logWriter = Settings.getInstance().getLogWriter();
+		int batchCount = 0;
+        try {
+            difficulty = Double.NEGATIVE_INFINITY;
+            pearl = 0.0;
+            diamond = 0.0;
+			ERtN ="No solution";
+			EPtN ="No solution";
+			EDtN ="No solution";
+			shortERtN ="O";
+			shortEPtN ="O";
+			shortEDtN ="O";			
+            while (!isSolved()) {
+				formatter.beforeHint(this);
+				List<Hint> result = new ArrayList<Hint>();
+				SmallestHintsAccumulator accu = new SmallestHintsAccumulator(result);
+                try {
+                    for (HintProducer producer : directHintProducers) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                    for (IndirectHintProducer producer : indirectHintProducers) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                    for (IndirectHintProducer producer : chainingHintProducers) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                    for (IndirectHintProducer producer : chainingHintProducers2) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                    for (IndirectHintProducer producer : advancedHintProducers) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                    for (IndirectHintProducer producer : experimentalHintProducers) {
+                        producer.getHints(grid, accu);
+						if (!result.isEmpty()) {
+							throw new InterruptedException();
+						}
+                    }
+                }
+				catch (InterruptedException willHappen) {
+					difficulty = pearl = diamond = 0.0;
+					ERtN = EPtN = EDtN = "No solution";
+					shortERtN = shortEPtN = shortEDtN = "O";
+				}				
+                if (result.isEmpty()) {
+                    difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
+                    break;
+                }
+				//lksudoku, log steps
+				if (logStep) {
+					++batchCount;
+				}
+				int batchSubStep = 0;
+				// apply hints of same rating
+				for (Hint hint: result)
+				{
+	                assert hint instanceof Rule;
+	                Rule rule = (Rule)hint;
+	                double ruleDiff = rule.getDifficulty();
+					String ruleName = rule.getName();
+					String ruleNameShort = rule.getShortName();
+					if (logStep) {
+						if (++batchSubStep == 1) {
+							logWriter.println("Batch "+batchCount+": rate "+ruleDiff);
+						}
+						logWriter.println("Step "+batchCount+"."+batchSubStep+", "+rule.toString());
+					}
+
+	                if (ruleDiff > difficulty) {
+		                    difficulty = ruleDiff;
+							ERtN = ruleName;
+							shortERtN = ruleNameShort;
+					}
+	                hint.apply(grid);
+					formatter.afterHint(this, hint);
+					if (pearl == 0.0) {
+						if (diamond == 0.0){
+							diamond = difficulty;
+							EDtN = ERtN;
+							shortEDtN = shortERtN;
+						}
+						if (hint.getCell() != null) {
+							if (want == 'd' && difficulty > diamond) {
+								difficulty = 20.0;
+								ERtN = "Beyond solver";
+								shortERtN = "xx";
+							   break;
+							}
+							pearl = difficulty;
+							EPtN = ERtN;
+							shortEPtN = shortERtN;
+						}
+					}
+					else if (want != 0 && difficulty > pearl) {
+						difficulty = 20.0;
+						ERtN = "Beyond solver";
+						shortERtN = "xx";
+						break;
+					}
+				}
+				formatter.afterPuzzle(this);
+					if ( difficulty == 20.0 ) {
+						break;
+					}
+           	}
+		}
+		finally {
             backup.copyTo(grid);
         }
     }
