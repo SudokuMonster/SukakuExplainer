@@ -24,9 +24,9 @@ public class CellSet implements Set<Cell> {
 		bits.or(c.bits);
 	}
 
-	public CellSet(Collection<Cell> c) {
-		for(Cell cell : c) {
-			bits.set(cell.getIndex());
+	public CellSet(Collection<?> c) {
+		for(Object cell : c) {
+			bits.set(((Cell)cell).getIndex());
 		}
 	}
 	
@@ -89,8 +89,11 @@ public class CellSet implements Set<Cell> {
 			cl.andNot(bits);
 			return cl.isEmpty();
 		}
-		for(Cell cell : (Collection<Cell>)c) {
-			if(!bits.get(cell.getIndex())) return false;
+		//for(Cell cell : (Collection<Cell>)c) {
+		//	if(!bits.get(cell.getIndex())) return false;
+		//}
+		for(Object cell : c) {
+			if(!bits.get(((Cell)cell).getIndex())) return false;
 		}
 		return true;
 	}
@@ -124,8 +127,11 @@ public class CellSet implements Set<Cell> {
 			bits.andNot((BitSet)(((CellSet) c).bits));
 			return false;
 		}
-		for(Cell cell : (Collection<Cell>)c) {
-			bits.clear(cell.getIndex());
+		//for(Cell cell : (Collection<Cell>)c) {
+		//	bits.clear(cell.getIndex());
+		//}
+		for(Object cell : c) {
+			bits.clear(((Cell)cell).getIndex());
 		}
 		return false;
 	}
@@ -136,7 +142,8 @@ public class CellSet implements Set<Cell> {
 			bits.and((BitSet)(((CellSet) c).bits));
 			return false;
 		}
-		CellSet other = new CellSet((Collection<Cell>)c);
+		//CellSet other = new CellSet((Collection<Cell>)c);
+		CellSet other = new CellSet(c);
 		bits.and(other.bits);
 		return false;
 	}

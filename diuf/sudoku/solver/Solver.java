@@ -9,7 +9,7 @@ import java.security.*;
 import java.util.*;
 
 import diuf.sudoku.*;
-import diuf.sudoku.Settings.*;
+//import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.checks.*;
 import diuf.sudoku.solver.rules.*;
 import diuf.sudoku.solver.rules.chaining.*;
