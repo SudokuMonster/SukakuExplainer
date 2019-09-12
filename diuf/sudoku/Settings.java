@@ -8,6 +8,8 @@ package diuf.sudoku;
 import java.util.*;
 import java.util.prefs.*;
 
+import java.io.PrintWriter;
+
 /**
  * Global settings of the application.
  * Implemented using the singleton pattern.
@@ -37,6 +39,24 @@ public class Settings {
     
     private int numThreads = 1;
     private boolean bestHintOnly = false;
+
+	// lksudoku serate log steps
+	private boolean 		isLogSolution = false;
+	private PrintWriter		logWriter = null;
+
+	public void setLog( PrintWriter writeLog ) {
+		isLogSolution = true;
+		logWriter = writeLog;
+	}
+
+	public boolean isLog() {
+		return isLogSolution;
+	}
+
+	public PrintWriter getLogWriter() {
+		return logWriter;
+	}
+
 
     private Settings() {
         init();
