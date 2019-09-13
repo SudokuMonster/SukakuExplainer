@@ -66,7 +66,7 @@ public class HiddenSetHint extends IndirectHint implements Rule, HasParentPotent
 
     public double getDifficulty() {
         int degree = values.length;
-if (Settings.newRating) {
+if (Settings.getInstance().newRating()) {
         if (degree == 2)
             return 2.9;//New rating
         else if (degree == 3)

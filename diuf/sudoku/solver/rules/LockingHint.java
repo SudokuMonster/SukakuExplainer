@@ -65,7 +65,7 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
 
     public double getDifficulty() {
         int degree = regions.length / 2;
-if (Settings.newRating) {
+if (Settings.getInstance().newRating()) {
         if (degree == 1) {
             if (regions[0] instanceof Grid.Block)
                 return 2.6; // Pointing
