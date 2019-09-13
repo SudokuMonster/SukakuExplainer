@@ -16,8 +16,6 @@ import java.io.PrintWriter;
  */
 public class Settings {
 
-	public final static boolean Fixed14Chaining = false;//lksudoku chaining fix
-	public final static boolean newRating = false;//New change in rule order and rating
     public final static int VERSION = 1;
     public final static int REVISION = 3;
     public final static String SUBREV = ".0.2";
@@ -29,6 +27,9 @@ public class Settings {
     
     private static Settings instance = null;
 
+
+	private boolean Fixed14Chaining = false;//lksudoku chaining fix
+	private boolean newRating = false;//New change in rule order and rating
     private boolean isRCNotation = false;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
@@ -67,6 +68,19 @@ public class Settings {
         if (instance == null)
             instance = new Settings();
         return instance;
+    }
+
+    public void setFixed14Chaining(boolean Fixed14Chaining) {
+        this.Fixed14Chaining = Fixed14Chaining;
+    }
+    public boolean Fixed14Chaining() {
+        return Fixed14Chaining;
+    }
+    public void setnewRating(boolean newRating) {
+        this.newRating = newRating;
+    }
+    public boolean newRating() {
+        return newRating;
     }
 
     public void setRCNotation(boolean isRCNotation) {
