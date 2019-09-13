@@ -96,7 +96,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             } // for i
         } // for regionType
 
-		if (oneValue && allExtraCells.size() > bugCells.size()) {
+		if (oneValue && allExtraCells != null && allExtraCells.size() > bugCells.size()) {
 			allExtraCells.removeAll( bugCells );
 			for (Cell cell: allExtraCells) {
 				bugCells.add(cell);

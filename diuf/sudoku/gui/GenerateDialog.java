@@ -1220,7 +1220,7 @@ public class GenerateDialog extends JDialog {
         JPanel diffChooserPanel = new JPanel();
         diffChooserPanel.setLayout(new BoxLayout(diffChooserPanel, BoxLayout.X_AXIS));
         difficultyPanel.add(diffChooserPanel, BorderLayout.NORTH);
-        final JComboBox selDifficulty = new JComboBox();
+        final JComboBox<Difficulty> selDifficulty = new JComboBox<>();
         for (Difficulty d : Difficulty.values()) {
             selDifficulty.addItem(d);
         }

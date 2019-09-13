@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import diuf.sudoku.*;
 import diuf.sudoku.Grid.*;
-import diuf.sudoku.Settings.*;
+//import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.solver.rules.*;
 //import diuf.sudoku.solver.rules.unique.BivalueUniversalGrave;

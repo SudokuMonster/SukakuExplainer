@@ -9,7 +9,7 @@ import diuf.sudoku.*;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
-import diuf.sudoku.Settings.*;
+//import diuf.sudoku.Settings.*;
 
 
 public class NakedSingleHint extends DirectHint implements Rule {
