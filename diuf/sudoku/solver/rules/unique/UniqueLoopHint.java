@@ -104,7 +104,7 @@ public abstract class UniqueLoopHint extends IndirectHint implements Rule {
 
     public double getDifficulty() {
         double result = 4.5;
-		if (Settings.newRating) {
+		if (Settings.getInstance().newRating()) {
 			result += (loop.size() / 2 - 2) * 0.1; // 4.5 for UR(UL4) - 5.0 for UL14
 		}
 		else {//Original Rating 4.5 UR, 4.6 UL6, 4.7 UL8, 5.0 UL10+

@@ -40,7 +40,7 @@ public class UniqueLoopType3HiddenHint extends UniqueLoopHint {
     @Override
     public double getDifficulty() {
         double toAdd = hiddenIndexes.length;
-		if (Settings.newRating)
+		if (Settings.getInstance().newRating())
 			toAdd = toAdd * 0.1;//Pair=0.1, Quad=0.3
 		else
 			toAdd = (toAdd - 1) * 0.1;//Original rating Pair=0.0, Quad=0.2
