@@ -56,6 +56,9 @@ public class serate {
         System.err.println("      Format the output after each step according to FORMAT. Default is empty.");
         System.err.println("  -b, --before=FORMAT");
         System.err.println("      Format the output before each step according to FORMAT. Default is empty.");
+		System.err.println("  -B, --batch");
+		System.err.println("      Batch mode rating, apply all lowest rating hints of same rating");
+		System.err.println("      concurrently intead of applying one lowest rating hint step only.");
         System.err.println("  -d, --diamond");
         System.err.println("      Terminate rating if the puzzle is not a diamond.");
         System.err.println("  -f, --format=FORMAT");
@@ -141,7 +144,7 @@ public class serate {
         System.err.println("IMPLEMENTATION");
 	//relese
 	String Experimental = "";
-	if (newRating) Experimental = ".1";
+	if (getInstance().newRating()) Experimental = ".1";
 	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV + Experimental + " (Sudoku Explainer) " + releaseDate);
         System.err.println("  author      Nicolas Juillerat");
         //relese
@@ -173,7 +176,7 @@ public class serate {
     }
 	
 	private static String isItExperimental() {
-		if (newRating)
+		if (getInstance().newRating())
 			return ".1";
 		return "";
 	}
@@ -193,6 +196,7 @@ public class serate {
         String          s;
         String          v;
         String          puzzle;
+		boolean			batch = false;
         BufferedReader  reader = null;
         PrintWriter     writer = null;
         int             numThreads = 1;
@@ -233,6 +237,12 @@ public class serate {
                         c = 'p';
                     else if (s.equals("version"))
                         c = 'V';
+					else if (s.equals("batch"))
+						c = 'B';
+					else if (s.equals("newRating"))
+						c = 'N';
+					else if (s.equals("lksudokuChaining"))
+						c = 'C';					
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
@@ -301,7 +311,16 @@ public class serate {
                     System.out.println(VER);
                     System.exit(0);
                     break;
-                default:
+				case 'B':
+					batch = true;
+					break;
+				case 'N':
+					Settings.getInstance().setnewRating(true);
+					break;
+				case 'C':
+					Settings.getInstance().setFixed14Chaining(true);
+					break;					
+					default:
                     usage(a, 0);
                     break;
                 }
@@ -353,7 +372,13 @@ public class serate {
 	                if (puzzle.length() >= 81 && puzzle.length() < 729) {
 	                    solver.rebuildPotentialValues();
 	                }
-                    solver.getDifficulty(formatter);
+					if (!batch) {
+						// Step mode, no batch
+                        solver.getDifficulty(formatter);
+					} else {
+						// Batch mode
+						solver.getBatchDifficulty(formatter);
+					}
 	                t = System.currentTimeMillis() - t;
                 }
             }
