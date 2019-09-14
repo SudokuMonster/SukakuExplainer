@@ -133,7 +133,7 @@ public class Solver {
     public Solver(Grid grid) {
         this.grid = grid;
         directHintProducers = new ArrayList<HintProducer>();
-if (Settings.newRating) {
+if (Settings.getInstance().newRating()) {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
         addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
@@ -650,7 +650,6 @@ else {
                     break;
                 }
                 hint.apply(grid);
-                
             	formatter.afterHint(this, hint);
                 if (pearl == 0.0) {
                     if (diamond == 0.0){
@@ -939,7 +938,7 @@ else {
 		PrintWriter logWriter = Settings.getInstance().getLogWriter();
 		int batchCount = 0;
         try {
-            difficulty = Double.NEGATIVE_INFINITY;
+            difficulty = 0.0;
             pearl = 0.0;
             diamond = 0.0;
 			ERtN ="No solution";
@@ -948,8 +947,10 @@ else {
 			shortERtN ="O";
 			shortEPtN ="O";
 			shortEDtN ="O";			
-            while (!isSolved()) {
+            formatter.beforePuzzle(this);
+			while (!isSolved()) {
 				formatter.beforeHint(this);
+            	//Hint hint = null;
 				List<Hint> result = new ArrayList<Hint>();
 				SmallestHintsAccumulator accu = new SmallestHintsAccumulator(result);
                 try {
@@ -990,11 +991,7 @@ else {
 						}
                     }
                 }
-				catch (InterruptedException willHappen) {
-					difficulty = pearl = diamond = 0.0;
-					ERtN = EPtN = EDtN = "No solution";
-					shortERtN = shortEPtN = shortEDtN = "O";
-				}				
+				catch (InterruptedException willHappen) {}				
                 if (result.isEmpty()) {
                     difficulty = 20.0;
 					ERtN = "Beyond solver";
@@ -1020,7 +1017,6 @@ else {
 						}
 						logWriter.println("Step "+batchCount+"."+batchSubStep+", "+rule.toString());
 					}
-
 	                if (ruleDiff > difficulty) {
 		                    difficulty = ruleDiff;
 							ERtN = ruleName;
@@ -1053,11 +1049,11 @@ else {
 						break;
 					}
 				}
-				formatter.afterPuzzle(this);
-					if ( difficulty == 20.0 ) {
-						break;
-					}
+				if ( difficulty == 20.0 ) {
+					break;
+				}
            	}
+			formatter.afterPuzzle(this);
 		}
 		finally {
             backup.copyTo(grid);
