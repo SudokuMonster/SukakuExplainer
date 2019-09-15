@@ -51,7 +51,7 @@ public class AboutDialog extends JDialog {
         });
         //release
 		String Experimental = "";
-		if (newRating) Experimental = ".1";
+		if (getInstance().revisedRating() > 0) Experimental = ".1";
         txtVersion.setText("" + VERSION + "." + REVISION + SUBREV + Experimental);
     }
 

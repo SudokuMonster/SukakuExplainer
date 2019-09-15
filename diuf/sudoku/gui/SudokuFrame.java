@@ -317,7 +317,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private void initialize() {
         String Experimental = "";
 		String ExSuffix = "";
-		if (newRating) {
+		if (getInstance().revisedRating() > 0) {
 			Experimental = ".1";
 			ExSuffix ="New Rating ";
 		}

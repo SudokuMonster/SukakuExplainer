@@ -7,7 +7,7 @@
 package diuf.sudoku.test;
 
 import java.io.*;
-//import java.util.*;
+import java.util.*;
 
 import static diuf.sudoku.Settings.*;
 
@@ -56,6 +56,9 @@ public class serate {
         System.err.println("      Format the output after each step according to FORMAT. Default is empty.");
         System.err.println("  -b, --before=FORMAT");
         System.err.println("      Format the output before each step according to FORMAT. Default is empty.");
+		System.err.println("  -B, --batch");
+		System.err.println("      Batch mode rating, apply all lowest rating hints of same rating");
+		System.err.println("      concurrently intead of applying one lowest rating hint step only.");
         System.err.println("  -d, --diamond");
         System.err.println("      Terminate rating if the puzzle is not a diamond.");
         System.err.println("  -f, --format=FORMAT");
@@ -141,7 +144,7 @@ public class serate {
         System.err.println("IMPLEMENTATION");
 	//relese
 	String Experimental = "";
-	if (newRating) Experimental = ".1";
+	if (getInstance().revisedRating() > 0) Experimental = ".1";
 	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV + Experimental + " (Sudoku Explainer) " + releaseDate);
         System.err.println("  author      Nicolas Juillerat");
         //relese
@@ -173,9 +176,62 @@ public class serate {
     }
 	
 	private static String isItExperimental() {
-		if (newRating)
+		if (getInstance().revisedRating() > 0)
 			return ".1";
 		return "";
+	}
+
+	/**
+	 * set usable techniques according to binary values string
+	 * Each character represents a technique, 0 for don't use
+	 * 1 for use
+	 */
+	private static boolean setTechniques(String techniques, boolean showArguments) {
+		EnumSet<SolvingTechnique> allTechniques = EnumSet.allOf(SolvingTechnique.class);
+		try {	
+			EnumSet<SolvingTechnique> useTechniques = EnumSet.noneOf(SolvingTechnique.class);
+			Iterator<SolvingTechnique> iter = allTechniques.iterator();
+
+			int i=0;
+			while (iter.hasNext()) {
+				if (techniques.length()-1 < i) { // error, string too short
+					throw new InterruptedException();
+				}
+
+				SolvingTechnique curTech = iter.next();
+				if ( techniques.charAt(i) == '1' ) {
+					useTechniques.add(curTech);
+				} else if ( techniques.charAt(i) != '0' ) {
+					throw new InterruptedException();
+				}
+				++i;
+			}
+			if (techniques.length() > i) { // error, string too long
+				throw new InterruptedException();
+			}
+
+			Settings.getInstance().setTechniques(EnumSet.copyOf(useTechniques));
+		} catch (InterruptedException excep) {
+			System.err.println("ERROR techniques setting, need "+allTechniques.size()+" 1/0 characters in second parameter, per each technique");
+				System.err.println("The techniques are (in this order)");
+				int i=1;
+				for ( SolvingTechnique tech: Settings.getInstance().getTechniques()) {
+					System.err.println((i<10?"0":"")+i+": "+tech.toString());
+					++i;
+				};
+
+			System.exit(3);
+			return false;
+		}
+		if (showArguments) {
+			System.out.println("The following techniques where set and unset:");
+			int i=1;
+			for ( SolvingTechnique tech: allTechniques) {
+				System.out.println((i<10?"0":"")+i+", "+(techniques.charAt(i-1)=='1'?"Set   ":"Unset ")+tech.toString());
+				++i;
+			};
+		}	
+		return true;
 	}
 	
     /**
@@ -193,19 +249,29 @@ public class serate {
         String          s;
         String          v;
         String          puzzle;
+		boolean			totalTime = false;
+		boolean			showArguments = false;
         BufferedReader  reader = null;
         PrintWriter     writer = null;
         int             numThreads = 1;
+		int				revisedRating = 0;
+		int				batchSolving = 0;
+		int				Fixed14Chaining = 0;
         char            want = 0;
         int             arg;
         long            t;
+		long			tt = System.currentTimeMillis();
         char            c;
+		boolean 	incArg = false;
+		boolean 	addedArg = false;
         try {
             for (arg = 0; arg < args.length; arg++) {
                 a = s = args[arg];
                 if (s.charAt(0) != '-')
                     break;
                 v = null;
+				incArg = false;
+				addedArg = false;
                 if (s.charAt(1) == '-') {
                     if (s.length() == 2) {
                         arg++;
@@ -233,6 +299,14 @@ public class serate {
                         c = 'p';
                     else if (s.equals("version"))
                         c = 'V';
+					else if (s.equals("batch"))
+						c = 'B';
+					else if (s.equals("revisedRating"))
+						c = 'N';
+					else if (s.equals("lksudokuChaining"))
+						c = 'C';
+					else if (s.equals("showArguments"))
+						c = 'S';					
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
@@ -241,15 +315,21 @@ public class serate {
                         c = 's';
                     else if (s.equals("threads"))
                         c = 't';
-                    else
+					else if (s.equals("techs"))
+					c = '~';
+                    else if (s.equals("totalTime"))
+                        c = 'T';
+					else
                         c = '?';
                 }
                 else {
                     c = s.charAt(1);
                     if (s.length() > 2)
                         v = s.substring(2);
-                    else if (++arg < args.length)
+                    else if (++arg < args.length) {
                         v = args[arg];
+						incArg = true;
+					}
                 }
                 switch (c) {
                 case 'a':
@@ -259,11 +339,23 @@ public class serate {
                 case 'f':
                 case 'i':
                 case 'o':
+                case 'B':
+                case 'N':
+                case 'C':				
+				case '~':
                     if (v == null)
                         usage(a, 1);
+					addedArg = true;
                     break;
+				default:
+					if (incArg)
+						--arg;
+					break;
                 }
                 switch (c) {
+                case 'S':
+                    showArguments= true;;
+                    break;
                 case 'a':
                     formatAfter = v;
                     break;
@@ -301,10 +393,35 @@ public class serate {
                     System.out.println(VER);
                     System.exit(0);
                     break;
-                default:
+				case 'T':
+					totalTime = true;
+					break;					
+				case 'B':
+					batchSolving = Integer.parseInt(v);//0: Batch solving disabled 1: Batch solve applying lowest rated hints together 2: Batch solve applying all hints lower than maximum diffculty together
+					Settings.getInstance().setBatchSolving(batchSolving);
+					break;
+				case 'N':
+					revisedRating = Integer.parseInt(v);
+					Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
+					break;
+				case 'C':
+					Fixed14Chaining = Integer.parseInt(v);
+					Settings.getInstance().setFixed14Chaining(Fixed14Chaining);//0: Fixed14Chaining disabled //1:1st iteration of Fixed14 Chaining enabled
+					break;
+				case '~':
+					setTechniques(v, showArguments);
+					break;					
+					default:
                     usage(a, 0);
                     break;
                 }
+				String command = Character.toString(c);
+				switch (c) {
+					case '~': command = "techs";
+					break;
+				}
+				if (showArguments)
+					System.out.println("  "+command+(addedArg?(" "+v):""));
             }
             //options were parsed
             Settings.getInstance().setNumThreads(numThreads); // make numThreads accessible at runtime from everywhere
@@ -353,8 +470,14 @@ public class serate {
 	                if (puzzle.length() >= 81 && puzzle.length() < 729) {
 	                    solver.rebuildPotentialValues();
 	                }
-                    solver.getDifficulty(formatter);
-	                t = System.currentTimeMillis() - t;
+					if (batchSolving < 1) {
+						// Step mode, no batch
+                        solver.getDifficulty(formatter);
+					} else {
+						// Batch mode
+						solver.getBatchDifficulty(formatter);
+					}
+					t = System.currentTimeMillis() - t;
                 }
             }
         }
@@ -369,6 +492,8 @@ public class serate {
         }
         finally {
             try {
+				if (totalTime)
+					System.out.println("totalTime: " + Formatter.getTimeString(tt));
                 if (reader != null)
                     reader.close();
                 if (writer != null)
@@ -631,7 +756,7 @@ public class serate {
             return s;
     	}
     	
-    	private String getTimeString(long oldTime) {
+    	public static String getTimeString(long oldTime) {
     		String s = new String();
     		long t = System.currentTimeMillis() - oldTime;
             long            u;

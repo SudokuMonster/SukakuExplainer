@@ -575,7 +575,7 @@ public class Chaining implements IndirectHintProducer {
      * @return the set of potentials that must be "off"
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
-if (Settings.Fixed14Chaining) {
+if (Settings.getInstance().Fixed14Chaining() == 1) {
 		LinkedSet<Potential> result = new LinkedSet<Potential>();
 
         int potentialCellIndex = p.cell.getIndex();
@@ -727,7 +727,7 @@ else{
     private Set<Potential> getOffToOn(Grid grid, Potential p, Grid source,
             LinkedSet<Potential> offPotentials, boolean isYChainEnabled,
             boolean isXChainEnabled) {
-if (Settings.Fixed14Chaining) {
+if (Settings.getInstance().Fixed14Chaining() == 1) {
 		//Set<Potential> result = new LinkedHashSet<Potential>();
     	LinkedSet<Potential> result = new LinkedSet<Potential>();
 															  
@@ -947,7 +947,7 @@ else {
      */
     private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
         grid.copyTo(saveGrid);
-if (Settings.Fixed14Chaining){
+if (Settings.getInstance().Fixed14Chaining() == 1){
 		Potential[] pOnRes = new Potential[729];
 		Potential[] pOffRes = new Potential[729];
 		int numRes = 0;
@@ -1126,7 +1126,7 @@ else{
         int index = 0;
         while (index < otherRules.size() && result.isEmpty()) {
             IndirectHintProducer rule = otherRules.get(index);
-if (Settings.Fixed14Chaining){
+if (Settings.getInstance().Fixed14Chaining() == 1){
             try {
                 rule.getHints(grid, new HintsAccumulator() {
                     public void add(Hint hint0) {

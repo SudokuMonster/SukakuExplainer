@@ -8,14 +8,14 @@ package diuf.sudoku;
 import java.util.*;
 import java.util.prefs.*;
 
+import java.io.PrintWriter;
+
 /**
  * Global settings of the application.
  * Implemented using the singleton pattern.
  */
 public class Settings {
 
-	public final static boolean Fixed14Chaining = false;//lksudoku chaining fix
-	public final static boolean newRating = false;//New change in rule order and rating
     public final static int VERSION = 1;
     public final static int REVISION = 3;
     public final static String SUBREV = ".0.2";
@@ -27,7 +27,11 @@ public class Settings {
     
     private static Settings instance = null;
 
-    private boolean isRCNotation = false;
+
+	private int Fixed14Chaining = 0;//lksudoku chaining fix (Disabled by default)
+	private int revisedRating = 0;//New change in rule order and rating (Disabled by default)
+    private int batchSolving = 0;//lksudoku revised bacth solving (Disabled by default)
+	private boolean isRCNotation = false;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
     private boolean isShowingCandidateMasks = true;
@@ -38,6 +42,24 @@ public class Settings {
     private int numThreads = 1;
     private boolean bestHintOnly = false;
 
+	// lksudoku serate log steps
+	private boolean 		isLogSolution = false;
+	private PrintWriter		logWriter = null;
+
+	public void setLog( PrintWriter writeLog ) {
+		isLogSolution = true;
+		logWriter = writeLog;
+	}
+
+	public boolean isLog() {
+		return isLogSolution;
+	}
+
+	public PrintWriter getLogWriter() {
+		return logWriter;
+	}
+
+
     private Settings() {
         init();
         load();
@@ -47,6 +69,26 @@ public class Settings {
         if (instance == null)
             instance = new Settings();
         return instance;
+    }
+
+    public void setFixed14Chaining(int Fixed14Chaining) {
+        this.Fixed14Chaining = Fixed14Chaining;
+    }
+    public int Fixed14Chaining() {
+        return Fixed14Chaining;
+    }
+    public void setRevisedRating(int revisedRating) {
+        this.revisedRating = revisedRating;
+    }
+    public int revisedRating() {
+        return revisedRating;
+    }
+
+    public void setBatchSolving(int batchSolving) {
+        this.batchSolving = batchSolving;
+    }
+    public int batchSolving() {
+        return batchSolving;
     }
 
     public void setRCNotation(boolean isRCNotation) {

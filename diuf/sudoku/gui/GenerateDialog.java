@@ -276,14 +276,14 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMinDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 3.1;
 				return 3.2;
             }
 
             @Override
             public double getMaxDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 3.8;
                 return 4.0;
             }
@@ -301,7 +301,7 @@ public class GenerateDialog extends JDialog {
             }
             @Override
             public double getexcludeDifficulty1() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 0.0;
                 return 3.8;
             }
@@ -315,7 +315,7 @@ public class GenerateDialog extends JDialog {
             }
             @Override
             public double getnotMaxDifficulty1() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 0.0;
                 return 3.4;
             }
@@ -447,7 +447,7 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMinDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 4.0;
                 return 3.8;
             }
@@ -482,7 +482,7 @@ public class GenerateDialog extends JDialog {
             }
             @Override
             public double getnotMaxDifficulty1() {
-                if (Settings.newRating)
+                if (Settings.getInstance().revisedRating() == 1)
 					return 0.0;
 				return 4.0;
             }
@@ -612,14 +612,14 @@ public class GenerateDialog extends JDialog {
 		UL10 {
             @Override
             public double getMinDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 4.8;
                 return 5.0;
             }
 
             @Override
             public double getMaxDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 5.1;
                 return 5.3;
             }
@@ -683,7 +683,7 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getnotMaxTechnique1() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return "Naked";
 				return "Jellyfish";
 			}
@@ -699,14 +699,14 @@ public class GenerateDialog extends JDialog {
 		UL12Type3 {
             @Override
             public double getMinDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 4.9;
                 return 5.0;
             }
 
             @Override
             public double getMaxDifficulty() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return 5.2;
                 return 5.3;
             }
@@ -770,7 +770,7 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getnotMaxTechnique1() {
-				if (Settings.newRating)
+				if (Settings.getInstance().revisedRating() == 1)
 					return "Naked";
 				return "Jellyfish";
 			}
