@@ -107,7 +107,7 @@ public class DirectHiddenSetHint extends IndirectHint implements Rule {
 
     public double getDifficulty() {
         int degree = values.length;
-if (Settings.getInstance().newRating()) {
+if (Settings.getInstance().revisedRating() == 1) {
         if (degree == 2)
             return 2.0;
         else if (degree == 3)

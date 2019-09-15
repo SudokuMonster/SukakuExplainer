@@ -19,7 +19,7 @@ public class NakedSingleHint extends DirectHint implements Rule {
     }
 
     public double getDifficulty() {
-if (Settings.getInstance().newRating())
+if (Settings.getInstance().revisedRating() == 1)
 		return 1.6;//New rating
 else
         return 2.3;//Original rating
