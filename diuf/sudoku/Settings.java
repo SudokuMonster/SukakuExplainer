@@ -28,9 +28,10 @@ public class Settings {
     private static Settings instance = null;
 
 
-	private boolean Fixed14Chaining = false;//lksudoku chaining fix
-	private boolean newRating = false;//New change in rule order and rating
-    private boolean isRCNotation = false;
+	private int Fixed14Chaining = 0;//lksudoku chaining fix (Disabled by default)
+	private int revisedRating = 0;//New change in rule order and rating (Disabled by default)
+    private int batchSolving = 0;//lksudoku revised bacth solving (Disabled by default)
+	private boolean isRCNotation = false;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
     private boolean isShowingCandidateMasks = true;
@@ -70,17 +71,24 @@ public class Settings {
         return instance;
     }
 
-    public void setFixed14Chaining(boolean Fixed14Chaining) {
+    public void setFixed14Chaining(int Fixed14Chaining) {
         this.Fixed14Chaining = Fixed14Chaining;
     }
-    public boolean Fixed14Chaining() {
+    public int Fixed14Chaining() {
         return Fixed14Chaining;
     }
-    public void setnewRating(boolean newRating) {
-        this.newRating = newRating;
+    public void setRevisedRating(int revisedRating) {
+        this.revisedRating = revisedRating;
     }
-    public boolean newRating() {
-        return newRating;
+    public int revisedRating() {
+        return revisedRating;
+    }
+
+    public void setBatchSolving(int batchSolving) {
+        this.batchSolving = batchSolving;
+    }
+    public int batchSolving() {
+        return batchSolving;
     }
 
     public void setRCNotation(boolean isRCNotation) {
