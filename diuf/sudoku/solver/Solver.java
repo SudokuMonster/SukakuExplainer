@@ -111,7 +111,7 @@ public class Solver {
         public void add(Hint hint) throws InterruptedException {
 			if (dif == 0.0) {
 				dif = ((Rule)hint).getDifficulty();
-			} else if ( ((Rule)hint).getDifficulty() != dif ) {
+			} else if ( (((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 1) || (((Rule)hint).getDifficulty() > difficulty && Settings.getInstance().batchSolving() == 2)) {
 				throw new InterruptedException();
 			}
             if (!result.contains(hint))
@@ -133,7 +133,7 @@ public class Solver {
     public Solver(Grid grid) {
         this.grid = grid;
         directHintProducers = new ArrayList<HintProducer>();
-if (Settings.getInstance().newRating()) {
+if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
         addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
