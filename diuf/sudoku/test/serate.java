@@ -18,7 +18,7 @@ import diuf.sudoku.solver.*;
 public class serate {
     static String FORMAT = "%r/%p/%d";
     static String RELEASE = Settings.releaseDate;
-	static String VER = "" + Settings.VERSION + "." + Settings.REVISION + Settings.SUBREV + isItExperimental();
+    static String VER = "" + Settings.VERSION + "." + Settings.REVISION + Settings.SUBREV + isItExperimental();
     static Formatter formatter;
     static void help(int html) {
         if (html != 0) {
@@ -56,9 +56,9 @@ public class serate {
         System.err.println("      Format the output after each step according to FORMAT. Default is empty.");
         System.err.println("  -b, --before=FORMAT");
         System.err.println("      Format the output before each step according to FORMAT. Default is empty.");
-		System.err.println("  -B, --batch");
-		System.err.println("      Batch mode rating, apply all lowest rating hints of same rating");
-		System.err.println("      concurrently intead of applying one lowest rating hint step only.");
+        System.err.println("  -B, --batch");
+        System.err.println("      Batch mode rating, apply all lowest rating hints of same rating");
+        System.err.println("      concurrently intead of applying one lowest rating hint step only.");
         System.err.println("  -d, --diamond");
         System.err.println("      Terminate rating if the puzzle is not a diamond.");
         System.err.println("  -f, --format=FORMAT");
@@ -108,8 +108,24 @@ public class serate {
         System.err.println("      Terminate rating if the puzzle is not a pearl.");
         System.err.println("  -s, --start=FORMAT");
         System.err.println("      Format the output before each puzzle according to FORMAT. Default is empty.");
-        System.err.println("  -t, --threads");
-        System.err.println("      Maximal degree of parrallelism. Default 0=auto. 1=no parallelism; -1=unlimited");
+        System.err.println("  -t, --threads=N");
+        System.err.println("      Maximal degree of parallelism. Default 0=auto. 1=no parallelism; -1=unlimited");
+        System.err.println("  -N, --revisedRating=N");
+        System.err.println("      Revised rating scheme. Default 0=disabled. 1=enabled");
+        System.err.println("  -B, --batchSolving=N");
+        System.err.println("      Batch solving. Default 0=disabled.");
+        System.err.println("                             1=Apply all available hints that have the lowest rating");
+        System.err.println("                             2=Apply all available hints with rating lower than maximum puzzle rating");
+        System.err.println("  -~, --techs=TECHSTRING");
+        System.err.println("      Specific techniques only, set which techniques to use");
+        System.err.println("      the techniques string TECHSTRING is a string consisting of the letters '0' and '1',");
+        System.err.println("      where '1' means the technique should be used and '0' means it should not be used");
+        System.err.println("      To see which technique is in which letter, and how many techniques are");
+        System.err.println("      there, just type --techs= without any string after the = in TECHSTRING");
+        System.err.println("  -T, --totalTime");
+        System.err.println("      The time required to process all puzzles parsed to standard output");
+        System.err.println("  -S, --showArguments");
+        System.err.println("      Show parameters used");
         System.err.println("  -V, --version");
         System.err.println("      Print the Sudoku Explainer (serate) version and exit.");
         System.err.println("");
@@ -142,15 +158,15 @@ public class serate {
         System.err.println("  ");
         System.err.println("");
         System.err.println("IMPLEMENTATION");
-	//relese
-	String Experimental = "";
-	if (getInstance().revisedRating() > 0) Experimental = ".1";
-	System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV + Experimental + " (Sudoku Explainer) " + releaseDate);
+    //relese
+    String Experimental = "";
+    if (getInstance().revisedRating() > 0) Experimental = ".1";
+    System.err.println("  version     serate "+"" + VERSION + "." + REVISION + SUBREV + Experimental + " (Sudoku Explainer) " + releaseDate);
         System.err.println("  author      Nicolas Juillerat");
         //relese
-	System.err.println("  copyright   Copyright (c) 2006-" + releaseYear + " Nicolas Juillerat");
+    System.err.println("  copyright   Copyright (c) 2006-" + releaseYear + " Nicolas Juillerat");
         //relese
-	System.err.println("  license     " + releaseLicence + "(" + releaseLicenceMini + ") v" + releaseLicenceVersion);
+    System.err.println("  license     " + releaseLicence + "(" + releaseLicenceMini + ") v" + releaseLicenceVersion);
         if (html != 0) {
             System.err.println("</PRE>");
             System.err.println("</BODY>");
@@ -160,80 +176,82 @@ public class serate {
     }
     /*
      * An example command line that demonstrates almost all of the formatting options:
-		java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
-		--format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \
-		--start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
-		--before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
-		--after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
-		--input=my_input_file.txt --output=- --threads=0 > my_output_file.txt
+        java -Xrs -Xmx1g -cp SukakuExplainer.jar diuf.sudoku.test.serate \
+        --format="--format%l%%d: %d%l%%D: %D%l%%e: %e%l%%g: %g%l%%i: %i%l%%n: %n%l%%p: %p%l%%P: %P%l%%r: %r%l%%R: %R%l%%S: %S%l%%T: %T%l%%U: %U%l--- end of final section ---" \
+        --start="--start%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%n: %n%l--- end of start section ---" \
+        --before="--before%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l--- end of before section ---" \
+        --after="--after%l%%e: %e%l%%h:%l%h%l%%g: %g%l%%i: %i%l%%m: %m%l%%M:%l%M%l%%r: %r%l%%s: %s%l--- end of after section ---" \
+        --input=my_input_file.txt --output=- --threads=0 > my_output_file.txt
     */
 
     static void usage(String option, int argument) {
         System.err.println("serate: " + option + ((argument == 1) ? ": option argument expected" : ": unknown option"));
-        System.err.println("Usage: serate [--diamond] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
-        System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]");
-        System.exit(2);
+        System.err.println("Usage: serate [--input=FILE] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
+        System.err.println("    [--revisedRating=N] [--output=FILE][--start=FORMAT] [--threads=N] [--showArguments]");
+        System.err.println("    [--batch=N] [--pearl] [--totalTime] [--diamond] [--techs=TECHSTRING] [puzzle ...]");
+       System.exit(2);
     }
-	
-	private static String isItExperimental() {
-		if (getInstance().revisedRating() > 0)
-			return ".1";
-		return "";
-	}
+    
+    private static String isItExperimental() {
+        if (getInstance().revisedRating() > 0)
+            return ".1";
+        return "";
+    }
 
-	/**
-	 * set usable techniques according to binary values string
-	 * Each character represents a technique, 0 for don't use
-	 * 1 for use
-	 */
-	private static boolean setTechniques(String techniques, boolean showArguments) {
-		EnumSet<SolvingTechnique> allTechniques = EnumSet.allOf(SolvingTechnique.class);
-		try {	
-			EnumSet<SolvingTechnique> useTechniques = EnumSet.noneOf(SolvingTechnique.class);
-			Iterator<SolvingTechnique> iter = allTechniques.iterator();
+    /**
+     * set usable techniques according to binary values string
+     * Each character represents a technique, 0 for don't use
+     * 1 for use
+     */
+    private static boolean setTechniques(String techniques, boolean showArguments) {
+        EnumSet<SolvingTechnique> allTechniques = EnumSet.allOf(SolvingTechnique.class);
+        try {   
+            EnumSet<SolvingTechnique> useTechniques = EnumSet.noneOf(SolvingTechnique.class);
+            Iterator<SolvingTechnique> iter = allTechniques.iterator();
 
-			int i=0;
-			while (iter.hasNext()) {
-				if (techniques.length()-1 < i) { // error, string too short
-					throw new InterruptedException();
-				}
+            int i=0;
+            while (iter.hasNext()) {
+                if (techniques.length()-1 < i) { // error, string too short
+                    throw new InterruptedException();
+                }
 
-				SolvingTechnique curTech = iter.next();
-				if ( techniques.charAt(i) == '1' ) {
-					useTechniques.add(curTech);
-				} else if ( techniques.charAt(i) != '0' ) {
-					throw new InterruptedException();
-				}
-				++i;
-			}
-			if (techniques.length() > i) { // error, string too long
-				throw new InterruptedException();
-			}
+                SolvingTechnique curTech = iter.next();
+                if ( techniques.charAt(i) == '1' ) {
+                    useTechniques.add(curTech);
+                } else if ( techniques.charAt(i) != '0' ) {
+                    throw new InterruptedException();
+                }
+                ++i;
+            }
+            if (techniques.length() > i) { // error, string too long
+                throw new InterruptedException();
+            }
 
-			Settings.getInstance().setTechniques(EnumSet.copyOf(useTechniques));
-		} catch (InterruptedException excep) {
-			System.err.println("ERROR techniques setting, need "+allTechniques.size()+" 1/0 characters in second parameter, per each technique");
-				System.err.println("The techniques are (in this order)");
-				int i=1;
-				for ( SolvingTechnique tech: Settings.getInstance().getTechniques()) {
-					System.err.println((i<10?"0":"")+i+": "+tech.toString());
-					++i;
-				};
+            Settings.getInstance().setTechniques(EnumSet.copyOf(useTechniques));
+        } catch (InterruptedException excep) {
+            System.err.println("ERROR techniques setting, need "+allTechniques.size()+" 1/0 characters in second parameter, per each technique");
+                System.err.println("The techniques are (in this order)");
+                int i=1;
+                for ( SolvingTechnique tech: Settings.getInstance().getTechniques()) {
+                    System.err.println((i<10?"0":"")+i+": "+tech.toString());
+                    ++i;
+                };
 
-			System.exit(3);
-			return false;
-		}
-		if (showArguments) {
-			System.out.println("The following techniques where set and unset:");
-			int i=1;
-			for ( SolvingTechnique tech: allTechniques) {
-				System.out.println((i<10?"0":"")+i+", "+(techniques.charAt(i-1)=='1'?"Set   ":"Unset ")+tech.toString());
-				++i;
-			};
-		}	
-		return true;
-	}
-	
+            System.exit(3);
+            return false;
+        }
+        if (showArguments) {
+            System.out.println();
+            System.out.println("The following techniques where set and unset:");
+            int i=1;
+            for ( SolvingTechnique tech: allTechniques) {
+                System.out.println((i<10?"0":"")+i+", "+(techniques.charAt(i-1)=='1'?"Set   ":"Unset ")+tech.toString());
+                ++i;
+            };
+        }   
+        return true;
+    }
+    
     /**
      * Solve input puzzles and print results according to the output format.
      * @param args 81-char puzzles
@@ -249,29 +267,29 @@ public class serate {
         String          s;
         String          v;
         String          puzzle;
-		boolean			totalTime = false;
-		boolean			showArguments = false;
+        boolean         totalTime = false;
+        boolean         showArguments = false;
         BufferedReader  reader = null;
         PrintWriter     writer = null;
         int             numThreads = 1;
-		int				revisedRating = 0;
-		int				batchSolving = 0;
-		int				Fixed14Chaining = 0;
+        int             revisedRating = 0;
+        int             batchSolving = 0;
+        int             Fixed14Chaining = 0;
         char            want = 0;
         int             arg;
         long            t;
-		long			tt = System.currentTimeMillis();
+        long            tt = System.currentTimeMillis();
         char            c;
-		boolean 	incArg = false;
-		boolean 	addedArg = false;
+        boolean     incArg = false;
+        boolean     addedArg = false;
         try {
             for (arg = 0; arg < args.length; arg++) {
                 a = s = args[arg];
                 if (s.charAt(0) != '-')
                     break;
                 v = null;
-				incArg = false;
-				addedArg = false;
+                incArg = false;
+                addedArg = false;
                 if (s.charAt(1) == '-') {
                     if (s.length() == 2) {
                         arg++;
@@ -299,14 +317,14 @@ public class serate {
                         c = 'p';
                     else if (s.equals("version"))
                         c = 'V';
-					else if (s.equals("batch"))
-						c = 'B';
-					else if (s.equals("revisedRating"))
-						c = 'N';
-					else if (s.equals("lksudokuChaining"))
-						c = 'C';
-					else if (s.equals("showArguments"))
-						c = 'S';					
+                    else if (s.equals("batch"))
+                        c = 'B';
+                    else if (s.equals("revisedRating"))
+                        c = 'N';
+                    else if (s.equals("lksudokuChaining"))
+                        c = 'C';
+                    else if (s.equals("showArguments"))
+                        c = 'S';                    
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
@@ -315,11 +333,11 @@ public class serate {
                         c = 's';
                     else if (s.equals("threads"))
                         c = 't';
-					else if (s.equals("techs"))
-					c = '~';
+                    else if (s.equals("techs"))
+                    c = '~';
                     else if (s.equals("totalTime"))
                         c = 'T';
-					else
+                    else
                         c = '?';
                 }
                 else {
@@ -328,8 +346,8 @@ public class serate {
                         v = s.substring(2);
                     else if (++arg < args.length) {
                         v = args[arg];
-						incArg = true;
-					}
+                        incArg = true;
+                    }
                 }
                 switch (c) {
                 case 'a':
@@ -341,16 +359,16 @@ public class serate {
                 case 'o':
                 case 'B':
                 case 'N':
-                case 'C':				
-				case '~':
+                case 'C':               
+                case '~':
                     if (v == null)
                         usage(a, 1);
-					addedArg = true;
+                    addedArg = true;
                     break;
-				default:
-					if (incArg)
-						--arg;
-					break;
+                default:
+                    if (incArg)
+                        --arg;
+                    break;
                 }
                 switch (c) {
                 case 'S':
@@ -385,44 +403,46 @@ public class serate {
                     output = v;
                     break;
                 case 't':
-                	numThreads = Integer.parseInt(v);
-                	if(numThreads == 0) numThreads = Runtime.getRuntime().availableProcessors();
-                	if(numThreads < 1) numThreads = 1; //no parallel processing
+                    numThreads = Integer.parseInt(v);
+                    if(numThreads == 0) numThreads = Runtime.getRuntime().availableProcessors();
+                    if(numThreads < 1) numThreads = 1; //no parallel processing
                     break;
                 case 'V':
                     System.out.println(VER);
                     System.exit(0);
                     break;
-				case 'T':
-					totalTime = true;
-					break;					
-				case 'B':
-					batchSolving = Integer.parseInt(v);//0: Batch solving disabled 1: Batch solve applying lowest rated hints together 2: Batch solve applying all hints lower than maximum diffculty together
-					Settings.getInstance().setBatchSolving(batchSolving);
-					break;
-				case 'N':
-					revisedRating = Integer.parseInt(v);
-					Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
-					break;
-				case 'C':
-					Fixed14Chaining = Integer.parseInt(v);
-					Settings.getInstance().setFixed14Chaining(Fixed14Chaining);//0: Fixed14Chaining disabled //1:1st iteration of Fixed14 Chaining enabled
-					break;
-				case '~':
-					setTechniques(v, showArguments);
-					break;					
-					default:
+                case 'T':
+                    totalTime = true;
+                    break;                  
+                case 'B':
+                    batchSolving = Integer.parseInt(v);//0: Batch solving disabled 1: Batch solve applying lowest rated hints together 2: Batch solve applying all hints lower than maximum diffculty together
+                    Settings.getInstance().setBatchSolving(batchSolving);
+                    break;
+                case 'N':
+                    revisedRating = Integer.parseInt(v);
+                    Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
+                    break;
+                case 'C':
+                    Fixed14Chaining = Integer.parseInt(v);
+                    Settings.getInstance().setFixed14Chaining(Fixed14Chaining);//0: Fixed14Chaining disabled //1:1st iteration of Fixed14 Chaining enabled
+                    break;
+                case '~':
+                    setTechniques(v, showArguments);
+                    break;                  
+                    default:
                     usage(a, 0);
                     break;
                 }
-				String command = Character.toString(c);
-				switch (c) {
-					case '~': command = "techs";
-					break;
-				}
-				if (showArguments)
-					System.out.println("  "+command+(addedArg?(" "+v):""));
+                String command = Character.toString(c);
+                switch (c) {
+                    case '~': command = "techs";
+                    break;
+                }
+                if (showArguments)
+                    System.out.print(" "+command+(addedArg?(""+v):""));
             }
+            if (showArguments)
+                System.out.println();
             //options were parsed
             Settings.getInstance().setNumThreads(numThreads); // make numThreads accessible at runtime from everywhere
             if (input != null) {
@@ -459,25 +479,25 @@ public class serate {
                     break;
                 if (puzzle.length() < 81) continue; //silently ignore short input lines or parameters
                 {
-                	//process puzzle
+                    //process puzzle
                     Grid grid = new Grid();
                     grid.fromString(puzzle);
                     formatter.setPuzzleLine(puzzle);
                     grid.adjustPencilmarks();
                     t = System.currentTimeMillis();
-	                Solver solver = new Solver(grid);
-	                solver.want = want;
-	                if (puzzle.length() >= 81 && puzzle.length() < 729) {
-	                    solver.rebuildPotentialValues();
-	                }
-					if (batchSolving < 1) {
-						// Step mode, no batch
+                    Solver solver = new Solver(grid);
+                    solver.want = want;
+                    if (puzzle.length() >= 81 && puzzle.length() < 729) {
+                        solver.rebuildPotentialValues();
+                    }
+                    if (batchSolving < 1) {
+                        // Step mode, no batch
                         solver.getDifficulty(formatter);
-					} else {
-						// Batch mode
-						solver.getBatchDifficulty(formatter);
-					}
-					t = System.currentTimeMillis() - t;
+                    } else {
+                        // Batch mode
+                        solver.getBatchDifficulty(formatter);
+                    }
+                    t = System.currentTimeMillis() - t;
                 }
             }
         }
@@ -492,8 +512,8 @@ public class serate {
         }
         finally {
             try {
-				if (totalTime)
-					System.out.println("totalTime: " + Formatter.getTimeString(tt));
+                if (totalTime)
+                    System.out.println("totalTime: " + Formatter.getTimeString(tt));
                 if (reader != null)
                     reader.close();
                 if (writer != null)
@@ -508,8 +528,8 @@ public class serate {
     } //main
     
     
-	public static class Formatter {
-    	private PrintWriter writer;
+    public static class Formatter {
+        private PrintWriter writer;
         private String formatStart; //before each puzzle
         private String formatAfter; //after each step
         private String formatBefore; //before each step
@@ -521,20 +541,20 @@ public class serate {
         
         private int ordinal;
         
-    	public Formatter(PrintWriter writer, String formatStart, String formatAfter, String formatBefore, String formatFinal) {
-    		this.writer = writer;
-    		this.formatStart = formatStart;
-    		this.formatAfter = formatAfter;
-    		this.formatBefore = formatBefore;
-    		this.formatFinal = formatFinal;
-    		this.ordinal = 0;
-    	}
+        public Formatter(PrintWriter writer, String formatStart, String formatAfter, String formatBefore, String formatFinal) {
+            this.writer = writer;
+            this.formatStart = formatStart;
+            this.formatAfter = formatAfter;
+            this.formatBefore = formatBefore;
+            this.formatFinal = formatFinal;
+            this.ordinal = 0;
+        }
 
-    	public void beforeHint(Solver solver) {
-        	stepBeginTime = System.currentTimeMillis();
-        	
-    		if(formatBefore.isEmpty()) return;
-    		String s = new String();
+        public void beforeHint(Solver solver) {
+            stepBeginTime = System.currentTimeMillis();
+            
+            if(formatBefore.isEmpty()) return;
+            String s = new String();
             for (int i = 0; i < formatBefore.length(); i++) { //parse format
                 char    f = formatBefore.charAt(i);
                 if (f != '%' || ++i >= formatBefore.length()) { //literal
@@ -567,14 +587,14 @@ public class serate {
                 }
             } //parse format
             if(! s.isEmpty()) { //don't output empty rows
-	            writer.println(s);
-	            writer.flush();
+                writer.println(s);
+                writer.flush();
             }
         }
  
-    	public void afterHint(Solver solver, Hint hint) {
-    		if(formatAfter.isEmpty()) return;
-    		String s = new String();
+        public void afterHint(Solver solver, Hint hint) {
+            if(formatAfter.isEmpty()) return;
+            String s = new String();
             for (int i = 0; i < formatAfter.length(); i++) { //parse format
                 char    f = formatAfter.charAt(i);
                 if (f != '%' || ++i >= formatAfter.length()) { //literal
@@ -586,7 +606,7 @@ public class serate {
                             s += solver.getGrid().toStringMultilinePencilmarks();
                             break;
                         case 'e':
-                        	s += getTimeString(stepBeginTime);
+                            s += getTimeString(stepBeginTime);
                             break;
                         case 'g':
                             s += puzzleLine;
@@ -606,7 +626,7 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
-						case 'S':
+                        case 'S':
                             s += solver.shortERtN;
                             break;
                         case 'R':
@@ -628,17 +648,17 @@ public class serate {
                 }
             } //parse format
             if(! s.isEmpty()) { //don't output empty rows
-	            writer.println(s);
-	            writer.flush();
+                writer.println(s);
+                writer.flush();
             }
         }
 
-    	public void beforePuzzle(Solver solver) {
-    		puzzleBeginTime = System.currentTimeMillis();
-    		ordinal++;
-    		
-    		if(formatStart.isEmpty()) return;
-    		String s = new String();
+        public void beforePuzzle(Solver solver) {
+            puzzleBeginTime = System.currentTimeMillis();
+            ordinal++;
+            
+            if(formatStart.isEmpty()) return;
+            String s = new String();
             for (int i = 0; i < formatStart.length(); i++) { //parse format
                 char    f = formatStart.charAt(i);
                 if (f != '%' || ++i >= formatStart.length()) { //literal
@@ -646,8 +666,8 @@ public class serate {
                 }
                 else {
                     switch (f = formatStart.charAt(i)) { //format specifier
-	                    case 'M':
-	                        s += solver.getGrid().toStringMultilinePencilmarks();
+                        case 'M':
+                            s += solver.getGrid().toStringMultilinePencilmarks();
                             break;
                         case 'g':
                             s += puzzleLine;
@@ -674,14 +694,14 @@ public class serate {
                 }
             } //parse format
             if(! s.isEmpty()) { //don't output empty rows
-	            writer.println(s);
-	            writer.flush();
+                writer.println(s);
+                writer.flush();
             }
         }
-    	
-    	public void afterPuzzle(Solver solver) {
-    		if(formatFinal.isEmpty()) return;
-    		String s = new String();
+        
+        public void afterPuzzle(Solver solver) {
+            if(formatFinal.isEmpty()) return;
+            String s = new String();
             for (int i = 0; i < formatFinal.length(); i++) { //parse format
                 char    f = formatFinal.charAt(i);
                 if (f != '%' || ++i >= formatFinal.length()) { //literal
@@ -690,17 +710,17 @@ public class serate {
                 else {
                     switch (f = formatFinal.charAt(i)) { //format specifier
                         
-						case 'U':
+                        case 'U':
                             s += solver.shortEDtN;
                             break;
                         case 'D':
                             s += solver.EDtN;
                             break;
-						case 'd':
+                        case 'd':
                             s += ratingToString(solver.diamond);
                             break;
                         case 'e':
-                        	s += getTimeString(puzzleBeginTime);
+                            s += getTimeString(puzzleBeginTime);
                             break;
                         case 'g':
                             s += puzzleLine;
@@ -714,7 +734,7 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
-						case 'T':
+                        case 'T':
                             s += solver.shortEPtN;
                             break;
                         case 'P':
@@ -723,10 +743,10 @@ public class serate {
                         case 'p':
                             s += ratingToString(solver.pearl);
                             break;
-						case 'S':
+                        case 'S':
                             s += solver.shortERtN;
                             break;
-						case 'R':
+                        case 'R':
                             s += solver.ERtN;
                             break;
                         case 'r':
@@ -742,23 +762,23 @@ public class serate {
                 }
             } //parse format
             if(! s.isEmpty()) { //don't output empty rows
-	            writer.println(s);
-	            writer.flush();
+                writer.println(s);
+                writer.flush();
             }
         }
-    	
-    	private String ratingToString(double rating) {
-    		String s = new String();
+        
+        private String ratingToString(double rating) {
+            String s = new String();
             int w = (int)((rating + 0.05) * 10);
             int p = w % 10;
             w /= 10;
             s += w + "." + p;
             return s;
-    	}
-    	
-    	public static String getTimeString(long oldTime) {
-    		String s = new String();
-    		long t = System.currentTimeMillis() - oldTime;
+        }
+        
+        public static String getTimeString(long oldTime) {
+            String s = new String();
+            long t = System.currentTimeMillis() - oldTime;
             long            u;
             t /= 10;
             u = t % 100;
@@ -791,10 +811,10 @@ public class serate {
                 s += u + "h";
             }
             return s;
-    	}
+        }
 
-    	public void setPuzzleLine(String puzzleLine) {
-    		this.puzzleLine = puzzleLine;
+        public void setPuzzleLine(String puzzleLine) {
+            this.puzzleLine = puzzleLine;
         }
     } //class Formatter
 }
