@@ -56,9 +56,6 @@ public class serate {
         System.err.println("      Format the output after each step according to FORMAT. Default is empty.");
         System.err.println("  -b, --before=FORMAT");
         System.err.println("      Format the output before each step according to FORMAT. Default is empty.");
-        System.err.println("  -B, --batch");
-        System.err.println("      Batch mode rating, apply all lowest rating hints of same rating");
-        System.err.println("      concurrently intead of applying one lowest rating hint step only.");
         System.err.println("  -d, --diamond");
         System.err.println("      Terminate rating if the puzzle is not a diamond.");
         System.err.println("  -f, --format=FORMAT");
@@ -112,7 +109,7 @@ public class serate {
         System.err.println("      Maximal degree of parallelism. Default 0=auto. 1=no parallelism; -1=unlimited");
         System.err.println("  -N, --revisedRating=N");
         System.err.println("      Revised rating scheme. Default 0=disabled. 1=enabled");
-        System.err.println("  -B, --batchSolving=N");
+        System.err.println("  -B, --batch=N");
         System.err.println("      Batch solving. Default 0=disabled.");
         System.err.println("                             1=Apply all available hints that have the lowest rating");
         System.err.println("                             2=Apply all available hints with rating lower than maximum puzzle rating");
