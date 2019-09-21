@@ -111,7 +111,7 @@ public class Solver {
         public void add(Hint hint) throws InterruptedException {
 			if (dif == 0.0) {
 				dif = ((Rule)hint).getDifficulty();
-			} else if ( (((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 1) || (((Rule)hint).getDifficulty() > difficulty && Settings.getInstance().batchSolving() == 2)) {
+			} else if ( (((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 1) || (((Rule)hint).getDifficulty() > difficulty && ((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 2)) {
 				throw new InterruptedException();
 			}
             if (!result.contains(hint))
