@@ -371,7 +371,8 @@ public class serate {
                 }
                 switch (c) {
                 case 'S':
-                    showArguments= true;;
+                    showArguments= true;
+					System.out.print("v"+VER+" "+RELEASE);
                     break;
                 case 'a':
                     formatAfter = v;
