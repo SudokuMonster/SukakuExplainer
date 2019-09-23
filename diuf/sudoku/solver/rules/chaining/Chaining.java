@@ -45,14 +45,14 @@ public class Chaining implements IndirectHintProducer {
      * @param isNishio Whether Nishio mode is activated
      * Only used if <tt>isDynamic</tt> and <tt>isMultiple</tt> are <tt>false</tt>.
      */
-    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level) {
-        this.isMultipleEnabled = isMultipleEnabled;
-        this.isDynamic = isDynamic;
-        this.isNisho = isNishio;
-        this.level = level;
-        this.noParallel = level < 3;
-        this.nestingLimit = 0;
-    }
+//    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level) {
+//        this.isMultipleEnabled = isMultipleEnabled;
+//        this.isDynamic = isDynamic;
+//        this.isNisho = isNishio;
+//        this.level = level;
+//        this.noParallel = level < 3;
+//        this.nestingLimit = 0;
+//    }
     
     public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level, boolean noParallel, int nestingLimit) {
         this.isMultipleEnabled = isMultipleEnabled;
@@ -80,9 +80,10 @@ public class Chaining implements IndirectHintProducer {
     }
 
     double getDifficulty() {
-        if (level >= 2)
-            return 9.5 + 0.5 * (level - 2);
-        else if (level > 0)
+//        if (level >= 2)
+//            return 9.5 + 0.5 * (level - 2);
+//        else 
+    	if (level > 0)
             return 8.5 + 0.5 * level;
         else if (isNisho)
             return 7.5; // Nishio
