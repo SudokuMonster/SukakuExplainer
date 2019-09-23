@@ -274,7 +274,7 @@ public class serate {
         int             Fixed14Chaining = 0;
         char            want = 0;
         int             arg;
-        long            t;
+        //long            t; //not used anymore
         long            tt = System.currentTimeMillis();
         char            c;
         boolean     incArg = false;
@@ -481,7 +481,7 @@ public class serate {
                     grid.fromString(puzzle);
                     formatter.setPuzzleLine(puzzle);
                     grid.adjustPencilmarks();
-                    t = System.currentTimeMillis();
+                    //t = System.currentTimeMillis();
                     Solver solver = new Solver(grid);
                     solver.want = want;
                     if (puzzle.length() >= 81 && puzzle.length() < 729) {
@@ -494,7 +494,7 @@ public class serate {
                         // Batch mode
                         solver.getBatchDifficulty(formatter);
                     }
-                    t = System.currentTimeMillis() - t;
+                    //t = System.currentTimeMillis() - t;
                 }
             }
         }

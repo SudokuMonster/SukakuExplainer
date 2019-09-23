@@ -109,12 +109,14 @@ public class Solver {
         }
 
         public void add(Hint hint) throws InterruptedException {
-			if (dif == 0.0) {
-				dif = ((Rule)hint).getDifficulty();
-			} else if ( (((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 1) || (((Rule)hint).getDifficulty() > difficulty && ((Rule)hint).getDifficulty() != dif && Settings.getInstance().batchSolving() == 2)) {
-				throw new InterruptedException();
+        	double newDifficulty = ((Rule)hint).getDifficulty();
+        	int batchMode = Settings.getInstance().batchSolving();
+			if(dif == 0.0) {
+				dif = newDifficulty;
+			} else if((newDifficulty != dif && batchMode == 1) || (newDifficulty > difficulty && newDifficulty != dif && batchMode == 2)) {
+				throw new InterruptedException(); // this assumes calls are ordered strictly ascending by difficulty
 			}
-            if (!result.contains(hint))
+            if(!result.contains(hint))
                 result.add(hint);
         }
 
