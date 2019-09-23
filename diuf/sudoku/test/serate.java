@@ -34,8 +34,10 @@ public class serate {
         System.err.println("  serate - Sukaku Explainer / Sudoku Explainer command line rating");
         System.err.println("");
         System.err.println("SYNOPSIS");
-        System.err.println("  serate [--diamond] [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
-        System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--start=FORMAT] [--threads=N] [puzzle ...]");
+        System.err.println("  serate [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
+        System.err.println("    [--techs=TECHSTRING] [--showArguments] [--start=FORMAT]");
+        System.err.println("    [--revisedRating=N] [--threads=N] [--totalTime] [--batch=N]");
+        System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--diamond] [puzzle ...]");
         System.err.println("");
         System.err.println("DESCRIPTION");
         System.err.println("  serate is a Sukaku Explainer command line entry point that rates one or more");

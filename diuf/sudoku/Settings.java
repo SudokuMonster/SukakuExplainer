@@ -18,7 +18,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 4;
-    public final static String SUBREV = ".0";
+    public final static String SUBREV = ".1";
 	public final static String releaseDate = "2019-09-22";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
