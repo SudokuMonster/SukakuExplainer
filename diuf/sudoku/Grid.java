@@ -3,6 +3,7 @@
  * Copyright (C) 2006-2007 Nicolas Juillerat
  * Available under the terms of the Lesser General Public License (LGPL)
  */
+// For debugging: java -agentlib:jdwp=transport=dt_socket,server=y,address=8000 
 package diuf.sudoku;
 
 import java.util.*;
@@ -36,15 +37,24 @@ public class Grid {
 //    private class valueCells {
 //        private BitSet[][][] valuePotentialCells = new BitSet[3][9][9]; //region type, region, value
 //
+//        private valueCells() {
+//            for(int regionType = 0; regionType < 3; regionType++) {
+//                for(int region = 0; region < 9; region++) {
+//    	            for(int cell = 0; cell < 9; cell++) {
+//	            		valuePotentialCells[regionType][region][cell] = new BitSet(9);
+//    	            }
+//                }
+//            }
+//        }
 //        public void invalidateCellValue(int cellIndex, int value) {
 //        	for(int t = 0; t < 3; t++) { //region types
-//        		valuePotentialCells[t][cellRegions[cellIndex][t]][value - 1] = null;
+//        		valuePotentialCells[t][cellRegions[cellIndex][t]][value - 1].clear();
 //        	}
 //        }
 //        public void invalidateCell(int cellIndex) {
 //        	for(int t = 0; t < 3; t++) { //region types
 //        		for(int v = 0; v < 9; v++) { //values
-//        			valuePotentialCells[t][cellRegions[cellIndex][t]][v] = null;
+//        			valuePotentialCells[t][cellRegions[cellIndex][t]][v].clear();
 //        		}
 //        	}
 //        }
@@ -52,7 +62,7 @@ public class Grid {
 //        	int regionType = region.getRegionTypeIndex();
 //        	int regionIndex = region.getRegionIndex();
 //        	BitSet result = valuePotentialCells[regionType][regionIndex][value - 1];
-//        	if(result == null) { //build
+//        	if(result.isEmpty()) { //build
 //        		result = new BitSet(9);
 //                for (int index = 0; index < 9; index++) {
 //                    result.set(index, hasCellPotentialValue(region.getCell(index).getIndex(), value));
@@ -313,7 +323,7 @@ public class Grid {
     public void removeCellPotentialValue(int cellIndex, int value) {
         //if(!cellPotentialValues[cell.getIndex()].get(value)) return; //no change (doesn't improve, 32382541 -> 32380479)
         cellPotentialValues[cellIndex].clear(value);
-        //valueCellsCache.invalidateCellValue(cell.getIndex(), value);
+        //valueCellsCache.invalidateCellValue(cellIndex, value);
         //numCellPencilmarksUpdate++;
     }
 
@@ -387,32 +397,9 @@ public class Grid {
         return Grid.blocks[(y / 3) * 3 + (x / 3)];
     }
 
-//    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, int x, int y) {
-//        if (regionType.equals(Grid.Row.class))
-//            return getRowAt(x, y);
-//        else if (regionType.equals(Grid.Column.class))
-//            return getColumnAt(x, y);
-//        else
-//            return getBlockAt(x, y);
-//    }
-
-//    public Grid.Region getRegionAt(Class<? extends Grid.Region> regionType, Cell cell) {
-//        return getRegionAt(regionType, cell.getX(), cell.getY());
-//    }
-    
     public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
         return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
-
-//    /**
-//     * Get a list containing the three classes corresponding to the
-//     * three region types (row, column and block)
-//     * @return a list of the three region types. The resulting list
-//     * can not be modified
-//     */
-//    public static Class<? extends Grid.Region>[] getRegionTypes() {
-//        return regionTypes;
-//    }
 
     // Grid regions implementation (rows, columns, 3x3 squares)
 
@@ -519,9 +506,6 @@ public class Grid {
          */
         public boolean crosses(Region other) { //can be implemented as static table
         	return regionCellsSet.intersects(other.regionCellsSet);
-        	//BitSet intersection = (BitSet)regionCellsSet.clone();
-        	//intersection.and(other.regionCellsSet);
-        	//return !intersection.isEmpty();
         }
 
         /**
@@ -721,6 +705,16 @@ public class Grid {
             other.setCellValue(i, this.cellValues[i]);
             other.setCellPotentialValues(i, cellPotentialValues[i]);
         }
+//        //clone the cache as well
+//        for(int regionType = 0; regionType < 3; regionType++) {
+//            for(int region = 0; region < 9; region++) {
+//	            for(int cell = 0; cell < 9; cell++) {
+//	            	BitSet cache = other.valueCellsCache.valuePotentialCells[regionType][region][cell];
+//	            	cache.clear();
+//	            	cache.or(valueCellsCache.valuePotentialCells[regionType][region][cell]);
+//	            }
+//            }
+//        }
     }
 
     /**
@@ -939,7 +933,7 @@ public class Grid {
         if (!(o instanceof Grid))
             return false;
         Grid other = (Grid)o;
-        //if(!this.cellValues.equals(other.cellValues)) return false;
+        //if(!this.cellValues.equals(other.cellValues)) return false; <== incorrect
         if(!Arrays.equals(this.cellValues, other.cellValues)) return false;
         for (int i = 0; i < 81; i++) {
             if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
