@@ -151,6 +151,9 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.Swordfish, indirectHintProducers, new Fisherman(3));
         addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
         addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
+//      addIfWorth(SolvingTechnique.WWing, indirectHintProducers, new WWing());		
+        addIfWorth(SolvingTechnique.XYZWingExtension, indirectHintProducers, new WXYZWing(true));
+		addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing(false));
         addIfWorth(SolvingTechnique.UniqueLoop, indirectHintProducers, new UniqueLoops());
         addIfWorth(SolvingTechnique.NakedQuad, indirectHintProducers, new NakedSet(4));
         addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
@@ -199,6 +202,9 @@ else {
         addIfWorth(SolvingTechnique.HiddenTriplet, indirectHintProducers, new HiddenSet(3, false));
         addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
         addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
+//        addIfWorth(SolvingTechnique.WWing, indirectHintProducers, new WWing());
+        addIfWorth(SolvingTechnique.XYZWingExtension, indirectHintProducers, new WXYZWing(true));
+		addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing(false));
         addIfWorth(SolvingTechnique.UniqueLoop, indirectHintProducers, new UniqueLoops());
         addIfWorth(SolvingTechnique.NakedQuad, indirectHintProducers, new NakedSet(4));
         addIfWorth(SolvingTechnique.Jellyfish, indirectHintProducers, new Fisherman(4));

@@ -45,6 +45,8 @@ public interface Rule {
      * <li>3.0, 3.2, 3.4: Naked pair, X-Wing, Hidden pair
      * <li>3.6, 3.8, 4.0: Naked triplet, Swordfish, Hidden triplet
      * <li>4.2, 4.4: XY-Wing, XYZ-Wing
+//     * <li>4.4: W-Wing	 
+     * <li>4.5, 4.6: WXYZ-Wing B, WXYZ-Wing A
      * <li>4.5 - 5.0: Unique Rectangles and Loops
      * <li>5.0, 5.2, 5.4: Naked quad, Jellyfish, Hidden quad
      * <li>5.6 - 6.0: Bivalue Universal Graves
@@ -82,6 +84,8 @@ public interface Rule {
      * <li>3.2: X-Wing
      * <li>3.6, 3.8, 4.0: Naked triplet, Hidden triplet, Swordfish//3.8 ---> 4.0 4.0 ---> 3.8
      * <li>4.2, 4.4: XY-Wing, XYZ-Wing
+//     * <li>4.4: W-Wing
+     * <li>4.5, 4.6: WXYZ-Wing B, WXYZ-Wing A
      * <li>4.5 - 5.0: Unique Rectangles and Loops
      * <li>5.0, 5.2, 5.4: Naked quad, Hidden quad, Jellyfish//5.2 ---> 5.4 5.4 ---> 5.2
      * <li>5.6 - 6.0: Bivalue Universal Graves
