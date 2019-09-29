@@ -3,7 +3,7 @@
 Is a sukaku (Pencilmark Sudoku) and sudoku Solver/Rater with a command line entry point and a GUI. It is based on serate
 modification of &quot;Sudoku Explainer&quot; by Nicolas Juillerat
 
-![](/@doc/SukakuExplainer01.png)
+![](/doc/SukakuExplainer01.png)
 
 ## Installation:
 
@@ -30,11 +30,11 @@ Visit the [Command line parametrs page](https://github.com/SudokuMonster/SukakuE
   Functionality is retained with vanilla sudoku puzzles. It also accepts parsing most
   vanilla audokus, Pencilmark grids or Sukakus
   
-![](/@doc/SukakuExplainer02.png)
+![](/doc/SukakuExplainer02.png)
 
-![](/@doc/SukakuExplainer03.png)
+![](/doc/SukakuExplainer03.png)
 
-![](/@doc/SukakuExplainer04.png)
+![](/doc/SukakuExplainer04.png)
 
 ## Contributors:
 
