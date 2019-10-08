@@ -532,12 +532,12 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMinDifficulty() {
-                return 4.5;
+                return 5.5;
             }
 
             @Override
             public double getMaxDifficulty() {
-                return 4.6;
+                return 5.6;
             }
             @Override
             public double getincludeDifficulty1() {
@@ -587,7 +587,7 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getincludeTechnique1() {
-				return "WXYZ";
+				return "Wing 2";
 			}
             @Override
 			public String getincludeTechnique2() {

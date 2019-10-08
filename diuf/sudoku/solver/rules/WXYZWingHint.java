@@ -17,45 +17,53 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
     private final Cell wzCell;
     private final Cell xzCell;
     private final Cell yzCell;
-    private final int value;
-    private final boolean isIncompletedPivot;
+    private final int zValue;
+	private final int xValue;
+	private final int biggestCardinality;
+	private final int wingSize;
+	private final boolean doubleLink;
+	private final BitSet wingSet;
 
     public WXYZWingHint(WXYZWing rule, Map<Cell, BitSet> removablePotentials,
-            Cell wxyzCell, Cell wzCell, Cell xzCell, Cell yzCell, int value, boolean isIncompletedPivot) {
+            Cell wxyzCell, Cell wzCell, Cell xzCell, Cell yzCell, int zValue, int xValue, int biggestCardinality, int wingSize, boolean doubleLink, BitSet wingSet) {
         super(rule, removablePotentials);
         this.wxyzCell = wxyzCell;
         this.wzCell = wzCell;
         this.xzCell = xzCell;
         this.yzCell = yzCell;
-        this.value = value;
-        this.isIncompletedPivot = isIncompletedPivot;
+        this.zValue = zValue;
+		this.xValue = xValue;
+		this.biggestCardinality = biggestCardinality;
+		this.wingSize = wingSize;
+		this.doubleLink = doubleLink;
+		this.wingSet = wingSet;
     }
 
     private int getX(Grid grid) {
         //BitSet wxyzPotentials = wxyzCell.getPotentialValues();
-		BitSet wxyzPotentials = grid.getCellPotentialValues(wxyzCell.getIndex());
+		BitSet wxyzPotentials = (BitSet)wingSet.clone();
         int x = wxyzPotentials.nextSetBit(0);
-        if (x == this.value)
+        if (x == this.zValue)
             x = wxyzPotentials.nextSetBit(x + 1);
         return x;
     }
 
     private int getY(Grid grid) {
         //BitSet wxyzPotentials = wxyzCell.getPotentialValues();
-		BitSet wxyzPotentials = grid.getCellPotentialValues(wxyzCell.getIndex());
+		BitSet wxyzPotentials = (BitSet)wingSet.clone();
         int x = getX(grid);
         int y = wxyzPotentials.nextSetBit(x + 1);
-        if (y == this.value)
+        if (y == this.zValue)
             y = wxyzPotentials.nextSetBit(y + 1);
         return y;
     }
 
     private int getZ(Grid grid) {
         //BitSet wxyzPotentials = wxyzCell.getPotentialValues();
-		BitSet wxyzPotentials = grid.getCellPotentialValues(wxyzCell.getIndex());
+		BitSet wxyzPotentials = (BitSet)wingSet.clone();
         int y = getY(grid);
         int z = wxyzPotentials.nextSetBit(y + 1);
-        if (z == this.value)
+        if (z == this.zValue)
             z = wxyzPotentials.nextSetBit(z + 1);
         return z;
     }
@@ -63,31 +71,48 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
     @Override
     public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<>();
-        // x, y and z of WXYZ cell (orange)
+/*        // x, y and z of WXYZ cell (orange)
         //result.put(wxyzCell, wxyzCell.getPotentialValues());
-		result.put(wxyzCell, grid.getCellPotentialValues(wxyzCell.getIndex()));
+		result.put(wxyzCell, grid.getCellPotentialValues(wxyzCell.getIndex()));*/
         // z value (green)
-        BitSet zSet = SingletonBitSet.create(value);
-        result.put(wzCell, zSet);
-        result.put(xzCell, zSet);
-        result.put(yzCell, zSet);
-        return result;
+		// All green if doubly linked
+        BitSet zSet = SingletonBitSet.create(zValue);
+		if (!doubleLink) {
+			if (grid.hasCellPotentialValue(wzCell.getIndex(), zValue))
+				result.put(wzCell, zSet);
+			if (grid.hasCellPotentialValue(xzCell.getIndex(), zValue))
+				result.put(wzCell, zSet);
+			if (grid.hasCellPotentialValue(wxyzCell.getIndex(), zValue))
+				result.put(wxyzCell, zSet);
+			result.put(yzCell, zSet);
+		}
+		else {
+				result.put(wzCell, grid.getCellPotentialValues(wzCell.getIndex()));			
+				result.put(xzCell, grid.getCellPotentialValues(xzCell.getIndex()));	
+				result.put(wxyzCell, grid.getCellPotentialValues(wxyzCell.getIndex()));	
+				result.put(yzCell, grid.getCellPotentialValues(yzCell.getIndex()));
+		}
+		return result;
     }
 
     @Override
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<>(super.getRemovablePotentials());
-        // Add x, y and z of WXYZ cell (orange)
+/*        // Add x, y and z of WXYZ cell (orange)
         BitSet wxyz = new BitSet(10);
         wxyz.set(getX(grid));
         wxyz.set(getY(grid));
         wxyz.set(getZ(grid));
-        result.put(wxyzCell, wxyz);
+        result.put(wxyzCell, wxyz);*/
         return result;
     }
 
     public double getDifficulty() {
-        return isIncompletedPivot ? 4.5 : 4.6;
+		//double-link has no impact on rating
+        double result = 5.5; //base rating
+		int sizeDif = (4 + 2) / 2; //Avarage of possible pilot cell size: 4 is size of wing = 4
+		result += ((4-sizeDif)- Math.abs(sizeDif - biggestCardinality)) * 0.1;//Extremeties of size are easier than middle size: 4 is size of wing = 4
+		return result;//Min difficulty 5.5 if x4 or x2 5.6 if x3 //Max is 6.1 if x212 x=1 if standard x=2 if doule-linked
     }
 
     public String getGroup() {
@@ -95,32 +120,42 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
     }
 
     public String getName() {
-        return isIncompletedPivot ? "WXYZ-Wing (3 candidate pilot)" : "WXYZ-Wing (4 candidate pilot)";
+        return "WXYZ-Wing " + ((doubleLink ? 2 : 1)) + "" + biggestCardinality + "" + wingSize;
     }
 
     public String getShortName() {
-		return isIncompletedPivot ? "WXY3" : "WXY4";
+		return "WXY" + ((doubleLink ? 2 : 1)) + biggestCardinality + "" + wingSize;
 	}
-
-    private int getRemainingValue(Grid grid, Cell c) {
-        BitSet result = (BitSet)grid.getCellPotentialValues(c.getIndex()).clone();
-        result.clear(value);
-        return result.nextSetBit(0);
-    }
 
     @Override
     public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<Link>();
-        int wValue = getRemainingValue(grid, wzCell);
-        Link wLink = new Link(wxyzCell, wValue, wzCell, wValue);
-        result.add(wLink);
-        int xValue = getRemainingValue(grid, xzCell);
-        Link xLink = new Link(wxyzCell, xValue, xzCell, xValue);
-        result.add(xLink);
-        int yValue = getRemainingValue(grid, yzCell);
-        Link yLink = new Link(wxyzCell, yValue, yzCell, yValue);
-        result.add(yLink);
-
+		if (grid.hasCellPotentialValue(wxyzCell.getIndex(), xValue)) {
+			Link wLink = new Link(yzCell, xValue, wxyzCell, xValue);
+			result.add(wLink);
+		}
+		if (grid.hasCellPotentialValue(xzCell.getIndex(), xValue)) {
+			Link xLink = new Link(yzCell, xValue, xzCell, xValue);
+			result.add(xLink);
+		}
+		if (grid.hasCellPotentialValue(wzCell.getIndex(), xValue)) {
+			Link yLink = new Link(yzCell, xValue, wzCell, xValue);
+			result.add(yLink);
+		}
+		if (doubleLink) {
+			if (grid.hasCellPotentialValue(wxyzCell.getIndex(), zValue)) {
+				Link wLink = new Link(yzCell, zValue, wxyzCell, zValue);
+				result.add(wLink);
+			}
+			if (grid.hasCellPotentialValue(xzCell.getIndex(), zValue)) {
+				Link xLink = new Link(yzCell, zValue, xzCell, zValue);
+				result.add(xLink);
+			}
+			if (grid.hasCellPotentialValue(wzCell.getIndex(), zValue)) {
+				Link yLink = new Link(yzCell, zValue, wzCell, zValue);
+				result.add(yLink);
+			}			
+		}
         return result;
     }
 
@@ -167,7 +202,7 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
         if (!(o instanceof WXYZWingHint))
             return false;
         WXYZWingHint other = (WXYZWingHint)o;
-        if (this.wxyzCell != other.wxyzCell || this.value != other.value)
+        if (this.wxyzCell != other.wxyzCell || this.zValue != other.zValue)
             return false;
         return this.wzCell == other.wzCell && this.xzCell == other.xzCell && this.yzCell == other.yzCell;
     }
@@ -180,7 +215,7 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
     public String getClueHtml(Grid grid, boolean isBig) {
         if (isBig) {
             return "Look for a " + getName() +
-                    " on the values " + getX(grid) + ", " + getY(grid) + ", " + getZ(grid) + " and <b>" + value + "</b>";
+                    " on the values " + getX(grid) + ", " + getY(grid) + ", " + getZ(grid) + " and <b>" + zValue + "</b>";
         } else {
             return "Look for a " + getName();
         }
@@ -188,21 +223,32 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
 
     @Override
     public String toString() {
-        return getName() +
+ 		if (!doubleLink)
+			return getName() +
                 ": " +
                 Cell.toFullString(wxyzCell, wzCell, xzCell, yzCell) +
                 " on value " +
-                value;
+                zValue;
+		else
+			return getName() +
+                ": " +
+                Cell.toFullString(wxyzCell, wzCell, xzCell, yzCell) +
+                " on values " +
+                xValue + "," + zValue;
     }
 
     @Override
     public String toHtml(Grid grid) {
-        String result = HtmlLoader.loadHtml(this, isIncompletedPivot ? "WXYZWing3Hint.html" : "WXYZWing4Hint.html");
+		String result;
+		if (!doubleLink)
+			result = HtmlLoader.loadHtml(this, "WXYZWingHint.html");
+		else
+			result = HtmlLoader.loadHtml(this, "WXYZWing2Hint.html");
         String cell1 = wxyzCell.toString();
         String cell2 = wzCell.toString();
         String cell3 = xzCell.toString();
         String cell4 = yzCell.toString();
-        result = HtmlLoader.format(result, cell1, cell2, cell3, cell4, value, getX(grid), getY(grid), getZ(grid));
+        result = HtmlLoader.format(result, cell1, cell2, cell3, cell4, zValue, getX(grid), getY(grid), getZ(grid), xValue, biggestCardinality, wingSize, (doubleLink ? 2 : 1));
         return result;
     }
 }
