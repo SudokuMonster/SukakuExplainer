@@ -38,6 +38,15 @@ public class Cell {
     public int getY() {
         return this.index / 9;
     }
+	
+    /**
+     * Get the b (box) index of this cell.
+     * 0 = top left, 8 = bottomm right
+     * @return the y coordinate of this cell
+     */
+    public int getB() {
+        return this.index % 9 / 3 + this.index / 27 * 3;
+    }
 
     /**
      * Get the index of this cell.
