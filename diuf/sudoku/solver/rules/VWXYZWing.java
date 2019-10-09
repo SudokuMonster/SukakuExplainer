@@ -1,11 +1,9 @@
 package diuf.sudoku.solver.rules;
 
 import java.util.*;
-
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
-
 
 /**
  * Implementation of the "VWXYZ-Wing" and its pivot-incompleted type solving techniques.
@@ -13,170 +11,347 @@ import diuf.sudoku.tools.*;
 public class VWXYZWing implements IndirectHintProducer {
 
     /**
-     * Stands for whether pivot cell is completed or not.
+     * 
      * <ul>
-     * <li>Completed: VWXYZ VZ WZ XZ YZ</li>
-     * <li>Incompleted: VWXY VZ WZ XZ YZ</li>
+     * <li>VWXYZ-Wing</li>
+     * <li>ALS-xz with a bivalue cell</li>
+	 * <li>By SudokuMonster 2019</li>
      * </ul>
      */
-    private final boolean isIncompletedPivot;
 
-    public VWXYZWing(boolean isIncompletedPivot) {
-        this.isIncompletedPivot = isIncompletedPivot;
-    }
-
- 
-	private boolean isVWXYZWing(BitSet vwxyzValues, BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet yzValues) {
-        if (vwxyzValues.cardinality() != (isIncompletedPivot ? 4 : 5) ||
-                vzValues.cardinality() != 2 ||
-                wzValues.cardinality() != 2 ||
-                xzValues.cardinality() != 2 ||
-                yzValues.cardinality() != 2)
-            return false;
-
-        BitSet union = (BitSet)vwxyzValues.clone();
-        union.or(vzValues);
-        union.or(wzValues);
-        union.or(xzValues);
-        union.or(yzValues);
-        BitSet inter = (BitSet)union.clone();
-        if (!isIncompletedPivot)
-            inter.and(vwxyzValues);
-        inter.and(vzValues);
-        inter.and(wzValues);
-        inter.and(xzValues);
-        inter.and(yzValues);
-
-        BitSet[] innerProduct = {
-                (BitSet)vzValues.clone(),
-                (BitSet)vzValues.clone(),
-                (BitSet)vzValues.clone(),
-                (BitSet)wzValues.clone(),
-                (BitSet)wzValues.clone(),
-                (BitSet)xzValues.clone()
-        };
-        innerProduct[0].and(wzValues);
-        innerProduct[1].and(xzValues);
-        innerProduct[2].and(yzValues);
-        innerProduct[3].and(xzValues);
-        innerProduct[4].and(yzValues);
-        innerProduct[5].and(yzValues);
-        BitSet[] outerProduct = {
-                (BitSet)vwxyzValues.clone(),
-                (BitSet)vwxyzValues.clone(),
-                (BitSet)vwxyzValues.clone(),
-                (BitSet)vwxyzValues.clone()
-        };
-        outerProduct[0].and(vzValues);
-        outerProduct[1].and(wzValues);
-        outerProduct[2].and(xzValues);
-        outerProduct[3].and(yzValues);
-        boolean hasSameBitSet = false;
-        boolean hasSameDigit = true;
-        for (BitSet b : innerProduct) {
-            hasSameBitSet = hasSameBitSet || (b.cardinality() == 2);
-        }
-        for (BitSet b : outerProduct) {
-            hasSameDigit = hasSameDigit && (b.cardinality() == (isIncompletedPivot ? 1 : 2));
-        }
-
-        return union.cardinality() == 5 && inter.nextSetBit(0) != -1 && !hasSameBitSet && hasSameDigit;
+    private boolean isVWXYZWing(BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet aBit, Cell yzCell, Cell xzCell, Cell wzCell, Cell vzCell) {
+        BitSet inter = (BitSet)aBit.clone();
+		inter.and(xzValues);
+		if (inter.cardinality() == 1 && !(yzCell.getX() == xzCell.getX() || yzCell.getY() == xzCell.getY() || yzCell.getB() == xzCell.getB()))
+			return false;
+        inter = (BitSet)aBit.clone();
+		inter.and(wzValues);
+		if (inter.cardinality() == 1 && !(yzCell.getX() == wzCell.getX() || yzCell.getY() == wzCell.getY() || yzCell.getB() == wzCell.getB()))
+			return false;		
+        inter = (BitSet)aBit.clone();
+		inter.and(vzValues);
+		if (inter.cardinality() == 1 && !(yzCell.getX() == vzCell.getX() || yzCell.getY() == vzCell.getY() || yzCell.getB() == vzCell.getB()))
+			return false;	
+        return true;
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        final int targetCardinality = isIncompletedPivot ? 4 : 5;
-        for (int i = 0; i < 81; i++) {
-										
+		int biggestCardinality = 0;
+		int biggestCardinality2 = 0;
+		int biggestCardinality3 = 0;
+		int biggestCardinality4 = 0;
+		int wingSize;
+		int w1Value = 0;
+		int w2Value = 0;
+		BitSet w1Bit = new BitSet(10);//Avoiding the use of y to avoid confusion with x,z of ALS XZ
+		BitSet w2Bit = new BitSet(10);//Avoiding the use of y to avoid confusion with x,z of ALS XZ
+		BitSet remCand	=  new BitSet(10);//candidates of set not in yzCell	
+		for (int i = 0; i < 81; i++) {
 			Cell vwxyzCell = Grid.getCell(i);
 			BitSet vwxyzValues = grid.getCellPotentialValues(i);
-			if (vwxyzValues.cardinality() == targetCardinality) {
+			if (vwxyzValues.cardinality() > 1 && vwxyzValues.cardinality() < 5) {
 				// Potential VWXYZ cell found
+				biggestCardinality = vwxyzValues.cardinality();
+				wingSize = vwxyzValues.cardinality();
 				for (int vzCellIndex : vwxyzCell.getVisibleCellIndexes()) {
 					BitSet vzValues = grid.getCellPotentialValues(vzCellIndex);
-					if (vzValues.cardinality() == 2) {
-						// Potential VZ Cell found
+					BitSet inter = (BitSet)vwxyzValues.clone();
+					inter.or(vzValues);
+					if (vzValues.cardinality() > 1 && inter.cardinality() < 5) {
+						// Potential WZ cell found
 						Cell vzCell = Grid.getCell(vzCellIndex);
-						for (int wzCellIndex : vwxyzCell.getVisibleCellIndexes()) {
-							Cell wzCell = Grid.getCell(wzCellIndex);
-							
-							
-							
-							
-							if (wzCell.getX() != vzCell.getX() || wzCell.getY() != vzCell.getY()) {
-								BitSet wzValues = grid.getCellPotentialValues(wzCellIndex);
-								if (wzValues.cardinality() == 2) {
-									// Potential WZ cell found
-									for (int xzCellIndex : vwxyzCell.getVisibleCellIndexes()) {
-										Cell xzCell = Grid.getCell(xzCellIndex);
-										if (!(xzCell.getX() == vzCell.getX() && xzCell.getY() == vzCell.getY()) &&
-												!(xzCell.getX() == wzCell.getX() && xzCell.getY() == wzCell.getY())) {
-											BitSet xzValues = grid.getCellPotentialValues(xzCellIndex);
-											if (xzValues.cardinality() == 2) {
-												// Potential XZ cell found
-												for (int yzCellIndex : vwxyzCell.getVisibleCellIndexes()) {
-													Cell yzCell = Grid.getCell(yzCellIndex);
-													if (!(yzCell.getX() == vzCell.getX() && yzCell.getY() == vzCell.getY()) &&
-															!(yzCell.getX() == wzCell.getX() && yzCell.getY() == wzCell.getY()) &&
-															!(yzCell.getX() == xzCell.getX() && yzCell.getY() == xzCell.getY())) {
-														BitSet yzValues = grid.getCellPotentialValues(yzCellIndex);
-														if (yzValues.cardinality() == 2) {
-															// Potential YZ cell found
-															if (isVWXYZWing(vwxyzValues, vzValues, wzValues, xzValues, yzValues)) {
-																// Found VWXYZ-Wing pattern
-																VWXYZWingHint hint = createHint(
-																		grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
-																		vzValues, wzValues, xzValues, yzValues);
-																if (hint.isWorth())
-																	accu.add(hint);
-															} // if isVWXYZWing(vwxyzValues, vzValues, wzValues, xzValues, yzValues)
-														} // if yzValues.cardinality() == 2
-													} // if yzCell != vzCell && wzCell && xzCell
-												} // for Cell yzCell : vwxyzCell.getVisibleCellIndexes()
-											} // if xzValues.cardinality() == 2
-										} // if xzCell != vzCell && wzCell
-									} // for Cell xzCell : vwxyzCell.getVisibleCellIndexes()
-								} // if wzValues.cardinality() == 2
-							} // if wzCell != vzCell
-						} // for Cell wzCell : vwxyzCell.getVisibleCellIndexes()
+						biggestCardinality2 = biggestCardinality;
+						if (vzValues.cardinality() > biggestCardinality2)
+							biggestCardinality2 = vzValues.cardinality();
+						wingSize = vwxyzValues.cardinality() + vzValues.cardinality();
+						CellSet intersection1 = new CellSet(vwxyzCell.getVisibleCells());
+						intersection1.retainAll(vzCell.getVisibleCells());
+						for (Cell wzCell : intersection1) {
+							int wzCellIndex = wzCell.getIndex();
+							//if (!(wzCell.getX() == wzCell.getX() && wzCell.getY() == wzCell.getY())) {
+							BitSet wzValues = grid.getCellPotentialValues(wzCellIndex);
+							inter = (BitSet)vwxyzValues.clone();
+							inter.or(vzValues);
+							inter.or(wzValues);
+							if (wzValues.cardinality() > 1 && inter.cardinality() < 5) {
+								// Potential XZ cell found
+								biggestCardinality3 = biggestCardinality2;
+								if (wzValues.cardinality() > biggestCardinality3)
+									biggestCardinality3 = wzValues.cardinality();
+								wingSize = vwxyzValues.cardinality() + vzValues.cardinality() + wzValues.cardinality();
+								CellSet intersection2 = new CellSet(wzCell.getVisibleCells());
+								intersection2.retainAll(intersection1);
+								for (Cell xzCell : intersection2) {
+								int xzCellIndex = xzCell.getIndex();
+								//if (!(xzCell.getX() == wzCell.getX() && xzCell.getY() == wzCell.getY())) {
+									BitSet xzValues = grid.getCellPotentialValues(xzCellIndex);
+									inter = (BitSet)vwxyzValues.clone();
+									inter.or(vzValues);
+									inter.or(wzValues);
+									inter.or(xzValues);
+									if (xzValues.cardinality() > 1 && inter.cardinality() == 5) {
+										// Potential XZ cell found
+										biggestCardinality4 = biggestCardinality3;
+										if (xzValues.cardinality() > biggestCardinality4)
+											biggestCardinality4 = xzValues.cardinality();
+										wingSize = vwxyzValues.cardinality() + vzValues.cardinality() + wzValues.cardinality() + xzValues.cardinality();
+										//CellSet intersection3 = new CellSet(xzCell.getVisibleCells());
+										//intersection3.retainAll(intersection2);
+										for (int yzCellIndex : vwxyzCell.getVisibleCellIndexes()) {
+											Cell yzCell = Grid.getCell(yzCellIndex);
+											if (!(yzCell.getX() == xzCell.getX() && yzCell.getY() == xzCell.getY()) &&
+													!(yzCell.getX() == wzCell.getX() && yzCell.getY() == wzCell.getY()) &&
+														!(yzCell.getX() == vzCell.getX() && yzCell.getY() == vzCell.getY())) {
+												BitSet yzValues = grid.getCellPotentialValues(yzCellIndex);
+												inter = (BitSet)vwxyzValues.clone();
+												inter.or(vzValues);
+												inter.or(wzValues);
+												inter.or(xzValues);
+												inter.or(yzValues);
+												BitSet union = (BitSet)yzValues.clone();
+												union.and(vwxyzValues);
+												if (yzValues.cardinality() == 2 && inter.cardinality() == 5 && union.cardinality()>0) {
+													// Potential YZ cell found
+													//wingSize = vwxyzValues.cardinality() + vzValues.cardinality() + wzValues.cardinality() + xzValues.cardinality() + yzValues.cardinality(); //No need as always bbivalue
+													// Get the "z" value and the "x" value in ALS-xz
+													boolean doubleLink = true;//assume doubly linked until testing
+													int zValue;
+													int xValue;
+													BitSet zBit = new BitSet(10);
+													BitSet xBit = new BitSet(10);
+													BitSet differ = (BitSet)yzValues.clone();
+													if (union.cardinality() == 2) {
+														xValue = yzValues.nextSetBit(0);
+														xBit.set(xValue);
+														zValue = yzValues.nextSetBit(xValue + 1);
+														zBit.set(zValue);													
+													}
+													else {
+														xValue = union.nextSetBit(0);
+														xBit.set(xValue);
+														differ.xor(vwxyzValues);
+														differ.and(yzValues);
+														zValue = differ.nextSetBit(0);
+														zBit.set(zValue);
+													}
+													if (!isVWXYZWing(vzValues, wzValues, xzValues, zBit, yzCell, xzCell, wzCell, vzCell))//Test if doubly linked
+															doubleLink = false;
+													if (isVWXYZWing(vzValues, wzValues, xzValues, xBit, yzCell, xzCell, wzCell, vzCell)) {
+														if (!doubleLink) {
+															// Found VWXYZ-Wing pattern
+															VWXYZWingHint hint = createHint(
+																	grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
+																	vzValues, wzValues, xzValues, yzValues, vwxyzValues, xValue, zValue, xBit, zBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w1Bit, w2Bit, remCand, inter);
+															if (hint.isWorth())
+																accu.add(hint);
+														}
+														else {
+															// Found VWXYZ-Wing doubly linked pattern
+															remCand = (BitSet)inter.clone();
+															remCand.xor(yzValues);
+															w1Value = remCand.nextSetBit(0);
+															w1Bit =  new BitSet(10);
+															w1Bit.set(w1Value);
+															w2Value = remCand.nextSetBit(w1Value+1);
+															w2Bit =  new BitSet(10);
+															w2Bit.set(w2Value);
+															VWXYZWingHint hint = createHint(
+																	grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
+																	vzValues, wzValues, xzValues, yzValues, vwxyzValues, xValue, zValue, xBit, zBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w1Bit, w2Bit, remCand, inter);
+															if (hint.isWorth())
+																accu.add(hint);
+														}
+													} // if (isVWXYZWing(vzValues, wzValues, xzValues, xBit, yzCell, xzCell, wzCell, vzCell))
+													else
+														if (doubleLink) {
+															doubleLink = false;
+															VWXYZWingHint hint = createHint(
+																	grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
+																	vzValues, wzValues, xzValues, yzValues, vwxyzValues, zValue, xValue, zBit, xBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w1Bit, w2Bit, remCand, inter);
+															if (hint.isWorth())
+																accu.add(hint);
+													}//swapping the z with x as both linked to Pilot but x not linked  to x containing cells while z is liked to z containing cells
+												} // if yzValues.cardinality() == 2
+											} // if yzCellIndex.getX() != xzCellIndex.getX() && yzCellIndex.getY() != xzCellIndex.getY()
+										} // for Cell yzCellIndex : vwxyzCell.getVisibleCells()
+									} // if xzValues.cardinality() == 2
+								//} // if xzCellIndex.getX() != wzCellIndex.getX() && xzCellIndex.getY() != wzCellIndex.getY()
+								} // for Cell xzCellIndex : intersection2
+							} // if wzValues.cardinality() == 2
+						} // for Cell wzCellIndex : intersection1
 					} // if vzValues.cardinality() == 2
-				} // for Cell vzCell : vwxyzCell.getVisibleCellIndexes()
+				} // for Cell vzCellIndex : vwxyzCell.getVisibleCells()				
 			} // if vwxyzValues.cardinality() == targetCardinality
         } // for i
     }
 
     private VWXYZWingHint createHint(
             Grid grid, Cell vwxyzCell, Cell vzCell, Cell wzCell, Cell xzCell, Cell yzCell,
-            BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet yzValues) {
-        // Get the "z" value
-        BitSet inter = (BitSet)vzValues.clone();
-        inter.and(wzValues);
-        inter.and(xzValues);
-        inter.and(yzValues);
-        int zValue = inter.nextSetBit(0);
-
+            BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet yzValues, BitSet vwxyzValues, int xValue, int zValue, BitSet xBit, BitSet zBit, int biggestCardinality, int wingSize, boolean doubleLink, int w1Value, int w2Value, BitSet w1Bit, BitSet w2Bit, BitSet remCand, BitSet wingSet) {
         // Build list of removable potentials
-        Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-        //Set<Cell> victims = new LinkedHashSet<>(vzCell.getHouseCells());
-        CellSet victims = new CellSet(vzCell.getVisibleCells());
-		victims.retainAll(wzCell.getVisibleCells());
-        victims.retainAll(xzCell.getVisibleCells());
-        victims.retainAll(yzCell.getVisibleCells());
-        if (!isIncompletedPivot)
-            victims.retainAll(vwxyzCell.getVisibleCells());
+		boolean weakPotentials = false;
+		boolean strongPotentialsX = false;//if both remain false then proceed as normal VWXYZ if weak is false strong is true and z is false then swap z to x
+		boolean strongPotentialsZ = false;//if both remain false then proceed as normal VWXYZ if weak is false strong is true and z is false then swap z to x        
+		BitSet inter = (BitSet)zBit.clone();
+		Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
+		//Set<Cell> victims = new LinkedHashSet<>(wzCell.getHouseCells(grid));
+		CellSet victims = null;
+		if (doubleLink) {//if no eliminations at all then produce Hint as regular VWXYZ
+			inter = (BitSet)w1Bit.clone();
+			inter.and(xzValues);
+			if (inter.cardinality() == 1)
+						victims = new CellSet (xzCell.getVisibleCells());
+			inter = (BitSet)w1Bit.clone();
+			inter.and(wzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (wzCell.getVisibleCells());
+					else
+						victims.retainAll(wzCell.getVisibleCells());
+			inter = (BitSet)w1Bit.clone();
+			inter.and(vzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (vzCell.getVisibleCells());
+					else
+						victims.retainAll(vzCell.getVisibleCells());
+			inter = (BitSet)w1Bit.clone();
+			inter.and(vwxyzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (vwxyzCell.getVisibleCells());
+					else
+						victims.retainAll(vwxyzCell.getVisibleCells());
+			victims.remove(vwxyzCell);
+			victims.remove(vzCell);			
+			victims.remove(wzCell);
+			victims.remove(xzCell);
+			victims.remove(yzCell);
+			for (Cell cell : victims) {
+				if (grid.hasCellPotentialValue(cell.getIndex(), w1Value)) {		
+					if (removablePotentials.containsKey(cell))
+						removablePotentials.get(cell).set(w1Value);
+					else
+						removablePotentials.put(cell, SingletonBitSet.create(w1Value));
+					weakPotentials = true;
+				}
+			}
+			victims = null;
+			inter = (BitSet)w2Bit.clone();
+			inter.and(xzValues);
+			if (inter.cardinality() == 1)
+					victims = new CellSet (xzCell.getVisibleCells());
+			inter = (BitSet)w2Bit.clone();
+			inter.and(wzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (wzCell.getVisibleCells());
+					else
+						victims.retainAll(wzCell.getVisibleCells());
+			inter = (BitSet)w2Bit.clone();
+			inter.and(vzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (vzCell.getVisibleCells());
+					else
+						victims.retainAll(vzCell.getVisibleCells());
+			inter = (BitSet)w2Bit.clone();
+			inter.and(vwxyzValues);
+			if (inter.cardinality() == 1) 
+					if (victims == null)
+						victims = new CellSet (vwxyzCell.getVisibleCells());
+					else
+						victims.retainAll(vwxyzCell.getVisibleCells());
+			victims.remove(vwxyzCell);
+			victims.remove(vzCell);
+			victims.remove(wzCell);
+			victims.remove(xzCell);
+			victims.remove(yzCell);
+			for (Cell cell : victims) {
+				if (grid.hasCellPotentialValue(cell.getIndex(), w2Value)) {
+					if (removablePotentials.containsKey(cell))
+						removablePotentials.get(cell).set(w2Value);
+					else
+						removablePotentials.put(cell, SingletonBitSet.create(w2Value));
+					weakPotentials = true;
+				}
+			}					
+			victims = new CellSet(yzCell.getVisibleCells());
+			inter = (BitSet)xBit.clone();
+			inter.and(xzValues);
+			if (inter.cardinality() == 1)
+				victims.retainAll(xzCell.getVisibleCells());
+			inter = (BitSet)xBit.clone();
+			inter.and(wzValues);
+			if (inter.cardinality() == 1)
+				victims.retainAll(wzCell.getVisibleCells());
+			inter = (BitSet)xBit.clone();
+			inter.and(vzValues);
+			if (inter.cardinality() == 1)
+				victims.retainAll(vzCell.getVisibleCells());
+			inter = (BitSet)xBit.clone();
+			inter.and(vwxyzValues);
+			if (inter.cardinality() == 1)
+				victims.retainAll(vwxyzCell.getVisibleCells());
+			victims.remove(vwxyzCell);
+			victims.remove(vzCell);
+			victims.remove(wzCell);
+			victims.remove(xzCell);
+			victims.remove(yzCell);
+			for (Cell cell : victims) {
+				if (grid.hasCellPotentialValue(cell.getIndex(), xValue)) {
+					if (removablePotentials.containsKey(cell))
+						removablePotentials.get(cell).set(xValue);
+					else
+						removablePotentials.put(cell, SingletonBitSet.create(xValue));
+					strongPotentialsX = true;
+				}
+			}
+		}
+		victims = new CellSet(yzCell.getVisibleCells());
+		inter = (BitSet)zBit.clone();
+		inter.and(xzValues);
+		if (inter.cardinality() == 1)
+			victims.retainAll(xzCell.getVisibleCells());
+		inter = (BitSet)zBit.clone();
+		inter.and(wzValues);
+        if (inter.cardinality() == 1)
+			victims.retainAll(wzCell.getVisibleCells());
+		inter = (BitSet)zBit.clone();
+		inter.and(vzValues);
+        if (inter.cardinality() == 1)
+			victims.retainAll(vzCell.getVisibleCells());
+ 		inter = (BitSet)zBit.clone();
+		inter.and(vwxyzValues);
+        if (inter.cardinality() == 1)
+			victims.retainAll(vwxyzCell.getVisibleCells());
         victims.remove(vwxyzCell);
-        victims.remove(vzCell);
+		victims.remove(vzCell);
         victims.remove(wzCell);
         victims.remove(xzCell);
         victims.remove(yzCell);
         for (Cell cell : victims) {
             if (grid.hasCellPotentialValue(cell.getIndex(), zValue)) {
-                removablePotentials.put(cell, SingletonBitSet.create(zValue));
+					if (removablePotentials.containsKey(cell))
+						removablePotentials.get(cell).set(zValue);
+					else
+						removablePotentials.put(cell, SingletonBitSet.create(zValue));
+					strongPotentialsZ = true;
             }
         }
-
+		if (doubleLink)
+			if (!weakPotentials)
+				if (!strongPotentialsZ) {
+					doubleLink = false;
+					return new VWXYZWingHint(this, removablePotentials,
+						vwxyzCell, vzCell, wzCell, xzCell, yzCell, xValue, zValue, biggestCardinality, wingSize, doubleLink, wingSet);					
+				}
+				else
+					if (!strongPotentialsX)
+						doubleLink = false;
         // Create hint
         return new VWXYZWingHint(this, removablePotentials,
-                vwxyzCell, vzCell, wzCell, xzCell, yzCell, zValue, isIncompletedPivot);
+                vwxyzCell, vzCell, wzCell, xzCell, yzCell, zValue, xValue, biggestCardinality, wingSize, doubleLink, wingSet);
     }
 
     @Override

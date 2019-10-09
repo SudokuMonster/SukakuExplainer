@@ -1,7 +1,6 @@
 package diuf.sudoku.solver.rules;
 
 import java.util.*;
-//import javax.swing.JOptionPane;//added only when alert Pane is needed
 import diuf.sudoku.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
@@ -16,6 +15,7 @@ public class WXYZWing implements IndirectHintProducer {
      * <ul>
      * <li>WXYZ-Wing</li>
      * <li>ALS-xz with a bivalue cell</li>
+	 * <li>By SudokuMonster 2019</li>
      * </ul>
      */
 
@@ -101,9 +101,7 @@ public class WXYZWing implements IndirectHintProducer {
 													xValue = yzValues.nextSetBit(0);
 													xBit.set(xValue);
 													zValue = yzValues.nextSetBit(xValue + 1);
-													zBit.set(zValue);
-			//JOptionPane.showMessageDialog( null, "Union Cardinality =2 xValue:" + xValue + "zValue:" + zValue );	
-													
+													zBit.set(zValue);													
 												}
 												else {
 													xValue = union.nextSetBit(0);
@@ -176,28 +174,22 @@ public class WXYZWing implements IndirectHintProducer {
 		if (doubleLink) {//if no eliminations at all then produce Hint as regular WXYZ
 			inter = (BitSet)w1Bit.clone();
 			inter.and(xzValues);
-			//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w1Bit Cardinality:" + w1Bit.cardinality() );	
 			if (inter.cardinality() == 1)
 						victims = new CellSet (xzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w1Value:" + w1Value + " w2Value:" + w2Value + " xzCell:" + xzCell.getIndex() + " victims:" + victims );
 			inter = (BitSet)w1Bit.clone();
 			inter.and(wzValues);
-			//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w1Bit Cardinality:" + w1Bit.cardinality() );
 			if (inter.cardinality() == 1) 
 					if (victims == null)
 						victims = new CellSet (wzCell.getVisibleCells());
 					else
 						victims.retainAll(wzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w1Value:" + w1Value + " w2Value:" + w2Value + " wzCell:" + wzCell.getIndex() + " victims:" + victims );
 			inter = (BitSet)w1Bit.clone();
 			inter.and(wxyzValues);
-						//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w1Bit Cardinality:" + w1Bit.cardinality() );
 			if (inter.cardinality() == 1) 
 					if (victims == null)
 						victims = new CellSet (wxyzCell.getVisibleCells());
 					else
 						victims.retainAll(wxyzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w1Value:" + w1Value + " w2Value:" + w2Value + " wxyzCell:" + wxyzCell.getIndex() + " victims:" + victims );
 			victims.remove(wxyzCell);
 			victims.remove(wzCell);
 			victims.remove(xzCell);
@@ -214,19 +206,15 @@ public class WXYZWing implements IndirectHintProducer {
 			victims = null;
 			inter = (BitSet)w2Bit.clone();
 			inter.and(xzValues);
-			//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w2Bit Cardinality:" + w2Bit.cardinality() );	
 			if (inter.cardinality() == 1)
 					victims = new CellSet (xzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w2Value:" + w2Value + " w2Value:" + w2Value + " xzCell:" + xzCell.getIndex() + " victims:" + victims );
 			inter = (BitSet)w2Bit.clone();
 			inter.and(wzValues);
-			//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w2Bit Cardinality:" + w2Bit.cardinality() );
 			if (inter.cardinality() == 1) 
 					if (victims == null)
 						victims = new CellSet (wzCell.getVisibleCells());
 					else
 						victims.retainAll(wzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w2Value:" + w2Value + " w2Value:" + w2Value + " wzCell:" + wzCell.getIndex() + " victims:" + victims );
 			inter = (BitSet)w2Bit.clone();
 			inter.and(wxyzValues);
 						//JOptionPane.showMessageDialog( null, "inter Cardinality:" + inter.cardinality() + "w2Bit Cardinality:" + w2Bit.cardinality() );
@@ -235,7 +223,6 @@ public class WXYZWing implements IndirectHintProducer {
 						victims = new CellSet (wxyzCell.getVisibleCells());
 					else
 						victims.retainAll(wxyzCell.getVisibleCells());
-			//JOptionPane.showMessageDialog( null, "w2Value:" + w2Value + " w2Value:" + w2Value + " wxyzCell:" + wxyzCell.getIndex() + " victims:" + victims );
 			victims.remove(wxyzCell);
 			victims.remove(wzCell);
 			victims.remove(xzCell);

@@ -49,8 +49,8 @@ public interface Rule {
      * <li>4.5 - 5.0: Unique Rectangles and Loops
      * <li>5.0, 5.2, 5.4: Naked quad, Jellyfish, Hidden quad
 	 * <li>5.5: WXYZ-Wing
-     * <li>5.6, 5.7: VWXYZ-Wing 4, VWXYZ-Wing 5
      * <li>5.6 - 6.0: Bivalue Universal Graves
+	 * <li>6.2 - 6.4: VWXYZ-Wing
      * <li>6.2: Aligned Pair Exclusion
      * <li>6.5 - 7.5: X-Cycles, Y-Cycles
      * <li>6.6 - 7.6: Forcing X-Chains
@@ -89,8 +89,8 @@ public interface Rule {
      * <li>4.5 - 5.0: Unique Rectangles and Loops
      * <li>5.0, 5.2, 5.4: Naked quad, Hidden quad, Jellyfish//5.2 ---> 5.4 5.4 ---> 5.2
 	 * <li>5.5: WXYZ-Wing
-     * <li>5.6, 5.7: VWXYZ-Wing 4, VWXYZ-Wing 5
      * <li>5.6 - 6.0: Bivalue Universal Graves
+	 * <li>6.2 - 6.4: VWXYZ-Wing
      * <li>6.2: Aligned Pair Exclusion
      * <li>6.5 - 7.5: X-Cycles, Y-Cycles
      * <li>6.6 - 7.6: Forcing X-Chains
