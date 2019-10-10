@@ -76,11 +76,14 @@ public class Grid {
     public static final int[][] regionCellIndex;
     public static final int[][] cellRegions;
     public static final int[][] visibleCellIndex;
+	public static final int[][] forwardVisibleCellIndex;
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
     public static final Region[][] regions;
     public static final CellSet[] visibleCellsSet;
+	public static final CellSet[] forwardVisibleCellsSet;
+	
     static {
     	cells = new Cell[] {
     		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
@@ -178,6 +181,89 @@ public class Grid {
     		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
     		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
 			};
+		forwardVisibleCellIndex = new int [][] {
+			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
+			{2,3,4,5,6,7,8,9,10,11,18,19,20,28,37,46,55,64,73},
+			{3,4,5,6,7,8,9,10,11,18,19,20,29,38,47,56,65,74},
+			{4,5,6,7,8,12,13,14,21,22,23,30,39,48,57,66,75},
+			{5,6,7,8,12,13,14,21,22,23,31,40,49,58,67,76},
+			{6,7,8,12,13,14,21,22,23,32,41,50,59,68,77},
+			{7,8,15,16,17,24,25,26,33,42,51,60,69,78},
+			{8,15,16,17,24,25,26,34,43,52,61,70,79},
+			{15,16,17,24,25,26,35,44,53,62,71,80},
+			{10,11,12,13,14,15,16,17,18,19,20,27,36,45,54,63,72},
+			{11,12,13,14,15,16,17,18,19,20,28,37,46,55,64,73},
+			{12,13,14,15,16,17,18,19,20,29,38,47,56,65,74},
+			{13,14,15,16,17,21,22,23,30,39,48,57,66,75},
+			{14,15,16,17,21,22,23,31,40,49,58,67,76},
+			{15,16,17,21,22,23,32,41,50,59,68,77},
+			{16,17,24,25,26,33,42,51,60,69,78},
+			{17,24,25,26,34,43,52,61,70,79},
+			{24,25,26,35,44,53,62,71,80},
+			{19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+			{20,21,22,23,24,25,26,28,37,46,55,64,73},
+			{21,22,23,24,25,26,29,38,47,56,65,74},
+			{22,23,24,25,26,30,39,48,57,66,75},
+			{23,24,25,26,31,40,49,58,67,76},
+			{24,25,26,32,41,50,59,68,77},
+			{25,26,33,42,51,60,69,78},
+			{26,34,43,52,61,70,79},
+			{35,44,53,62,71,80},
+			{28,29,30,31,32,33,34,35,36,37,38,45,46,47,54,63,72},
+			{29,30,31,32,33,34,35,36,37,38,45,46,47,55,64,73},
+			{30,31,32,33,34,35,36,37,38,45,46,47,56,65,74},
+			{31,32,33,34,35,39,40,41,48,49,50,57,66,75},
+			{32,33,34,35,39,40,41,48,49,50,58,67,76},
+			{33,34,35,39,40,41,48,49,50,59,68,77},
+			{34,35,42,43,44,51,52,53,60,69,78},
+			{35,42,43,44,51,52,53,61,70,79},
+			{42,43,44,51,52,53,62,71,80},
+			{37,38,39,40,41,42,43,44,45,46,47,54,63,72},
+			{38,39,40,41,42,43,44,45,46,47,55,64,73},
+			{39,40,41,42,43,44,45,46,47,56,65,74},
+			{40,41,42,43,44,48,49,50,57,66,75},
+			{41,42,43,44,48,49,50,58,67,76},
+			{42,43,44,48,49,50,59,68,77},
+			{43,44,51,52,53,60,69,78},
+			{44,51,52,53,61,70,79},
+			{51,52,53,62,71,80},
+			{46,47,48,49,50,51,52,53,54,63,72},
+			{47,48,49,50,51,52,53,55,64,73},
+			{48,49,50,51,52,53,56,65,74},
+			{49,50,51,52,53,57,66,75},
+			{50,51,52,53,58,67,76},
+			{51,52,53,59,68,77},
+			{52,53,60,69,78},
+			{53,61,70,79},
+			{62,71,80},
+			{55,56,57,58,59,60,61,62,63,64,65,72,73,74},
+			{56,57,58,59,60,61,62,63,64,65,72,73,74},
+			{57,58,59,60,61,62,63,64,65,72,73,74},
+			{58,59,60,61,62,66,67,68,75,76,77},
+			{59,60,61,62,66,67,68,75,76,77},
+			{60,61,62,66,67,68,75,76,77},
+			{61,62,69,70,71,78,79,80},
+			{62,69,70,71,78,79,80},
+			{69,70,71,78,79,80},
+			{64,65,66,67,68,69,70,71,72,73,74},
+			{65,66,67,68,69,70,71,72,73,74},
+			{66,67,68,69,70,71,72,73,74},
+			{67,68,69,70,71,75,76,77},
+			{68,69,70,71,75,76,77},
+			{69,70,71,75,76,77},
+			{70,71,78,79,80},
+			{71,78,79,80},
+			{78,79,80},
+			{73,74,75,76,77,78,79,80},
+			{74,75,76,77,78,79,80},
+			{75,76,77,78,79,80},
+			{76,77,78,79,80},
+			{77,78,79,80},
+			{78,79,80},
+			{79,80},
+			{80},
+			{}
+			};
 		visibleCellsSet = new CellSet[] {
 				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
 				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
@@ -188,6 +274,17 @@ public class Grid {
 				new CellSet(visibleCellIndex[54]),new CellSet(visibleCellIndex[55]),new CellSet(visibleCellIndex[56]),new CellSet(visibleCellIndex[57]),new CellSet(visibleCellIndex[58]),new CellSet(visibleCellIndex[59]),new CellSet(visibleCellIndex[60]),new CellSet(visibleCellIndex[61]),new CellSet(visibleCellIndex[62]),
 				new CellSet(visibleCellIndex[63]),new CellSet(visibleCellIndex[64]),new CellSet(visibleCellIndex[65]),new CellSet(visibleCellIndex[66]),new CellSet(visibleCellIndex[67]),new CellSet(visibleCellIndex[68]),new CellSet(visibleCellIndex[69]),new CellSet(visibleCellIndex[70]),new CellSet(visibleCellIndex[71]),
 				new CellSet(visibleCellIndex[72]),new CellSet(visibleCellIndex[73]),new CellSet(visibleCellIndex[74]),new CellSet(visibleCellIndex[75]),new CellSet(visibleCellIndex[76]),new CellSet(visibleCellIndex[77]),new CellSet(visibleCellIndex[78]),new CellSet(visibleCellIndex[79]),new CellSet(visibleCellIndex[80])
+				};
+		forwardVisibleCellsSet = new CellSet[] {
+				new CellSet(forwardVisibleCellIndex[0]),new CellSet(forwardVisibleCellIndex[1]),new CellSet(forwardVisibleCellIndex[2]),new CellSet(forwardVisibleCellIndex[3]),new CellSet(forwardVisibleCellIndex[4]),new CellSet(forwardVisibleCellIndex[5]),new CellSet(forwardVisibleCellIndex[6]),new CellSet(forwardVisibleCellIndex[7]),new CellSet(forwardVisibleCellIndex[8]),
+				new CellSet(forwardVisibleCellIndex[9]),new CellSet(forwardVisibleCellIndex[10]),new CellSet(forwardVisibleCellIndex[11]),new CellSet(forwardVisibleCellIndex[12]),new CellSet(forwardVisibleCellIndex[13]),new CellSet(forwardVisibleCellIndex[14]),new CellSet(forwardVisibleCellIndex[15]),new CellSet(forwardVisibleCellIndex[16]),new CellSet(forwardVisibleCellIndex[17]),
+				new CellSet(forwardVisibleCellIndex[18]),new CellSet(forwardVisibleCellIndex[19]),new CellSet(forwardVisibleCellIndex[20]),new CellSet(forwardVisibleCellIndex[21]),new CellSet(forwardVisibleCellIndex[22]),new CellSet(forwardVisibleCellIndex[23]),new CellSet(forwardVisibleCellIndex[24]),new CellSet(forwardVisibleCellIndex[25]),new CellSet(forwardVisibleCellIndex[26]),
+				new CellSet(forwardVisibleCellIndex[27]),new CellSet(forwardVisibleCellIndex[28]),new CellSet(forwardVisibleCellIndex[29]),new CellSet(forwardVisibleCellIndex[30]),new CellSet(forwardVisibleCellIndex[31]),new CellSet(forwardVisibleCellIndex[32]),new CellSet(forwardVisibleCellIndex[33]),new CellSet(forwardVisibleCellIndex[34]),new CellSet(forwardVisibleCellIndex[35]),
+				new CellSet(forwardVisibleCellIndex[36]),new CellSet(forwardVisibleCellIndex[37]),new CellSet(forwardVisibleCellIndex[38]),new CellSet(forwardVisibleCellIndex[39]),new CellSet(forwardVisibleCellIndex[40]),new CellSet(forwardVisibleCellIndex[41]),new CellSet(forwardVisibleCellIndex[42]),new CellSet(forwardVisibleCellIndex[43]),new CellSet(forwardVisibleCellIndex[44]),
+				new CellSet(forwardVisibleCellIndex[45]),new CellSet(forwardVisibleCellIndex[46]),new CellSet(forwardVisibleCellIndex[47]),new CellSet(forwardVisibleCellIndex[48]),new CellSet(forwardVisibleCellIndex[49]),new CellSet(forwardVisibleCellIndex[50]),new CellSet(forwardVisibleCellIndex[51]),new CellSet(forwardVisibleCellIndex[52]),new CellSet(forwardVisibleCellIndex[53]),
+				new CellSet(forwardVisibleCellIndex[54]),new CellSet(forwardVisibleCellIndex[55]),new CellSet(forwardVisibleCellIndex[56]),new CellSet(forwardVisibleCellIndex[57]),new CellSet(forwardVisibleCellIndex[58]),new CellSet(forwardVisibleCellIndex[59]),new CellSet(forwardVisibleCellIndex[60]),new CellSet(forwardVisibleCellIndex[61]),new CellSet(forwardVisibleCellIndex[62]),
+				new CellSet(forwardVisibleCellIndex[63]),new CellSet(forwardVisibleCellIndex[64]),new CellSet(forwardVisibleCellIndex[65]),new CellSet(forwardVisibleCellIndex[66]),new CellSet(forwardVisibleCellIndex[67]),new CellSet(forwardVisibleCellIndex[68]),new CellSet(forwardVisibleCellIndex[69]),new CellSet(forwardVisibleCellIndex[70]),new CellSet(forwardVisibleCellIndex[71]),
+				new CellSet(forwardVisibleCellIndex[72]),new CellSet(forwardVisibleCellIndex[73]),new CellSet(forwardVisibleCellIndex[74]),new CellSet(forwardVisibleCellIndex[75]),new CellSet(forwardVisibleCellIndex[76]),new CellSet(forwardVisibleCellIndex[77]),new CellSet(forwardVisibleCellIndex[78]),new CellSet(forwardVisibleCellIndex[79]),new CellSet(forwardVisibleCellIndex[80])
 				};
     	blocks = new Block[] {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     	rows = new Row[] {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};

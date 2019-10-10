@@ -93,6 +93,23 @@ public class Cell {
     }
 
     /**
+     * Get the cells that form the "house" of this cell. The
+     * cell indexes have to be greater than this cell index. The "house"
+	 * cells are all the cells that are in the same block, row or column.
+     * <p>
+     * The iteration order is guaranteed to be the same on each
+     * invocation of this method for the same cell. (this is
+     * necessary to ensure that hints of the same difficulty
+     * are always returned in the same order).
+     * @return the cells that are controlled by this cell
+     */
+    public CellSet getForwardVisibleCells() {
+        // Use a set to prevent duplicates (cells in both block and row/column)
+    	//return new CellSet(Grid.visibleCellIndex[index]);
+    	return Grid.forwardVisibleCellsSet[index];
+    }
+
+    /**
      * Get the cell idexes that form the "house" of this cell. The
      * "house" cells are all the cells that are in the
      * same block, row or column.
@@ -105,6 +122,21 @@ public class Cell {
      */
     public int[] getVisibleCellIndexes() {
         return Grid.visibleCellIndex[index];
+    }
+
+    /**
+     * Get the cell indexes that form the "house" of this cell. The
+     * cell indexes have to be greater than this cell index. The "house"
+	 * cells are all the cells that are in the same block, row or column.
+     * <p>
+     * The iteration order is guaranted to be the same on each
+     * invocation of this method for the same cell. (this is
+     * necessary to ensure that hints of the same difficulty
+     * are always returned in the same order).
+     * @return array of the cell indexes that are controlled by this cell
+     */
+    public int[] getForwardVisibleCellIndexes() {
+        return Grid.forwardVisibleCellIndex[index];
     }
 
     /**

@@ -81,7 +81,7 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
 			if (grid.hasCellPotentialValue(wzCell.getIndex(), zValue))
 				result.put(wzCell, zSet);
 			if (grid.hasCellPotentialValue(xzCell.getIndex(), zValue))
-				result.put(wzCell, zSet);
+				result.put(xzCell, zSet);
 			if (grid.hasCellPotentialValue(wxyzCell.getIndex(), zValue))
 				result.put(wxyzCell, zSet);
 			result.put(yzCell, zSet);
