@@ -19,6 +19,7 @@ public enum SolvingTechnique {
     NakedTriplet("Naked Triplet"),
     Swordfish("Swordfish"),
     HiddenTriplet("Hidden Triplet"),
+	TurbotFish("Scraper, Kite, Turbot"),
     XYWing("XY-Wing"),
     XYZWing("XYZ-Wing"),
 //	WWing("W-Wing"),

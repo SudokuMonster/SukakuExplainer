@@ -148,6 +148,7 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.XWing, indirectHintProducers, new Fisherman(2));
         addIfWorth(SolvingTechnique.NakedTriplet, indirectHintProducers, new NakedSet(3));
         addIfWorth(SolvingTechnique.HiddenTriplet, indirectHintProducers, new HiddenSet(3, false));
+		addIfWorth(SolvingTechnique.TurbotFish, indirectHintProducers, new TurbotFish());
         addIfWorth(SolvingTechnique.Swordfish, indirectHintProducers, new Fisherman(3));
         addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
         addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
@@ -202,6 +203,7 @@ else {
         addIfWorth(SolvingTechnique.NakedTriplet, indirectHintProducers, new NakedSet(3));
         addIfWorth(SolvingTechnique.Swordfish, indirectHintProducers, new Fisherman(3));
         addIfWorth(SolvingTechnique.HiddenTriplet, indirectHintProducers, new HiddenSet(3, false));
+		addIfWorth(SolvingTechnique.TurbotFish, indirectHintProducers, new TurbotFish());
         addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
         addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
 //        addIfWorth(SolvingTechnique.WWing, indirectHintProducers, new WWing());
