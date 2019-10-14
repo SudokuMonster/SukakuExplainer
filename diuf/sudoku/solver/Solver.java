@@ -211,7 +211,8 @@ else {
         addIfWorth(SolvingTechnique.NakedQuad, indirectHintProducers, new NakedSet(4));
         addIfWorth(SolvingTechnique.Jellyfish, indirectHintProducers, new Fisherman(4));
         addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
-        addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing());
+        addIfWorth(SolvingTechnique.ThreeStrongLinks, indirectHintProducers, new ThreeStrongLinks());
+		addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing());
         //addIfWorth(SolvingTechnique.VWXYZWing4, indirectHintProducers, new VWXYZWing(true));
 		//addIfWorth(SolvingTechnique.VWXYZWing5, indirectHintProducers, new VWXYZWing(false));
         addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());

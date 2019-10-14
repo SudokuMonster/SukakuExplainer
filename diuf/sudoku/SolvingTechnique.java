@@ -28,6 +28,7 @@ public enum SolvingTechnique {
     NakedQuad("Naked Quad"),
     Jellyfish("Jellyfish"),
     HiddenQuad("Hidden Quad"),
+	ThreeStrongLinks("3 Strong-linked Fishes"),
 	//VWXYZWing4("VWXYZ-Wing 4"),
     //VWXYZWing5("VWXYZ-Wing 5"),
 	VWXYZWing("VWXYZ-Wing"),

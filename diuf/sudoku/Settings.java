@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 5;
-    public final static String SUBREV = ".1";
-	public final static String releaseDate = "2019-10-13";
+    public final static int REVISION = 6;
+    public final static String SUBREV = ".0";
+	public final static String releaseDate = "2019-10-14";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";

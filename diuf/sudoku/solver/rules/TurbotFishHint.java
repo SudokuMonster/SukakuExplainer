@@ -101,13 +101,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         String cell2 = bridgeCell1.toString();
         String cell3 = bridgeCell2.toString();
         String cell4 = endCell.toString();
-		String finned = "finned mutant sashimi x-wing";
-		if (name == "Skyscraper")
-			finned = "finned sashimi x-wing";
-		else
-			if (name == "Turbot Fish")
-				finned = "finned franken sashimi x-wing";
-        result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared, finned);
+        result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared);
         return result;
     }
 
