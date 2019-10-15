@@ -8,7 +8,7 @@ import diuf.sudoku.tools.*;
 
 
 /**
- * Turbot Fish (with 3 Strong links) hints
+ * 3-Turbot Fish hints
  */
 public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParentPotentialHint {
 
@@ -176,27 +176,27 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == Grid.Row.class) {
             if (region2 == Grid.Row.class) {
 				if (region3 == Grid.Row.class)	{			
-					return "Skyscraper (with 3 Strong links)" + " " + suffix;
+					return "3 Skyscrapers" + " " + suffix;
 				}	
 				else {
 					if (region3 == Grid.Column.class) {
-						return "Three-String Kite" + " " + suffix;
+						return "3-String Kite" + " " + suffix;
 					}
 					else {
-						return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+						return "3-Turbot Fish" + " " + suffix;
 					}
 				}
 			}
 			else {
 				if (region2 == Grid.Column.class)	{			
-					return "Three-String Kite" + " " + suffix;
+					return "3-String Kite" + " " + suffix;
 				}
 				else {
 					if (region3 == Grid.Column.class) {
-						return "Three-String Kite" + " " + suffix;
+						return "3-String Kite" + " " + suffix;
 					}
 					else {
-						return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+						return "3-Turbot Fish" + " " + suffix;
 					}
 				}
 			}
@@ -204,27 +204,27 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == Grid.Column.class) {
             if (region2 == Grid.Column.class) {
 				if (region3 == Grid.Column.class)	{			
-					return "Skyscraper (with 3 Strong links)" + " " + suffix;
+					return "3 Skyscrapers" + " " + suffix;
 				}	
 				else {
 					if (region3 == Grid.Row.class) {
-						return "Three-String Kite" + " " + suffix;
+						return "3-String Kite" + " " + suffix;
 					}
 					else {
-						return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+						return "3-Turbot Fish" + " " + suffix;
 					}
 				}
 			}
 			else {
 				if (region2 == Grid.Row.class)	{			
-					return "Three-String Kite" + " " + suffix;
+					return "3-String Kite" + " " + suffix;
 				}
 				else {
 					if (region3 == Grid.Row.class) {
-						return "Three-String Kite" + " " + suffix;
+						return "3-String Kite" + " " + suffix;
 					}
 					else {
-						return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+						return "3-Turbot Fish" + " " + suffix;
 					}
 				}
 			}
@@ -232,25 +232,25 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 		if (region1 == Grid.Block.class) {
 			if (region2 == Grid.Row.class) {
 				if (region3 == Grid.Column.class)	{			
-					return "Three-String Kite" + " " + suffix;
+					return "3-String Kite" + " " + suffix;
 				}	
 				else {
-					return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+					return "3-Turbot Fish" + " " + suffix;
 				}
 			}
 			if (region2 == Grid.Column.class) {
 				if (region3 == Grid.Row.class)	{			
-					return "Three-String Kite" + " " + suffix;
+					return "3-String Kite" + " " + suffix;
 				}	
 				else {
-					return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+					return "3-Turbot Fish" + " " + suffix;
 				}
 			}
 			if (region2 == Grid.Block.class) {
-				return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+				return "3-Turbot Fish" + " " + suffix;
 			}
 		}
-		return "Turbot Fish (with 3 Strong links)" + " " + suffix;
+		return "3-Turbot Fish" + " " + suffix;
     }	
 	
     @Override
@@ -345,7 +345,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         String name = getName();
         if (name.contains("Skyscraper")) {
             return 5.4;
-        } else if (name.contains("Three-String Kite")) {
+        } else if (name.contains("3-String Kite")) {
             return 5.6;
         } else {
             return 5.5;

@@ -158,8 +158,6 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
         addIfWorth(SolvingTechnique.Jellyfish, indirectHintProducers, new Fisherman(4));
         addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing());
-        //addIfWorth(SolvingTechnique.VWXYZWing4, indirectHintProducers, new VWXYZWing(true));
-		//addIfWorth(SolvingTechnique.VWXYZWing5, indirectHintProducers, new VWXYZWing(false));
         addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());
 		addIfWorth(SolvingTechnique.VWXYZWing, indirectHintProducers, new VWXYZWing());
         addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());

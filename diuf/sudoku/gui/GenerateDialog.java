@@ -1085,7 +1085,7 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getincludeTechnique1() {
-				return "";
+				return "ligned";
 			}
             @Override
 			public String getincludeTechnique2() {

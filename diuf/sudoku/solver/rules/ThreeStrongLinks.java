@@ -41,8 +41,15 @@ public class ThreeStrongLinks implements IndirectHintProducer {
         } else return null;
     }
 	
-	private boolean isSamebox (Cell boxCell1, Cell boxCell2) {
+/*	private boolean isSameBox (Cell boxCell1, Cell boxCell2) {
 		if (boxCell1.getB() == boxCell2.getB())
+			return true;
+		return false;
+	}*/
+
+
+	private boolean isSameLine (Cell lineCell1, Cell lineCell2) {
+		if (lineCell1.getX() == lineCell2.getX() || lineCell1.getY() == lineCell2.getY())
 			return true;
 		return false;
 	}
@@ -64,7 +71,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 				// region 1
 				Cell regionCell1 = baseLink1Region.getCell(p1 = baseLink1RegionPotentials.nextSetBit(0));
 				Cell regionCell2 = baseLink1Region.getCell(baseLink1RegionPotentials.nextSetBit(p1 + 1));
-				if (baseLink1 > 0 && isSamebox(regionCell1,regionCell2))
+				if (baseLink1 == 0 && isSameLine(regionCell1,regionCell2))
 					continue;
 				cells[0] = regionCell1;
 				cells[1] = regionCell2;
@@ -76,7 +83,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 					// region 2
 					regionCell1 = baseLink2Region.getCell(p2 = baseLink2RegionPotentials.nextSetBit(0));
 					regionCell2 = baseLink2Region.getCell(baseLink2RegionPotentials.nextSetBit(p2 + 1));
-					if (baseLink2 > 0 && isSamebox(regionCell1,regionCell2))
+					if (baseLink2 == 0 && isSameLine(regionCell1,regionCell2))
 						continue;
 					cells[2] = regionCell1;
 					cells[3] = regionCell2;
@@ -87,7 +94,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 							continue;
 						regionCell1 = baseLink3Region.getCell(p3 = baseLink3RegionPotentials.nextSetBit(0));
 						regionCell2 = baseLink3Region.getCell(baseLink3RegionPotentials.nextSetBit(p3 + 1));					
-						if (baseLink3 > 0 && isSamebox(regionCell1,regionCell2))
+						if (baseLink3 == 0 && isSameLine(regionCell1,regionCell2))
 							continue;
 						cells[4] = regionCell1;
 						cells[5] = regionCell2;
