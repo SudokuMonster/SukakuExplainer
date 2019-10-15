@@ -25,15 +25,15 @@ public class WXYZWing implements IndirectHintProducer {
     private boolean isWXYZWing(BitSet wxyzValues,BitSet wzValues, BitSet xzValues, BitSet aBit, Cell yzCell, Cell xzCell, Cell wzCell, Cell wxyzCell) {
         BitSet inter = (BitSet)aBit.clone();
 		inter.and(xzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == xzCell.getX() || yzCell.getY() == xzCell.getY() || yzCell.getB() == xzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(xzCell))
 			return false;
         inter = (BitSet)aBit.clone();
 		inter.and(wzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == wzCell.getX() || yzCell.getY() == wzCell.getY() || yzCell.getB() == wzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(wzCell))
 			return false;		
         inter = (BitSet)aBit.clone();
 		inter.and(wxyzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == wxyzCell.getX() || yzCell.getY() == wxyzCell.getY() || yzCell.getB() == wxyzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(wxyzCell))
 			return false;			
         return true;
     }
@@ -81,12 +81,9 @@ public class WXYZWing implements IndirectHintProducer {
 									biggestCardinality3 = xzValues.cardinality();
 								wingSize = wxyzValues.cardinality() + wzValues.cardinality() + xzValues.cardinality();
 								//Restrict potential yzCell to Grid Cells that are visible by one or more of the other cells
-								CellSet noYZ = new CellSet(new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80});
-								noYZ.removeAll(wxyzCell.getVisibleCells());
-								noYZ.removeAll(wzCell.getVisibleCells());
-								noYZ.removeAll(xzCell.getVisibleCells());	
-								CellSet yzCellRange = new CellSet(new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80});
-								yzCellRange.removeAll(noYZ);
+								CellSet yzCellRange = new CellSet(wxyzCell.getVisibleCells());
+								yzCellRange.addAll(wzCell.getVisibleCells());
+								yzCellRange.addAll(xzCell.getVisibleCells());
 								yzCellRange.remove(wxyzCell);		
 								yzCellRange.remove(wzCell);
 								yzCellRange.remove(xzCell);

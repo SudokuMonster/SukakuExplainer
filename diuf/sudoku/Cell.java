@@ -92,6 +92,21 @@ public class Cell {
     	return Grid.visibleCellsSet[index];
     }
 
+   public boolean canSeeCell(Cell other) {
+	   return Grid.visibleCellsSet[index].contains(other);
+   }
+   
+   public boolean canSeeAnyOfCells(CellSet cellSet) {
+	    CellSet currentSet = new CellSet(Grid.visibleCellsSet[index]);
+		currentSet.retainAll(cellSet);
+		int currentSetSize = currentSet.size();
+		if (currentSetSize > 0)
+			return true;
+		return false;
+   }
+   
+   
+
     /**
      * Get the cells that form the "house" of this cell. The
      * cell indexes have to be greater than this cell index. The "house"

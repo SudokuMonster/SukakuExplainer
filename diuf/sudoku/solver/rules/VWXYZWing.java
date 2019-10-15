@@ -25,19 +25,19 @@ public class VWXYZWing implements IndirectHintProducer {
     private boolean isVWXYZWing(BitSet vwxyzValues,BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet aBit, Cell yzCell, Cell xzCell, Cell wzCell, Cell vzCell, Cell vwxyzCell) {
         BitSet inter = (BitSet)aBit.clone();
 		inter.and(xzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == xzCell.getX() || yzCell.getY() == xzCell.getY() || yzCell.getB() == xzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(xzCell))
 			return false;
         inter = (BitSet)aBit.clone();
 		inter.and(wzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == wzCell.getX() || yzCell.getY() == wzCell.getY() || yzCell.getB() == wzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(wzCell))
 			return false;		
         inter = (BitSet)aBit.clone();
 		inter.and(vzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == vzCell.getX() || yzCell.getY() == vzCell.getY() || yzCell.getB() == vzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(vzCell))
 			return false;
         inter = (BitSet)aBit.clone();
 		inter.and(vwxyzValues);
-		if (inter.cardinality() == 1 && !(yzCell.getX() == vwxyzCell.getX() || yzCell.getY() == vwxyzCell.getY() || yzCell.getB() == vwxyzCell.getB()))
+		if (inter.cardinality() == 1 && !yzCell.canSeeCell(vwxyzCell))
 			return false;			
         return true;
     }
@@ -103,13 +103,10 @@ public class VWXYZWing implements IndirectHintProducer {
 											biggestCardinality4 = xzValues.cardinality();
 										wingSize = vwxyzValues.cardinality() + vzValues.cardinality() + wzValues.cardinality() + xzValues.cardinality();
 										//Restrict potential yzCell to Grid Cells that are visible by one or more of the other cells
-										CellSet noYZ = new CellSet(new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80});
-										noYZ.removeAll(vwxyzCell.getVisibleCells());
-										noYZ.removeAll(vzCell.getVisibleCells());
-										noYZ.removeAll(wzCell.getVisibleCells());
-										noYZ.removeAll(xzCell.getVisibleCells());	
-										CellSet yzCellRange = new CellSet(new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80});
-										yzCellRange.removeAll(noYZ);
+										CellSet yzCellRange = new CellSet(vwxyzCell.getVisibleCells());
+										yzCellRange.addAll(vzCell.getVisibleCells());
+										yzCellRange.addAll(wzCell.getVisibleCells());
+										yzCellRange.addAll(xzCell.getVisibleCells());
 										yzCellRange.remove(vwxyzCell);
 										yzCellRange.remove(vzCell);			
 										yzCellRange.remove(wzCell);

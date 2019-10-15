@@ -77,9 +77,9 @@ public class Grid {
     public static final int[][] cellRegions;
     public static final int[][] visibleCellIndex;
 	public static final int[][] forwardVisibleCellIndex;
-    private static final Block[] blocks;
-    private static final Row[] rows;
-    private static final Column[] columns;
+    public static final Block[] blocks;
+    public static final Row[] rows;
+    public static final Column[] columns;
     public static final Region[][] regions;
     public static final CellSet[] visibleCellsSet;
 	public static final CellSet[] forwardVisibleCellsSet;
@@ -670,7 +670,7 @@ public class Grid {
         public String toFullString() {
             Settings settings = Settings.getInstance();
             if (settings.isRCNotation())
-                return toString() + " R" + (rowNum + 1);
+                return toString() + " " + (rowNum + 1);
             else
                 return toString() + " " + (rowNum + 1);
         }
@@ -714,7 +714,7 @@ public class Grid {
         public String toFullString() {
             Settings settings = Settings.getInstance();
             if (settings.isRCNotation())
-                return toString() + " C" + (columnNum + 1);
+                return toString() + " " + (columnNum + 1);
             else
                 return toString() + " " + (char)('A' + columnNum);
         }
