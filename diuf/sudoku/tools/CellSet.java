@@ -98,6 +98,11 @@ public class CellSet implements Set<Cell> {
 		return true;
 	}
 
+	//has at least one bit set in both this and given CellSet
+	public boolean containsAny(CellSet c) {
+		return bits.intersects(c.bits);
+	}
+
 	@Override
 	public boolean isEmpty() {
 		return bits.isEmpty();

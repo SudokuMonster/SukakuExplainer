@@ -97,12 +97,13 @@ public class Cell {
    }
    
    public boolean canSeeAnyOfCells(CellSet cellSet) {
-	    CellSet currentSet = new CellSet(Grid.visibleCellsSet[index]);
-		currentSet.retainAll(cellSet);
-		int currentSetSize = currentSet.size();
-		if (currentSetSize > 0)
-			return true;
-		return false;
+	   return Grid.visibleCellsSet[index].containsAny(cellSet);
+//		CellSet currentSet = new CellSet(Grid.visibleCellsSet[index]);
+//		currentSet.retainAll(cellSet);
+//		int currentSetSize = currentSet.size();
+//		if (currentSetSize > 0)
+//			return true;
+//		return false;
    }
    
    
