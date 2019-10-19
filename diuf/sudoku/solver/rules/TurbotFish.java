@@ -18,24 +18,19 @@ public class TurbotFish implements IndirectHintProducer {
         getHints(grid, accu, 2, 2);
         // Two-string Kites
         getHints(grid, accu, 2, 1);
-        //getHints(grid, accu, 1, 2);The same
         // Turbot Fishes
         getHints(grid, accu, 1, 0);
         getHints(grid, accu, 2, 0);
-        //getHints(grid, accu, 0, 1);The same
-        //getHints(grid, accu, 0, 2);The same
-        // Generalized X-Wing...
-        //getHints(grid, accu, 0, 0);
     }
 
     private Grid.Region shareRegionOf(Grid grid,
             Cell start, Cell bridge1, Cell bridge2, Cell end) {
         if (bridge1.getX() == bridge2.getX()) {
-            return Grid.columns[bridge1.getX()];
+            return (Grid.Column)Grid.getRegionAt(2,bridge1.getIndex());
         } else if (bridge1.getY() == bridge2.getY()) {
-            return Grid.rows[bridge1.getY()];
+            return (Grid.Row)Grid.getRegionAt(1,bridge1.getIndex());
         } else if (bridge1.getB() == bridge2.getB()) {
-            return Grid.blocks[bridge1.getB()];
+            return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
         } else return null;
     }
 

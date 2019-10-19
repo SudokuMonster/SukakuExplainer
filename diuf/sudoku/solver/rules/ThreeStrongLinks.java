@@ -31,21 +31,15 @@ public class ThreeStrongLinks implements IndirectHintProducer {
     }
 
     private Grid.Region shareRegionOf(Grid grid,
-            Cell start, Cell bridge1, Cell bridge2, Cell end) {
+            Cell bridge1, Cell bridge2) {
         if (bridge1.getX() == bridge2.getX()) {
-            return Grid.columns[bridge1.getX()];
+            return (Grid.Column)Grid.getRegionAt(2,bridge1.getIndex());
         } else if (bridge1.getY() == bridge2.getY()) {
-            return Grid.rows[bridge1.getY()];
+            return (Grid.Row)Grid.getRegionAt(1,bridge1.getIndex());
         } else if (bridge1.getB() == bridge2.getB()) {
-            return Grid.blocks[bridge1.getB()];
+            return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
         } else return null;
     }
-	
-/*	private boolean isSameBox (Cell boxCell1, Cell boxCell2) {
-		if (boxCell1.getB() == boxCell2.getB())
-			return true;
-		return false;
-	}*/
 
 
 	private boolean isSameLine (Cell lineCell1, Cell lineCell2) {
@@ -120,54 +114,54 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 							for (int j = 2; j < 4; j++) {
 								for (int k = 4; k < 6; k++) {								
 									if ((shareRegion1 = shareRegionOf(grid,
-										start1 = cells[i],
 										bridge11 = cells[1 - i],
-										bridge12 = cells[j],
-										bridge21 = cells[5 - j])) != null &&
+										bridge12 = cells[j]
+										)) != null &&
 										(shareRegion2 = shareRegionOf(grid,
-										bridge12 = cells[j],
 										bridge21 = cells[5 - j],
-										bridge22 = cells[k],
-										end2 = cells[9 - k])) != null &&
+										bridge22 = cells[k]
+										)) != null &&
 										!shareRegion1.equals(baseLink1Region) && !shareRegion1.equals(baseLink2Region) && !shareRegion1.equals(baseLink3Region) &&
 										!shareRegion2.equals(baseLink1Region) && !shareRegion2.equals(baseLink2Region) && !shareRegion2.equals(baseLink3Region) ) {
 										// 3 strong-linked Turbot fish found
+										start1 = cells[i];
+										end2 = cells[9 - k];
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink1Region, baseLink2Region, shareRegion1, end2, bridge21, bridge22, baseLink3Region, shareRegion2, baseLink1, baseLink2, baseLink3);
 										if (hint.isWorth())
 											accu.add(hint);
 									}
 									if ((shareRegion1 = shareRegionOf(grid,
-										start1 = cells[i],
 										bridge11 = cells[1 - i],
-										bridge12 = cells[k],
-										bridge21 = cells[9 - k])) != null &&
+										bridge12 = cells[k]
+										)) != null &&
 										(shareRegion2 = shareRegionOf(grid,
-										bridge12 = cells[k],
 										bridge21 = cells[9 - k],
-										bridge22 = cells[j],
-										end2 = cells[5 - j])) != null &&
+										bridge22 = cells[j]
+										)) != null &&
 										!shareRegion1.equals(baseLink1Region) && !shareRegion1.equals(baseLink2Region) && !shareRegion1.equals(baseLink3Region) &&
 										!shareRegion2.equals(baseLink1Region) && !shareRegion2.equals(baseLink2Region) && !shareRegion2.equals(baseLink3Region) ) {
 										// 3 strong-linked Turbot fish found
+										start1 = cells[i];
+										end2 = cells[5 - j];
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink1Region, baseLink3Region, shareRegion1, end2, bridge21, bridge22, baseLink2Region, shareRegion2, baseLink1, baseLink3, baseLink2);
 										if (hint.isWorth())
 											accu.add(hint);
 									}
 									if ((shareRegion1 = shareRegionOf(grid,
-										start1 = cells[j],
 										bridge11 = cells[5 - j],
-										bridge12 = cells[i],
-										bridge21 = cells[1 - i])) != null &&
+										bridge12 = cells[i]
+										)) != null &&
 										(shareRegion2 = shareRegionOf(grid,
-										bridge12 = cells[i],
 										bridge21 = cells[1 - i],
-										bridge22 = cells[k],
-										end2 = cells[9 - k])) != null &&
+										bridge22 = cells[k]
+										)) != null &&
 										!shareRegion1.equals(baseLink1Region) && !shareRegion1.equals(baseLink2Region) && !shareRegion1.equals(baseLink3Region) &&
 										!shareRegion2.equals(baseLink1Region) && !shareRegion2.equals(baseLink2Region) && !shareRegion2.equals(baseLink3Region) ) {
 										// 3 strong-linked Turbot fish found
+										start1 = cells[j];
+										end2 = cells[9 - k];
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink2Region, baseLink1Region, shareRegion1, end2, bridge21, bridge22, baseLink3Region, shareRegion2, baseLink2, baseLink1, baseLink3);
 										if (hint.isWorth())
