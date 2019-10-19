@@ -533,12 +533,13 @@ else {
      * @return The actual difficulty if it is between the
      * given bounds. An arbitrary out-of-bounds value else.
      */
-    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3, String excludeT1, String excludeT2, String excludeT3, String includeT1, String includeT2, String includeT3, String notMaxT1, String notMaxT2, String notMaxT3) {
+    public double analyseDifficulty(double min, double max, double include1, double include2, double include3, double exclude1, double exclude2, double exclude3, double notMax1, double notMax2, double notMax3, String excludeT1, String excludeT2, String excludeT3, String includeT1, String includeT2, String includeT3, String notMaxT1, String notMaxT2, String notMaxT3, String oneOf3_1, String oneOf3_2, String oneOf3_3) {
         int oldPriority = lowerPriority();
         try {
             double difficulty = 0; //Double.NEGATIVE_INFINITY;
-            int notMaxCounter = 0;
+            boolean notMaxCounter = false;
 			int inRateCounter = 0;
+			boolean oneOfThreeCounter = false;
 			if (include1 == 0.0) inRateCounter++;
 			if (include2 == 0.0) inRateCounter++;
 			if (include3 == 0.0) inRateCounter++;
@@ -572,10 +573,13 @@ else {
 					return 0.0;
 				if (inRateCounter < 3 && (ruleDiff == include1 || ruleDiff == include2 || ruleDiff == include3)) inRateCounter++;
 				if (inTechCounter < 3 && ((ruleName.contains(includeT1) && (!Objects.equals(includeT1,""))) || (ruleName.contains(includeT2) && (!Objects.equals(includeT2,""))) || (ruleName.contains(includeT3) && (!Objects.equals(includeT3,""))))) inTechCounter++;
+				if (!oneOfThreeCounter && (ruleName.contains(oneOf3_1) || ruleName.contains(oneOf3_2) || ruleName.contains(oneOf3_3)))
+					oneOfThreeCounter = true;
 				if (ruleDiff > difficulty) {
-					notMaxCounter = 0;
 					if (notMax1 == ruleDiff || notMax2 == ruleDiff || notMax3 == ruleDiff || (ruleName.contains(notMaxT1) && (!Objects.equals(notMaxT1,""))) || (ruleName.contains(notMaxT2) && (!Objects.equals(notMaxT2,""))) || (ruleName.contains(notMaxT3) && (!Objects.equals(notMaxT3,""))))
-							notMaxCounter = 1;
+							notMaxCounter = true;
+					else
+							notMaxCounter = false;
 					difficulty = ruleDiff;
 				}
                 if (difficulty >= min && max >= 11.0)
@@ -584,7 +588,7 @@ else {
                     break;
                 hint.apply(grid);
             }
-			if (notMaxCounter == 1 || inRateCounter < 3 || inTechCounter < 3)
+			if (!oneOfThreeCounter || notMaxCounter || inRateCounter < 3 || inTechCounter < 3)
 				return 0.0;
 			return difficulty;
         } finally {

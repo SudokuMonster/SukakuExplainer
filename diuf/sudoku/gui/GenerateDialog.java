@@ -107,6 +107,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
         Medium {
 
@@ -187,6 +199,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -271,6 +295,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
         Superior {
 
@@ -329,15 +365,15 @@ public class GenerateDialog extends JDialog {
             }
             @Override
 			public String getexcludeTechnique1() {
-				return "";
+				return "Skyscraper";
 			}
             @Override
 			public String getexcludeTechnique2() {
-				return "";
+				return "2-String Kite";
 			}
             @Override
 			public String getexcludeTechnique3() {
-				return "";
+				return "Turbot Fish";
 			}
 			public String getincludeTechnique1() {
 				return "";
@@ -360,6 +396,18 @@ public class GenerateDialog extends JDialog {
             @Override
 			public String getnotMaxTechnique3() {
 				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "Triple";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "X-Wing";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "X-Wing";
 			}
         },
         Fiendish {
@@ -442,6 +490,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
 		SuperiorPlus {
 
@@ -470,11 +530,11 @@ public class GenerateDialog extends JDialog {
             }
             @Override
             public double getexcludeDifficulty1() {
-                return 4.2;
+                return 0.0;
             }
             @Override
             public double getexcludeDifficulty2() {
-                return 4.4;
+                return 0.0;
             }
             @Override
             public double getexcludeDifficulty3() {
@@ -495,7 +555,7 @@ public class GenerateDialog extends JDialog {
                 return 0.0;
             }
 			public String getexcludeTechnique1() {
-				return "";
+				return "XY";
 			}
             @Override
 			public String getexcludeTechnique2() {
@@ -525,6 +585,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -608,6 +680,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
 		ThreeStrongLinks {
 
@@ -687,6 +771,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -770,6 +866,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
 		Uniqueness {
 
@@ -849,6 +957,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -938,6 +1058,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
 		},
 		UL12Type3 {
             @Override
@@ -1025,6 +1157,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
 		},
 		APE {
 
@@ -1106,6 +1250,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
 		BUGs {
 
@@ -1166,7 +1322,7 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getincludeTechnique1() {
-				return "";
+				return "BUG";
 			}
             @Override
 			public String getincludeTechnique2() {
@@ -1185,6 +1341,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -1268,6 +1436,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         },
 		AdvancedPlayer {
 
@@ -1347,6 +1527,18 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
 				return "";
 			}
         },
@@ -1430,6 +1622,18 @@ public class GenerateDialog extends JDialog {
 			public String getnotMaxTechnique3() {
 				return "";
 			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
         };
 
         public abstract double getMinDifficulty();
@@ -1452,7 +1656,10 @@ public class GenerateDialog extends JDialog {
 		public abstract String getnotMaxTechnique1();
 		public abstract String getnotMaxTechnique2();
 		public abstract String getnotMaxTechnique3();
-        public String getHtmlDescription() {
+		public abstract String getOneOfThree_1();
+ 		public abstract String getOneOfThree_2();
+		public abstract String getOneOfThree_3();
+       public String getHtmlDescription() {
             return HtmlLoader.loadHtml(this, this.name() + ".html");
         }
 
@@ -1730,12 +1937,15 @@ public class GenerateDialog extends JDialog {
 		String notMaxTechnique1 = difficulty.getnotMaxTechnique1();
 		String notMaxTechnique2 = difficulty.getnotMaxTechnique2();
 		String notMaxTechnique3 = difficulty.getnotMaxTechnique3();
+		String getOneOfThree_1 = difficulty.getOneOfThree_1();
+		String getOneOfThree_2 = difficulty.getOneOfThree_2();
+		String getOneOfThree_3 = difficulty.getOneOfThree_3();
         if (!isExact)
             minDifficulty = 1.0;
         List<Symmetry> symList = new ArrayList<Symmetry>(symmetries);
 
         // Generate grid
-        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3);
+        generator = new GeneratorThread(symList, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3, getOneOfThree_1, getOneOfThree_2, getOneOfThree_3);
         generator.start();
     }
 
@@ -1765,10 +1975,13 @@ public class GenerateDialog extends JDialog {
 		private final String notMaxTechnique1;
 		private final String notMaxTechnique2;
 		private final String notMaxTechnique3;
-        private Generator generator;
+		private final String getOneOfThree_1;
+ 		private final String getOneOfThree_2;
+		private final String getOneOfThree_3;
+       private Generator generator;
 
 
-       public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3, String excludeTechnique1, String excludeTechnique2, String excludeTechnique3, String includeTechnique1, String includeTechnique2, String includeTechnique3, String notMaxTechnique1, String notMaxTechnique2, String notMaxTechnique3) {
+       public GeneratorThread(List<Symmetry> symmetries, double minDifficulty, double maxDifficulty, double includeDifficulty1, double includeDifficulty2, double includeDifficulty3, double excludeDifficulty1, double excludeDifficulty2, double excludeDifficulty3, double notMaxDifficulty1, double notMaxDifficulty2, double notMaxDifficulty3, String excludeTechnique1, String excludeTechnique2, String excludeTechnique3, String includeTechnique1, String includeTechnique2, String includeTechnique3, String notMaxTechnique1, String notMaxTechnique2, String notMaxTechnique3, String getOneOfThree_1, String getOneOfThree_2, String getOneOfThree_3) {
             this.symmetries = symmetries;
             this.minDifficulty = minDifficulty;
             this.maxDifficulty = maxDifficulty;
@@ -1790,6 +2003,9 @@ public class GenerateDialog extends JDialog {
 			this.notMaxTechnique1 = notMaxTechnique1;
 			this.notMaxTechnique2 = notMaxTechnique2;
 			this.notMaxTechnique3 = notMaxTechnique3;
+			this.getOneOfThree_1 = getOneOfThree_1;
+			this.getOneOfThree_2 = getOneOfThree_2;
+			this.getOneOfThree_3 = getOneOfThree_3;
         }
 
         @Override
@@ -1808,7 +2024,7 @@ public class GenerateDialog extends JDialog {
                 }
             });
             generator = new Generator();
-            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3);
+            final Grid result = generator.generate(symmetries, minDifficulty, maxDifficulty, includeDifficulty1, includeDifficulty2, includeDifficulty3, excludeDifficulty1, excludeDifficulty2, excludeDifficulty3, notMaxDifficulty1, notMaxDifficulty2, notMaxDifficulty3, excludeTechnique1, excludeTechnique2, excludeTechnique3, includeTechnique1, includeTechnique2, includeTechnique3, notMaxTechnique1, notMaxTechnique2, notMaxTechnique3, getOneOfThree_1, getOneOfThree_2, getOneOfThree_3);
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (result != null) {
