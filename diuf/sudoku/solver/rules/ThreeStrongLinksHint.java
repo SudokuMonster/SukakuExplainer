@@ -262,27 +262,27 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == Grid.Row.class) {
             if (region2 == Grid.Row.class) {
 				if (region3 == Grid.Row.class)	{			
-					return "3Sk" + " " + suffix;
+					return "3Sk" + suffix;
 				}	
 				else {
 					if (region3 == Grid.Column.class) {
-						return "3SK" + " " + suffix;
+						return "3SK" + suffix;
 					}
 					else {
-						return "3TF" + " " + suffix;
+						return "3TF" + suffix;
 					}
 				}
 			}
 			else {
 				if (region2 == Grid.Column.class)	{			
-					return "3SK" + " " + suffix;
+					return "3SK" + suffix;
 				}
 				else {
 					if (region3 == Grid.Column.class) {
-						return "3SK" + " " + suffix;
+						return "3SK" + suffix;
 					}
 					else {
-						return "3TF" + " " + suffix;
+						return "3TF" + suffix;
 					}
 				}
 			}
@@ -290,27 +290,27 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == Grid.Column.class) {
             if (region2 == Grid.Column.class) {
 				if (region3 == Grid.Column.class)	{			
-					return "3Sk" + " " + suffix;
+					return "3Sk" + suffix;
 				}	
 				else {
 					if (region3 == Grid.Row.class) {
-						return "3SK" + " " + suffix;
+						return "3SK" + suffix;
 					}
 					else {
-						return "3TF" + " " + suffix;
+						return "3TF" + suffix;
 					}
 				}
 			}
 			else {
 				if (region2 == Grid.Row.class)	{			
-					return "3SK" + " " + suffix;
+					return "3SK" + suffix;
 				}
 				else {
 					if (region3 == Grid.Row.class) {
-						return "3SK" + " " + suffix;
+						return "3SK" + suffix;
 					}
 					else {
-						return "3TF" + " " + suffix;
+						return "3TF" + suffix;
 					}
 				}
 			}
@@ -318,25 +318,25 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 		if (region1 == Grid.Block.class) {
 			if (region2 == Grid.Row.class) {
 				if (region3 == Grid.Column.class)	{			
-					return "3SK" + " " + suffix;
+					return "3SK" + suffix;
 				}	
 				else {
-					return "3TF" + " " + suffix;
+					return "3TF" + suffix;
 				}
 			}
 			if (region2 == Grid.Column.class) {
 				if (region3 == Grid.Row.class)	{			
-					return "3SK" + " " + suffix;
+					return "3SK" + suffix;
 				}	
 				else {
-					return "3TF" + " " + suffix;
+					return "3TF" + suffix;
 				}
 			}
 			if (region2 == Grid.Block.class) {
-				return "3TF" + " " + suffix;
+				return "3TF" + suffix;
 			}
 		}
-		return "3TF" + " " + suffix;
+		return "3TF" + suffix;
     }
 
 
