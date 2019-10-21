@@ -635,7 +635,7 @@ public class SudokuPanel extends JPanel {
 
     private void paintHighlightedRegions(Graphics g) {
         if (blueRegions != null) {
-            Color[] colors = new Color[] {new Color(0, 128, 0), new Color(0, 0, 192)};
+            Color[] colors = new Color[] {new Color(0, 128, 0), new Color(255, 0, 0)};
             for (int rev = 0; rev < 2; rev++) {
                 for (int i = 0; i < blueRegions.length; i++) {
                     int index = (rev == 0 ? i : blueRegions.length - 1 - i);
