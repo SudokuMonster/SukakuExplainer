@@ -169,17 +169,17 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 
     @Override
     public String getName() {
-        Class<? extends Grid.Region> region1 = baseLink1Set.getClass();
-        Class<? extends Grid.Region> region2 = baseLink2Set.getClass();
-		Class<? extends Grid.Region> region3 = baseLink3Set.getClass();
+        int region1 = baseLink1Set.getRegionTypeIndex();
+        int region2 = baseLink2Set.getRegionTypeIndex();
+		int region3 = baseLink3Set.getRegionTypeIndex();
         String suffix = getSuffix();
-        if (region1 == Grid.Row.class) {
-            if (region2 == Grid.Row.class) {
-				if (region3 == Grid.Row.class)	{			
+        if (region1 == 1) {
+            if (region2 == 1) {
+				if (region3 == 1)	{			
 					return "3 Skyscrapers" + " " + suffix;
 				}	
 				else {
-					if (region3 == Grid.Column.class) {
+					if (region3 == 2) {
 						return "3-String Kite" + " " + suffix;
 					}
 					else {
@@ -188,11 +188,11 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 			else {
-				if (region2 == Grid.Column.class)	{			
+				if (region2 == 2)	{			
 					return "3-String Kite" + " " + suffix;
 				}
 				else {
-					if (region3 == Grid.Column.class) {
+					if (region3 == 2) {
 						return "3-String Kite" + " " + suffix;
 					}
 					else {
@@ -201,13 +201,13 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 		}
-        if (region1 == Grid.Column.class) {
-            if (region2 == Grid.Column.class) {
-				if (region3 == Grid.Column.class)	{			
+        if (region1 == 2) {
+            if (region2 == 2) {
+				if (region3 == 2)	{			
 					return "3 Skyscrapers" + " " + suffix;
 				}	
 				else {
-					if (region3 == Grid.Row.class) {
+					if (region3 == 1) {
 						return "3-String Kite" + " " + suffix;
 					}
 					else {
@@ -216,11 +216,11 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 			else {
-				if (region2 == Grid.Row.class)	{			
+				if (region2 == 1)	{			
 					return "3-String Kite" + " " + suffix;
 				}
 				else {
-					if (region3 == Grid.Row.class) {
+					if (region3 == 1) {
 						return "3-String Kite" + " " + suffix;
 					}
 					else {
@@ -229,24 +229,24 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 		}
-		if (region1 == Grid.Block.class) {
-			if (region2 == Grid.Row.class) {
-				if (region3 == Grid.Column.class)	{			
+		if (region1 == 0) {
+			if (region2 == 1) {
+				if (region3 == 2)	{			
 					return "3-String Kite" + " " + suffix;
 				}	
 				else {
 					return "3-Turbot Fish" + " " + suffix;
 				}
 			}
-			if (region2 == Grid.Column.class) {
-				if (region3 == Grid.Row.class)	{			
+			if (region2 == 2) {
+				if (region3 == 1)	{			
 					return "3-String Kite" + " " + suffix;
 				}	
 				else {
 					return "3-Turbot Fish" + " " + suffix;
 				}
 			}
-			if (region2 == Grid.Block.class) {
+			if (region2 == 0) {
 				return "3-Turbot Fish" + " " + suffix;
 			}
 		}
@@ -255,17 +255,17 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 	
     @Override
     public String getShortName() {
-        Class<? extends Grid.Region> region1 = baseLink1Set.getClass();
-        Class<? extends Grid.Region> region2 = baseLink2Set.getClass();
-		Class<? extends Grid.Region> region3 = baseLink3Set.getClass();
+        int region1 = baseLink1Set.getRegionTypeIndex();
+        int region2 = baseLink2Set.getRegionTypeIndex();
+		int region3 = baseLink3Set.getRegionTypeIndex();
         String suffix = getSuffix();
-        if (region1 == Grid.Row.class) {
-            if (region2 == Grid.Row.class) {
-				if (region3 == Grid.Row.class)	{			
+        if (region1 == 1) {
+            if (region2 == 1) {
+				if (region3 == 1)	{			
 					return "3Sk" + suffix;
 				}	
 				else {
-					if (region3 == Grid.Column.class) {
+					if (region3 == 2) {
 						return "3SK" + suffix;
 					}
 					else {
@@ -274,11 +274,11 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 			else {
-				if (region2 == Grid.Column.class)	{			
+				if (region2 == 2)	{			
 					return "3SK" + suffix;
 				}
 				else {
-					if (region3 == Grid.Column.class) {
+					if (region3 == 2) {
 						return "3SK" + suffix;
 					}
 					else {
@@ -287,13 +287,13 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 		}
-        if (region1 == Grid.Column.class) {
-            if (region2 == Grid.Column.class) {
-				if (region3 == Grid.Column.class)	{			
+        if (region1 == 2) {
+            if (region2 == 2) {
+				if (region3 == 2)	{			
 					return "3Sk" + suffix;
 				}	
 				else {
-					if (region3 == Grid.Row.class) {
+					if (region3 == 1) {
 						return "3SK" + suffix;
 					}
 					else {
@@ -302,11 +302,11 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 			else {
-				if (region2 == Grid.Row.class)	{			
+				if (region2 == 1)	{			
 					return "3SK" + suffix;
 				}
 				else {
-					if (region3 == Grid.Row.class) {
+					if (region3 == 1) {
 						return "3SK" + suffix;
 					}
 					else {
@@ -315,24 +315,24 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 				}
 			}
 		}
-		if (region1 == Grid.Block.class) {
-			if (region2 == Grid.Row.class) {
-				if (region3 == Grid.Column.class)	{			
+		if (region1 == 0) {
+			if (region2 == 1) {
+				if (region3 == 2)	{			
 					return "3SK" + suffix;
 				}	
 				else {
 					return "3TF" + suffix;
 				}
 			}
-			if (region2 == Grid.Column.class) {
-				if (region3 == Grid.Row.class)	{			
+			if (region2 == 2) {
+				if (region3 == 1)	{			
 					return "3SK" + suffix;
 				}	
 				else {
 					return "3TF" + suffix;
 				}
 			}
-			if (region2 == Grid.Block.class) {
+			if (region2 == 0) {
 				return "3TF" + suffix;
 			}
 		}

@@ -77,9 +77,9 @@ public class Grid {
     public static final int[][] cellRegions;
     public static final int[][] visibleCellIndex;
 	public static final int[][] forwardVisibleCellIndex;
-    public static final Block[] blocks;
-    public static final Row[] rows;
-    public static final Column[] columns;
+    private static final Block[] blocks;
+    private static final Row[] rows;
+    private static final Column[] columns;
     public static final Region[][] regions;
     public static final CellSet[] visibleCellsSet;
 	public static final CellSet[] forwardVisibleCellsSet;

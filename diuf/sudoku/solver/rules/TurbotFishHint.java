@@ -107,23 +107,23 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public String getName() {
-        Class<? extends Grid.Region> region1 = baseSet.getClass();
-        Class<? extends Grid.Region> region2 = coverSet.getClass();
-        if (region1 == Grid.Row.class) {
-            if (region2 == Grid.Row.class)
+        int region1 = baseSet.getRegionTypeIndex();
+        int region2 = coverSet.getRegionTypeIndex();
+        if (region1 == 1) {
+            if (region2 == 1)
                 return "Skyscraper";
             else
-				if (region2 == Grid.Column.class)
+				if (region2 == 2)
 					return "Two-string Kite";
 				else
 					return "Turbot Fish";
         }
 		else {
-			if (region1 == Grid.Column.class)
-				if (region2 == Grid.Row.class)
+			if (region1 == 2)
+				if (region2 == 1)
 					return "Two-string Kite";
 				else
-					if (region2 == Grid.Column.class)
+					if (region2 == 2)
 						return "Skyscraper";
 					else 
                 return "Turbot Fish";
@@ -134,28 +134,28 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 	
     @Override
     public String getShortName() {
-        Class<? extends Grid.Region> region1 = baseSet.getClass();
-        Class<? extends Grid.Region> region2 = coverSet.getClass();
-        if (region1 == Grid.Row.class) {
-            if (region2 == Grid.Row.class)
+        int region1 = baseSet.getRegionTypeIndex();
+        int region2 = coverSet.getRegionTypeIndex();
+        if (region1 == 1) {
+            if (region2 == 1)
                 return "Sky";
             else
-				if (region2 == Grid.Column.class)
+				if (region2 == 2)
 					return "2SK";
 				else
 					return "TF";
         }
 		else {
-			if (region1 == Grid.Column.class)
-				if (region2 == Grid.Row.class)
+			if (region1 == 2)
+				if (region2 == 1)
 					return "2SK";
 				else
-					if (region2 == Grid.Column.class)
+					if (region2 == 2)
 						return "Sky";
 					else 
                 return "TF";
 			else
-				if (region2 == Grid.Block.class) 
+				if (region2 == 0) 
 					return "GXW";
 				else
 					return "TF";
