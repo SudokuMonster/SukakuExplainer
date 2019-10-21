@@ -455,7 +455,7 @@ public class SudokuPanel extends JPanel {
         if (redCells != null && redCells.contains(cell))
             col = redColor;
         else if (greenCells != null && greenCells.contains(cell))
-            col = new Color(192, 255, 255);
+            col = new Color(255, 255, 204);
         else if (cell == selectedCell)
             col = selectedColor;
         else if (cell == focusedCell)
@@ -635,7 +635,7 @@ public class SudokuPanel extends JPanel {
 
     private void paintHighlightedRegions(Graphics g) {
         if (blueRegions != null) {
-            Color[] colors = new Color[] {new Color(0, 0, 192), new Color(0, 128, 0)};
+            Color[] colors = new Color[] {new Color(0, 128, 0), new Color(0, 0, 192)};
             for (int rev = 0; rev < 2; rev++) {
                 for (int i = 0; i < blueRegions.length; i++) {
                     int index = (rev == 0 ? i : blueRegions.length - 1 - i);

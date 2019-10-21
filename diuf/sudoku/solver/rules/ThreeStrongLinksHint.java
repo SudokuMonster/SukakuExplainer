@@ -262,7 +262,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == 1) {
             if (region2 == 1) {
 				if (region3 == 1)	{			
-					return "3Sk" + suffix;
+					return "3Sky" + suffix;
 				}	
 				else {
 					if (region3 == 2) {
@@ -290,7 +290,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         if (region1 == 2) {
             if (region2 == 2) {
 				if (region3 == 2)	{			
-					return "3Sk" + suffix;
+					return "3Sky" + suffix;
 				}	
 				else {
 					if (region3 == 1) {

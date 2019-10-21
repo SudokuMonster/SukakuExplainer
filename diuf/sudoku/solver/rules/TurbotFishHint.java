@@ -20,10 +20,12 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     private final Grid.Region baseSet;
     private final Grid.Region coverSet;
     private final Grid.Region shareRegion;
+	private final boolean emptyRectangle;
+	private final Cell[] emptyRectangleCells;
 
     public TurbotFishHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell endCell, Cell bridgeCell1, Cell bridgeCell2,
-            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion) {
+            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRectangle, Cell[] emptyRectangleCells) {
         super(rule, removablePotentials);
         this.value = value;
         this.startCell = startCell;
@@ -33,6 +35,8 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         this.baseSet = base;
         this.coverSet = cover;
         this.shareRegion = shareRegion;
+		this.emptyRectangle = emptyRectangle;
+		this.emptyRectangleCells = emptyRectangleCells;
     }
 
     @Override
@@ -42,7 +46,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public Cell[] getSelectedCells() {
-        return new Cell[] { startCell, endCell };
+		if (emptyRectangle)
+			return emptyRectangleCells;
+		else
+			return new Cell[] { startCell, endCell };
     }
 
     @Override
@@ -51,8 +58,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         BitSet fishDigitSet = SingletonBitSet.create(value);
         result.put(startCell, fishDigitSet); // orange
         result.put(bridgeCell1, fishDigitSet);
+	if (!emptyRectangle) {
         result.put(bridgeCell2, fishDigitSet); // orange
         result.put(endCell, fishDigitSet);
+	}
         return result;
     }
 
@@ -61,7 +70,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         Map<Cell, BitSet> result = new HashMap<>(super.getRemovablePotentials());
         BitSet fishDigitSet = SingletonBitSet.create(value);
         result.put(startCell, fishDigitSet);
-        result.put(bridgeCell2, fishDigitSet);
+        //result.put(bridgeCell2, fishDigitSet);
         return result;
     }
 
@@ -69,15 +78,18 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<>();
         result.add(new Link(startCell, value, bridgeCell1, value));
-        result.add(new Link(bridgeCell1, value, bridgeCell2, value));
-        result.add(new Link(bridgeCell2, value, endCell, value));
+		if (!emptyRectangle) {
+			result.add(new Link(bridgeCell1, value, bridgeCell2, value));
+			result.add(new Link(bridgeCell2, value, endCell, value));
+		}
+
         return result;
     }
 
     @Override
     public Grid.Region[] getRegions() {
-        //return new Grid.Region[] { shareRegion };
-		        return null;
+        return new Grid.Region[] { coverSet, shareRegion};
+		        //return null;
     }
 
     @Override
@@ -91,7 +103,11 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public String toHtml(Grid grid) {
-        String result = HtmlLoader.loadHtml(this, "TurbotFishHint.html");
+        String result;
+		if (emptyRectangle)
+			result = HtmlLoader.loadHtml(this, "ERFishHint.html");
+		else
+			result = HtmlLoader.loadHtml(this, "TurbotFishHint.html");
         String name = getName();
         String base = this.baseSet.toFullString();
         String cover = this.coverSet.toFullString();
@@ -109,6 +125,8 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public String getName() {
         int region1 = baseSet.getRegionTypeIndex();
         int region2 = coverSet.getRegionTypeIndex();
+		if (emptyRectangle)
+			return "Empty Rectangle";
         if (region1 == 1) {
             if (region2 == 1)
                 return "Skyscraper";
@@ -136,6 +154,8 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public String getShortName() {
         int region1 = baseSet.getRegionTypeIndex();
         int region2 = coverSet.getRegionTypeIndex();
+		if (emptyRectangle)
+			return "ER";
         if (region1 == 1) {
             if (region2 == 1)
                 return "Sky";
@@ -154,6 +174,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 						return "Sky";
 					else 
                 return "TF";
+			//I cant' see this eventuality happening
 			else
 				if (region2 == 0) 
 					return "GXW";
