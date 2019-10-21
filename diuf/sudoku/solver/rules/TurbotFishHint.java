@@ -105,73 +105,126 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         return result;
     }
 
+    static String hintNames[][][] = //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
+    	{
+    			{ //baseSetRegionTypeIndex = 0 box
+    				{ //coverSetRegionTypeIndex = 0 box
+    					"Turbot Fish", "GXW"
+    				},
+    				{ //coverSetRegionTypeIndex = 1 row
+    					"Turbot Fish", "TF"
+    				},
+    				{ //coverSetRegionTypeIndex = 2 column
+    					"Turbot Fish", "TF"
+    				}    				
+    			},
+    			{ //baseSetRegionTypeIndex = 1 row
+    				{ //coverSetRegionTypeIndex = 0 box
+    					"Turbot Fish", "TF"
+    				},
+    				{ //coverSetRegionTypeIndex = 1 row
+    					"Skyscraper", "Sky"
+    				},
+    				{ //coverSetRegionTypeIndex = 2 column
+    					"Two-string Kite", "2SK"
+    				}    				    				
+    			},
+    			{ //baseSetRegionTypeIndex = 2 column
+    				{ //coverSetRegionTypeIndex = 0 box
+    					"Turbot Fish", "TF"
+    				},
+    				{ //coverSetRegionTypeIndex = 1 row
+    					"Two-string Kite", "2SK"
+    				},
+    				{ //coverSetRegionTypeIndex = 2 column
+    					"Skyscraper", "Sky"
+    				}    								
+    			}
+		};
+    
     @Override
     public String getName() {
-        int region1 = baseSet.getRegionTypeIndex();
-        int region2 = coverSet.getRegionTypeIndex();
-        if (region1 == 1) {
-            if (region2 == 1)
-                return "Skyscraper";
-            else
-				if (region2 == 2)
-					return "Two-string Kite";
-				else
-					return "Turbot Fish";
-        }
-		else {
-			if (region1 == 2)
-				if (region2 == 1)
-					return "Two-string Kite";
-				else
-					if (region2 == 2)
-						return "Skyscraper";
-					else 
-                return "Turbot Fish";
-			else
-				return "Turbot Fish";
-        }
+    	return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
+//        int region1 = baseSet.getRegionTypeIndex();
+//        int region2 = coverSet.getRegionTypeIndex();
+//        if (region1 == 1) {
+//            if (region2 == 1)
+//                return "Skyscraper";
+//            else
+//				if (region2 == 2)
+//					return "Two-string Kite";
+//				else
+//					return "Turbot Fish";
+//        }
+//		else {
+//			if (region1 == 2)
+//				if (region2 == 1)
+//					return "Two-string Kite";
+//				else
+//					if (region2 == 2)
+//						return "Skyscraper";
+//					else 
+//                return "Turbot Fish";
+//			else
+//				return "Turbot Fish";
+//        }
     }	
 	
     @Override
     public String getShortName() {
-        int region1 = baseSet.getRegionTypeIndex();
-        int region2 = coverSet.getRegionTypeIndex();
-        if (region1 == 1) {
-            if (region2 == 1)
-                return "Sky";
-            else
-				if (region2 == 2)
-					return "2SK";
-				else
-					return "TF";
-        }
-		else {
-			if (region1 == 2)
-				if (region2 == 1)
-					return "2SK";
-				else
-					if (region2 == 2)
-						return "Sky";
-					else 
-                return "TF";
-			else
-				if (region2 == 0) 
-					return "GXW";
-				else
-					return "TF";
-        }
+    	return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
+//        int region1 = baseSet.getRegionTypeIndex();
+//        int region2 = coverSet.getRegionTypeIndex();
+//        if (region1 == 1) {
+//            if (region2 == 1)
+//                return "Sky";
+//            else
+//				if (region2 == 2)
+//					return "2SK";
+//				else
+//					return "TF";
+//        }
+//		else {
+//			if (region1 == 2)
+//				if (region2 == 1)
+//					return "2SK";
+//				else
+//					if (region2 == 2)
+//						return "Sky";
+//					else 
+//                return "TF";
+//			else
+//				if (region2 == 0) 
+//					return "GXW";
+//				else
+//					return "TF";
+//        }
     }
 
+    static double difficulties[][] = //baseSetRegionTypeIndex, coverSetRegionTypeIndex
+    	{
+    			{ //baseSetRegionTypeIndex = 0 box
+    				4.2, 4.2, 4.2 //coverSetRegionTypeIndex = box, row, column
+    			},
+    			{ //baseSetRegionTypeIndex = 1 row
+    				4.2, 4.0, 4.1 //coverSetRegionTypeIndex = box, row, column
+    			},
+    			{ //baseSetRegionTypeIndex = 2 column
+    				4.2, 4.1, 4.0 //coverSetRegionTypeIndex = box, row, column
+    			}
+		};
+    
     @Override
     public double getDifficulty() {
-        String name = getName();
-        if (name.equals("Skyscraper")) {
-            return 4.0;
-        } else if (name.equals("Two-string Kite")) {
-            return 4.1;
-        } else {
-            return 4.2;
-        }
+    	return difficulties[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()];
+//        String name = getName();
+//        if (name.equals("Skyscraper")) {
+//            return 4.0;
+//        } else if (name.equals("Two-string Kite")) {
+//            return 4.1;
+//        } else {
+//            return 4.2;
+//        }
     }
 
     @Override
