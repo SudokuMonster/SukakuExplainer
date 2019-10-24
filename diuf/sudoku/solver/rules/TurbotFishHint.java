@@ -22,10 +22,11 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     private final Grid.Region shareRegion;
 	private final boolean emptyRectangle;
 	private final Cell[] emptyRectangleCells;
+    private final int eliminationsTotal;
 
     public TurbotFishHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell endCell, Cell bridgeCell1, Cell bridgeCell2,
-            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRectangle, Cell[] emptyRectangleCells) {
+            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRectangle, Cell[] emptyRectangleCells, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.value = value;
         this.startCell = startCell;
@@ -37,6 +38,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         this.shareRegion = shareRegion;
 		this.emptyRectangle = emptyRectangle;
 		this.emptyRectangleCells = emptyRectangleCells;
+		this.eliminationsTotal = eliminationsTotal; 
     }
 
     @Override
@@ -183,6 +185,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         }
     }
 
+	public int getEliminationsTotal() {
+		return eliminationsTotal;
+	}
+	
     @Override
     public double getDifficulty() {
         String name = getName();

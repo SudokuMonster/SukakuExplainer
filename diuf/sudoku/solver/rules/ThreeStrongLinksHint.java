@@ -31,11 +31,12 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 	private final boolean emptyRectangle2;
 	private final boolean emptyRectangle3;
 	private final Cell[] emptyRectangleCells;
+    private final int 	eliminationsTotal;
 	
     public ThreeStrongLinksHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell bridgeCell11, Cell bridgeCell12,
             int value, Grid.Region baseLink1Set, Grid.Region baseLink2Set, Grid.Region shareRegion1, 
-			Cell bridgeCell21, Cell bridgeCell22, Cell endCell, Grid.Region baseLink3Set, Grid.Region shareRegion2, int baseLinkType1, int baseLinkType2, int baseLinkType3, boolean emptyRectangle1, boolean emptyRectangle2, boolean emptyRectangle3, Cell[] emptyRectangleCells) {
+			Cell bridgeCell21, Cell bridgeCell22, Cell endCell, Grid.Region baseLink3Set, Grid.Region shareRegion2, int baseLinkType1, int baseLinkType2, int baseLinkType3, boolean emptyRectangle1, boolean emptyRectangle2, boolean emptyRectangle3, Cell[] emptyRectangleCells, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.value = value;
 		this.baseLinkType1 = baseLinkType1;
@@ -56,6 +57,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 		this.emptyRectangle2 = emptyRectangle2;
 		this.emptyRectangle3 = emptyRectangle3;
 		this.emptyRectangleCells = emptyRectangleCells;
+		this.eliminationsTotal = eliminationsTotal;
     }
 
     @Override
@@ -150,7 +152,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         return result;
     }
 
-	private String getSuffix() {
+	public String getSuffix() {
         String nameSuffix;
 		if (baseLinkType1 > 0) {
 			nameSuffix = "1";
@@ -378,6 +380,10 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
     }
 
 
+	public int getEliminationsTotal() {
+		return eliminationsTotal;
+	}
+	
     @Override
     public double getDifficulty() {
 		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)

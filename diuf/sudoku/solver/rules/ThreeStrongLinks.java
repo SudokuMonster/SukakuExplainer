@@ -13,21 +13,53 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 
     @Override
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        // 3 parallel strong links
-        getHints(grid, accu, 1, 1, 1);
-        getHints(grid, accu, 2, 2, 2);
-		// 3 strong links in same Lines
-		//with boxes
-        getHints(grid, accu, 0, 0, 0); 
-		getHints(grid, accu, 0, 0, 1);        
-        getHints(grid, accu, 0, 0, 2);		
-        getHints(grid, accu, 0, 1, 1);			
-		getHints(grid, accu, 0, 2, 2);		
-		// 3 strong links with box(es)
-		//mixed lines
-        getHints(grid, accu, 0, 1, 2);		
-		getHints(grid, accu, 1, 1, 2);		
-        getHints(grid, accu, 1, 2, 2);		
+		int[][] Sets = {
+			// 3 parallel strong links
+			{1, 1, 1},
+			{2, 2, 2},
+			// 3 strong links in same Lines
+			//with boxes
+			{0, 0, 0},
+			{0, 0, 1},
+			{0, 0, 2},
+			{0, 1, 1},
+			{0, 2, 2},
+			// 3 strong links with box(es)
+			//mixed lines
+			{0, 1, 2},
+			{1, 1, 2},
+			{1, 2, 2}
+		};	
+		List<ThreeStrongLinksHint> hintsFinal = new ArrayList<ThreeStrongLinksHint>();
+		List<ThreeStrongLinksHint> hintsStart;
+        for (int i = 0; i < 10 ; i++) {	
+			hintsStart = getHints(grid, Sets[i][0], Sets[i][1], Sets[i][2]);
+			for (ThreeStrongLinksHint hint : hintsStart)
+				hintsFinal.add(hint);
+		}
+		// Sort the result
+		Collections.sort(hintsFinal, new Comparator<ThreeStrongLinksHint>() {
+			public int compare(ThreeStrongLinksHint h1, ThreeStrongLinksHint h2) {
+				double d1 = h1.getDifficulty();
+				double d2 = h2.getDifficulty();
+				int e1 = h1.getEliminationsTotal();
+				int e2 = h2.getEliminationsTotal();
+				String s1 = h1.getSuffix();
+				String s2 = h2.getSuffix();
+				//sort according to difficulty in ascending order
+				if (d1 < d2)
+					return -1;
+				else if (d1 > d2)
+					return 1;
+				//sort according to number of eliminations in descending order
+				if ((e2 - e1) != 0)
+					return e2 - e1;
+				//sort according to suffix in lexographic order
+				return s1.compareTo(s2);
+			}
+		});
+		for (ThreeStrongLinksHint hint : hintsFinal)
+			accu.add(hint);
     }
 
     private Grid.Region shareRegionOf(Grid grid,
@@ -48,9 +80,9 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 		return false;
 	}
 
-    private void getHints(Grid grid, HintsAccumulator accu,
-            int baseLink1, int baseLink2, int baseLink3)
-            throws InterruptedException {
+    private List<ThreeStrongLinksHint> getHints(Grid grid, int baseLink1, int baseLink2, int baseLink3)
+            /*throws InterruptedException*/ {
+		List<ThreeStrongLinksHint> result = new ArrayList<ThreeStrongLinksHint>();
         Cell[] cells = new Cell[6];
 		for (int digit = 1; digit <= 9; digit++) {
             Grid.Region[] baseLink1Regions = grid.getRegions(baseLink1);
@@ -73,10 +105,10 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 					if (baseLink1RegionPotentialsC > 2) {
 						for (e1 = 0; e1 < 9; e1++) {
 							BitSet rectangle = (BitSet)baseLink1RegionPotentials.clone();
-							BitSet cross = (BitSet)baseLink1RegionPotentials.clone();
+							//BitSet cross = (BitSet)baseLink1RegionPotentials.clone();
 							rectangle.and(baseLink1Region.Rectangle(e1));
-							cross.and(baseLink1Region.Cross(e1));
-							if (rectangle.cardinality() == 0 && cross.cardinality() > 2 ) {
+							//cross.and(baseLink1Region.Cross(e1));
+							if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
 								emptyRectangle1 = true;
 								break;
 							}
@@ -109,10 +141,10 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 						if (baseLink2RegionPotentialsC > 2) {
 							for (e2 = 0; e2 < 9; e2++) {
 								BitSet rectangle = (BitSet)baseLink2RegionPotentials.clone();
-								BitSet cross = (BitSet)baseLink2RegionPotentials.clone();
+								//BitSet cross = (BitSet)baseLink2RegionPotentials.clone();
 								rectangle.and(baseLink2Region.Rectangle(e2));
-								cross.and(baseLink2Region.Cross(e2));
-								if (rectangle.cardinality() == 0 && cross.cardinality() > 2 ) {
+								//cross.and(baseLink2Region.Cross(e2));
+								if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
 									emptyRectangle2 = true;
 									break;
 								}
@@ -145,10 +177,10 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 							if (baseLink3RegionPotentialsC > 2) {
 								for (e3 = 0; e3 < 9; e3++) {
 									BitSet rectangle = (BitSet)baseLink3RegionPotentials.clone();
-									BitSet cross = (BitSet)baseLink3RegionPotentials.clone();
+									//BitSet cross = (BitSet)baseLink3RegionPotentials.clone();
 									rectangle.and(baseLink3Region.Rectangle(e3));
-									cross.and(baseLink3Region.Cross(e3));
-									if (rectangle.cardinality() == 0 && cross.cardinality() > 2 ) {
+									//cross.and(baseLink3Region.Cross(e3));
+									if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
 										emptyRectangle3 = true;
 										break;
 									}
@@ -227,7 +259,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink1Region, baseLink2Region, shareRegion1, end2, bridge21, bridge22, baseLink3Region, shareRegion2, baseLink1, baseLink2, baseLink3, emptyRectangle1, emptyRectangle2, emptyRectangle3);
 										if (hint.isWorth())
-											accu.add(hint);
+											result.add(hint);
 									}
 									if ((shareRegion1 = shareRegionOf(grid,
 										bridge11 = cells[1 - i],
@@ -245,7 +277,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink1Region, baseLink3Region, shareRegion1, end2, bridge21, bridge22, baseLink2Region, shareRegion2, baseLink1, baseLink3, baseLink2, emptyRectangle1, emptyRectangle3, emptyRectangle2);
 										if (hint.isWorth())
-											accu.add(hint);
+											result.add(hint);
 									}
 									if ((shareRegion1 = shareRegionOf(grid,
 										bridge11 = cells[5 - j],
@@ -263,7 +295,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 										ThreeStrongLinksHint hint = createHint(grid, digit, start1, bridge11, bridge12,
 												baseLink2Region, baseLink1Region, shareRegion1, end2, bridge21, bridge22, baseLink3Region, shareRegion2, baseLink2, baseLink1, baseLink3, emptyRectangle2, emptyRectangle1, emptyRectangle3);
 										if (hint.isWorth())
-											accu.add(hint);
+											result.add(hint);
 									} // if sharedRegion () && sharedRegion () && sharedRegion != bbaseLink regions										
 								} // for int k = 0..2
 							} // for int j = 0..2
@@ -278,6 +310,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 				cells[1] = null;
             } //i1
         } //digit
+		return result;
     }
 
     private ThreeStrongLinksHint createHint(Grid grid, int value, Cell start1, Cell bridgeCell11, Cell bridgeCell12,
@@ -285,20 +318,21 @@ public class ThreeStrongLinks implements IndirectHintProducer {
             Grid.Region baseLink3Set, Grid.Region shareRegion2, int baseLink1, int baseLink2, int baseLink3, boolean emptyRectangle1, boolean emptyRectangle2, boolean emptyRectangle3) {
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<>();
+		int eliminationsTotal = 0;
         CellSet victims = new CellSet(start1.getVisibleCells());
         victims.retainAll(end2.getVisibleCells());
         victims.remove(start1);
         victims.remove(end2);
-		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3){
-			victims.removeAll(baseLink1Set.getCellSet());
-			victims.removeAll(baseLink2Set.getCellSet());
-			victims.removeAll(baseLink3Set.getCellSet());
-			victims.removeAll(shareRegion1.getCellSet());
-			victims.removeAll(shareRegion2.getCellSet());
-		}
+		victims.removeAll(baseLink1Set.getCellSet());
+		victims.removeAll(baseLink2Set.getCellSet());
+		victims.removeAll(baseLink3Set.getCellSet());
+		victims.removeAll(shareRegion1.getCellSet());
+		victims.removeAll(shareRegion2.getCellSet());
         for (Cell cell : victims) {
-            if (grid.hasCellPotentialValue(cell.getIndex(), value))
+            if (grid.hasCellPotentialValue(cell.getIndex(), value)){
                 removablePotentials.put(cell, SingletonBitSet.create(value));
+				eliminationsTotal++;
+			}
         }
 		int j = 0;
 		Cell[] emptyRectangleCells= new Cell[15];
@@ -325,7 +359,7 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 		}
         // Create hint
         return new ThreeStrongLinksHint(this, removablePotentials,
-                start1, bridgeCell11, bridgeCell12, value, baseLink1Set, baseLink2Set, shareRegion1, bridgeCell21, bridgeCell22, end2, baseLink3Set, shareRegion2, baseLink1, baseLink2, baseLink3, emptyRectangle1, emptyRectangle2, emptyRectangle3, emptyRectangleCells);
+                start1, bridgeCell11, bridgeCell12, value, baseLink1Set, baseLink2Set, shareRegion1, bridgeCell21, bridgeCell22, end2, baseLink3Set, shareRegion2, baseLink1, baseLink2, baseLink3, emptyRectangle1, emptyRectangle2, emptyRectangle3, emptyRectangleCells, eliminationsTotal);
     }
 
     @Override

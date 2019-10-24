@@ -13,15 +13,40 @@ public class TurbotFish implements IndirectHintProducer {
 
     @Override
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        // Skyscrapers
-        getHints(grid, accu, 1, 1);
-        getHints(grid, accu, 2, 2);
-        // Two-string Kites
-        getHints(grid, accu, 2, 1);
-        // Turbot Fishes
-        getHints(grid, accu, 1, 0);
-        getHints(grid, accu, 2, 0);
-    }
+		int[][] Sets = {
+			// Skyscrapers
+			{1, 1},
+			{2, 2},
+			// Two-string Kites
+			{2, 1},
+			// Turbot Fishes and Empty Rectangles
+			{1, 0},
+			{2, 0},
+		};
+		List<TurbotFishHint> hintsFinal = new ArrayList<TurbotFishHint>();
+		List<TurbotFishHint> hintsStart;
+        for (int i = 0; i < 5 ; i++) {	
+			hintsStart = getHints(grid, Sets[i][0], Sets[i][1]);
+			for (TurbotFishHint hint : hintsStart)
+				hintsFinal.add(hint);
+		}
+		// Sort the result
+		Collections.sort(hintsFinal, new Comparator<TurbotFishHint>() {
+			public int compare(TurbotFishHint h1, TurbotFishHint h2) {
+				double d1 = h1.getDifficulty();
+				double d2 = h2.getDifficulty();
+				//sort according to difficulty in ascending order
+				if (d1 < d2)
+					return -1;
+				else if (d1 > d2)
+					return 1;
+				//sort according to number of eliminations in descending order
+				return h2.getEliminationsTotal() - h1.getEliminationsTotal();
+			}
+		});
+		for (TurbotFishHint hint : hintsFinal)
+			accu.add(hint);
+}
 
     private Grid.Region shareRegionOf(Grid grid,
             Cell start, Cell bridge1, Cell bridge2, Cell end) {
@@ -34,9 +59,9 @@ public class TurbotFish implements IndirectHintProducer {
         } else return null;
     }
 
-    private void getHints(Grid grid, HintsAccumulator accu,
-            int base, int cover)
-            throws InterruptedException {
+    private List<TurbotFishHint> getHints(Grid grid, int base, int cover)
+            /*throws InterruptedException*/ {
+		List<TurbotFishHint> result = new ArrayList<TurbotFishHint>();
 		int e = 0;
 		boolean emptyRectangle = false;
         for (int digit = 1; digit <= 9; digit++) {
@@ -57,10 +82,10 @@ public class TurbotFish implements IndirectHintProducer {
 						if (coverRegionPotentialsCardinality > 2) {
 							for (e = 0; e < 9; e++) {
 								BitSet rectangle = (BitSet)coverRegionPotentials.clone();
-								BitSet cross = (BitSet)coverRegionPotentials.clone();
+								//BitSet cross = (BitSet)coverRegionPotentials.clone();
 								rectangle.and(coverRegion.Rectangle(e));
-								cross.and(coverRegion.Cross(e));
-								if (rectangle.cardinality() == 0 && cross.cardinality() > 2 ) {
+								//cross.and(coverRegion.Cross(e));
+								if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
 									emptyRectangle = true;
 									break;
 								}
@@ -112,7 +137,7 @@ public class TurbotFish implements IndirectHintProducer {
 									TurbotFishHint hint = createHint(grid, digit, start, end, bridge1, bridge2,
 											baseRegion, coverRegion, shareRegion, emptyRectangle);
 									if (hint.isWorth())
-										accu.add(hint);
+										result.add(hint);
 								}
 							} // for int j = 0..2
 						} // for int i = 0..2
@@ -120,12 +145,14 @@ public class TurbotFish implements IndirectHintProducer {
 				}	
             }
         }
+		return result;
     }
 
     private TurbotFishHint createHint(Grid grid, int value, Cell start, Cell end, Cell bridgeCell1, Cell bridgeCell2,
             Grid.Region baseSet, Grid.Region coverSet, Grid.Region shareRegion, boolean emptyRectangle) {
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<>();
+		int eliminationsTotal = 0;
         Set<Cell> victims = new LinkedHashSet<>(start.getVisibleCells());
         victims.retainAll(end.getVisibleCells());
         victims.remove(start);
@@ -135,8 +162,10 @@ public class TurbotFish implements IndirectHintProducer {
 			victims.removeAll(baseSet.getCellSet());
 		}
         for (Cell cell : victims) {
-            if (grid.hasCellPotentialValue(cell.getIndex(), value))
+            if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
+				eliminationsTotal++;
                 removablePotentials.put(cell, SingletonBitSet.create(value));
+			}
         }
 		Cell[] emptyRectangleCells= new Cell[5];
 		if (emptyRectangle){
@@ -149,7 +178,7 @@ public class TurbotFish implements IndirectHintProducer {
 		}
         // Create hint
         return new TurbotFishHint(this, removablePotentials,
-                start, end, bridgeCell1, bridgeCell2, value, baseSet, coverSet, shareRegion, emptyRectangle, emptyRectangleCells);
+                start, end, bridgeCell1, bridgeCell2, value, baseSet, coverSet, shareRegion, emptyRectangle, emptyRectangleCells, eliminationsTotal);
     }
 
     @Override
