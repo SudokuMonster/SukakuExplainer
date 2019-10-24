@@ -152,234 +152,136 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         return result;
     }
 
+	static String hintNames[][][][] = {
+		{
+			{
+				{"3-Turbot Fish", "3TF", "000"},
+				{"3-Turbot Fish", "3TF", "001"},
+				{"3-Turbot Fish", "3TF", "001"},
+				{"", "","004"}
+			},
+			{
+				{"3-Turbot Fish", "3TF", "010"},
+				{"3-Turbot Fish", "3TF", "011"},
+				{"3-String Kite", "3SK", "012"},
+				{"", "","014"}
+			},
+			{
+				{"3-Turbot Fish", "3TF", "010"},
+				{"3-String Kite", "3SK", "012"},
+				{"3-Turbot Fish", "3TF", "011"},
+				{"", "","014"}
+			},
+			{
+				{"", "","040"},
+				{"", "","041"},
+				{"", "","041"},
+				{"", "","044"}
+			}
+		},
+		{
+			{
+				{"3-Turbot Fish", "3TF", "001"},
+				{"3-Turbot Fish", "3TF", "101"},
+				{"3-String Kite", "3SK", "102"},
+				{"", "","104"}
+			},
+			{
+				{"3-Turbot Fish", "3TF", "011"},
+				{"3 Skyscrapers", "3Sky", "111"},
+				{"3-String Kite", "3SK", "112"},
+				{"", "","114"}
+			},
+			{
+				{"3-String Kite", "3SK", "012"},
+				{"3-String Kite", "3SK", "121"},
+				{"3-String Kite", "3SK", "112"},
+				{"", "","124"}
+			},
+			{
+				{"", "","041"},
+				{"", "","141"},
+				{"", "","142"},
+				{"", "","144"}
+			}
+		},
+		{
+			{
+				{"3-Turbot Fish", "3TF", "001"},
+				{"3-String Kite", "3SK", "102"},
+				{"3-Turbot Fish", "3TF", "101"},
+				{"", "","104"}
+			},
+			{
+				{"3-String Kite", "3SK", "012"},
+				{"3-String Kite", "3SK", "112"},
+				{"3-String Kite", "3SK", "121"},
+				{"", "","124"}
+			},
+			{
+				{"3-Turbot Fish", "3TF", "011"},
+				{"3-String Kite", "3SK", "112"},
+				{"3 Skyscrapers", "3Sky", "111"},
+				{"", "","114"}
+			},
+			{
+				{"", "","041"},
+				{"", "","142"},
+				{"", "","141"},
+				{"", "","144"}
+			}
+		},
+		{
+			{
+				{"", "","004"},
+				{"", "","104"},
+				{"", "","104"},
+				{"", "","404"}
+			},
+			{
+				{"", "","014"},
+				{"", "","114"},
+				{"", "","124"},
+				{"", "","414"}
+			},
+			{
+				{"", "","014"},
+				{"", "","124"},
+				{"", "","114"},
+				{"", "","414"}
+			},
+			{
+				{"", "","044"},
+				{"", "","144"},
+				{"", "","144"},
+				{"", "","444"}
+			}
+		}
+	};
+
+	//The suffix is a string made of three numbers descibing the configuration of the 3 links
+	//it aims to be min-lex to remain relatively constant even with isomorphism
+	//0: Strong link in block 1: Strong Link in a line 2: Strong Link in a line (Different type to 1) 4: Empty rectangle
 	public String getSuffix() {
-        String nameSuffix;
-		if (baseLinkType1 > 0) {
-			nameSuffix = "1";
-		}
-		else {
-			if (emptyRectangle1)
-				nameSuffix = "4";
-			else
-				nameSuffix = "0";
-		}
-		if ((baseLinkType2 > 0) && (baseLinkType1 == baseLinkType2 || nameSuffix == "0" || nameSuffix == "4")) {
-			nameSuffix +="1";
-		}
-		else {
-			if (baseLinkType2 > 0) {
-				nameSuffix +="2";
-			}
-			else {
-				if (emptyRectangle2)
-					nameSuffix += "4";
-				else
-					nameSuffix += "0";
-			}
-		}
-		if ((baseLinkType3 > 0) && (nameSuffix.contains("00") || nameSuffix.contains("44") || nameSuffix.contains("40") || nameSuffix.contains("04") || baseLinkType1 == baseLinkType3 || (baseLinkType2 != baseLinkType3 && nameSuffix.indexOf("2") == 1) || (baseLinkType2 == baseLinkType3 && nameSuffix.indexOf("1") == 1))) {
-			 nameSuffix +="1";
-		}
-		else {
-			if (baseLinkType3 > 0) {
-				nameSuffix +="2";
-			}
-			else {
-				if (emptyRectangle3)
-					nameSuffix += "4";
-				else
-					nameSuffix += "0";
-			}
-		}
-		if (nameSuffix.contains("122"))
-			return "112";
-		if (nameSuffix.contains("120"))
-			return "012";
-		if (nameSuffix.substring(0,1).contains("4"))
-			nameSuffix = (nameSuffix.substring(2) + nameSuffix.substring(1,2) + nameSuffix.substring(0,1));
-		if (nameSuffix.substring(0,2).contains("21"))
-			return ("12" + nameSuffix.substring(2));
-		return nameSuffix;
+		return hintNames[emptyRectangle1 ? 3 : baseLinkType1][emptyRectangle2 ? 3 : baseLinkType2][emptyRectangle3 ? 3 : baseLinkType3][2];
     }
 
-
+	//if any ER the pattern is ER else if Mix of line types then is 3-String Kite else if any block then is 3-Turbot Fish else if 3 parallel lines the 3 Skyscrapers
     @Override
     public String getName() {
-        int region1 = baseLink1Set.getRegionTypeIndex();
-        int region2 = baseLink2Set.getRegionTypeIndex();
-		int region3 = baseLink3Set.getRegionTypeIndex();
-        String suffix = getSuffix();
 		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			return "3 Strong links (with Empty Rectangle)" + " " + suffix;
-        if (region1 == 1) {
-            if (region2 == 1) {
-				if (region3 == 1)	{			
-					return "3 Skyscrapers" + " " + suffix;
-				}	
-				else {
-					if (region3 == 2) {
-						return "3-String Kite" + " " + suffix;
-					}
-					else {
-						return "3-Turbot Fish" + " " + suffix;
-					}
-				}
-			}
-			else {
-				if (region2 == 2)	{			
-					return "3-String Kite" + " " + suffix;
-				}
-				else {
-					if (region3 == 2) {
-						return "3-String Kite" + " " + suffix;
-					}
-					else {
-						return "3-Turbot Fish" + " " + suffix;
-					}
-				}
-			}
-		}
-        if (region1 == 2) {
-            if (region2 == 2) {
-				if (region3 == 2)	{			
-					return "3 Skyscrapers" + " " + suffix;
-				}	
-				else {
-					if (region3 == 1) {
-						return "3-String Kite" + " " + suffix;
-					}
-					else {
-						return "3-Turbot Fish" + " " + suffix;
-					}
-				}
-			}
-			else {
-				if (region2 == 1)	{			
-					return "3-String Kite" + " " + suffix;
-				}
-				else {
-					if (region3 == 1) {
-						return "3-String Kite" + " " + suffix;
-					}
-					else {
-						return "3-Turbot Fish" + " " + suffix;
-					}
-				}
-			}
-		}
-		if (region1 == 0) {
-			if (region2 == 1) {
-				if (region3 == 2)	{			
-					return "3-String Kite" + " " + suffix;
-				}	
-				else {
-					return "3-Turbot Fish" + " " + suffix;
-				}
-			}
-			if (region2 == 2) {
-				if (region3 == 1)	{			
-					return "3-String Kite" + " " + suffix;
-				}	
-				else {
-					return "3-Turbot Fish" + " " + suffix;
-				}
-			}
-			if (region2 == 0) {
-				return "3-Turbot Fish" + " " + suffix;
-			}
-		}
-		return "3-Turbot Fish" + " " + suffix;
+			return "3 Strong links (with Empty Rectangle)" + " " + getSuffix();
+		return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][0] + " " + getSuffix();
     }	
 	
     @Override
     public String getShortName() {
-        int region1 = baseLink1Set.getRegionTypeIndex();
-        int region2 = baseLink2Set.getRegionTypeIndex();
-		int region3 = baseLink3Set.getRegionTypeIndex();
-        String suffix = getSuffix();
-		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			return "3ER" + suffix;
-        if (region1 == 1) {
-            if (region2 == 1) {
-				if (region3 == 1)	{			
-					return "3Sky" + suffix;
-				}	
-				else {
-					if (region3 == 2) {
-						return "3SK" + suffix;
-					}
-					else {
-						return "3TF" + suffix;
-					}
-				}
-			}
-			else {
-				if (region2 == 2)	{			
-					return "3SK" + suffix;
-				}
-				else {
-					if (region3 == 2) {
-						return "3SK" + suffix;
-					}
-					else {
-						return "3TF" + suffix;
-					}
-				}
-			}
-		}
-        if (region1 == 2) {
-            if (region2 == 2) {
-				if (region3 == 2)	{			
-					return "3Sky" + suffix;
-				}	
-				else {
-					if (region3 == 1) {
-						return "3SK" + suffix;
-					}
-					else {
-						return "3TF" + suffix;
-					}
-				}
-			}
-			else {
-				if (region2 == 1)	{			
-					return "3SK" + suffix;
-				}
-				else {
-					if (region3 == 1) {
-						return "3SK" + suffix;
-					}
-					else {
-						return "3TF" + suffix;
-					}
-				}
-			}
-		}
-		if (region1 == 0) {
-			if (region2 == 1) {
-				if (region3 == 2)	{			
-					return "3SK" + suffix;
-				}	
-				else {
-					return "3TF" + suffix;
-				}
-			}
-			if (region2 == 2) {
-				if (region3 == 1)	{			
-					return "3SK" + suffix;
-				}	
-				else {
-					return "3TF" + suffix;
-				}
-			}
-			if (region2 == 0) {
-				return "3TF" + suffix;
-			}
-		}
-		return "3TF" + suffix;
+        if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
+			return "3ER" + getSuffix();
+		return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][1] + " " + getSuffix();
     }
 
-
+	//Will return Total number of eliminations by this hint
 	public int getEliminationsTotal() {
 		return eliminationsTotal;
 	}
