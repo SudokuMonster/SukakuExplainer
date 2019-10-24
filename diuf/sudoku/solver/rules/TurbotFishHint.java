@@ -122,7 +122,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared);
         return result;
     }
-
+  
     static String hintNames[][][] = { //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
 
     			{ //baseSetRegionTypeIndex = 0 box
@@ -198,6 +198,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 		if (emptyRectangle)
 			return "Empty Rectangle";
 		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
+
     }	
 	
     @Override
