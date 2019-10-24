@@ -22,6 +22,35 @@ public class VWXYZWing implements IndirectHintProducer {
      * </ul>
      */
 
+    @Override
+    public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
+		List<VWXYZWingHint> hintsFinal;
+        hintsFinal = getHints(grid);
+		// Sort the result
+		Collections.sort(hintsFinal, new Comparator<VWXYZWingHint>() {
+			public int compare(VWXYZWingHint h1, VWXYZWingHint h2) {
+				double d1 = h1.getDifficulty();
+				double d2 = h2.getDifficulty();
+				int e1 = h1.getEliminationsTotal();
+				int e2 = h2.getEliminationsTotal();
+				String s1 = h1.getSuffix();
+				String s2 = h2.getSuffix();
+				//sort according to difficulty in ascending order
+				if (d1 < d2)
+					return -1;
+				else if (d1 > d2)
+					return 1;
+				//sort according to number of eliminations in descending order
+				if ((e2 - e1) != 0)
+					return e2 - e1;
+				//sort according to suffix in reverse lexographic order
+				return s2.compareTo(s1);
+			}
+		});
+		for (VWXYZWingHint hint : hintsFinal)
+			accu.add(hint);		
+	}
+
     private boolean isVWXYZWing(BitSet vwxyzValues,BitSet vzValues, BitSet wzValues, BitSet xzValues, BitSet aBit, Cell yzCell, Cell xzCell, Cell wzCell, Cell vzCell, Cell vwxyzCell) {
         BitSet inter = (BitSet)aBit.clone();
 		inter.and(xzValues);
@@ -42,7 +71,8 @@ public class VWXYZWing implements IndirectHintProducer {
         return true;
     }
 
-    public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
+    private List<VWXYZWingHint> getHints(Grid grid) /*throws InterruptedException*/ {
+		List<VWXYZWingHint> result = new ArrayList<VWXYZWingHint>();
 		int biggestCardinality = 0;
 		int biggestCardinality2 = 0;
 		int biggestCardinality3 = 0;
@@ -137,7 +167,7 @@ public class VWXYZWing implements IndirectHintProducer {
 																grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
 																vzValues, wzValues, xzValues, yzValues, vwxyzValues, xValue, zValue, xBit, zBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w3Value, w1Bit, w2Bit, w3Bit, remCand, inter);
 														if (hint.isWorth())
-															accu.add(hint);
+															result.add(hint);
 													}
 													else {
 														// Found VWXYZ-Wing doubly linked pattern
@@ -156,7 +186,7 @@ public class VWXYZWing implements IndirectHintProducer {
 																grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
 																vzValues, wzValues, xzValues, yzValues, vwxyzValues, xValue, zValue, xBit, zBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w3Value, w1Bit, w2Bit, w3Bit, remCand, inter);
 														if (hint.isWorth())
-															accu.add(hint);
+															result.add(hint);
 													}
 												} // if (isVWXYZWing(vwxyzValues, vzValues, wzValues, xzValues, xBit, yzCell, xzCell, wzCell, vzCell, vwxyzCell))
 												else
@@ -166,7 +196,7 @@ public class VWXYZWing implements IndirectHintProducer {
 																grid, vwxyzCell, Grid.getCell(vzCellIndex), Grid.getCell(wzCellIndex), Grid.getCell(xzCellIndex), Grid.getCell(yzCellIndex),
 																vzValues, wzValues, xzValues, yzValues, vwxyzValues, zValue, xValue, zBit, xBit, biggestCardinality4, wingSize, doubleLink, w1Value, w2Value, w3Value, w1Bit, w2Bit, w3Bit, remCand, inter);
 														if (hint.isWorth())
-															accu.add(hint);
+															result.add(hint);
 													}//if (doubleLink)
 											} // if (yzValues.cardinality() == 2 && union.cardinality() == 2) {
 										} // for (Cell yzCell : yzCellRange)
@@ -178,6 +208,7 @@ public class VWXYZWing implements IndirectHintProducer {
 				} // for (int vzCellIndex : vwxyzCell.getForwardVisibleCellIndexes())
 			} // (vwxyzValues.cardinality() > 1 && vwxyzValues.cardinality() < 6) 
         } // for i
+		return result;
     }
 
     private VWXYZWingHint createHint(
@@ -189,6 +220,7 @@ public class VWXYZWing implements IndirectHintProducer {
 		boolean strongPotentialsZ = false;//if both remain false then proceed as normal VWXYZ if weak is false strong is true and z is false then swap z to x        
 		BitSet inter = (BitSet)zBit.clone();
 		Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
+		int eliminationsTotal = 0;
 		CellSet victims = null;
 		if (doubleLink) {//if no eliminations at all then produce Hint as regular VWXYZ
 			inter = (BitSet)w1Bit.clone();
@@ -223,6 +255,7 @@ public class VWXYZWing implements IndirectHintProducer {
 			victims.remove(yzCell);
 			for (Cell cell : victims) {
 				if (grid.hasCellPotentialValue(cell.getIndex(), w1Value)) {		
+					eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(w1Value);
 					else
@@ -263,6 +296,7 @@ public class VWXYZWing implements IndirectHintProducer {
 			victims.remove(yzCell);
 			for (Cell cell : victims) {
 				if (grid.hasCellPotentialValue(cell.getIndex(), w2Value)) {
+					eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(w2Value);
 					else
@@ -303,6 +337,7 @@ public class VWXYZWing implements IndirectHintProducer {
 			victims.remove(yzCell);
 			for (Cell cell : victims) {
 				if (grid.hasCellPotentialValue(cell.getIndex(), w3Value)) {
+					eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(w3Value);
 					else
@@ -334,6 +369,7 @@ public class VWXYZWing implements IndirectHintProducer {
 			victims.remove(yzCell);
 			for (Cell cell : victims) {
 				if (grid.hasCellPotentialValue(cell.getIndex(), xValue)) {
+					eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(xValue);
 					else
@@ -366,6 +402,7 @@ public class VWXYZWing implements IndirectHintProducer {
         victims.remove(yzCell);
         for (Cell cell : victims) {
             if (grid.hasCellPotentialValue(cell.getIndex(), zValue)) {
+					eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(zValue);
 					else
@@ -378,14 +415,14 @@ public class VWXYZWing implements IndirectHintProducer {
 				if (!strongPotentialsZ) {
 					doubleLink = false;
 					return new VWXYZWingHint(this, removablePotentials,
-						vwxyzCell, vzCell, wzCell, xzCell, yzCell, xValue, zValue, biggestCardinality, wingSize, doubleLink, wingSet);					
+						vwxyzCell, vzCell, wzCell, xzCell, yzCell, xValue, zValue, biggestCardinality, wingSize, doubleLink, wingSet, eliminationsTotal);					
 				}
 				else
 					if (!strongPotentialsX)
 						doubleLink = false;
         // Create hint
         return new VWXYZWingHint(this, removablePotentials,
-                vwxyzCell, vzCell, wzCell, xzCell, yzCell, zValue, xValue, biggestCardinality, wingSize, doubleLink, wingSet);
+                vwxyzCell, vzCell, wzCell, xzCell, yzCell, zValue, xValue, biggestCardinality, wingSize, doubleLink, wingSet, eliminationsTotal);
     }
 
     @Override

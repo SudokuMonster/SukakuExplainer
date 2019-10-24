@@ -24,9 +24,10 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
 	private final int wingSize;
 	private final boolean doubleLink;
 	private final BitSet wingSet;
+	private final int eliminationsTotal;
 
     public VWXYZWingHint(VWXYZWing rule, Map<Cell, BitSet> removablePotentials,
-            Cell vwxyzCell, Cell vzCell, Cell wzCell, Cell xzCell, Cell yzCell, int zValue, int xValue, int biggestCardinality, int wingSize, boolean doubleLink, BitSet wingSet) {
+            Cell vwxyzCell, Cell vzCell, Cell wzCell, Cell xzCell, Cell yzCell, int zValue, int xValue, int biggestCardinality, int wingSize, boolean doubleLink, BitSet wingSet, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.vwxyzCell = vwxyzCell;
         this.vzCell = vzCell;
@@ -39,6 +40,7 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
 		this.wingSize = wingSize;
 		this.doubleLink = doubleLink;
 		this.wingSet = wingSet;
+		this.eliminationsTotal = eliminationsTotal;
     }
 
     private int getV(Grid grid) {
@@ -121,6 +123,10 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
         return result;
     }
 
+    public int getEliminationsTotal() {
+		return eliminationsTotal;
+	}
+	
     public double getDifficulty() {
 		//double-link has no impact on rating
         double result = 6.2; //base rating
@@ -133,12 +139,16 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
         return "Chaining";
     }
 
-    public String getName() {
-        return "VWXYZ-Wing " + ((doubleLink ? 2 : 1)) + "" + biggestCardinality + "" + wingSize;
+    public String getSuffix() {
+		return ((doubleLink ? 2 : 1)) + "" + biggestCardinality + "" + wingSize;
+	}
+	
+	public String getName() {
+        return "VWXYZ-Wing " + getSuffix();
     }
 
     public String getShortName() {
-		return "VXY" + ((doubleLink ? 2 : 1)) + biggestCardinality + "" + wingSize;
+		return "VXY" + getSuffix();
 	}
 
     @Override

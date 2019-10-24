@@ -20,10 +20,13 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     private final Grid.Region baseSet;
     private final Grid.Region coverSet;
     private final Grid.Region shareRegion;
+	private final boolean emptyRectangle;
+	private final Cell[] emptyRectangleCells;
+    private final int eliminationsTotal;
 
     public TurbotFishHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell endCell, Cell bridgeCell1, Cell bridgeCell2,
-            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion) {
+            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRectangle, Cell[] emptyRectangleCells, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.value = value;
         this.startCell = startCell;
@@ -33,6 +36,9 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         this.baseSet = base;
         this.coverSet = cover;
         this.shareRegion = shareRegion;
+		this.emptyRectangle = emptyRectangle;
+		this.emptyRectangleCells = emptyRectangleCells;
+		this.eliminationsTotal = eliminationsTotal; 
     }
 
     @Override
@@ -42,7 +48,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public Cell[] getSelectedCells() {
-        return new Cell[] { startCell, endCell };
+		if (emptyRectangle)
+			return emptyRectangleCells;
+		else
+			return new Cell[] { startCell, endCell };
     }
 
     @Override
@@ -51,8 +60,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         BitSet fishDigitSet = SingletonBitSet.create(value);
         result.put(startCell, fishDigitSet); // orange
         result.put(bridgeCell1, fishDigitSet);
+	if (!emptyRectangle) {
         result.put(bridgeCell2, fishDigitSet); // orange
         result.put(endCell, fishDigitSet);
+	}
         return result;
     }
 
@@ -61,7 +72,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         Map<Cell, BitSet> result = new HashMap<>(super.getRemovablePotentials());
         BitSet fishDigitSet = SingletonBitSet.create(value);
         result.put(startCell, fishDigitSet);
-        result.put(bridgeCell2, fishDigitSet);
+        //result.put(bridgeCell2, fishDigitSet);
         return result;
     }
 
@@ -69,15 +80,18 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<>();
         result.add(new Link(startCell, value, bridgeCell1, value));
-        result.add(new Link(bridgeCell1, value, bridgeCell2, value));
-        result.add(new Link(bridgeCell2, value, endCell, value));
+		if (!emptyRectangle) {
+			result.add(new Link(bridgeCell1, value, bridgeCell2, value));
+			result.add(new Link(bridgeCell2, value, endCell, value));
+		}
+
         return result;
     }
 
     @Override
     public Grid.Region[] getRegions() {
-        //return new Grid.Region[] { shareRegion };
-		        return null;
+        return new Grid.Region[] { coverSet, shareRegion};
+		        //return null;
     }
 
     @Override
@@ -91,7 +105,11 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public String toHtml(Grid grid) {
-        String result = HtmlLoader.loadHtml(this, "TurbotFishHint.html");
+        String result;
+		if (emptyRectangle)
+			result = HtmlLoader.loadHtml(this, "ERFishHint.html");
+		else
+			result = HtmlLoader.loadHtml(this, "TurbotFishHint.html");
         String name = getName();
         String base = this.baseSet.toFullString();
         String cover = this.coverSet.toFullString();
@@ -104,126 +122,140 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared);
         return result;
     }
+  
+    static String hintNames[][][] = { //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
 
-    static String hintNames[][][] = //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
-    	{
     			{ //baseSetRegionTypeIndex = 0 box
+
     				{ //coverSetRegionTypeIndex = 0 box
+
     					"Turbot Fish", "GXW"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 1 row
+
     					"Turbot Fish", "TF"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 2 column
+
     					"Turbot Fish", "TF"
+
     				}    				
+
     			},
+
     			{ //baseSetRegionTypeIndex = 1 row
+
     				{ //coverSetRegionTypeIndex = 0 box
+
     					"Turbot Fish", "TF"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 1 row
+
     					"Skyscraper", "Sky"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 2 column
+
     					"Two-string Kite", "2SK"
+
     				}    				    				
+
     			},
+
     			{ //baseSetRegionTypeIndex = 2 column
+
     				{ //coverSetRegionTypeIndex = 0 box
+
     					"Turbot Fish", "TF"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 1 row
+
     					"Two-string Kite", "2SK"
+
     				},
+
     				{ //coverSetRegionTypeIndex = 2 column
+
     					"Skyscraper", "Sky"
+
     				}    								
+
     			}
-		};
-    
+
+	};
+
     @Override
     public String getName() {
-    	return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
-//        int region1 = baseSet.getRegionTypeIndex();
-//        int region2 = coverSet.getRegionTypeIndex();
-//        if (region1 == 1) {
-//            if (region2 == 1)
-//                return "Skyscraper";
-//            else
-//				if (region2 == 2)
-//					return "Two-string Kite";
-//				else
-//					return "Turbot Fish";
-//        }
-//		else {
-//			if (region1 == 2)
-//				if (region2 == 1)
-//					return "Two-string Kite";
-//				else
-//					if (region2 == 2)
-//						return "Skyscraper";
-//					else 
-//                return "Turbot Fish";
-//			else
-//				return "Turbot Fish";
-//        }
+		if (emptyRectangle)
+			return "Empty Rectangle";
+		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
+
     }	
 	
     @Override
     public String getShortName() {
-    	return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
-//        int region1 = baseSet.getRegionTypeIndex();
-//        int region2 = coverSet.getRegionTypeIndex();
-//        if (region1 == 1) {
-//            if (region2 == 1)
-//                return "Sky";
-//            else
-//				if (region2 == 2)
-//					return "2SK";
-//				else
-//					return "TF";
-//        }
-//		else {
-//			if (region1 == 2)
-//				if (region2 == 1)
-//					return "2SK";
-//				else
-//					if (region2 == 2)
-//						return "Sky";
-//					else 
-//                return "TF";
-//			else
-//				if (region2 == 0) 
-//					return "GXW";
-//				else
-//					return "TF";
-//        }
+		if (emptyRectangle)
+			return "ER";
+		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
     }
 
+	public int getEliminationsTotal() {
+		return eliminationsTotal;
+	}
+
+
     static double difficulties[][] = //baseSetRegionTypeIndex, coverSetRegionTypeIndex
+
     	{
+
     			{ //baseSetRegionTypeIndex = 0 box
+
     				4.2, 4.2, 4.2 //coverSetRegionTypeIndex = box, row, column
+
     			},
+
     			{ //baseSetRegionTypeIndex = 1 row
+
     				4.2, 4.0, 4.1 //coverSetRegionTypeIndex = box, row, column
+
     			},
+
     			{ //baseSetRegionTypeIndex = 2 column
+
     				4.2, 4.1, 4.0 //coverSetRegionTypeIndex = box, row, column
+
     			}
+
 		};
-    
+
     @Override
     public double getDifficulty() {
+
     	return difficulties[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()];
+
 //        String name = getName();
+
 //        if (name.equals("Skyscraper")) {
+
 //            return 4.0;
+
 //        } else if (name.equals("Two-string Kite")) {
+
 //            return 4.1;
+
 //        } else {
+
 //            return 4.2;
+
 //        }
     }
 

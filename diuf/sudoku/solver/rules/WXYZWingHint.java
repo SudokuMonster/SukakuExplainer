@@ -23,9 +23,10 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
 	private final int wingSize;
 	private final boolean doubleLink;
 	private final BitSet wingSet;
+	private final int eliminationsTotal;
 
     public WXYZWingHint(WXYZWing rule, Map<Cell, BitSet> removablePotentials,
-            Cell wxyzCell, Cell wzCell, Cell xzCell, Cell yzCell, int zValue, int xValue, int biggestCardinality, int wingSize, boolean doubleLink, BitSet wingSet) {
+            Cell wxyzCell, Cell wzCell, Cell xzCell, Cell yzCell, int zValue, int xValue, int biggestCardinality, int wingSize, boolean doubleLink, BitSet wingSet, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.wxyzCell = wxyzCell;
         this.wzCell = wzCell;
@@ -37,6 +38,7 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
 		this.wingSize = wingSize;
 		this.doubleLink = doubleLink;
 		this.wingSet = wingSet;
+		this.eliminationsTotal = eliminationsTotal;
     }
 
     private int getX(Grid grid) {
@@ -106,8 +108,12 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
         result.put(wxyzCell, wxyz);*/
         return result;
     }
-
-    public double getDifficulty() {
+ 
+    public int getEliminationsTotal() {
+		return eliminationsTotal;
+	}
+	
+	public double getDifficulty() {
 		//double-link has no impact on rating
         double result = 5.5; //base rating
 		int sizeDif = (4 + 2) / 2; //Avarage of possible pilot cell size: 4 is size of wing = 4
@@ -119,12 +125,16 @@ public class WXYZWingHint extends IndirectHint implements Rule, HasParentPotenti
         return "Chaining";
     }
 
-    public String getName() {
-        return "WXYZ-Wing " + ((doubleLink ? 2 : 1)) + "" + biggestCardinality + "" + wingSize;
+    public String getSuffix() {
+		return ((doubleLink ? 2 : 1)) + "" + biggestCardinality + "" + wingSize;
+	}
+	
+	public String getName() {
+        return "WXYZ-Wing " + getSuffix();
     }
 
     public String getShortName() {
-		return "WXY" + ((doubleLink ? 2 : 1)) + biggestCardinality + "" + wingSize;
+		return "WXY" + getSuffix();
 	}
 
     @Override
