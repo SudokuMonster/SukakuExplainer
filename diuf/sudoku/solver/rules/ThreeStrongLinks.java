@@ -136,15 +136,19 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 					int baseLink2RegionPotentialsC = baseLink2RegionPotentials.cardinality();
 					if (baseLink2RegionPotentialsC < 2)
 						continue;
+					// For a strong link Cardinality == 2 in region, for an empty rectangle region is a block 
+					// with cardinality >2 (or it will be a strong link in a block i.e turbot fish ) 
+					// and cardinality <6 (because we need 4 empty cells in the region.Rectangle cells)
 					if (baseLink2RegionPotentialsC != 2 && (baseLink2 > 0 || baseLink2RegionPotentialsC > 5))
 						continue;
 						if (baseLink2RegionPotentialsC > 2) {
 							for (e2 = 0; e2 < 9; e2++) {
 								BitSet rectangle = (BitSet)baseLink2RegionPotentials.clone();
-								//BitSet cross = (BitSet)baseLink2RegionPotentials.clone();
 								rectangle.and(baseLink2Region.Rectangle(e2));
-								//cross.and(baseLink2Region.Cross(e2));
-								if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
+								//confirm if we have an empty rectangle
+								//block has 9 cells 4 "Cross" cells, 4 "Rectangle" cells and 1 "Heart" cell
+								//9 configurations for each block depending on "Heart" cell
+								if (rectangle.cardinality() == 0) {
 									emptyRectangle2 = true;
 									break;
 								}

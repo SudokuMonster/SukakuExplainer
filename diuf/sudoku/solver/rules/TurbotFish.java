@@ -77,15 +77,19 @@ public class TurbotFish implements IndirectHintProducer {
 					Grid.Region coverRegion = coverRegions[i2];
 					BitSet coverRegionPotentials = coverRegion.getPotentialPositions(grid, digit);
 					int coverRegionPotentialsCardinality = coverRegionPotentials.cardinality(); 
+					// For a strong link Cardinality == 2 in region, for an empty rectangle region is a block 
+					// with cardinality >2 (or it will be a strong link in a block i.e turbot fish ) 
+					// and cardinality <6 (because we need 4 empty cells in the region.Rectangle cells)
 					if (coverRegionPotentialsCardinality == 2 || (cover == 0 && coverRegionPotentialsCardinality > 2 && coverRegionPotentialsCardinality < 6) ){
 						emptyRectangle = false;
 						if (coverRegionPotentialsCardinality > 2) {
 							for (e = 0; e < 9; e++) {
 								BitSet rectangle = (BitSet)coverRegionPotentials.clone();
-								//BitSet cross = (BitSet)coverRegionPotentials.clone();
 								rectangle.and(coverRegion.Rectangle(e));
-								//cross.and(coverRegion.Cross(e));
-								if (rectangle.cardinality() == 0 /*&& cross.cardinality() > 2*/ ) {
+								//confirm if we have an empty rectangle
+								//block has 9 cells: 4 "Cross" cells, 4 "Rectangle" cells and 1 "Heart" cell
+								//9 configurations for each block depending on "Heart" cell
+								if (rectangle.cardinality() == 0) {
 									emptyRectangle = true;
 									break;
 								}
