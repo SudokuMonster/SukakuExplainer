@@ -659,9 +659,10 @@ public class Grid {
         public int getEmptyCellCount(Grid grid) {
             int result = 0;
             for (int i = 0; i < 9; i++) {
-            	Cell cell = getCell(i);
-                if (grid.getCellValue(cell.getX(), cell.getY()) == 0)
-                    result++;
+            	//Cell cell = getCell(i);
+                //if (grid.getCellValue(cell.getX(), cell.getY()) == 0)
+                //    result++;
+                if(grid.getCellValue(regionCells[i]) == 0) result++;
             }
             return result;
         }
