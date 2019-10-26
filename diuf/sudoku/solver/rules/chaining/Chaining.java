@@ -597,7 +597,7 @@ if (Settings.getInstance().Fixed14Chaining() == 1) {
         for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
             Cell cell = box.getCell(i);
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(box),
+                    getRegionCause(0),
                     "the value can occur only once in the " + box.toString()));
         }
         Grid.Region row = Grid.getRegionAt(1, potentialCellIndex);
@@ -607,7 +607,7 @@ if (Settings.getInstance().Fixed14Chaining() == 1) {
             Cell cell = row.getCell(i);
             if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(row),
+                    getRegionCause(1),
                     "the value can occur only once in the " + row.toString()));
         }
         Grid.Region col = Grid.getRegionAt(2, potentialCellIndex);
@@ -617,7 +617,7 @@ if (Settings.getInstance().Fixed14Chaining() == 1) {
             Cell cell = col.getCell(i);
             if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(col),
+                    getRegionCause(2),
                     "the value can occur only once in the " + col.toString()));
         }
 
@@ -644,7 +644,7 @@ else{
         for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
             Cell cell = box.getCell(i);
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(box),
+                    getRegionCause(0),
                     "the value can occur only once in the " + box.toString()));
         }
         Grid.Region row = Grid.getRegionAt(1, potentialCellIndex);
@@ -654,7 +654,7 @@ else{
             Cell cell = row.getCell(i);
             if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(row),
+                    getRegionCause(1),
                     "the value can occur only once in the " + row.toString()));
         }
         Grid.Region col = Grid.getRegionAt(2, potentialCellIndex);
@@ -664,7 +664,7 @@ else{
             Cell cell = col.getCell(i);
             if(box.contains(cell)) continue;
             result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(col),
+                    getRegionCause(2),
                     "the value can occur only once in the " + col.toString()));
         }
 
@@ -708,13 +708,23 @@ else{
         }
     }
 
-    static Potential.Cause getRegionCause(Region region) {
+    static Potential.Cause getRegionCause(Region region) { //still in use by collectRuleParents where for regionchaining region is used for repaint and stings
         if (region instanceof Block)
             return Potential.Cause.HiddenBlock;
         else if (region instanceof Column)
             return Potential.Cause.HiddenColumn;
         else
             return Potential.Cause.HiddenRow;
+    }
+    
+    static Potential.Cause regionCauses[] = {
+    		Potential.Cause.HiddenBlock,
+    		Potential.Cause.HiddenRow,
+    		Potential.Cause.HiddenColumn
+    };
+    
+    static Potential.Cause getRegionCause(int regionTypeIndex) {
+    	return regionCauses[regionTypeIndex];
     }
 
     /**
@@ -766,7 +776,7 @@ if (Settings.getInstance().Fixed14Chaining() == 1) {
 	        	} //region cells
 	        	if(otherPosition >= 0) { //exactly one other position
                     Potential pOn = new Potential(Grid.getCell(otherPosition), thisValue, true, p,
-                            getRegionCause(r),
+                            getRegionCause(regionTypeIndex),
                             "only remaining possible position in the " + r.toString());
                     addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);
 
@@ -823,7 +833,7 @@ else {
 	        	} //region cells
 	        	if(otherPosition >= 0) { //exactly one other position
                     Potential pOn = new Potential(Grid.getCell(otherPosition), thisValue, true, p,
-                            getRegionCause(r),
+                            getRegionCause(regionTypeIndex),
                             "only remaining possible position in the " + r.toString());
                     addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);						   
                     result.add(pOn);	   	  
