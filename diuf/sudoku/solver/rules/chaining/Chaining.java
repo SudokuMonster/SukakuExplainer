@@ -948,8 +948,10 @@ else {
      * Given the initial sets of potentials that are assumed to be "on" and "off",
      * complete the sets with all other potentials that must be "on"
      * or "off" as a result of the assumption.
+     * Completion is done on the basis of direct eliminations for level 0.
+     * For nested levels > 0 additional eliminations are included.
      * <p>
-     * Both sets must be disjoined, and remain disjoined after this call.
+     * Both sets must be disjoint, and remain disjoint after this call.
      * @param grid the grid
      * @param toOn the potentials that are assumed to be "on"
      * @param toOff the potentials that are assumed to be "off"
@@ -957,6 +959,7 @@ else {
      * to be both "on" and "off" else.
      */
     private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
+    	//MD: Note that toOn potentials have higher precedence than toOff which can result in non-shortest contradiction chain finding.
         grid.copyTo(saveGrid);
 if (Settings.getInstance().Fixed14Chaining() == 1){
 		Potential[] pOnRes = new Potential[729];
@@ -1029,11 +1032,12 @@ if (Settings.getInstance().Fixed14Chaining() == 1){
 }
 else{										  										   
         try {
-            List<Potential> pendingOn = new LinkedList<Potential>(toOn);
-            List<Potential> pendingOff = new LinkedList<Potential>(toOff);
-            while (!pendingOn.isEmpty() || !pendingOff.isEmpty()) {
-                if (!pendingOn.isEmpty()) {
-                    Potential p = pendingOn.remove(0);
+            Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
+            Queue<Potential> pendingOff = new LinkedList<Potential>(toOff);
+            Potential p = null;
+            do {
+            	p = pendingOn.poll();
+                if (p != null) {
                     Set<Potential> makeOff = getOnToOff(grid, p, !isNisho);
                     for (Potential pOff : makeOff) {
                         Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
@@ -1047,8 +1051,10 @@ else{
                             pendingOff.add(pOff);
                         }
                     }
-                } else {
-                    Potential p = pendingOff.remove(0);
+                    continue;
+                }
+                p = pendingOff.poll();
+                if (p != null) {
                     Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true);
                     if (isDynamic)
                         p.off(grid); // writes to grid
@@ -1064,17 +1070,19 @@ else{
                             pendingOn.add(pOn);
                         }
                     }
+                	continue;
                 }
-                if (level > 0 && pendingOn.isEmpty() && pendingOff.isEmpty()) {
+                if (level > 0) {
                     for (Potential pOff : getAdvancedPotentials(grid, saveGrid, toOff)) {
                         if (!toOff.contains(pOff)) {
                             // Not processed yet
                             toOff.add(pOff);
                             pendingOff.add(pOff);
+                            p = pOff; //just a marker that the main loop should continue
                         }
                     }
                 }
-            }
+            } while(p != null);
             return null;
         } finally {
             saveGrid.copyTo(grid);
