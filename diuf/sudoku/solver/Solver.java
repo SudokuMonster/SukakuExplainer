@@ -237,27 +237,27 @@ else {
         //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
 }
 	}
-    /**
-     * This is the basic Sudoku rule: If a cell contains a value,
-     * that value can be removed from the potential values of
-     * all cells in the same block, row or column.
-     * @param partType the Class of the part to cancel in
-     * (block, row or column)
-     */
-    private void cancelBy(int partTypeIndex) {
-        Grid.Region[] parts = Grid.getRegions(partTypeIndex);
-        for (Grid.Region part : parts) {
-            for (int i = 0; i < 9; i++) {
-                Cell cell = part.getCell(i);
-                int value = grid.getCellValue(cell.getIndex());
-                if (value != 0) {
-                    // Remove the cell value from the potential values of other cells
-                    for (int j = 0; j < 9; j++)
-                    	grid.removeCellPotentialValue(part.getCell(j).getIndex(), value);
-                }
-            }
-        }
-    }
+//    /**
+//     * This is the basic Sudoku rule: If a cell contains a value,
+//     * that value can be removed from the potential values of
+//     * all cells in the same block, row or column.
+//     * @param partType the Class of the part to cancel in
+//     * (block, row or column)
+//     */
+//    private void cancelBy(int partTypeIndex) {
+//        Grid.Region[] parts = Grid.getRegions(partTypeIndex);
+//        for (Grid.Region part : parts) {
+//            for (int i = 0; i < 9; i++) {
+//                Cell cell = part.getCell(i);
+//                int value = grid.getCellValue(cell.getIndex());
+//                if (value != 0) {
+//                    // Remove the cell value from the potential values of other cells
+//                    for (int j = 0; j < 9; j++)
+//                    	grid.removeCellPotentialValue(part.getCell(j).getIndex(), value);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Rebuild, for each empty cell, the set of potential values.
@@ -279,12 +279,16 @@ else {
      */
     public void cancelPotentialValues() {
         for(int i = 0; i < 81; i++) {
-            if (grid.getCellValue(i) != 0)
-            	grid.clearCellPotentialValues(i);
+        	int value = grid.getCellValue(i);
+            if(value == 0) continue;
+        	grid.clearCellPotentialValues(i);
+        	for(int visible : Grid.visibleCellIndex[i]) {
+        		grid.removeCellPotentialValue(visible, value);
+        	}
         }
-        cancelBy(0); //block
-        cancelBy(1); //row
-        cancelBy(2); //column
+        //cancelBy(0); //block
+        //cancelBy(1); //row
+        //cancelBy(2); //column
     }
 
     /**

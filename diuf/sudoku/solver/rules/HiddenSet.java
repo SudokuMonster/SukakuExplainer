@@ -31,9 +31,6 @@ public class HiddenSet implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        //getHints(grid, Grid.Block.class, accu);
-        //getHints(grid, Grid.Column.class, accu);
-        //getHints(grid, Grid.Row.class, accu);
         getHints(grid, 0, accu); //block
         getHints(grid, 2, accu); //column
         getHints(grid, 1, accu); //row
@@ -45,9 +42,6 @@ public class HiddenSet implements IndirectHintProducer {
      * @param regionType the type of the parts to check
      * @param degree the degree of the tuples to search
      */
-    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
-    //        HintsAccumulator accu) throws InterruptedException {
-    //    Grid.Region[] regions = grid.getRegions(regionType);
     private void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu) throws InterruptedException {
         Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
@@ -68,7 +62,6 @@ public class HiddenSet implements IndirectHintProducer {
                     // Build potential positions for each value of the tuple
                     BitSet[] potentialIndexes = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        //potentialIndexes[i] = region.getPotentialPositions(values[i]);
                         potentialIndexes[i] = region.getPotentialPositions(grid, values[i]);
 
                     // Look for a common tuple of potential positions, with same degree
@@ -104,7 +97,6 @@ public class HiddenSet implements IndirectHintProducer {
                 // Look for the potential values we can remove
                 BitSet removablePotentials = new BitSet(10);
                 for (int value = 1; value <= 9; value++) {
-                    //if (!valueSet.get(value) && cell.hasPotentialValue(value))
                     if (!valueSet.get(value) && grid.hasCellPotentialValue(cell.getIndex(), value))
                         removablePotentials.set(value);
                 }

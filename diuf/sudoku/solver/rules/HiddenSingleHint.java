@@ -27,7 +27,8 @@ public class HiddenSingleHint extends DirectHint implements Rule {
     public double getDifficulty() {
         if (isAlone)
             return 1.0;
-        else if (getRegion() instanceof Grid.Block)
+        //else if (getRegion() instanceof Grid.Block)
+        else if (getRegion().getRegionTypeIndex() == 0) //block
             return 1.2;
         else
             return 1.5;
