@@ -55,12 +55,13 @@ public class Locking implements IndirectHintProducer {
 	            for (int i2 = 0; i2 < 9; i2++) {
 	                Grid.Region region2 = Grid.getRegions(regionType2Index)[i2];
 	                if(!region1.crosses(region2)) continue;
-                    CellSet region2Cells = region2.getCellSet();
+                    //CellSet region2Cells = region2.getCellSet();
                     boolean isInCommonSet = true;
                     // Test if all potential positions are also in part2
                     for(int i = potentialPositions.nextSetBit(0); i >= 0; i = potentialPositions.nextSetBit(i + 1)) {
                         Cell cell = region1.getCell(i);
-                        if (!region2Cells.containsCell(cell)) {
+                        //if (!region2Cells.containsCell(cell)) {
+                        if (!region2.regionCellsBitSet.get(cell.getIndex())) {
                             isInCommonSet = false;
                             break;
                         }

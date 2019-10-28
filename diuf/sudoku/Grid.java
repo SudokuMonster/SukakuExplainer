@@ -915,14 +915,14 @@ public class Grid {
             return getPotentialPositions(grid, value); // No need to clone, this is alreay hand-made
         }
 
-        /**
-         * Get the cells of this region. The iteration order of the result
-         * matches the order of the cells returned by {@link #getCell(int)}.
-         * @return the cells of this region.
-         */
-        public CellSet getCellSet() {
-            return new CellSet(regionCells);
-        }
+//        /**
+//         * Get the cells of this region. The iteration order of the result
+//         * matches the order of the cells returned by {@link #getCell(int)}.
+//         * @return the cells of this region.
+//         */
+//        public CellSet getCellSet() {
+//            return new CellSet(regionCells);
+//        }
 
         /**
          * Test whether this region crosses an other region.

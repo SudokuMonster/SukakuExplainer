@@ -78,12 +78,8 @@ public class Cell {
     /**
      * Get the cells that form the "house" of this cell. The
      * "house" cells are all the cells that are in the
-     * same block, row or column.
+     * same block, row or column. The cell itself isn't included.
      * <p>
-     * The iteration order is guaranteed to be the same on each
-     * invocation of this method for the same cell. (this is
-     * necessary to ensure that hints of the same difficulty
-     * are always returned in the same order).
      * @return the cells that are controlled by this cell
      */
     public CellSet getVisibleCells() {

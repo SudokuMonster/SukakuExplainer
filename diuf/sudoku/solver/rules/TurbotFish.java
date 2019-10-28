@@ -157,13 +157,16 @@ public class TurbotFish implements IndirectHintProducer {
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<>();
 		int eliminationsTotal = 0;
-        Set<Cell> victims = new LinkedHashSet<>(start.getVisibleCells());
+        //Set<Cell> victims = new LinkedHashSet<>(start.getVisibleCells());
+        CellSet victims = start.getVisibleCells();
         victims.retainAll(end.getVisibleCells());
         victims.remove(start);
         victims.remove(end);
 		if (emptyRectangle){
-			victims.removeAll(coverSet.getCellSet());
-			victims.removeAll(baseSet.getCellSet());
+			//victims.removeAll(coverSet.getCellSet());
+			//victims.removeAll(baseSet.getCellSet());
+			victims.bits.andNot(coverSet.regionCellsBitSet);
+			victims.bits.andNot(baseSet.regionCellsBitSet);
 		}
         for (Cell cell : victims) {
             if (grid.hasCellPotentialValue(cell.getIndex(), value)) {

@@ -327,11 +327,16 @@ public class ThreeStrongLinks implements IndirectHintProducer {
         victims.retainAll(end2.getVisibleCells());
         victims.remove(start1);
         victims.remove(end2);
-		victims.removeAll(baseLink1Set.getCellSet());
-		victims.removeAll(baseLink2Set.getCellSet());
-		victims.removeAll(baseLink3Set.getCellSet());
-		victims.removeAll(shareRegion1.getCellSet());
-		victims.removeAll(shareRegion2.getCellSet());
+		//victims.removeAll(baseLink1Set.getCellSet());
+		//victims.removeAll(baseLink2Set.getCellSet());
+		//victims.removeAll(baseLink3Set.getCellSet());
+		//victims.removeAll(shareRegion1.getCellSet());
+		//victims.removeAll(shareRegion2.getCellSet());
+		victims.bits.andNot(baseLink1Set.regionCellsBitSet);
+		victims.bits.andNot(baseLink2Set.regionCellsBitSet);
+		victims.bits.andNot(baseLink3Set.regionCellsBitSet);
+		victims.bits.andNot(shareRegion1.regionCellsBitSet);
+		victims.bits.andNot(shareRegion2.regionCellsBitSet);
         for (Cell cell : victims) {
             if (grid.hasCellPotentialValue(cell.getIndex(), value)){
                 removablePotentials.put(cell, SingletonBitSet.create(value));

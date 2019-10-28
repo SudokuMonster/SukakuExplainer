@@ -17,11 +17,15 @@ import diuf.sudoku.Grid;
  */
 public class CellSet implements Set<Cell> {
 
-	private final BitSet bits = new BitSet();
+	public final BitSet bits = new BitSet();
 	
 	public CellSet(CellSet c) {
 		//bits.clear();
 		bits.or(c.bits);
+	}
+
+	public CellSet(BitSet b) {
+		bits.or(b);
 	}
 
 	public CellSet(Collection<?> c) {
