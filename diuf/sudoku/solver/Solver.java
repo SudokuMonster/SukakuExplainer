@@ -443,15 +443,18 @@ else {
         return result;
     }
 
-    private boolean isSolved() {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                if (grid.getCellValue(x, y) == 0)
-                    return false;
-            }
-        }
-        return true;
-    }
+//    private boolean isSolved() {
+//    	for(int i = 0; i < 81; i++) {
+//    		if(grid.getCellValue(i) == 0) return false;
+//    	}
+//        //for (int y = 0; y < 9; y++) {
+//        //    for (int x = 0; x < 9; x++) {
+//        //        if (grid.getCellValue(x, y) == 0)
+//        //            return false;
+//        //    }
+//        //}
+//        return true;
+//    }
 
     private class RuleComparer implements Comparator<Rule> {
 
@@ -482,7 +485,7 @@ else {
         // rebuildPotentialValues();
         Map<Rule,Integer> usedRules = new TreeMap<Rule,Integer>(new RuleComparer());
         boolean isUsingAdvanced = false;
-        while (!isSolved()) {
+        while (!grid.isSolved()) {
             SingleHintAccumulator accu = new SingleHintAccumulator();
             try {
                 for (HintProducer producer : directHintProducers)
@@ -545,7 +548,7 @@ else {
 			if (Objects.equals(includeT1,"")) inTechCounter++;
 			if (Objects.equals(includeT2,"")) inTechCounter++;
 			if (Objects.equals(includeT3,"")) inTechCounter++;
-			while (!isSolved()) {
+			while (!grid.isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
                     for (HintProducer producer : directHintProducers)
@@ -629,7 +632,7 @@ else {
 			shortEPtN ="O";
 			shortEDtN ="O";			
         	formatter.beforePuzzle(this);
-            while (!isSolved()) {
+            while (!grid.isSolved()) {
             	formatter.beforeHint(this);
             	Hint hint = null;
             	try {
@@ -710,7 +713,7 @@ else {
 			shortERtN ="O";
 			shortEPtN ="O";
 			shortEDtN ="O";			
-            while (!isSolved()) {
+            while (!grid.isSolved()) {
                 SingleHintAccumulator accu = new SingleHintAccumulator();
                 try {
                     for (HintProducer producer : directHintProducers)
@@ -746,7 +749,8 @@ else {
 
                 String s = "";
                 for (int i = 0; i < 81; i++) {
-                    int n = grid.getCellValue(i % 9, i / 9);
+                    //int n = grid.getCellValue(i % 9, i / 9);
+                    int n = grid.getCellValue(i);
                     s += (n==0)?".":n;
                 }
                 s += " ";
@@ -963,7 +967,7 @@ else {
 			shortEPtN ="O";
 			shortEDtN ="O";			
             formatter.beforePuzzle(this);
-			while (!isSolved()) {
+			while (!grid.isSolved()) {
 				formatter.beforeHint(this);
             	//Hint hint = null;
 				List<Hint> result = new ArrayList<Hint>();

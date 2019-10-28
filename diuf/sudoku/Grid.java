@@ -548,6 +548,13 @@ public class Grid {
 //        }
     }
 
+    public boolean isSolved() {
+    	for(int i = 0; i < 81; i++) {
+    		if(cellValues[i] == 0) return false;
+    	}
+        return true;
+    }
+
     /**
      * Get the number of occurances of a given value in this grid
      * @param value the value

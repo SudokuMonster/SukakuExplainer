@@ -106,20 +106,23 @@ public class BruteForceAnalysis implements WarningHintProducer {
             return 2; // more than one solution
     }
 
-    /**
-     * Check if the grid has been solved
-     * @param grid the sudoku grid
-     * @return whether the grid has been solved
-     */
-    private static boolean isSolved(Grid grid) {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                if (grid.getCellValue(x, y) == 0)
-                    return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * Check if the grid has been solved
+//     * @param grid the sudoku grid
+//     * @return whether the grid has been solved
+//     */
+//    private static boolean isSolved(Grid grid) {
+//    	for(int i = 0; i < 81; i++) {
+//    		if(grid.getCellValue(i) == 0) return false;
+//    	}
+//        //for (int y = 0; y < 9; y++) {
+//        //    for (int x = 0; x < 9; x++) {
+//        //        if (grid.getCellValue(x, y) == 0)
+//        //            return false;
+//        //    }
+//        //}
+//        return true;
+//    }
 
     /**
      * Try to solve the given grid.
@@ -168,7 +171,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
             } catch (InterruptedException ex) {}
             hint = accu.getHint();
         } while (hint != null);
-        if (isSolved(grid))
+        if (grid.isSolved())
             return true;
         /*
          * (2) Look for the cell with the least number of potentials.
