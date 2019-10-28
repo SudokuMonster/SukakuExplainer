@@ -790,7 +790,7 @@ public class Grid {
      */
     public static abstract class Region {
     	protected final int[] regionCells = new int[9];
-    	protected final BitSet regionCellsSet = new BitSet(81);
+    	public final BitSet regionCellsBitSet = new BitSet(81);
     	
     	public abstract int getRegionTypeIndex();
     	public abstract int getRegionIndex();
@@ -888,7 +888,7 @@ public class Grid {
          * @return whether this region contains the given cell
          */
         public boolean contains(Cell cell) {
-        	return regionCellsSet.get(cell.getIndex());
+        	return regionCellsBitSet.get(cell.getIndex());
         }
 
         /**
@@ -933,7 +933,7 @@ public class Grid {
          * @return whether this region crosses the other region.
          */
         public boolean crosses(Region other) { //can be implemented as static table
-        	return regionCellsSet.intersects(other.regionCellsSet);
+        	return regionCellsBitSet.intersects(other.regionCellsBitSet);
         }
 
         /**
@@ -976,7 +976,7 @@ public class Grid {
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * rowNum + i;
             	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
-            	regionCellsSet.set(regionCells[i]);
+            	regionCellsBitSet.set(regionCells[i]);
             	cellRegions[regionCells[i]][1] = rowNum;
         	}
         }
@@ -1020,7 +1020,7 @@ public class Grid {
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * i + columnNum;
             	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
-            	regionCellsSet.set(regionCells[i]);
+            	regionCellsBitSet.set(regionCells[i]);
             	cellRegions[regionCells[i]][2] = columnNum;
             }
         }
@@ -1068,7 +1068,7 @@ public class Grid {
             for(int i = 0; i < 9; i++) {
             	regionCells[i] = 9 * (vNum * 3 + i / 3) + (hNum * 3 + i % 3);
             	regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
-            	regionCellsSet.set(regionCells[i]);
+            	regionCellsBitSet.set(regionCells[i]);
             	cellRegions[regionCells[i]][0] = index;
             }
         }
