@@ -85,9 +85,9 @@ public class ThreeStrongLinks implements IndirectHintProducer {
 		List<ThreeStrongLinksHint> result = new ArrayList<ThreeStrongLinksHint>();
         Cell[] cells = new Cell[6];
 		for (int digit = 1; digit <= 9; digit++) {
-            Grid.Region[] baseLink1Regions = grid.getRegions(baseLink1);
-            Grid.Region[] baseLink2Regions = grid.getRegions(baseLink2);
-            Grid.Region[] baseLink3Regions = grid.getRegions(baseLink3);
+            Grid.Region[] baseLink1Regions = Grid.getRegions(baseLink1);
+            Grid.Region[] baseLink2Regions = Grid.getRegions(baseLink2);
+            Grid.Region[] baseLink3Regions = Grid.getRegions(baseLink3);
             int p1, p2, p3;
 			int e1 = 0;
 			int e2 = 0;

@@ -24,7 +24,7 @@ public class NoDoubles implements WarningHintProducer {
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
         //    Grid.Region[] regions = grid.getRegions(regionType);
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
-            Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+            Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 
             // Iterate on occurances of a region
             for (int i = 0; i < 9; i++) {
@@ -75,7 +75,7 @@ public class NoDoubles implements WarningHintProducer {
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
         //    Grid.Region[] regions = grid.getRegions(regionType);
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
-            Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+            Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 
             // Iterate on occurances of a region
             for (int i = 0; i < 9; i++) {

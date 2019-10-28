@@ -17,14 +17,6 @@ import diuf.sudoku.solver.*;
 public class HiddenSingle implements DirectHintProducer {
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-//        // First alone cells (last empty cell in a region)
-//        getHints(grid, Grid.Block.class, accu, true);
-//        getHints(grid, Grid.Column.class, accu, true);
-//        getHints(grid, Grid.Row.class, accu, true);
-//        // Then hidden cells
-//        getHints(grid, Grid.Block.class, accu, false);
-//        getHints(grid, Grid.Column.class, accu, false);
-//        getHints(grid, Grid.Row.class, accu, false);
         // First alone cells (last empty cell in a region)
         getHints(grid, 0, accu, true); //block
         getHints(grid, 2, accu, true); //column
@@ -40,17 +32,14 @@ public class HiddenSingle implements DirectHintProducer {
      * possible potential position.
      * @param regionTypeIndex the type of the parts to check
      */  
-    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
-    //        HintsAccumulator accu, boolean aloneOnly) throws InterruptedException {
     private void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu, boolean aloneOnly) throws InterruptedException {
-        Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+        Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
             // Iterate on values
             for (int value = 1; value <= 9; value++) {
                 // Get value's potential position
-                //BitSet potentialIndexes = region.getPotentialPositions(value);
                 BitSet potentialIndexes = region.getPotentialPositions(grid, value);
                 if (potentialIndexes.cardinality() == 1) {
                     // One potential position -> solution found

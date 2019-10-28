@@ -245,7 +245,7 @@ else {
      * (block, row or column)
      */
     private void cancelBy(int partTypeIndex) {
-        Grid.Region[] parts = grid.getRegions(partTypeIndex);
+        Grid.Region[] parts = Grid.getRegions(partTypeIndex);
         for (Grid.Region part : parts) {
             for (int i = 0; i < 9; i++) {
                 Cell cell = part.getCell(i);

@@ -50,7 +50,7 @@ public class HiddenSet implements IndirectHintProducer {
     //    Grid.Region[] regions = grid.getRegions(regionType);
     private void getHints(Grid grid, int regionTypeIndex,
             HintsAccumulator accu) throws InterruptedException {
-        Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+        Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
             int nbEmptyCells = region.getEmptyCellCount(grid);

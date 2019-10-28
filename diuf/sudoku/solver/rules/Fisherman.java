@@ -51,7 +51,7 @@ public class Fisherman implements IndirectHintProducer {
             occurances[value] = grid.getCountOccurancesOfValue(value);
 
         //Grid.Region[] parts = grid.getRegions(partType1);
-        Grid.Region[] parts = grid.getRegions(partType1Index);
+        Grid.Region[] parts = Grid.getRegions(partType1Index);
         // Iterate on lines tuples
         Permutations perm = new Permutations(degree, 9);
         while (perm.hasNext()) {
@@ -94,8 +94,8 @@ public class Fisherman implements IndirectHintProducer {
     //    Grid.Region[] myParts = grid.getRegions(myPartType);
     //    Grid.Region[] otherParts = grid.getRegions(otherPartType);
     private IndirectHint createFishHint(Grid grid, int otherPartTypeIndex, int myPartTypeIndex, BitSet otherIndexes, BitSet myIndexes, int value) {
-        Grid.Region[] myParts = grid.getRegions(myPartTypeIndex);
-        Grid.Region[] otherParts = grid.getRegions(otherPartTypeIndex);
+        Grid.Region[] myParts = Grid.getRegions(myPartTypeIndex);
+        Grid.Region[] otherParts = Grid.getRegions(otherPartTypeIndex);
         // Build parts
         List<Grid.Region> parts1 = new ArrayList<Grid.Region>();
         List<Grid.Region> parts2 = new ArrayList<Grid.Region>();

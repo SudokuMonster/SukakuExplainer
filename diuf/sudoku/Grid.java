@@ -329,7 +329,7 @@ public class Grid {
      * {@link Grid.Block}, 1 for {@link Grid.Row}, or 2 for {@link Grid.Column}.
      * @return the 9 regions of the given type
      */
-    public Region[] getRegions(int regionTypeIndex) {
+    public static Region[] getRegions(int regionTypeIndex) {
     	return regions[regionTypeIndex];
     }
 

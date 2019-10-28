@@ -33,7 +33,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 		boolean oneValue = true;
 
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {																			   
-            Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+            Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {
@@ -124,7 +124,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         // When bug values have been removed, all remaining candidates must have
         // two positions in each region
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
-            Grid.Region[] regions = grid.getRegions(regionTypeIndex);
+            Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
                 Grid.Region region = regions[i];
                 for (int value = 1; value <= 9; value++) {

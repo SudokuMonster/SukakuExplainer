@@ -65,8 +65,8 @@ public class TurbotFish implements IndirectHintProducer {
 		int e = 0;
 		boolean emptyRectangle = false;
         for (int digit = 1; digit <= 9; digit++) {
-            Grid.Region[] baseRegions = grid.getRegions(base);
-            Grid.Region[] coverRegions = grid.getRegions(cover);
+            Grid.Region[] baseRegions = Grid.getRegions(base);
+            Grid.Region[] coverRegions = Grid.getRegions(cover);
             for (int i1 = 0; i1 < baseRegions.length; i1++) {
 				Grid.Region baseRegion = baseRegions[i1];
 				BitSet baseRegionPotentials = baseRegion.getPotentialPositions(grid, digit);
