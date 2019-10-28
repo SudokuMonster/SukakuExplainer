@@ -22,9 +22,9 @@ public class FullChain {
         this.chain = target;
     }
 
-    public ChainingHint get() {
-        return this.chain;
-    }
+    //public ChainingHint get() {
+    //    return this.chain;
+    //}
 
     @Override
     public boolean equals(Object o) {

@@ -134,6 +134,13 @@ public class Solver {
 
     public Solver(Grid grid) {
         this.grid = grid;
+        // These rules are not really solving techs. They check the validity of the puzzle
+        validatorHintProducers = new ArrayList<WarningHintProducer>();
+        validatorHintProducers.add(new NoDoubles());
+        warningHintProducers = new ArrayList<WarningHintProducer>();
+        warningHintProducers.add(new NumberOfFilledCells());
+        warningHintProducers.add(new NumberOfValues());
+        warningHintProducers.add(new BruteForceAnalysis(false));
         directHintProducers = new ArrayList<HintProducer>();
 if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
@@ -169,13 +176,6 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.DynamicForcingChain, chainingHintProducers, new Chaining(true, true, false, 0, false, 0));
         chainingHintProducers2 = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.DynamicForcingChainPlus, chainingHintProducers2, new Chaining(true, true, false, 1, false, 0));
-        // These rules are not really solving techs. They check the validity of the puzzle
-        validatorHintProducers = new ArrayList<WarningHintProducer>();
-        validatorHintProducers.add(new NoDoubles());
-        warningHintProducers = new ArrayList<WarningHintProducer>();
-        warningHintProducers.add(new NumberOfFilledCells());
-        warningHintProducers.add(new NumberOfValues());
-        warningHintProducers.add(new BruteForceAnalysis(false));
         // These are very slow. We add them only as "rescue"
         advancedHintProducers = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2, false, 0));
@@ -224,13 +224,6 @@ else {
         addIfWorth(SolvingTechnique.DynamicForcingChain, chainingHintProducers, new Chaining(true, true, false, 0, false, 0));
         chainingHintProducers2 = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.DynamicForcingChainPlus, chainingHintProducers2, new Chaining(true, true, false, 1, false, 0));
-        // These rules are not really solving techs. They check the validity of the puzzle
-        validatorHintProducers = new ArrayList<WarningHintProducer>();
-        validatorHintProducers.add(new NoDoubles());
-        warningHintProducers = new ArrayList<WarningHintProducer>();
-        warningHintProducers.add(new NumberOfFilledCells());
-        warningHintProducers.add(new NumberOfValues());
-        warningHintProducers.add(new BruteForceAnalysis(false));
         // These are very slow. We add them only as "rescue"
         advancedHintProducers = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2, false, 0));
