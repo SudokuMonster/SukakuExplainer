@@ -691,10 +691,11 @@ else{
 
     private void addHiddenParentsOfRegion(Potential p, Grid grid, Grid source,
             Grid.Region curRegion, LinkedSet<Potential> offPotentials) {
-        Grid.Region srcRegion = Grid.getRegionAt(curRegion.getRegionTypeIndex(), p.cell.getIndex());
+        //Grid.Region srcRegion = Grid.getRegionAt(curRegion.getRegionTypeIndex(), p.cell.getIndex());
         int value = p.value;
         BitSet curPositions = curRegion.copyPotentialPositions(grid, value);
-        BitSet srcPositions = srcRegion.copyPotentialPositions(source, value);
+        //BitSet srcPositions = srcRegion.copyPotentialPositions(source, value);
+        BitSet srcPositions = curRegion.copyPotentialPositions(source, value);
         // Get positions of the potential value that have been removed
         srcPositions.andNot(curPositions);
         for (int i = srcPositions.nextSetBit(0); i >= 0; i = srcPositions.nextSetBit(i + 1)) {

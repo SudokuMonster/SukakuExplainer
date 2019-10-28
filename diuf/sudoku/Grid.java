@@ -305,6 +305,8 @@ public class Grid {
         	cellPotentialValues[i] = new BitSet(10);
         }
     }
+    
+    //=== Static methods ==============
 
     /**
      * Get the cell at the given coordinates
@@ -332,6 +334,43 @@ public class Grid {
     public static Region[] getRegions(int regionTypeIndex) {
     	return regions[regionTypeIndex];
     }
+
+    /**
+     * Get the row at the given location
+     * @param x the horizontal coordinate
+     * @param y the vertical coordinate
+     * @return the row at the given coordinates
+     */
+    public static Row getRowAt(int x, int y) {
+        return Grid.rows[y];
+    }
+
+    /**
+     * Get the column at the given location
+     * @param x the horizontal coordinate
+     * @param y the vertical coordinate
+     * @return the column at the given location
+     */
+    public static Column getColumnAt(int x, int y) {
+        return Grid.columns[x];
+    }
+
+    /**
+     * Get the 3x3 block at the given location
+     * @param x the horizontal coordinate
+     * @param y the vertical coordinate
+     * @return the block at the given coordinates (the coordinates
+     * are coordinates of a cell)
+     */
+    public static Block getBlockAt(int x, int y) {
+        return Grid.blocks[(y / 3) * 3 + (x / 3)];
+    }
+
+    public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
+        return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
+    }
+
+    //=== Non-static methods ==============
 
     /**
      * Set the value of a cell
@@ -464,38 +503,283 @@ public class Grid {
     }
 
     /**
-     * Get the row at the given location
-     * @param x the horizontal coordinate
-     * @param y the vertical coordinate
-     * @return the row at the given coordinates
+     * Get the first cell that cancels the given cell.
+     * <p>
+     * More precisely, get the first cell that:
+     * <ul>
+     * <li>is in the same row, column or block of the given cell
+     * <li>contains the given value
+     * </ul>
+     * The order used for the "first" is not defined, but is guaranted to be
+     * consistent accross multiple invocations.
+     * @param target the cell
+     * @param value the value
+     * @return the first cell that share a region with the given cell, and has
+     * the given value
      */
-    public static Row getRowAt(int x, int y) {
-        return Grid.rows[y];
+    public Cell getFirstCancellerOf(Cell target, int value) {
+        int[] visible = Grid.visibleCellIndex[target.getIndex()];
+        for(int i = 0; i < 20; i++) {
+        	if(cellValues[visible[i]] == value) return Grid.getCell(visible[i]);
+        }
+        return null;
     }
 
     /**
-     * Get the column at the given location
-     * @param x the horizontal coordinate
-     * @param y the vertical coordinate
-     * @return the column at the given location
+     * Copy the content of this grid to another grid.
+     * The values of the cells and their potential values
+     * are copied.
+     * @param other the grid to copy this grid to
      */
-    public static Column getColumnAt(int x, int y) {
-        return Grid.columns[x];
+    public void copyTo(Grid other) {
+        for (int i = 0; i < 81; i++) {
+            other.setCellValue(i, this.cellValues[i]);
+            other.setCellPotentialValues(i, cellPotentialValues[i]);
+        }
+//        //clone the cache as well
+//        for(int regionType = 0; regionType < 3; regionType++) {
+//            for(int region = 0; region < 9; region++) {
+//	            for(int cell = 0; cell < 9; cell++) {
+//	            	BitSet cache = other.valueCellsCache.valuePotentialCells[regionType][region][cell];
+//	            	cache.clear();
+//	            	cache.or(valueCellsCache.valuePotentialCells[regionType][region][cell]);
+//	            }
+//            }
+//        }
     }
 
     /**
-     * Get the 3x3 block at the given location
-     * @param x the horizontal coordinate
-     * @param y the vertical coordinate
-     * @return the block at the given coordinates (the coordinates
-     * are coordinates of a cell)
+     * Get the number of occurances of a given value in this grid
+     * @param value the value
+     * @return the number of occurances of a given value in this grid
      */
-    public static Block getBlockAt(int x, int y) {
-        return Grid.blocks[(y / 3) * 3 + (x / 3)];
+    public int getCountOccurancesOfValue(int value) {
+        int result = 0;
+        for (int i = 0; i < 81; i++) {
+            if (getCellValue(i) == value)
+                result++;
+        }
+        return result;
     }
 
-    public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
-        return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
+    /**
+     * Get a string representation of this grid. For debugging
+     * purpose only.
+     */
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                int value = getCellValue(x, y);
+                if (value == 0)
+                    result.append('.');
+                else
+                    result.append(value);
+            }
+            result.append('\n');
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Get a single-line string representation of this grid.
+     */
+    public String toString81() {
+        StringBuilder result = new StringBuilder(88);
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                int value = getCellValue(x, y);
+                if (value == 0)
+                    result.append('.');
+                else
+                    result.append(value);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Get a pencilmark-string representation of this grid.
+     */
+    public String toStringPencilmarks() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 81; i++) {
+        	int value = getCellValue(i);
+        	if(value == 0) {
+                BitSet values = getCellPotentialValues(i);
+                for (int v = 1; v < 10; v++) {
+	                if (values.get(v))
+	                    result.append(v);
+	                else
+	                    result.append('.');
+                }
+        	}
+        	else {
+                for (int v = 1; v < 10; v++) {
+	                if (v == value)
+	                    result.append(v);
+	                else
+	                    result.append('.');
+                }
+            }
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Get a multi-line pencilmark-string representation of this grid.
+     */
+    public String toStringMultilinePencilmarks() {
+    	String res = "";
+        String s = "";
+
+        int crd = 1;
+        for (int i = 0; i < 81; i++) {
+            int n = getCellPotentialValues(i).cardinality();
+            if ( n > crd ) { crd = n; }
+        }
+        if ( crd > 1 )
+        {
+            for (int i=0; i<3; i++ ) {
+                s = "+";
+                for (int j=0; j<3; j++ ) {
+                    for (int k=0; k<3; k++ ) { s += "-";
+                        for (int l=0; l<crd; l++ ) { s += "-";
+                        }
+                    }
+                    s += "-+";
+                }
+                res += s + System.lineSeparator();
+                for (int j=0; j<3; j++ ) {
+                    s = "|";
+                    for (int k=0; k<3; k++ ) {
+                        for (int l=0; l<3; l++ ) {
+                            s += " ";
+                            int cnt = 0;
+                            int c = ((((i*3)+j)*3)+k)*3+l;
+                            Cell cell = getCell(c % 9, c / 9);
+                            //int n = cell.getValue();
+                            int n = getCellValue(c % 9, c / 9);
+                            if ( n != 0 ) {
+                                s += n;
+                                cnt += 1;
+                            }
+                            if ( n == 0 ) {
+                                for (int pv=1; pv<=9; pv++ ) {
+                                    //if ( cell.hasPotentialValue( pv) ) {
+                                    if ( hasCellPotentialValue(cell.getIndex(), pv) ) {
+                                        s += pv;
+                                        cnt += 1;
+                                    }
+                                }
+                            }
+                            for (int pad=cnt; pad<crd; pad++ ) { s += " ";
+                            }
+                        }
+                        s += " |";
+                    }
+                    res += s + System.lineSeparator();
+                }
+            }
+            s = "+";
+            for (int j=0; j<3; j++ ) {
+                for (int k=0; k<3; k++ ) { s += "-";
+                    for (int l=0; l<crd; l++ ) { s += "-";
+                    }
+                }
+                s += "-+";
+            }
+            res += s;
+        }
+        return res;
+    }
+   
+    /**
+     * rebuilds grid from a string of either 81 givens or 729 pencilmarks
+     * @param string a string with 0 or '.' for non-givens and positional mapping to cells/pencilmarks
+     */
+    public void fromString(String string) {
+    	int len = string.length();
+    	if(len < 81) return; //ignore
+    	
+    	//always perform cleanup
+        for (int i = 0; i < 81; i++) {
+            setCellValue(i % 9, i / 9, 0);
+        }
+        
+    	if(len < 729) { //vanilla clues
+            for (int i = 0; i < 81; i++) {
+                char ch = string.charAt(i);
+                if (ch >= '1' && ch <= '9') {
+                    int value = (ch - '0');
+                    setCellValue(i % 9, i / 9, value);
+                }
+            }
+    	}
+    	else { //pencilmarks
+            for (int i = 0; i < 729; i++) {
+                int cl = i / 9;  // cell
+                char ch = string.charAt(i);
+                if (ch >= '1' && ch <= '9') {
+                    int value = (ch - '0');
+                    assert value == 1 + i % 9; //exact positional mapping
+                    addCellPotentialValue(cl, value);
+                }
+            }
+    	}
+    }
+    
+    /**
+     * Applies Naked Single not causing direct eliminations.
+     * For adjustment of the board immediately after Pencilmarks loading.
+     */
+    public void adjustPencilmarks() {
+        for(int i = 0; i < 81; i++) {
+            Cell cell = getCell(i);
+            BitSet values = getCellPotentialValues(i);
+            if(values.cardinality() == 1) {
+                int singleclue = values.nextSetBit(0);
+                boolean isnakedsingle = true;
+                for(int cellIndex : cell.getVisibleCellIndexes()) {
+                    if(hasCellPotentialValue(cellIndex, singleclue)) {
+                        isnakedsingle = false;
+                        break;
+                    }
+                }
+                if(isnakedsingle) {
+                	setCellValue(i, singleclue);
+                	clearCellPotentialValues(i);
+                }
+            }
+        }               
+    }
+
+    /**
+     * Compare two grids for equality. Comparison is based on the values
+     * of the cells and on the potential values of the empty cells.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Grid))
+            return false;
+        Grid other = (Grid)o;
+        //if(!this.cellValues.equals(other.cellValues)) return false; <== incorrect
+        if(!Arrays.equals(this.cellValues, other.cellValues)) return false;
+        for (int i = 0; i < 81; i++) {
+            if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        for (int i = 0; i < 81; i++) {
+            result ^= getCellValue(i);
+            result ^= getCellPotentialValues(i).hashCode();
+        }
+        return result;
     }
 
     // Grid regions implementation (rows, columns, 3x3 squares)
@@ -814,285 +1098,5 @@ public class Grid {
         public String toFullString() {
             return toString() + " " + (vNum * 3 + hNum + 1);
         }
-    }
-
-    /**
-     * Get the first cell that cancels the given cell.
-     * <p>
-     * More precisely, get the first cell that:
-     * <ul>
-     * <li>is in the same row, column or block of the given cell
-     * <li>contains the given value
-     * </ul>
-     * The order used for the "first" is not defined, but is guaranted to be
-     * consistent accross multiple invocations.
-     * @param target the cell
-     * @param value the value
-     * @return the first cell that share a region with the given cell, and has
-     * the given value
-     */
-    public Cell getFirstCancellerOf(Cell target, int value) {
-        int[] visible = Grid.visibleCellIndex[target.getIndex()];
-        for(int i = 0; i < 20; i++) {
-        	if(cellValues[visible[i]] == value) return Grid.getCell(visible[i]);
-        }
-        return null;
-    }
-
-    /**
-     * Copy the content of this grid to another grid.
-     * The values of the cells and their potential values
-     * are copied.
-     * @param other the grid to copy this grid to
-     */
-    public void copyTo(Grid other) {
-        for (int i = 0; i < 81; i++) {
-            other.setCellValue(i, this.cellValues[i]);
-            other.setCellPotentialValues(i, cellPotentialValues[i]);
-        }
-//        //clone the cache as well
-//        for(int regionType = 0; regionType < 3; regionType++) {
-//            for(int region = 0; region < 9; region++) {
-//	            for(int cell = 0; cell < 9; cell++) {
-//	            	BitSet cache = other.valueCellsCache.valuePotentialCells[regionType][region][cell];
-//	            	cache.clear();
-//	            	cache.or(valueCellsCache.valuePotentialCells[regionType][region][cell]);
-//	            }
-//            }
-//        }
-    }
-
-    /**
-     * Get the number of occurances of a given value in this grid
-     * @param value the value
-     * @return the number of occurances of a given value in this grid
-     */
-    public int getCountOccurancesOfValue(int value) {
-        int result = 0;
-        for (int i = 0; i < 81; i++) {
-            if (getCellValue(i) == value)
-                result++;
-        }
-        return result;
-    }
-
-    /**
-     * Get a string representation of this grid. For debugging
-     * purpose only.
-     */
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                int value = getCellValue(x, y);
-                if (value == 0)
-                    result.append('.');
-                else
-                    result.append(value);
-            }
-            result.append('\n');
-        }
-        return result.toString();
-    }
-    
-    /**
-     * Get a single-line string representation of this grid.
-     */
-    public String toString81() {
-        StringBuilder result = new StringBuilder(88);
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                int value = getCellValue(x, y);
-                if (value == 0)
-                    result.append('.');
-                else
-                    result.append(value);
-            }
-        }
-        return result.toString();
-    }
-
-    /**
-     * Get a pencilmark-string representation of this grid.
-     */
-    public String toStringPencilmarks() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < 81; i++) {
-        	int value = getCellValue(i);
-        	if(value == 0) {
-                BitSet values = getCellPotentialValues(i);
-                for (int v = 1; v < 10; v++) {
-	                if (values.get(v))
-	                    result.append(v);
-	                else
-	                    result.append('.');
-                }
-        	}
-        	else {
-                for (int v = 1; v < 10; v++) {
-	                if (v == value)
-	                    result.append(v);
-	                else
-	                    result.append('.');
-                }
-            }
-        }
-        return result.toString();
-    }
-    
-    /**
-     * Get a multi-line pencilmark-string representation of this grid.
-     */
-    public String toStringMultilinePencilmarks() {
-    	String res = "";
-        String s = "";
-
-        int crd = 1;
-        for (int i = 0; i < 81; i++) {
-            int n = getCellPotentialValues(i).cardinality();
-            if ( n > crd ) { crd = n; }
-        }
-        if ( crd > 1 )
-        {
-            for (int i=0; i<3; i++ ) {
-                s = "+";
-                for (int j=0; j<3; j++ ) {
-                    for (int k=0; k<3; k++ ) { s += "-";
-                        for (int l=0; l<crd; l++ ) { s += "-";
-                        }
-                    }
-                    s += "-+";
-                }
-                res += s + System.lineSeparator();
-                for (int j=0; j<3; j++ ) {
-                    s = "|";
-                    for (int k=0; k<3; k++ ) {
-                        for (int l=0; l<3; l++ ) {
-                            s += " ";
-                            int cnt = 0;
-                            int c = ((((i*3)+j)*3)+k)*3+l;
-                            Cell cell = getCell(c % 9, c / 9);
-                            //int n = cell.getValue();
-                            int n = getCellValue(c % 9, c / 9);
-                            if ( n != 0 ) {
-                                s += n;
-                                cnt += 1;
-                            }
-                            if ( n == 0 ) {
-                                for (int pv=1; pv<=9; pv++ ) {
-                                    //if ( cell.hasPotentialValue( pv) ) {
-                                    if ( hasCellPotentialValue(cell.getIndex(), pv) ) {
-                                        s += pv;
-                                        cnt += 1;
-                                    }
-                                }
-                            }
-                            for (int pad=cnt; pad<crd; pad++ ) { s += " ";
-                            }
-                        }
-                        s += " |";
-                    }
-                    res += s + System.lineSeparator();
-                }
-            }
-            s = "+";
-            for (int j=0; j<3; j++ ) {
-                for (int k=0; k<3; k++ ) { s += "-";
-                    for (int l=0; l<crd; l++ ) { s += "-";
-                    }
-                }
-                s += "-+";
-            }
-            res += s;
-        }
-        return res;
-    }
-   
-    /**
-     * rebuilds grid from a string of either 81 givens or 729 pencilmarks
-     * @param string a string with 0 or '.' for non-givens and positional mapping to cells/pencilmarks
-     */
-    public void fromString(String string) {
-    	int len = string.length();
-    	if(len < 81) return; //ignore
-    	
-    	//always perform cleanup
-        for (int i = 0; i < 81; i++) {
-            setCellValue(i % 9, i / 9, 0);
-        }
-        
-    	if(len < 729) { //vanilla clues
-            for (int i = 0; i < 81; i++) {
-                char ch = string.charAt(i);
-                if (ch >= '1' && ch <= '9') {
-                    int value = (ch - '0');
-                    setCellValue(i % 9, i / 9, value);
-                }
-            }
-    	}
-    	else { //pencilmarks
-            for (int i = 0; i < 729; i++) {
-                int cl = i / 9;  // cell
-                char ch = string.charAt(i);
-                if (ch >= '1' && ch <= '9') {
-                    int value = (ch - '0');
-                    assert value == 1 + i % 9; //exact positional mapping
-                    addCellPotentialValue(cl, value);
-                }
-            }
-    	}
-    }
-    
-    /**
-     * Applies Naked Single not causing direct eliminations.
-     * For adjustment of the board immediately after Pencilmarks loading.
-     */
-    public void adjustPencilmarks() {
-        for(int i = 0; i < 81; i++) {
-            Cell cell = getCell(i);
-            BitSet values = getCellPotentialValues(i);
-            if(values.cardinality() == 1) {
-                int singleclue = values.nextSetBit(0);
-                boolean isnakedsingle = true;
-                for(int cellIndex : cell.getVisibleCellIndexes()) {
-                    if(hasCellPotentialValue(cellIndex, singleclue)) {
-                        isnakedsingle = false;
-                        break;
-                    }
-                }
-                if(isnakedsingle) {
-                	setCellValue(i, singleclue);
-                	clearCellPotentialValues(i);
-                }
-            }
-        }               
-    }
-
-    /**
-     * Compare two grids for equality. Comparison is based on the values
-     * of the cells and on the potential values of the empty cells.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Grid))
-            return false;
-        Grid other = (Grid)o;
-        //if(!this.cellValues.equals(other.cellValues)) return false; <== incorrect
-        if(!Arrays.equals(this.cellValues, other.cellValues)) return false;
-        for (int i = 0; i < 81; i++) {
-            if (!getCellPotentialValues(i).equals(other.getCellPotentialValues(i))) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 0;
-        for (int i = 0; i < 81; i++) {
-            result ^= getCellValue(i);
-            result ^= getCellPotentialValues(i).hashCode();
-        }
-        return result;
     }
 }
