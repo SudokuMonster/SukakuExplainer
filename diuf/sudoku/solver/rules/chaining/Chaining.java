@@ -215,8 +215,7 @@ public class Chaining implements IndirectHintProducer {
                 LinkedSet<Potential> onToOff = new LinkedSet<Potential>();
                 boolean doDouble = (cardinality >= 3 && !isNisho && isDynamic);
                 boolean doContradiction = isDynamic || isNisho;
-                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff,
-                        doDouble, doContradiction);
+                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff, doDouble, doContradiction);
 
                 if (!isNisho) {
                     // Do region chaining
@@ -360,8 +359,7 @@ public class Chaining implements IndirectHintProducer {
     private void doUnaryChaining(Grid grid, final Potential pOn, List<ChainingHint> result,
             boolean isYChainEnabled, boolean isXChainEnabled) {
 
-        if (grid.getCellPotentialValues(pOn.cell.getIndex()).cardinality() > 2
-                && !isXChainEnabled)
+        if ((!isXChainEnabled) && grid.getCellPotentialValues(pOn.cell.getIndex()).cardinality() > 2)
             return; // Y-Cycles can only start if cell has 2 potential values
 
         final List<Potential> cycles = new ArrayList<Potential>();
@@ -859,19 +857,22 @@ else {
         return false;
     }
 
-    private void doCycles(Grid grid, LinkedSet<Potential> toOn,
-            LinkedSet<Potential> toOff, boolean isYChainEnabled,
+    private void doCycles(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff, boolean isYChainEnabled,
             boolean isXChainEnabled, List<Potential> cycles, Potential source) {
-        List<Potential> pendingOn = new LinkedList<Potential>(toOn);
-        List<Potential> pendingOff = new LinkedList<Potential>(toOff);
+        //List<Potential> pendingOn = new LinkedList<Potential>(toOn);
+        //List<Potential> pendingOff = new LinkedList<Potential>(toOff);
+        Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
+        Queue<Potential> pendingOff = new LinkedList<Potential>(toOff);
         // Mind why this is a BFS and works. I learned that cycles are only found by DFS
         // Maybe we are missing loops
 
         int length = 0; // Cycle length
         while (!pendingOn.isEmpty() || !pendingOff.isEmpty()) {
             length++;
-            while (!pendingOn.isEmpty()) {
-                Potential p = pendingOn.remove(0);
+            //while (!pendingOn.isEmpty()) {
+                //Potential p = pendingOn.remove(0);
+            Potential p;
+            while((p = pendingOn.poll()) != null) {
                 Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
                 for (Potential pOff : makeOff) {
                     if (!isParent(p, pOff)) {
@@ -882,10 +883,10 @@ else {
                 }
             }
             length++;
-            while (!pendingOff.isEmpty()) {
-                Potential p = pendingOff.remove(0);
-                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff,
-                        isYChainEnabled, isXChainEnabled);
+            //while (!pendingOff.isEmpty()) {
+                //Potential p = pendingOff.remove(0);
+            while((p = pendingOff.poll()) != null) {
+                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, isXChainEnabled);
                 for (Potential pOn : makeOn) {
                     if (length >= 4 && pOn.equals(source)) {
                         // Cycle found
@@ -904,11 +905,15 @@ else {
     private void doForcingChains(Grid grid, LinkedSet<Potential> toOn,
             LinkedSet<Potential> toOff, boolean isYChainEnabled,
             List<Potential> chains, Potential source) {
-        List<Potential> pendingOn = new LinkedList<Potential>(toOn);
-        List<Potential> pendingOff = new LinkedList<Potential>(toOff);
+        //List<Potential> pendingOn = new LinkedList<Potential>(toOn);
+        //List<Potential> pendingOff = new LinkedList<Potential>(toOff);
+        Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
+        Queue<Potential> pendingOff = new LinkedList<Potential>(toOff);
         while (!pendingOn.isEmpty() || !pendingOff.isEmpty()) {
-            while (!pendingOn.isEmpty()) {
-                Potential p = pendingOn.remove(0);
+            //while (!pendingOn.isEmpty()) {
+                //Potential p = pendingOn.remove(0);
+        	Potential p;
+        	while((p = pendingOn.poll()) != null) {
                 Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
                 for (Potential pOff : makeOff) {
                     Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
@@ -924,8 +929,9 @@ else {
                     }
                 }
             }
-            while (!pendingOff.isEmpty()) {
-                Potential p = pendingOff.remove(0);
+            //while (!pendingOff.isEmpty()) {
+                //Potential p = pendingOff.remove(0);
+        	while((p = pendingOff.poll()) != null) {
                 Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff,
                         isYChainEnabled, true);
                 for (Potential pOn : makeOn) {
