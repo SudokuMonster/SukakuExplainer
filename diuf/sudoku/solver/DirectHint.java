@@ -68,8 +68,7 @@ public abstract class DirectHint extends Hint {
         if (!(o instanceof DirectHint))
             return false;
         DirectHint other = (DirectHint)o;
-        return this.cell.equals(other.cell) && this.rule.equals(other.rule) &&
-        this.value == other.value;
+        return this.value == other.value && this.cell.equals(other.cell) && this.rule.equals(other.rule);
     }
 
     @Override

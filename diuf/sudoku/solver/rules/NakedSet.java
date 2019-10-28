@@ -26,23 +26,16 @@ public class NakedSet implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        //getHints(grid, Grid.Block.class, accu);
-        //getHints(grid, Grid.Column.class, accu);
-        //getHints(grid, Grid.Row.class, accu);
-        getHints(grid, 0, accu);
-        getHints(grid, 2, accu);
-        getHints(grid, 1, accu);
+        getHints(grid, 0, accu); //block
+        getHints(grid, 2, accu); //column
+        getHints(grid, 1, accu); //row
     }
 
     /**
      * For each regions of the given type, check if a n-tuple of values have
      * a common n-tuple of potential positions, and no other potential position.
      */
-    //private <T extends Grid.Region> void getHints(Grid grid, Class<T> regionType,
-    //        HintsAccumulator accu) throws InterruptedException {
-    //	Grid.Region[] regions = grid.getRegions(regionType);
-    private <T extends Grid.Region> void getHints(Grid grid, int regionTypeIndex,
-            HintsAccumulator accu) throws InterruptedException {
+    private <T extends Grid.Region> void getHints(Grid grid, int regionTypeIndex, HintsAccumulator accu) throws InterruptedException {
         Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
         // Iterate on parts
         for (Grid.Region region : regions) {
@@ -61,7 +54,6 @@ public class NakedSet implements IndirectHintProducer {
                     // Build potential values for each position of the tuple
                     BitSet[] potentialValues = new BitSet[degree];
                     for (int i = 0; i < degree; i++)
-                        //potentialValues[i] = cells[i].getPotentialValues();
                         potentialValues[i] = grid.getCellPotentialValues(cells[i].getIndex());
 
                     // Look for a common tuple of potential values, with same degree
@@ -78,8 +70,8 @@ public class NakedSet implements IndirectHintProducer {
         }
     }
 
-    private IndirectHint createValueUniquenessHint(Grid grid, Grid.Region region, Cell[] cells,
-            BitSet commonPotentialValues) {
+    private IndirectHint createValueUniquenessHint(Grid grid, Grid.Region region, Cell[] cells, BitSet commonPotentialValues) {
+    	CellSet cellsSet = new CellSet(cells);
         // Build value list
         int[] values = new int[degree];
         int dstIndex = 0;
@@ -92,7 +84,6 @@ public class NakedSet implements IndirectHintProducer {
         for (Cell cell : cells) {
             BitSet potentials = new BitSet(10);
             potentials.or(commonPotentialValues);
-            //potentials.and(cell.getPotentialValues());
             potentials.and(grid.getCellPotentialValues(cell.getIndex()));
             cellPValues.put(cell, potentials);
         }
@@ -100,14 +91,16 @@ public class NakedSet implements IndirectHintProducer {
         Map<Cell,BitSet> cellRemovePValues = new HashMap<Cell,BitSet>();
         for (int i = 0; i < 9; i++) {
             Cell otherCell = region.getCell(i);
-            if (!Arrays.asList(cells).contains(otherCell)) {
+            //if (!Arrays.asList(cells).contains(otherCell)) {
+            if (!cellsSet.contains(otherCell)) {
                 // Get removable potentials
-                BitSet removablePotentials = new BitSet(10);
-                for (int value = 1; value <= 9; value++) {
-                    //if (commonPotentialValues.get(value) && otherCell.hasPotentialValue(value))
-                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
-                        removablePotentials.set(value);
-                }
+                //BitSet removablePotentials = new BitSet(10);
+                //for (int value = 1; value <= 9; value++) {
+                //    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
+                //        removablePotentials.set(value);
+                //}
+                BitSet removablePotentials = (BitSet)commonPotentialValues.clone();
+                removablePotentials.and(grid.getCellPotentialValues(otherCell.getIndex()));
                 if (!removablePotentials.isEmpty())
                     cellRemovePValues.put(otherCell, removablePotentials);
             }

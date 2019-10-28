@@ -40,6 +40,12 @@ public class CellSet implements Set<Cell> {
 		}
 	}
 	
+	public CellSet(Cell[] c) {
+		for(Cell i : c) {
+			bits.set(i.getIndex());
+		}
+	}
+	
 	@Override
 	public boolean add(Cell cell) {
 		int i = cell.getIndex();
