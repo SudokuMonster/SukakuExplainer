@@ -571,6 +571,9 @@ public class Grid {
             other.setCellValue(i, this.cellValues[i]);
             other.setCellPotentialValues(i, cellPotentialValues[i]);
         }
+        other.initialGrid = initialGrid; //copy reference assuming constant
+        if(other.dCells != null) dCells = new DigitCells(other); //copy by value or clear
+        else dCells = null;
 //        //clone the cache as well
 //        for(int regionType = 0; regionType < 3; regionType++) {
 //            for(int region = 0; region < 9; region++) {
