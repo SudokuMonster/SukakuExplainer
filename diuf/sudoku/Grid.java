@@ -9,6 +9,7 @@ package diuf.sudoku;
 import java.util.*;
 
 import diuf.sudoku.tools.CellSet;
+import diuf.sudoku.tools.DigitCells;
 
 /**
  * A Sudoku grid.
@@ -31,6 +32,16 @@ public class Grid {
      * Cell potential values of the grid, bit 0 is unused.
      */
     private BitSet[] cellPotentialValues = new BitSet[81];
+
+    /*
+     * The grid state at entry of the current hint search cycle.
+     */
+    private Grid initialGrid = null;
+
+    /*
+     * The grid state at entry of the current hint search cycle.
+     */
+    private DigitCells dCells = null;
 
 //    //cache for Region.getPotentialPositions(value)
 //    private valueCells valueCellsCache = new valueCells();
@@ -369,8 +380,32 @@ public class Grid {
     public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
         return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
+    
+    public static Grid.Region getCommonRegion(int cellIndex1, int cellIndex2) {
+    	//TODO: move to table 81x81
+    	for(int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+    		if(cellRegions[cellIndex1][regionTypeIndex] == cellRegions[cellIndex2][regionTypeIndex]) {
+    	        return regions[regionTypeIndex][Grid.cellRegions[cellIndex1][regionTypeIndex]];
+    		}
+    	}
+        return null;
+    }
 
     //=== Non-static methods ==============
+
+    public Grid getInitialGrid() {
+    	return initialGrid;
+    }
+    public void setInitialGrid(Grid g) {
+    	if(initialGrid == null) initialGrid = new Grid();
+    	g.copyTo(initialGrid);
+    }
+    public DigitCells getDigitCells() {
+    	return dCells;
+    }
+    public void rebuildDigitCells() {
+    	dCells = new DigitCells(this);
+    }
 
     /**
      * Set the value of a cell

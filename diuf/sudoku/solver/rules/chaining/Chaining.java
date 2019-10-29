@@ -31,7 +31,8 @@ public class Chaining implements IndirectHintProducer {
     private final int level;
     private final boolean noParallel;
     private final int nestingLimit;
-    private Grid saveGrid = new Grid();
+    private Grid saveGrid = null;
+    //private Grid saveGrid = new Grid();
     private List<IndirectHintProducer> otherRules;
     private Grid lastGrid = null;
     private Collection<ChainingHint> lastHints = null;
@@ -129,15 +130,16 @@ public class Chaining implements IndirectHintProducer {
     protected List<ChainingHint> getHintList(Grid grid) {
         // TODO: implement an implications cache
         List<ChainingHint> result;
+    	DigitCells dc = new DigitCells(grid);
         if (isMultipleEnabled || isDynamic) {
-            result = getMultipleChainsHintList(grid);
+            result = getMultipleChainsHintList(grid, dc);
         } else {
             // Cycles with X-Links (Coloring / Fishy)
-            List<ChainingHint> xLoops = getLoopHintList(grid, false, true);
+            List<ChainingHint> xLoops = getLoopHintList(grid, false, true, dc);
             // Cycles with Y-Links
-            List<ChainingHint> yLoops = getLoopHintList(grid, true, false);
+            List<ChainingHint> yLoops = getLoopHintList(grid, true, false, dc);
             // Cycles with both
-            List<ChainingHint> xyLoops = getLoopHintList(grid, true, true);
+            List<ChainingHint> xyLoops = getLoopHintList(grid, true, true, dc);
             result = xLoops;
             result.addAll(yLoops);
             result.addAll(xyLoops);
@@ -173,29 +175,28 @@ public class Chaining implements IndirectHintProducer {
      * @param isXChainEnabled whether X-Links are used in "off to on" searches
      * @return the hints found
      */
-    private List<ChainingHint> getLoopHintList(Grid grid, boolean isYChainEnabled,
-            boolean isXChainEnabled) {
+    private List<ChainingHint> getLoopHintList(Grid grid, boolean isYChainEnabled, boolean isXChainEnabled, DigitCells dc) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         // Iterate on all empty cells
         for (int i = 0; i < 81; i++) {
-            if (grid.getCellValue(i) == 0) { // the cell is empty
-            	int cardinality = grid.getCellPotentialValues(i).cardinality();
-                if (cardinality > 1) {
-                    // Iterate on all potential values that are not alone
-		            Cell cell = Grid.getCell(i);
-                    for (int value = 1; value <= 9; value++) {
-                        if (grid.hasCellPotentialValue(i, value)) {
-                            Potential pOn = new Potential(cell, value, true);
-                            doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled);
-                        }
-                    } 
-                }
-            } // if empty
-         } // for i
+            if(grid.getCellValue(i) != 0) continue;
+        	// the cell is empty
+        	int cardinality = grid.getCellPotentialValues(i).cardinality();
+            if (cardinality > 1) {
+                // Iterate on all potential values that are not alone
+	            Cell cell = Grid.getCell(i);
+                for (int value = 1; value <= 9; value++) {
+                    if (grid.hasCellPotentialValue(i, value)) {
+                        Potential pOn = new Potential(cell, value, true);
+                        doUnaryChaining(grid, pOn, result, isYChainEnabled, isXChainEnabled, dc);
+                    }
+                } 
+            }
+        } // for i
         return result;
     }
 
-    private List<ChainingHint> getMultipleChainsHintListForCell(Grid grid, Cell cell, int cardinality) {
+    private List<ChainingHint> getMultipleChainsHintListForCell(Grid grid, Cell cell, int cardinality, DigitCells dc) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         // Prepare storage and accumulator for "Cell Reduction"
         Map<Integer, LinkedSet<Potential>> valueToOn =
@@ -215,11 +216,11 @@ public class Chaining implements IndirectHintProducer {
                 LinkedSet<Potential> onToOff = new LinkedSet<Potential>();
                 boolean doDouble = (cardinality >= 3 && !isNisho && isDynamic);
                 boolean doContradiction = isDynamic || isNisho;
-                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff, doDouble, doContradiction);
+                doBinaryChaining(grid, pOn, pOff, result, onToOn, onToOff, doDouble, doContradiction, dc);
 
                 if (!isNisho) {
                     // Do region chaining
-                    doRegionChainings(grid, result, cell, value, onToOn, onToOff);
+                    doRegionChainings(grid, result, cell, value, onToOn, onToOff, dc);
                 }
 
                 // Collect results for cell chaining
@@ -255,7 +256,7 @@ public class Chaining implements IndirectHintProducer {
     	return result;
     }
     
-    private List<ChainingHint> getMultipleChainsHintList(Grid grid) {
+    private List<ChainingHint> getMultipleChainsHintList(Grid grid, DigitCells dc) {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         //boolean noParallel = true; //debug, hide the class member noParallel
         //boolean noParallel = false;
@@ -268,7 +269,7 @@ public class Chaining implements IndirectHintProducer {
                 if (cardinality > 2 || (cardinality > 1 && isDynamic)) {
 		            Cell cell = Grid.getCell(i);
                 	if (noParallel) {
-                		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality));
+                		result.addAll(getMultipleChainsHintListForCell(grid, cell, cardinality, dc));
                 	}
                 	else {
                 		cellsToProcess.add(cell);
@@ -293,7 +294,7 @@ public class Chaining implements IndirectHintProducer {
         
         List<MultipleChainsHintsCollector> threads = new ArrayList<MultipleChainsHintsCollector>();
         for(Cell cell : cellsToProcess) {
-        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, parallelResult);
+        	MultipleChainsHintsCollector t = new MultipleChainsHintsCollector(this, grid, cell, dc, parallelResult);
         	threads.add(t);
         	t.start();
         }
@@ -311,19 +312,21 @@ public class Chaining implements IndirectHintProducer {
     }
 
     class MultipleChainsHintsCollector extends Thread {
-    	private Chaining chaining;
-    	private ConcurrentLinkedQueue<ChainingHint> accumulator;
+    	private final Chaining chaining;
+    	private final ConcurrentLinkedQueue<ChainingHint> accumulator;
     	private final Grid gridClone = new Grid();
-    	private Cell cell;
-    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, ConcurrentLinkedQueue<ChainingHint> result) {
+    	private final Cell cell;
+    	private final DigitCells dc;
+    	MultipleChainsHintsCollector(Chaining caller, Grid grid, Cell cell, DigitCells dc, ConcurrentLinkedQueue<ChainingHint> result) {
     		chaining = new Chaining(caller.isMultipleEnabled, caller.isDynamic, caller.isNisho, caller.level, true, caller.nestingLimit);
     		grid.copyTo(gridClone);
     		accumulator = result;
     		this.cell = cell;
+    		this.dc = dc;
     	}
     	public void run() {
     		int cardinality = gridClone.getCellPotentialValues(cell.getIndex()).cardinality();
-    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality));
+    		accumulator.addAll(chaining.getMultipleChainsHintListForCell(gridClone, cell, cardinality, dc));
     	}
     }
 
@@ -357,7 +360,7 @@ public class Chaining implements IndirectHintProducer {
      * @param isXChainEnabled whether x-chains are enabled
      */
     private void doUnaryChaining(Grid grid, final Potential pOn, List<ChainingHint> result,
-            boolean isYChainEnabled, boolean isXChainEnabled) {
+            boolean isYChainEnabled, boolean isXChainEnabled, DigitCells dc) {
 
         if ((!isXChainEnabled) && grid.getCellPotentialValues(pOn.cell.getIndex()).cardinality() > 2)
             return; // Y-Cycles can only start if cell has 2 potential values
@@ -367,7 +370,7 @@ public class Chaining implements IndirectHintProducer {
         LinkedSet<Potential> onToOn = new LinkedSet<Potential>();
         LinkedSet<Potential> onToOff = new LinkedSet<Potential>();
         onToOn.add(pOn);
-        doCycles(grid, onToOn, onToOff, isYChainEnabled, isXChainEnabled, cycles, pOn);
+        doCycles(grid, onToOn, onToOff, isYChainEnabled, isXChainEnabled, cycles, pOn, dc);
         if (isXChainEnabled) {
             // Forcing Y-Chains do not exist (length must be both odd and even)
 
@@ -375,21 +378,20 @@ public class Chaining implements IndirectHintProducer {
             onToOn = new LinkedSet<Potential>();
             onToOff = new LinkedSet<Potential>();
             onToOn.add(pOn);
-            doForcingChains(grid, onToOn, onToOff, isYChainEnabled, chains, pOn);
+            doForcingChains(grid, onToOn, onToOff, isYChainEnabled, chains, pOn, dc);
 
             // Forcing chain with "on" implication
             final Potential pOff = new Potential(pOn.cell, pOn.value, false);
             onToOn = new LinkedSet<Potential>();
             onToOff = new LinkedSet<Potential>();
             onToOff.add(pOff);
-            doForcingChains(grid, onToOn, onToOff, isYChainEnabled, chains, pOff);
+            doForcingChains(grid, onToOn, onToOff, isYChainEnabled, chains, pOff, dc);
         }
         for (Potential dstOn : cycles) {
             // Cycle found !!
             assert dstOn.isOn; // Cycles are only looked for from "on" potentials
             Potential dstOff = getReversedCycle(dstOn);
-            ChainingHint hint = createCycleHint(grid, dstOn, dstOff, isYChainEnabled,
-                    isXChainEnabled);
+            ChainingHint hint = createCycleHint(grid, dstOn, dstOff, isYChainEnabled, isXChainEnabled);
             if (hint.isWorth())
                 result.add(hint);
         }
@@ -446,7 +448,7 @@ public class Chaining implements IndirectHintProducer {
      */
     private void doBinaryChaining(Grid grid, Potential pOn, Potential pOff,
             List<ChainingHint> result, LinkedSet<Potential> onToOn,
-            LinkedSet<Potential> onToOff, boolean doReduction, boolean doContradiction) {
+            LinkedSet<Potential> onToOff, boolean doReduction, boolean doContradiction, DigitCells dc) {
 
         Potential[] absurdPotential = null;
         LinkedSet<Potential> offToOn = new LinkedSet<Potential>();
@@ -460,7 +462,7 @@ public class Chaining implements IndirectHintProducer {
 
         // Test p = "on"
         onToOn.add(pOn);
-        absurdPotential = doChaining(grid, onToOn, onToOff);
+        absurdPotential = doChaining(grid, onToOn, onToOff, dc);
         if (doContradiction && absurdPotential != null) {
             // p cannot hold its value, because else it would lead to a contradiction
             BinaryChainingHint hint = createChainingOffHint(absurdPotential[0], absurdPotential[1],
@@ -471,7 +473,7 @@ public class Chaining implements IndirectHintProducer {
 
         // Test p = "off"
         offToOff.add(pOff);
-        absurdPotential = doChaining(grid, offToOn, offToOff);
+        absurdPotential = doChaining(grid, offToOn, offToOff, dc);
         if (doContradiction && absurdPotential != null) {
             // p must hold its value, because else it would lead to a contradiction
             BinaryChainingHint hint = createChainingOnHint(grid, absurdPotential[0], absurdPotential[1],
@@ -505,7 +507,7 @@ public class Chaining implements IndirectHintProducer {
     }
 
     private void doRegionChainings(Grid grid, List<ChainingHint> result, Cell cell,
-            int value, LinkedSet<Potential> onToOn, LinkedSet<Potential> onToOff) {
+            int value, LinkedSet<Potential> onToOn, LinkedSet<Potential> onToOff, DigitCells dc) {
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
             BitSet potentialPositions = region.getPotentialPositions(grid, value);
@@ -539,7 +541,7 @@ public class Chaining implements IndirectHintProducer {
                             LinkedSet<Potential> otherToOn = new LinkedSet<Potential>();
                             LinkedSet<Potential> otherToOff = new LinkedSet<Potential>();
                             otherToOn.add(other);
-                            doChaining(grid, otherToOn, otherToOff);
+                            doChaining(grid, otherToOn, otherToOff, dc);
                             posToOn.put(pos, otherToOn);
                             posToOff.put(pos, otherToOff);
                             regionToOn.retainAll(otherToOn);
@@ -670,27 +672,61 @@ else{
 }
     }
 
+    private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled, DigitCells dc) {
+    	Set<Potential> result = new LinkedHashSet<Potential>();
 
-
-    private void addHiddenParentsOfCell(Potential p, Grid grid, Grid source,
-            LinkedSet<Potential> offPotentials) {
-    	int i = p.cell.getIndex();
-    	for (int value = 1; value <= 9; value++) {
-            if (source.hasCellPotentialValue(i, value) && !grid.hasCellPotentialValue(i, value)) {
-                // Add a hidden parent
-                Potential parent = new Potential(p.cell, value, false);
-                parent = offPotentials.get(parent); // Retrieve complete version
-                if (parent == null)
-                    throw new RuntimeException("Parent not found");
-                p.parents.add(parent);
+        int potentialCellIndex = p.cell.getIndex();
+        if (isYChainEnabled) { // This rule is not used with X-Chains
+            // First rule: other potential values for this cell get off
+            BitSet potentialValues = grid.getCellPotentialValues(potentialCellIndex);
+            for (int value = potentialValues.nextSetBit(0); value >= 0; value = potentialValues.nextSetBit(value + 1)) {
+                if (value != p.value)
+                    result.add(new Potential(p.cell, value, false, p,
+                            Potential.Cause.NakedSingle, "the cell can contain only one value"));
             }
         }
+
+        // Second rule: other potential position for this value get off
+		CellSet victims = new CellSet(Grid.visibleCellsSet[potentialCellIndex]);
+		victims.bits.and(dc.digitCells[p.value - 1]);
+        for(Cell cell : victims) {
+        	Grid.Region region = Grid.getCommonRegion(potentialCellIndex, cell.getIndex());
+            result.add(new Potential(cell, p.value, false, p,
+                    getRegionCause(region.getRegionTypeIndex()),
+                    "the value can occur only once in the " + region.toString()));
+        }
+        return result;
+    }
+    
+    private void addHiddenParentsOfCell(Potential p, Grid grid, Grid source, LinkedSet<Potential> offPotentials) {
+    	if(source == null) return; //MD: dirty patch when compared to empty source - doCycles and doForcingChains. A 10 years old bug.
+    	int i = p.cell.getIndex();
+        BitSet goneValues = (BitSet)source.getCellPotentialValues(i).clone();
+        goneValues.andNot(grid.getCellPotentialValues(i));
+        for(int value = goneValues.nextSetBit(0); value >= 0; value = goneValues.nextSetBit(value + 1)) {
+            Potential parent = new Potential(p.cell, value, false);
+            parent = offPotentials.get(parent); // Retrieve complete version
+            if (parent == null)
+                throw new RuntimeException("Parent not found");
+            p.parents.add(parent);
+        }
+    	//for (int value = 1; value <= 9; value++) {
+        //    if (source.hasCellPotentialValue(i, value) && !grid.hasCellPotentialValue(i, value)) {
+        //        // Add a hidden parent
+        //        Potential parent = new Potential(p.cell, value, false);
+        //        parent = offPotentials.get(parent); // Retrieve complete version
+        //        if (parent == null)
+        //            throw new RuntimeException("Parent not found");
+        //        p.parents.add(parent);
+        //    }
+        //}
     }
 
-    private void addHiddenParentsOfRegion(Potential p, Grid grid, Grid source,
-            Grid.Region curRegion, LinkedSet<Potential> offPotentials) {
+    private void addHiddenParentsOfRegion(Potential p, Grid grid, Grid source, Grid.Region curRegion, LinkedSet<Potential> offPotentials) {
+    	if(source == null) return; //MD: dirty patch when compared to empty source - doCycles and doForcingChains. A 10 years old bug.
         //Grid.Region srcRegion = Grid.getRegionAt(curRegion.getRegionTypeIndex(), p.cell.getIndex());
         int value = p.value;
+        //MD TODO: use DigitCells
         BitSet curPositions = curRegion.copyPotentialPositions(grid, value);
         //BitSet srcPositions = srcRegion.copyPotentialPositions(source, value);
         BitSet srcPositions = curRegion.copyPotentialPositions(source, value);
@@ -844,6 +880,52 @@ else {
 }
     }
 
+    private Set<Potential> getOffToOn(Grid grid, Potential p, Grid source, LinkedSet<Potential> offPotentials, boolean isYChainEnabled, boolean isXChainEnabled, DigitCells dc) {
+		Set<Potential> result = new LinkedHashSet<Potential>();
+															  
+    	int thisCellIndex = p.cell.getIndex();
+        if (isYChainEnabled) {
+            // First rule: if there is only two potentials in this cell, the other one gets on
+            BitSet potentialValues = grid.getCellPotentialValues(thisCellIndex);
+            if (potentialValues.cardinality() == 2) {
+                int otherValue = potentialValues.nextSetBit(0);
+                if (otherValue == p.value)
+                    otherValue = potentialValues.nextSetBit(otherValue + 1);
+                Potential pOn = new Potential(p.cell, otherValue, true, p,
+                        Potential.Cause.NakedSingle, "only remaining possible value in the cell");
+                addHiddenParentsOfCell(pOn, grid, source, offPotentials);
+                result.add(pOn);
+            }
+        }
+        if (isXChainEnabled) {
+            // Second rule: if there are only two positions for this potential, the other one gets on
+        	int thisValue = p.value;
+        	for(int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        		Region r = Grid.regions[regionTypeIndex][Grid.cellRegions[thisCellIndex][regionTypeIndex]];
+        		CellSet victims = new CellSet(r.regionCellsBitSet);
+        		victims.bits.and(dc.digitCells[thisValue - 1]);
+        		if(victims.bits.cardinality() != 2) continue;
+                //for(Cell cell : victims) {
+                //	if(cell.getIndex() == thisCellIndex) continue;
+                //    Potential pOn = new Potential(cell, thisValue, true, p,
+                //            getRegionCause(regionTypeIndex),
+                //            "only remaining possible position in the " + r.toString());
+                //    addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);						   
+                //    result.add(pOn);	   	  
+                //}
+                int otherPosition = victims.bits.nextSetBit(0);
+                if (otherPosition == thisCellIndex)
+                	otherPosition = victims.bits.nextSetBit(otherPosition + 1);
+                Potential pOn = new Potential(Grid.getCell(otherPosition), thisValue, true, p,
+                        getRegionCause(regionTypeIndex),
+                        "only remaining possible position in the " + r.toString());
+                addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);						   
+                result.add(pOn);
+        	} // region types
+        }
+        return result;
+    }
+    
     /**
      * Whether <tt>parent</tt> is an ancestor of <tt>child</tt>.
      */
@@ -858,7 +940,7 @@ else {
     }
 
     private void doCycles(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff, boolean isYChainEnabled,
-            boolean isXChainEnabled, List<Potential> cycles, Potential source) {
+            boolean isXChainEnabled, List<Potential> cycles, Potential source, DigitCells dc) {
         //List<Potential> pendingOn = new LinkedList<Potential>(toOn);
         //List<Potential> pendingOff = new LinkedList<Potential>(toOff);
         Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
@@ -873,7 +955,8 @@ else {
                 //Potential p = pendingOn.remove(0);
             Potential p;
             while((p = pendingOn.poll()) != null) {
-                Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
+                //Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
+                Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled, dc);
                 for (Potential pOff : makeOff) {
                     if (!isParent(p, pOff)) {
                         // Not processed yet
@@ -886,7 +969,8 @@ else {
             //while (!pendingOff.isEmpty()) {
                 //Potential p = pendingOff.remove(0);
             while((p = pendingOff.poll()) != null) {
-                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, isXChainEnabled);
+                //Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, isXChainEnabled);
+                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, isXChainEnabled, dc);
                 for (Potential pOn : makeOn) {
                     if (length >= 4 && pOn.equals(source)) {
                         // Cycle found
@@ -904,7 +988,7 @@ else {
 
     private void doForcingChains(Grid grid, LinkedSet<Potential> toOn,
             LinkedSet<Potential> toOff, boolean isYChainEnabled,
-            List<Potential> chains, Potential source) {
+            List<Potential> chains, Potential source, DigitCells dc) {
         //List<Potential> pendingOn = new LinkedList<Potential>(toOn);
         //List<Potential> pendingOff = new LinkedList<Potential>(toOff);
         Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
@@ -914,7 +998,8 @@ else {
                 //Potential p = pendingOn.remove(0);
         	Potential p;
         	while((p = pendingOn.poll()) != null) {
-                Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
+                //Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled);
+                Set<Potential> makeOff = getOnToOff(grid, p, isYChainEnabled, dc);
                 for (Potential pOff : makeOff) {
                     Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
                     if (source.equals(pOn)) {
@@ -932,8 +1017,8 @@ else {
             //while (!pendingOff.isEmpty()) {
                 //Potential p = pendingOff.remove(0);
         	while((p = pendingOff.poll()) != null) {
-                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff,
-                        isYChainEnabled, true);
+                //Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, true);
+                Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, isYChainEnabled, true, dc);
                 for (Potential pOn : makeOn) {
                     Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
                     if (source.equals(pOff)) {
@@ -965,8 +1050,9 @@ else {
      * @return <code>null</code> on success; the first potential that would have
      * to be both "on" and "off" else.
      */
-    private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
+    private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff, DigitCells dc) {
     	//MD: Note that toOn potentials have higher precedence than toOff which can result in non-shortest contradiction chain finding.
+    	saveGrid = new Grid();
         grid.copyTo(saveGrid);
 if (Settings.getInstance().Fixed14Chaining() == 1){
 		Potential[] pOnRes = new Potential[729];
@@ -1038,6 +1124,7 @@ if (Settings.getInstance().Fixed14Chaining() == 1){
         }
 }
 else{										  										   
+		DigitCells dcCopy = new DigitCells(dc);
         try {
             Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
             Queue<Potential> pendingOff = new LinkedList<Potential>(toOff);
@@ -1045,7 +1132,7 @@ else{
             do {
             	p = pendingOn.poll();
                 if (p != null) {
-                    Set<Potential> makeOff = getOnToOff(grid, p, !isNisho);
+                    Set<Potential> makeOff = getOnToOff(grid, p, !isNisho, dcCopy);
                     for (Potential pOff : makeOff) {
                         Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
                         if (toOn.contains(pOn)) {
@@ -1062,9 +1149,11 @@ else{
                 }
                 p = pendingOff.poll();
                 if (p != null) {
-                    Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true);
-                    if (isDynamic)
+                    Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true, dcCopy);
+                    if (isDynamic) {
                         p.off(grid); // writes to grid
+                        dcCopy.digitCells[p.value - 1].clear(p.cell.getIndex());
+                    }
                     for (Potential pOn : makeOn) {
                         Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
                         if (toOff.contains(pOff)) {
@@ -1100,8 +1189,7 @@ else{
     /**
      * Get all non-trivial implications (involving fished, naked/hidden sets, etc).
      */
-    private Collection<Potential> getAdvancedPotentials(final Grid grid, final Grid source,
-            final LinkedSet<Potential> offPotentials) {
+    private Collection<Potential> getAdvancedPotentials(final Grid grid, final Grid source, final LinkedSet<Potential> offPotentials) {
         final Collection<Potential> result = new ArrayList<Potential>();
         if (otherRules == null) {
             otherRules = new ArrayList<IndirectHintProducer>();

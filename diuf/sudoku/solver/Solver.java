@@ -599,6 +599,7 @@ else {
             	formatter.beforeHint(this);
             	Hint hint = null;
             	try {
+            		grid.setInitialGrid(grid);
             		hint = getSingleHint();
             		if(hint != null) {
 		                assert hint instanceof Rule;
@@ -777,6 +778,7 @@ else {
 				formatter.beforeHint(this);
 				List<Hint> result = new ArrayList<Hint>();
 				SmallestHintsAccumulator accu = new SmallestHintsAccumulator(result);
+        		grid.setInitialGrid(grid);
                 try {
                     for (HintProducer producer : directHintProducers) {
                         producer.getHints(grid, accu);
