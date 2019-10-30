@@ -158,7 +158,7 @@ public class TurbotFish implements IndirectHintProducer {
         Map<Cell,BitSet> removablePotentials = new HashMap<>();
 		int eliminationsTotal = 0;
         //Set<Cell> victims = new LinkedHashSet<>(start.getVisibleCells());
-        CellSet victims = start.getVisibleCells();
+        CellSet victims = new CellSet(start.getVisibleCells());
         victims.retainAll(end.getVisibleCells());
         victims.remove(start);
         victims.remove(end);
