@@ -9,23 +9,22 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import diuf.sudoku.Grid;
-import diuf.sudoku.solver.rules.chaining.ChainingHint;
 
 public class HintsCache {
-	private static ConcurrentHashMap<Grid,ConcurrentHashMap<String,Iterable<ChainingHint>>> cache = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Grid,ConcurrentHashMap<String,Object>> cache = new ConcurrentHashMap<>();
 	
-	public static Iterable<ChainingHint> get(Grid grid, String signature) {
-		ConcurrentHashMap<String,Iterable<ChainingHint>> item = cache.get(grid);
+	public static Object get(Grid grid, String signature) {
+		ConcurrentHashMap<String,Object> item = cache.get(grid);
 		if(item == null) return null;
 		return item.get(signature);
 	}
-	public static void put(Grid grid, String signature, Iterable<ChainingHint> result) {
+	public static void put(Grid grid, String signature, Object result) {
         Grid gridCopy = new Grid();
         grid.copyTo(gridCopy);
         gridCopy.clearDigitCells();
         gridCopy.clearInitialGrid();
-        ConcurrentHashMap<String,Iterable<ChainingHint>> empty = new ConcurrentHashMap<String,Iterable<ChainingHint>>();
-		ConcurrentHashMap<String,Iterable<ChainingHint>> item = cache.putIfAbsent(gridCopy, empty);
+        ConcurrentHashMap<String,Object> empty = new ConcurrentHashMap<String,Object>();
+		ConcurrentHashMap<String,Object> item = cache.putIfAbsent(gridCopy, empty);
 		if(item != null) {
 			item.put(signature, result);
 		}
