@@ -229,12 +229,13 @@ else {
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 2, false, 0));
         addIfWorth(SolvingTechnique.NestedForcingChain, advancedHintProducers, new Chaining(true, true, false, 3, false, 0));
         experimentalHintProducers = new ArrayList<IndirectHintProducer>(); // Two levels of nesting !?
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 0));
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 1));
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 2));
-        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 3)); //MD: highly experimental
-        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5));
-        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6));
+        addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 0)); //required still for vanilla
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 1));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 2));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 4, false, 3)); //MD: highly experimental
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5, false, 0));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 5, false, 1));
+        //addIfWorth(SolvingTechnique.NestedForcingChain, experimentalHintProducers, new Chaining(true, true, false, 6, false, 0));
 }
 	}
 
@@ -599,7 +600,7 @@ else {
             	formatter.beforeHint(this);
             	Hint hint = null;
             	try {
-            		grid.setInitialGrid(grid);
+            		//grid.setInitialGrid(grid);
             		hint = getSingleHint();
             		if(hint != null) {
 		                assert hint instanceof Rule;
@@ -760,6 +761,7 @@ else {
     public void getBatchDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
+		HintsCache.clear();
 		boolean logStep = Settings.getInstance().isLog();
 		PrintWriter logWriter = Settings.getInstance().getLogWriter();
 		int batchCount = 0;
@@ -778,7 +780,7 @@ else {
 				formatter.beforeHint(this);
 				List<Hint> result = new ArrayList<Hint>();
 				SmallestHintsAccumulator accu = new SmallestHintsAccumulator(result);
-        		grid.setInitialGrid(grid);
+        		//grid.setInitialGrid(grid);
                 try {
                     for (HintProducer producer : directHintProducers) {
                         producer.getHints(grid, accu);
@@ -883,6 +885,7 @@ else {
 			formatter.afterPuzzle(this);
 		}
 		finally {
+			HintsCache.clear();
             backup.copyTo(grid);
         }
     }

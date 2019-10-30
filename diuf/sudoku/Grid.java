@@ -400,11 +400,17 @@ public class Grid {
     	if(initialGrid == null) initialGrid = new Grid();
     	g.copyTo(initialGrid);
     }
+    public void clearInitialGrid() {
+    	initialGrid = null;
+    }
     public DigitCells getDigitCells() {
     	return dCells;
     }
     public void rebuildDigitCells() {
     	dCells = new DigitCells(this);
+    }
+    public void clearDigitCells() {
+    	dCells = null;
     }
 
     /**

@@ -29,7 +29,7 @@ public class Chaining implements IndirectHintProducer {
     private final boolean isDynamic;
     private final boolean isNisho;
     private final int level;
-    private final boolean noParallel;
+    private final boolean isNested;
     private final int nestingLimit;
     //private Grid saveGrid = null;
     //private Grid saveGrid = new Grid();
@@ -56,13 +56,14 @@ public class Chaining implements IndirectHintProducer {
 //        this.nestingLimit = 0;
 //    }
     
-    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level, boolean noParallel, int nestingLimit) {
+    public Chaining(boolean isMultipleEnabled, boolean isDynamic, boolean isNishio, int level, boolean isNested, int nestingLimit) {
         this.isMultipleEnabled = isMultipleEnabled;
         this.isDynamic = isDynamic;
         this.isNisho = isNishio;
         this.level = level;
-        this.noParallel = noParallel;
+        this.isNested = isNested;
         this.nestingLimit = nestingLimit;
+        //signature = "Chaining" + (isMultipleEnabled ? "1" : "0") + (isDynamic ? "1" : "0") + (isNisho ? "1" : "0") + String.valueOf(level) + (isNested ? "1" : "0") + String.valueOf(nestingLimit);
         signature = "Chaining" + (isMultipleEnabled ? "1" : "0") + (isDynamic ? "1" : "0") + (isNisho ? "1" : "0") + String.valueOf(level) + String.valueOf(nestingLimit);
     }
 
@@ -261,7 +262,7 @@ public class Chaining implements IndirectHintProducer {
         List<ChainingHint> result = new ArrayList<ChainingHint>();
         //boolean noParallel = true; //debug, hide the class member noParallel
         //boolean noParallel = false;
-        boolean noParallel = this.noParallel || Settings.getInstance().getNumThreads() == 1;
+        boolean noParallel = this.isNested || Settings.getInstance().getNumThreads() == 1;
         List<Cell> cellsToProcess = new ArrayList<Cell>();
         // Iterate on all empty cells
         for (int i = 0; i < 81; i++) {
@@ -1306,8 +1307,8 @@ public class Chaining implements IndirectHintProducer {
     	Iterable<ChainingHint> cachedHints = HintsCache.get(grid, signature);
     	if(cachedHints != null) {
         	//System.err.printf("(%d%d%d% d%d)\n", isMultipleEnabled ? 1 : 0, isDynamic ? 1 : 0, isNisho ? 1 : 0, level, nestingLimit);
-            for (Hint hint : cachedHints) {
-                accu.add((ChainingHint)hint);
+            for (ChainingHint hint : cachedHints) {
+                accu.add(hint);
             }
             return;
     	}

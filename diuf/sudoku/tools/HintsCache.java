@@ -22,6 +22,8 @@ public class HintsCache {
 	public static void put(Grid grid, String signature, Iterable<ChainingHint> result) {
         Grid gridCopy = new Grid();
         grid.copyTo(gridCopy);
+        gridCopy.clearDigitCells();
+        gridCopy.clearInitialGrid();
         ConcurrentHashMap<String,Iterable<ChainingHint>> empty = new ConcurrentHashMap<String,Iterable<ChainingHint>>();
 		ConcurrentHashMap<String,Iterable<ChainingHint>> item = cache.putIfAbsent(gridCopy, empty);
 		if(item != null) {
@@ -47,5 +49,9 @@ public class HintsCache {
 				}
 			}
 		}
+	}
+	//erase after puzzle is done
+	public static void clear() {
+		cache.clear();
 	}
 }
