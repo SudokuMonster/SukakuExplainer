@@ -36,6 +36,7 @@ public class Chaining implements IndirectHintProducer {
     private List<IndirectHintProducer> otherRules;
     private Grid lastGrid = null;
     private Collection<ChainingHint> lastHints = null;
+    private String signature;
 
 
     /**
@@ -62,6 +63,7 @@ public class Chaining implements IndirectHintProducer {
         this.level = level;
         this.noParallel = noParallel;
         this.nestingLimit = nestingLimit;
+        signature = "Chaining" + (isMultipleEnabled ? "1" : "0") + (isDynamic ? "1" : "0") + (isNisho ? "1" : "0") + String.valueOf(level) + String.valueOf(nestingLimit);
     }
 
     boolean isDynamic() {
@@ -1301,6 +1303,15 @@ public class Chaining implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
+    	Iterable<ChainingHint> cachedHints = HintsCache.get(grid, signature);
+    	if(cachedHints != null) {
+        	//System.err.printf("(%d%d%d% d%d)\n", isMultipleEnabled ? 1 : 0, isDynamic ? 1 : 0, isNisho ? 1 : 0, level, nestingLimit);
+            for (Hint hint : cachedHints) {
+                accu.add((ChainingHint)hint);
+            }
+            return;
+    	}
+    	
         if (lastGrid != null && grid.equals(lastGrid)) {
         	//System.err.printf("(%d%d%d% d%d %d)\n", isMultipleEnabled ? 1 : 0, isDynamic ? 1 : 0, isNisho ? 1 : 0, level, nestingLimit, lastHints.size());
             getPreviousHints(accu);
@@ -1308,6 +1319,7 @@ public class Chaining implements IndirectHintProducer {
         }
     	//System.err.print('-');
         List<ChainingHint> result = getHintList(grid);
+        HintsCache.put(grid, signature, result);
         lastGrid = new Grid();
         grid.copyTo(lastGrid);
         //if(Settings.getInstance().getBestHintOnly()) {

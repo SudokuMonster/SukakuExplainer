@@ -875,6 +875,7 @@ else {
 						break;
 					}
 				}
+				HintsCache.purge(grid);
 				if ( difficulty == 20.0 ) {
 					break;
 				}
