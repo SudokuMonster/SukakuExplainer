@@ -34,6 +34,7 @@ public class HintsCache {
 	
 	//erase inapplicable cache items after grid is advanced to newGrid
 	public static void purge(Grid newGrid) {
+		//cache.clear(); //brute but is slower
 		for(Iterator<Grid> gIter = cache.keySet().iterator(); gIter.hasNext();) {
 			Grid g = gIter.next();
 			for(int i = 0; i < 81; i++) {

@@ -34,8 +34,8 @@ public class Chaining implements IndirectHintProducer {
     //private Grid saveGrid = null;
     //private Grid saveGrid = new Grid();
     private List<IndirectHintProducer> otherRules;
-    private Grid lastGrid = null;
-    private Collection<ChainingHint> lastHints = null;
+    //private Grid lastGrid = null;
+    //private Collection<ChainingHint> lastHints = null;
     private String signature;
 
 
@@ -1297,10 +1297,10 @@ public class Chaining implements IndirectHintProducer {
             return "Forcing Chains & Cycles";
     }
 
-    private void getPreviousHints(HintsAccumulator accu) throws InterruptedException {
-        for (ChainingHint hint : lastHints)
-            accu.add(hint);
-    }
+//    private void getPreviousHints(HintsAccumulator accu) throws InterruptedException {
+//        for (ChainingHint hint : lastHints)
+//            accu.add(hint);
+//    }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
     	Iterable<ChainingHint> cachedHints = HintsCache.get(grid, signature);
@@ -1312,27 +1312,27 @@ public class Chaining implements IndirectHintProducer {
             return;
     	}
     	
-        if (lastGrid != null && grid.equals(lastGrid)) {
-        	//System.err.printf("(%d%d%d% d%d %d)\n", isMultipleEnabled ? 1 : 0, isDynamic ? 1 : 0, isNisho ? 1 : 0, level, nestingLimit, lastHints.size());
-            getPreviousHints(accu);
-            return;
-        }
+//        if (lastGrid != null && grid.equals(lastGrid)) {
+//        	//System.err.printf("(%d%d%d% d%d %d)\n", isMultipleEnabled ? 1 : 0, isDynamic ? 1 : 0, isNisho ? 1 : 0, level, nestingLimit, lastHints.size());
+//            getPreviousHints(accu);
+//            return;
+//        }
     	//System.err.print('-');
         List<ChainingHint> result = getHintList(grid);
         HintsCache.put(grid, signature, result);
-        lastGrid = new Grid();
-        grid.copyTo(lastGrid);
-        //if(Settings.getInstance().getBestHintOnly()) {
-        if(accu instanceof SingleHintAccumulator) { 
-            lastHints = new LinkedHashSet<ChainingHint>();
-            if(! result.isEmpty()) {
-            	lastHints.add(result.get(0));
-            }
-        }
-        else {
+//        lastGrid = new Grid();
+//        grid.copyTo(lastGrid);
+//        //if(Settings.getInstance().getBestHintOnly()) {
+//        if(accu instanceof SingleHintAccumulator) { 
+//            lastHints = new LinkedHashSet<ChainingHint>();
+//            if(! result.isEmpty()) {
+//            	lastHints.add(result.get(0));
+//            }
+//        }
+//        else {
 	        // This filters hints that are equal:
-	        lastHints = new LinkedHashSet<ChainingHint>(result);
-        }
+        	Collection<ChainingHint> lastHints = new LinkedHashSet<ChainingHint>(result);
+//        }
         for (IndirectHint hint : lastHints)
             accu.add(hint);
     }
