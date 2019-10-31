@@ -637,13 +637,33 @@ public class Chaining implements IndirectHintProducer {
         // Second rule: other potential position for this value get off
 		CellSet victims = new CellSet(Grid.visibleCellsSet[potentialCellIndex]);
 		victims.bits.and(dc.digitCells[p.value - 1]);
-        for(Cell cell : victims) {
-        	Grid.Region region = Grid.getCommonRegion(potentialCellIndex, cell.getIndex());
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(region.getRegionTypeIndex()),
-                    "the value can occur only once in the " + region.toString()));
-        }
-        return result;
+		
+		boolean byRegion = false; //debug: check whether the order of generated potentials makes sense
+		
+		if(! byRegion) {
+			//extract by cell index
+			for(Cell cell : victims) {
+	        	Grid.Region region = Grid.getCommonRegion(potentialCellIndex, cell.getIndex());
+	            result.add(new Potential(cell, p.value, false, p,
+	                    getRegionCause(region.getRegionTypeIndex()),
+	                    "the value can occur only once in the " + region.toString()));
+	        }
+		}
+		else {
+			//extract by regonTypeIndex then by cell index
+			for(int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+				CellSet regionVictims = new CellSet(victims);
+				Grid.Region region = Grid.getRegionAt(regionTypeIndex, potentialCellIndex);
+				regionVictims.bits.and(region.regionCellsBitSet);
+				for(Cell cell : victims) {
+		            result.add(new Potential(cell, p.value, false, p,
+		                    getRegionCause(regionTypeIndex),
+		                    "the value can occur only once in the " + region.toString()));
+		        }
+			}
+		}
+
+		return result;
     }
     
     private void addHiddenParentsOfCell(Potential p, Grid grid, Grid source, LinkedSet<Potential> offPotentials) {

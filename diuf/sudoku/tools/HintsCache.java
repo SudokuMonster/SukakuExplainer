@@ -14,11 +14,13 @@ public class HintsCache {
 	private static ConcurrentHashMap<Grid,ConcurrentHashMap<String,Object>> cache = new ConcurrentHashMap<>();
 	
 	public static Object get(Grid grid, String signature) {
+		//return null; //debug
 		ConcurrentHashMap<String,Object> item = cache.get(grid);
 		if(item == null) return null;
 		return item.get(signature);
 	}
 	public static void put(Grid grid, String signature, Object result) {
+		//return; //debug
         Grid gridCopy = new Grid();
         grid.copyTo(gridCopy);
         gridCopy.clearDigitCells();
@@ -35,7 +37,7 @@ public class HintsCache {
 	
 	//erase inapplicable cache items after grid is advanced to newGrid
 	public static void purge(Grid newGrid) {
-		//cache.clear(); //brute but is slower
+		//cache.clear(); //debug
 		for(Iterator<Grid> gIter = cache.keySet().iterator(); gIter.hasNext();) {
 			Grid g = gIter.next();
 			for(int i = 0; i < 81; i++) {

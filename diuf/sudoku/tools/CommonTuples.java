@@ -45,9 +45,11 @@ public class CommonTuples {
     public static BitSet searchCommonTupleLight(BitSet[] candidates, int degree) {
         BitSet result = new BitSet(9);
         for (BitSet candidate : candidates) {
+//            result.or(candidate);
+//            if (candidate.cardinality() == 0)
+//                return null;
+            if (candidate.isEmpty()) return null;
             result.or(candidate);
-            if (candidate.cardinality() == 0)
-                return null;
         }
         if (result.cardinality() == degree)
             return result;
