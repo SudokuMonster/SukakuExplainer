@@ -638,7 +638,7 @@ public class Chaining implements IndirectHintProducer {
 		CellSet victims = new CellSet(Grid.visibleCellsSet[potentialCellIndex]);
 		victims.bits.and(dc.digitCells[p.value - 1]);
 		
-		boolean byRegion = false; //debug: check whether the order of generated potentials makes sense
+		boolean byRegion = true; //debug: check whether the order of generated potentials makes sense - yes, it does!
 		
 		if(! byRegion) {
 			//extract by cell index
@@ -655,7 +655,7 @@ public class Chaining implements IndirectHintProducer {
 				CellSet regionVictims = new CellSet(victims);
 				Grid.Region region = Grid.getRegionAt(regionTypeIndex, potentialCellIndex);
 				regionVictims.bits.and(region.regionCellsBitSet);
-				for(Cell cell : victims) {
+				for(Cell cell : regionVictims) {
 		            result.add(new Potential(cell, p.value, false, p,
 		                    getRegionCause(regionTypeIndex),
 		                    "the value can occur only once in the " + region.toString()));
