@@ -27,16 +27,17 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
     private final Grid.Region baseLink3Set;
     private final Grid.Region shareRegion1;
     private final Grid.Region shareRegion2;
-	private final boolean emptyRectangle1;
-	private final boolean emptyRectangle2;
-	private final boolean emptyRectangle3;
-	private final Cell[] emptyRectangleCells;
+	private final boolean emptyRegion1;
+	private final boolean emptyRegion2;
+	private final boolean emptyRegion3;
+	private final Cell[] emptyRegionCells;
     private final int 	eliminationsTotal;
+	private final boolean EmL34;
 	
     public ThreeStrongLinksHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell bridgeCell11, Cell bridgeCell12,
             int value, Grid.Region baseLink1Set, Grid.Region baseLink2Set, Grid.Region shareRegion1, 
-			Cell bridgeCell21, Cell bridgeCell22, Cell endCell, Grid.Region baseLink3Set, Grid.Region shareRegion2, int baseLinkType1, int baseLinkType2, int baseLinkType3, boolean emptyRectangle1, boolean emptyRectangle2, boolean emptyRectangle3, Cell[] emptyRectangleCells, int eliminationsTotal) {
+			Cell bridgeCell21, Cell bridgeCell22, Cell endCell, Grid.Region baseLink3Set, Grid.Region shareRegion2, int baseLinkType1, int baseLinkType2, int baseLinkType3, boolean emptyRegion1, boolean emptyRegion2, boolean emptyRegion3, Cell[] emptyRegionCells, int eliminationsTotal, boolean EmL34) {
         super(rule, removablePotentials);
         this.value = value;
 		this.baseLinkType1 = baseLinkType1;
@@ -53,11 +54,12 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
         this.baseLink3Set = baseLink3Set;		
         this.shareRegion1 = shareRegion1;
         this.shareRegion2 = shareRegion2;
-		this.emptyRectangle1 = emptyRectangle1;
-		this.emptyRectangle2 = emptyRectangle2;
-		this.emptyRectangle3 = emptyRectangle3;
-		this.emptyRectangleCells = emptyRectangleCells;
+		this.emptyRegion1 = emptyRegion1;
+		this.emptyRegion2 = emptyRegion2;
+		this.emptyRegion3 = emptyRegion3;
+		this.emptyRegionCells = emptyRegionCells;
 		this.eliminationsTotal = eliminationsTotal;
+		this.EmL34 = EmL34; 
     }
 
     @Override
@@ -67,8 +69,8 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 
     @Override
     public Cell[] getSelectedCells() {
-        if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			return emptyRectangleCells;
+        if (emptyRegion1 || emptyRegion2 || emptyRegion3)
+			return emptyRegionCells;
 		else
 			return new Cell[] { startCell, endCell };
     }
@@ -77,15 +79,15 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
     public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<>();
         BitSet fishDigitSet = SingletonBitSet.create(value);
-		if (!emptyRectangle1){
+		if (!emptyRegion1){
 			result.put(startCell, fishDigitSet); // orange
 			result.put(bridgeCell11, fishDigitSet);
 		}
-		if (!emptyRectangle2){
+		if (!emptyRegion2){
 			result.put(bridgeCell12, fishDigitSet); // orange      
 			result.put(bridgeCell21, fishDigitSet);
 		}
-		if (!emptyRectangle3){
+		if (!emptyRegion3){
 			result.put(bridgeCell22, fishDigitSet); // orange
 			result.put(endCell, fishDigitSet);
 		}
@@ -131,8 +133,8 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
     @Override
     public String toHtml(Grid grid) {
 		String result;
-		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			result = HtmlLoader.loadHtml(this, "ThreeLinksERHint.html");
+		if (emptyRegion1 || emptyRegion2 || emptyRegion3)
+			result = HtmlLoader.loadHtml(this, "Grouped3LinksFishHint.html");
 		else
 			result = HtmlLoader.loadHtml(this, "ThreeStrongLinksHint.html");
         String name = getName();
@@ -155,21 +157,21 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 	static String hintNames[][][][] = {
 		{
 			{
-				{"3-Turbot Fish", "3TF", "000"},
-				{"3-Turbot Fish", "3TF", "001"},
-				{"3-Turbot Fish", "3TF", "001"},
+				{"3 Box Strong Links", "3TF", "000"},
+				{"3-Turbot Crane", "3TC", "001"},
+				{"3-Turbot Crane", "3TC", "001"},
 				{"", "","004"}
 			},
 			{
-				{"3-Turbot Fish", "3TF", "010"},
-				{"3-Turbot Fish", "3TF", "011"},
-				{"3-String Kite", "3SK", "012"},
+				{"3-Turbot Crane", "3TC", "010"},
+				{"3-Turbot Crane", "3TC", "011"},
+				{"3-Turbot Crane", "3TC", "012"},
 				{"", "","014"}
 			},
 			{
-				{"3-Turbot Fish", "3TF", "010"},
-				{"3-String Kite", "3SK", "012"},
-				{"3-Turbot Fish", "3TF", "011"},
+				{"3-Turbot Crane", "3TC", "010"},
+				{"3-Turbot Crane", "3TC", "012"},
+				{"3-Turbot Crane", "3TC", "011"},
 				{"", "","014"}
 			},
 			{
@@ -181,19 +183,19 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 		},
 		{
 			{
-				{"3-Turbot Fish", "3TF", "001"},
-				{"3-Turbot Fish", "3TF", "101"},
-				{"3-String Kite", "3SK", "102"},
+				{"3-Turbot Crane", "3TC", "001"},
+				{"3-Turbot Crane", "3TC", "101"},
+				{"3-Turbot Crane", "3TC", "102"},
 				{"", "","104"}
 			},
 			{
-				{"3-Turbot Fish", "3TF", "011"},
+				{"3-Turbot Crane", "3TC", "011"},
 				{"3 Skyscrapers", "3Sky", "111"},
 				{"3-String Kite", "3SK", "112"},
 				{"", "","114"}
 			},
 			{
-				{"3-String Kite", "3SK", "012"},
+				{"3-Turbot Crane", "3TC", "012"},
 				{"3-String Kite", "3SK", "121"},
 				{"3-String Kite", "3SK", "112"},
 				{"", "","124"}
@@ -207,19 +209,19 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 		},
 		{
 			{
-				{"3-Turbot Fish", "3TF", "001"},
-				{"3-String Kite", "3SK", "102"},
-				{"3-Turbot Fish", "3TF", "101"},
+				{"3-Turbot Crane", "3TC", "001"},
+				{"3-Turbot Crane", "3TC", "102"},
+				{"3-Turbot Crane", "3TC", "101"},
 				{"", "","104"}
 			},
 			{
-				{"3-String Kite", "3SK", "012"},
+				{"3-Turbot Crane", "3TC", "012"},
 				{"3-String Kite", "3SK", "112"},
 				{"3-String Kite", "3SK", "121"},
 				{"", "","124"}
 			},
 			{
-				{"3-Turbot Fish", "3TF", "011"},
+				{"3-Turbot Crane", "3TC", "011"},
 				{"3-String Kite", "3SK", "112"},
 				{"3 Skyscrapers", "3Sky", "111"},
 				{"", "","114"}
@@ -263,22 +265,22 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 	//it aims to be min-lex to remain relatively constant even with isomorphism
 	//0: Strong link in block 1: Strong Link in a line 2: Strong Link in a line (Different type to 1) 4: Empty rectangle
 	public String getSuffix() {
-		return hintNames[emptyRectangle1 ? 3 : baseLinkType1][emptyRectangle2 ? 3 : baseLinkType2][emptyRectangle3 ? 3 : baseLinkType3][2];
+		return  ((emptyRegion1 ? 1 : 0) + (emptyRegion2	? 1 : 0) + (emptyRegion3 ? 1 : 0)) + hintNames[baseLinkType1][baseLinkType2][baseLinkType3][2];
     }
 
 	//if any ER the pattern is ER else if Mix of line types then is 3-String Kite else if any block then is 3-Turbot Fish else if 3 parallel lines the 3 Skyscrapers
     @Override
     public String getName() {
-		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			return "3 Strong links (with Empty Rectangle)" + " " + getSuffix();
+		if (emptyRegion1 || emptyRegion2 || emptyRegion3)
+			return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][0] + " " + getSuffix() + " (" + ((emptyRegion1 ? 1 : 0) + (emptyRegion2	? 1 : 0) + (emptyRegion3 ? 1 : 0)) + " grouped Strong links" + (EmL34 ? " including EmL c/d" : "") + ")";
 		return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][0] + " " + getSuffix();
     }	
 	
     @Override
     public String getShortName() {
-        if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
-			return "3ER" + getSuffix();
-		return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][1] + " " + getSuffix();
+        if (emptyRegion1 || emptyRegion2 || emptyRegion3)
+			return "g" + hintNames[baseLinkType1][baseLinkType2][baseLinkType3][1] + getSuffix();
+		return hintNames[baseLinkType1][baseLinkType2][baseLinkType3][1]+ getSuffix();
     }
 
 	//Will return Total number of eliminations by this hint
@@ -288,7 +290,7 @@ public class ThreeStrongLinksHint extends IndirectHint implements Rule, HasParen
 	
     @Override
     public double getDifficulty() {
-		if (emptyRectangle1 || emptyRectangle2 || emptyRectangle3)
+		if (emptyRegion1 || emptyRegion2 || emptyRegion3)
 			return 5.7;
         String name = getName();
 		if (name.contains("Skyscraper")) {

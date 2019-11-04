@@ -20,13 +20,16 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     private final Grid.Region baseSet;
     private final Grid.Region coverSet;
     private final Grid.Region shareRegion;
-	private final boolean emptyRectangle;
-	private final Cell[] emptyRectangleCells;
+	private final boolean emptyRegion1;
+	private final boolean emptyRegion2;
+	//private final boolean r1EmptyRegionBlades;
+	//private final boolean r2EmptyRegionBlades;
+	private final Cell[] emptyRegionCells;
     private final int eliminationsTotal;
 
     public TurbotFishHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell endCell, Cell bridgeCell1, Cell bridgeCell2,
-            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRectangle, Cell[] emptyRectangleCells, int eliminationsTotal) {
+            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRegion1, boolean emptyRegion2, /*boolean r1EmptyRegionBlades, boolean r2EmptyRegionBlades,*/ Cell[] emptyRegionCells, int eliminationsTotal) {
         super(rule, removablePotentials);
         this.value = value;
         this.startCell = startCell;
@@ -36,8 +39,11 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         this.baseSet = base;
         this.coverSet = cover;
         this.shareRegion = shareRegion;
-		this.emptyRectangle = emptyRectangle;
-		this.emptyRectangleCells = emptyRectangleCells;
+		this.emptyRegion1 = emptyRegion1;
+		this.emptyRegion2 = emptyRegion2;
+		//this.r1EmptyRegionBlades = r1EmptyRegionBlades;
+		//this.r2EmptyRegionBlades = r2EmptyRegionBlades;
+		this.emptyRegionCells = emptyRegionCells;
 		this.eliminationsTotal = eliminationsTotal; 
     }
 
@@ -48,8 +54,8 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public Cell[] getSelectedCells() {
-		if (emptyRectangle)
-			return emptyRectangleCells;
+		if (emptyRegion1 || emptyRegion2)
+			return emptyRegionCells;
 		else
 			return new Cell[] { startCell, endCell };
     }
@@ -58,9 +64,11 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public Map<Cell, BitSet> getGreenPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<>();
         BitSet fishDigitSet = SingletonBitSet.create(value);
-        result.put(startCell, fishDigitSet); // orange
+    if (!emptyRegion1) {
+		result.put(startCell, fishDigitSet); // orange
         result.put(bridgeCell1, fishDigitSet);
-	if (!emptyRectangle) {
+	}
+	if (!emptyRegion2) {
         result.put(bridgeCell2, fishDigitSet); // orange
         result.put(endCell, fishDigitSet);
 	}
@@ -70,8 +78,8 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     @Override
     public Map<Cell, BitSet> getRedPotentials(Grid grid, int viewNum) {
         Map<Cell, BitSet> result = new HashMap<>(super.getRemovablePotentials());
-        BitSet fishDigitSet = SingletonBitSet.create(value);
-        result.put(startCell, fishDigitSet);
+        //BitSet fishDigitSet = SingletonBitSet.create(value);
+        //result.put(startCell, fishDigitSet);
         //result.put(bridgeCell2, fishDigitSet);
         return result;
     }
@@ -80,17 +88,17 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     public Collection<Link> getLinks(Grid grid, int viewNum) {
         Collection<Link> result = new ArrayList<>();
         result.add(new Link(startCell, value, bridgeCell1, value));
-		if (!emptyRectangle) {
+		//if (!emptyRegion1) {
 			result.add(new Link(bridgeCell1, value, bridgeCell2, value));
 			result.add(new Link(bridgeCell2, value, endCell, value));
-		}
+		//}
 
         return result;
     }
 
     @Override
     public Grid.Region[] getRegions() {
-        return new Grid.Region[] { coverSet, shareRegion};
+        return new Grid.Region[] { baseSet, shareRegion, coverSet};
 		        //return null;
     }
 
@@ -106,8 +114,10 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     @Override
     public String toHtml(Grid grid) {
         String result;
-		if (emptyRectangle)
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
 			result = HtmlLoader.loadHtml(this, "ERFishHint.html");
+		else if (emptyRegion1 || emptyRegion2)
+			result = HtmlLoader.loadHtml(this, "Grouped2LinksFishHint.html");
 		else
 			result = HtmlLoader.loadHtml(this, "TurbotFishHint.html");
         String name = getName();
@@ -124,87 +134,66 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     }
   
     static String hintNames[][][] = { //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
-
     			{ //baseSetRegionTypeIndex = 0 box
-
     				{ //coverSetRegionTypeIndex = 0 box
-
     					"Turbot Fish", "GXW"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 1 row
-
     					"Turbot Fish", "TF"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 2 column
-
     					"Turbot Fish", "TF"
-
     				}    				
-
     			},
-
     			{ //baseSetRegionTypeIndex = 1 row
-
     				{ //coverSetRegionTypeIndex = 0 box
-
     					"Turbot Fish", "TF"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 1 row
-
     					"Skyscraper", "Sky"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 2 column
-
     					"Two-string Kite", "2SK"
-
     				}    				    				
-
     			},
-
     			{ //baseSetRegionTypeIndex = 2 column
-
     				{ //coverSetRegionTypeIndex = 0 box
-
     					"Turbot Fish", "TF"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 1 row
-
     					"Two-string Kite", "2SK"
-
     				},
-
     				{ //coverSetRegionTypeIndex = 2 column
-
     					"Skyscraper", "Sky"
-
     				}    								
-
     			}
-
 	};
+
+	public String getSuffix() {
+		String SuffixNames[] = {"00", "01", "11"};
+		return SuffixNames[(emptyRegion1 ? 1 : 0) + (emptyRegion2 ? 1 : 0)];
+    }
 
     @Override
     public String getName() {
-		if (emptyRectangle)
-			return "Empty Rectangle";
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "Empty Rectangle" + " " + getSuffix();
+		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
+			return "Grouped Skyscraper" + " " + getSuffix();
+		if (emptyRegion1 || emptyRegion2)
+			return "Grouped 2-String Kite" + " " + getSuffix();
 		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
 
     }	
 	
     @Override
     public String getShortName() {
-		if (emptyRectangle)
-			return "ER";
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "ER" + getSuffix();
+		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
+			return "gSky" + getSuffix();
+		if (emptyRegion1 || emptyRegion2)
+			return "g2SK" + getSuffix();		
 		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
     }
 
@@ -216,47 +205,24 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     static double difficulties[][] = //baseSetRegionTypeIndex, coverSetRegionTypeIndex
 
     	{
-
     			{ //baseSetRegionTypeIndex = 0 box
-
     				4.2, 4.2, 4.2 //coverSetRegionTypeIndex = box, row, column
-
     			},
 
     			{ //baseSetRegionTypeIndex = 1 row
-
     				4.2, 4.0, 4.1 //coverSetRegionTypeIndex = box, row, column
-
     			},
 
     			{ //baseSetRegionTypeIndex = 2 column
-
     				4.2, 4.1, 4.0 //coverSetRegionTypeIndex = box, row, column
-
     			}
-
 		};
 
     @Override
     public double getDifficulty() {
-
+		if (emptyRegion1 || emptyRegion2)
+			return 4.3;
     	return difficulties[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()];
-
-//        String name = getName();
-
-//        if (name.equals("Skyscraper")) {
-
-//            return 4.0;
-
-//        } else if (name.equals("Two-string Kite")) {
-
-//            return 4.1;
-
-//        } else {
-
-//            return 4.2;
-
-//        }
     }
 
     @Override

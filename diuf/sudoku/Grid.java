@@ -803,50 +803,116 @@ public class Grid {
     	public abstract int getRegionIndex();
 
 		//4 Cell set corresponds to cells in block that share exactly 2 columns and 2 rowes
+		private static int[][]  blocksEmptyCells = new int[][] {
+			{4, 5, 7, 8},
+			{3, 5, 6, 8},
+			{3, 4, 6, 7},
+			{1, 2, 7, 8},
+			{0, 2, 6, 8},
+			{0, 1, 6, 7},
+			{1, 2, 4, 5},
+			{0, 2, 3, 5},
+			{0, 1, 3, 4},
+			{6, 7, 8, -1},
+			{3, 4, 5, -1},
+			{0, 1, 2, -1},
+			{2, 5, 8, -1},
+			{1, 4, 7, -1},
+			{0, 3, 6, -1}
+		};
+		//4 Cell set corresponds to cells in block that share exactly 1 column and 1 row or 2 lines 
+		//without the cell at the intersection
+		private static int[][]  blockGroupedCells = new int[][] {
+			{3, 6, -1, 1, 2, -1},
+			{4, 7, -1, 0, 2, -1},
+			{5, 8, -1, 0, 1, -1},
+			{0, 6, -1, 4, 5, -1},
+			{1, 7, -1, 3, 5, -1},
+			{2, 8, -1, 3, 4, -1},
+			{0, 3, -1, 7, 8, -1},
+			{1, 4, -1, 6, 8, -1},
+			{2, 5, -1, 6, 7, -1},
+			{0, 1, 2, 3, 4, 5},
+			{0, 1, 2, 6, 7, 8},
+			{3, 4, 5, 6, 7, 8},
+			{0, 3, 6, 1, 4, 7},
+			{0, 3, 6, 2, 5, 8},
+			{1, 4, 7, 2, 5, 8}
+		};
+		private static int[][]  LineEmptyCells = new int[][] {
+			{0,1,2},
+			{3,4,5},
+			{6,7,8},
+		};			
+		private static int[][]  LineGroupedCells = new int[][] {
+			{3,4,5,6,7,8},
+			{0,1,2,6,7,8},
+			{0,1,2,3,4,5}
+		};			
+		//4 Cell set corresponds to cells in block that share exactly 2 columns and 2 rowes
 		public BitSet Rectangle(int index) {
-        	BitSet blockRectangleCellSet = new BitSet(9);
-            int[][]  blocksRectangleCells = new int[][] {
-				{4, 5, 7, 8},
-				{3, 5, 6, 8},
-				{3, 4, 6, 7},
-				{1, 2, 7, 8},
-				{0, 2, 6, 8},
-				{0, 1, 6, 7},
-				{1, 2, 4, 5},
-				{0, 2, 3, 5},
-				{0, 1, 3, 4}
-			};
-			for(int i = 0; i < 4; i++) {
-				blockRectangleCellSet.set(blocksRectangleCells[index][i]);
-			}
-			return blockRectangleCellSet;
+        	BitSet blockEmptyCellSet = new BitSet(10);
+			for(int i = 0; i < 4; i++)
+				if (blocksEmptyCells[index][i] >= 0)
+					blockEmptyCellSet.set(blocksEmptyCells[index][i]);
+			return blockEmptyCellSet;
 		}
 
 		//4 Cell set corresponds to cells in block that share exactly 1 column and 1 row 
 		//without the cell at the intersection
 		public BitSet Cross(int index) {
-        	BitSet blockCrossCellSet = new BitSet(9);
-            int[][]  blocksCrossCells = new int[][] {
-				{3, 6, 1, 2},
-				{4, 7, 0, 2},
-				{5, 8, 0, 1},
-				{0, 6, 4, 5},
-				{1, 7, 3, 5},
-				{2, 8, 3, 4},
-				{0, 3, 7, 8},
-				{1, 4, 6, 8},
-				{2, 5, 6, 7}
-			};
-			for(int i = 0; i < 4; i++) {
-				blockCrossCellSet.set(blocksCrossCells[index][i]);
-			}
-			return blockCrossCellSet;
+        	BitSet blockGroupedCellSet = new BitSet(10);
+			for(int i = 0; i < 6; i++)
+				 if (blockGroupedCells[index][i] >= 0)
+					blockGroupedCellSet.set(blockGroupedCells[index][i]);
+			return blockGroupedCellSet;
+		}
+
+		//2 Cell set corresponds to cells in block Cross cells that share 1 row 
+		//without the cell at the intersection
+		public BitSet crossBlade1(int index) {
+        	BitSet blockGroupedCellSet = new BitSet(10);
+			for(int i = 0; i < 3; i++)
+				if (blockGroupedCells[index][i] >= 0)
+					blockGroupedCellSet.set(blockGroupedCells[index][i]);
+			return blockGroupedCellSet;
+		}
+
+		//2 Cell set corresponds to cells in block Cross cells that share 1 column 
+		//without the cell at the intersection
+		public BitSet crossBlade2(int index) {
+        	BitSet blockGroupedCellSet = new BitSet(10);
+			for(int i = 3; i < 6; i++)
+				if (blockGroupedCells[index][i] >= 0)
+					blockGroupedCellSet.set(blockGroupedCells[index][i]);
+			return blockGroupedCellSet;
 		}
 
 		//cellIndex of blockCell at centre of Cross Cell set 
 		public int Heart(int index) {
 			int[] blocksHeartCells = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
 			return blocksHeartCells[index];
+		}
+		
+		public BitSet lineEmptyCells(int index) {
+			BitSet lineEmptyCellSet = new BitSet(10);
+			for(int i = 0; i < 3; i++) 
+				lineEmptyCellSet.set(LineEmptyCells[index][i]);
+			return lineEmptyCellSet;
+		}
+		
+		public BitSet lineBlade1(int index) {
+        	BitSet lineBladeCellSet = new BitSet(10);
+			for(int i = 0; i < 3; i++)
+				lineBladeCellSet.set(LineGroupedCells[index][i]);
+			return lineBladeCellSet;
+		}
+
+		public BitSet lineBlade2(int index) {
+        	BitSet lineBladeCellSet = new BitSet(10);
+			for(int i = 0; i < 3; i++)
+				lineBladeCellSet.set(LineGroupedCells[index][i+3]);
+			return lineBladeCellSet;
 		}
 
 		/**

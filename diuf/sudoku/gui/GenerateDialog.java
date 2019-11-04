@@ -697,12 +697,12 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMinDifficulty() {
-                return 4.2;
+                return 4.3;
             }
 
             @Override
             public double getMaxDifficulty() {
-                return 4.2;
+                return 4.3;
             }
             @Override
             public double getincludeDifficulty1() {
@@ -786,6 +786,99 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
         },
+		Grouped2StrongLinks {
+
+            @Override
+            public double getMinDifficulty() {
+                return 4.3;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 4.3;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "XY";
+			}
+			public String getincludeTechnique1() {
+				return "11";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
+        },
 		ThreeStrongLinks {
 
             @Override
@@ -795,7 +888,7 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMaxDifficulty() {
-                return 5.6;
+                return 5.7;
             }
             @Override
             public double getincludeDifficulty1() {
@@ -935,7 +1028,7 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getexcludeTechnique3() {
-				return "";
+				return "2-";
 			}
 			public String getincludeTechnique1() {
 				return "";
@@ -943,6 +1036,99 @@ public class GenerateDialog extends JDialog {
             @Override
 			public String getincludeTechnique2() {
 				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "Wing 2";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "type 2";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return " 30";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return " 31";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return " 2";
+			}
+        },
+		ThreeLinkEmL {
+
+            @Override
+            public double getMinDifficulty() {
+                return 5.7;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 5.7;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "EmL";
 			}
             @Override
 			public String getincludeTechnique3() {
@@ -961,15 +1147,15 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getOneOfThree_1() {
-				return "44";
+				return "";
 			}
             @Override
 			public String getOneOfThree_2() {
-				return "404";
+				return "";
 			}
             @Override
 			public String getOneOfThree_3() {
-				return "414";
+				return "";
 			}
         },
 		WXYZ {
