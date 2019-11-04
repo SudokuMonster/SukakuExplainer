@@ -8,7 +8,7 @@ import diuf.sudoku.tools.*;
 
 
 /**
- * Turbot Fish hints
+ * Turbot Crane hints
  */
 public class TurbotFishHint extends IndirectHint implements Rule, HasParentPotentialHint {
 
@@ -136,18 +136,18 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     static String hintNames[][][] = { //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
     			{ //baseSetRegionTypeIndex = 0 box
     				{ //coverSetRegionTypeIndex = 0 box
-    					"Turbot Fish", "GXW"
+    					"Turbot Crane", "GXW"
     				},
     				{ //coverSetRegionTypeIndex = 1 row
-    					"Turbot Fish", "TF"
+    					"Turbot Crane", "TC"
     				},
     				{ //coverSetRegionTypeIndex = 2 column
-    					"Turbot Fish", "TF"
+    					"Turbot Crane", "TC"
     				}    				
     			},
     			{ //baseSetRegionTypeIndex = 1 row
     				{ //coverSetRegionTypeIndex = 0 box
-    					"Turbot Fish", "TF"
+    					"Turbot Crane", "TC"
     				},
     				{ //coverSetRegionTypeIndex = 1 row
     					"Skyscraper", "Sky"
@@ -158,7 +158,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     			},
     			{ //baseSetRegionTypeIndex = 2 column
     				{ //coverSetRegionTypeIndex = 0 box
-    					"Turbot Fish", "TF"
+    					"Turbot Crane", "TC"
     				},
     				{ //coverSetRegionTypeIndex = 1 row
     					"Two-string Kite", "2SK"
