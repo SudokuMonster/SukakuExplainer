@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 8;
-    public final static String SUBREV = ".2";
-	public final static String releaseDate = "2019-11-04";
+    public final static int REVISION = 9;
+    public final static String SUBREV = ".4";
+	public final static String releaseDate = "2019-11-14";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -28,13 +28,15 @@ public class Settings {
     private static Settings instance = null;
 
 
-	private int Fixed14Chaining = 0;//lksudoku chaining fix (Disabled by default)
 	private int revisedRating = 0;//New change in rule order and rating (Disabled by default)
+	private boolean islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
+	private boolean islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
     private int batchSolving = 0;//lksudoku revised bacth solving (Disabled by default)
 	private boolean isRCNotation = false;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
     private boolean isShowingCandidateMasks = true;
+	private boolean isBringBackSE121 = false;//SE121 technique set, order and ratings
     private String lookAndFeelClassName = null;
 
     private EnumSet<SolvingTechnique> techniques;
@@ -64,20 +66,29 @@ public class Settings {
         init();
         load();
     }
+	
+    public void Settings_BBSE121() {
+        init121();
+    }	
 
     public static Settings getInstance() {
         if (instance == null)
             instance = new Settings();
         return instance;
     }
-
-    public void setFixed14Chaining(int Fixed14Chaining) {
-        this.Fixed14Chaining = Fixed14Chaining;
+    public void setlkSudokuBUG(boolean islkSudokuBUG) {
+        this.islkSudokuBUG = islkSudokuBUG;
     }
-    public int Fixed14Chaining() {
-        return Fixed14Chaining;
+    public boolean islkSudokuBUG() {
+        return islkSudokuBUG;
+    }	
+    public void setlkSudokuURUL(boolean islkSudokuURUL) {
+        this.islkSudokuURUL = islkSudokuURUL;
     }
-    public void setRevisedRating(int revisedRating) {
+    public boolean islkSudokuURUL() {
+        return islkSudokuURUL;
+    }	
+	public void setRevisedRating(int revisedRating) {
         this.revisedRating = revisedRating;
     }
     public int revisedRating() {
@@ -127,6 +138,15 @@ public class Settings {
         return this.isShowingCandidateMasks;
     }
 
+    public void setBringBackSE121(boolean value) {
+        this.isBringBackSE121 = value;
+        save();
+    }
+
+    public boolean isBringBackSE121() {
+        return this.isBringBackSE121;
+    }
+
     public String getLookAndFeelClassName() {
         return lookAndFeelClassName;
     }
@@ -138,7 +158,7 @@ public class Settings {
 
     public EnumSet<SolvingTechnique> getTechniques() {
         return EnumSet.copyOf(this.techniques);
-    }
+    }	
 
     public void setTechniques(EnumSet<SolvingTechnique> techniques) {
         this.techniques = techniques;
@@ -194,6 +214,22 @@ public class Settings {
 
     private void init() {
         techniques = EnumSet.allOf(SolvingTechnique.class);
+		//default deselected techniques are added here
+		techniques.remove(SolvingTechnique.FourStrongLinks);
+		techniques.remove(SolvingTechnique.FiveStrongLinks);
+ 		techniques.remove(SolvingTechnique.SixStrongLinks);
+    }
+
+    private void init121() {
+        techniques = EnumSet.allOf(SolvingTechnique.class);
+		//The following techniques are not part of SE121
+		techniques.remove(SolvingTechnique.TurbotFish);
+		techniques.remove(SolvingTechnique.ThreeStrongLinks);
+		techniques.remove(SolvingTechnique.FourStrongLinks);
+		techniques.remove(SolvingTechnique.FiveStrongLinks);
+ 		techniques.remove(SolvingTechnique.SixStrongLinks);
+		techniques.remove(SolvingTechnique.WXYZWing);
+		techniques.remove(SolvingTechnique.VWXYZWing);
     }
 
     public void load() {
@@ -205,7 +241,8 @@ public class Settings {
             isAntialiasing = prefs.getBoolean("isAntialiasing", isAntialiasing);
             isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
             isShowingCandidateMasks = prefs.getBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
-            lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
+            isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121);            
+			lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
         } catch (SecurityException ex) {
             // Maybe we are running from an applet. Do nothing
         }
@@ -220,6 +257,7 @@ public class Settings {
             prefs.putBoolean("isAntialiasing", isAntialiasing);
             prefs.putBoolean("isShowingCandidates", isShowingCandidates);
             prefs.putBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
+            prefs.putBoolean("isBringBackSE121", isBringBackSE121);			
             if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {

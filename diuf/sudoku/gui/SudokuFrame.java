@@ -107,6 +107,8 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem mitGenerate = null;
     private JCheckBoxMenuItem mitShowCandidates = null;
     private JCheckBoxMenuItem mitShowCandidateMasks = null;
+	private JCheckBoxMenuItem mitNewRevisedRatings = null;
+    private JCheckBoxMenuItem mitBringBackSE121 = null;
     private JMenuItem mitSelectTechniques = null;
     private JPanel pnlEnabledTechniques = null;
     private JLabel lblEnabledTechniques = null;
@@ -1288,6 +1290,9 @@ public class SudokuFrame extends JFrame implements Asker {
             optionsMenu.add(getMitShowCandidateMasks());
             optionsMenu.add(getMitSelectTechniques());
             optionsMenu.addSeparator();
+			optionsMenu.add(getMitNewRevisedRatings());
+            optionsMenu.add(getMitBringBackSE121());			
+            optionsMenu.addSeparator();
             optionsMenu.add(getMitChessMode());
             optionsMenu.add(getMitMathMode());
             optionsMenu.addSeparator();
@@ -1523,6 +1528,62 @@ public class SudokuFrame extends JFrame implements Asker {
         return mitShowCandidateMasks;
     }
 
+    private JCheckBoxMenuItem getMitNewRevisedRatings() {
+        if (mitNewRevisedRatings == null) {
+            mitNewRevisedRatings = new JCheckBoxMenuItem();
+            mitNewRevisedRatings.setText("New Revised Ratings/Order");
+            mitNewRevisedRatings.setToolTipText("The improved rating system with a change in some technique order");
+            mitNewRevisedRatings.setMnemonic(KeyEvent.VK_B);
+            mitNewRevisedRatings.setSelected(Settings.getInstance().revisedRating() == 1);
+            mitNewRevisedRatings.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    Settings.getInstance().setRevisedRating(mitNewRevisedRatings.isSelected() ? 1 : 0);
+                    if (Settings.getInstance().revisedRating() == 1) {
+						//incompatible with old style SE121 ratings
+						Settings.getInstance().setBringBackSE121(false);
+						mitBringBackSE121.setSelected(false);
+						Settings.getInstance().setlkSudokuBUG(true);
+						Settings.getInstance().setlkSudokuURUL(true);
+						engine.clearGrid();
+						engine.clearHints();
+					}
+					repaint();					
+                }
+            });
+        }
+        return mitNewRevisedRatings;
+    }
+
+    //Option to revert to SE121 rating / order
+	private JCheckBoxMenuItem getMitBringBackSE121() {
+        if (mitBringBackSE121 == null) {
+            mitBringBackSE121 = new JCheckBoxMenuItem();
+            mitBringBackSE121.setText("Bring Back SE121");
+            mitBringBackSE121.setToolTipText("Revert back to Sudoku Explainer Technique set and Ratings");
+            mitBringBackSE121.setMnemonic(KeyEvent.VK_D);
+            mitBringBackSE121.setSelected(Settings.getInstance().isBringBackSE121());
+            mitBringBackSE121.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    Settings.getInstance().setBringBackSE121(mitBringBackSE121.isSelected());
+					if (Settings.getInstance().isBringBackSE121()) {
+						//uniquess fix false
+						//BUG fix false
+						Settings.getInstance().Settings_BBSE121();
+						//new ratings false
+						Settings.getInstance().setRevisedRating(0);
+						mitNewRevisedRatings.setSelected(false);
+						Settings.getInstance().setlkSudokuBUG(false);
+						Settings.getInstance().setlkSudokuURUL(false);
+						engine.clearGrid();
+						engine.clearHints();
+					}
+                    repaint();
+                }
+            });
+        }
+        return mitBringBackSE121;
+    }
+
     private JMenuItem getMitSelectTechniques() {
         if (mitSelectTechniques == null) {
             mitSelectTechniques = new JMenuItem();
@@ -1532,6 +1593,11 @@ public class SudokuFrame extends JFrame implements Asker {
             mitSelectTechniques.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     selectTechniques();
+					//To be safe disable BBSE121
+					Settings.getInstance().setBringBackSE121(false);
+					mitBringBackSE121.setSelected(false);
+					Settings.getInstance().setlkSudokuBUG(true);
+					Settings.getInstance().setlkSudokuURUL(true);
                 }
             });
         }
@@ -1545,7 +1611,8 @@ public class SudokuFrame extends JFrame implements Asker {
             centerDialog(selectDialog);
         }
         selectDialog.setVisible(true);
-        refreshSolvingTechniques();
+        //No need to worry about deselected techniques
+		//refreshSolvingTechniques();
         engine.rebuildSolver();
     }
 

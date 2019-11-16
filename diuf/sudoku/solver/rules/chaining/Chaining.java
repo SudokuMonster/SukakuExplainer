@@ -574,54 +574,6 @@ public class Chaining implements IndirectHintProducer {
      * @return the set of potentials that must be "off"
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
-if (Settings.getInstance().Fixed14Chaining() == 1) {
-		LinkedSet<Potential> result = new LinkedSet<Potential>();
-
-        int potentialCellIndex = p.cell.getIndex();
-        if (isYChainEnabled) { // This rule is not used with X-Chains
-            // First rule: other potential values for this cell get off
-            BitSet potentialValues = grid.getCellPotentialValues(potentialCellIndex);
-            for (int value = potentialValues.nextSetBit(0); value >= 0; value = potentialValues.nextSetBit(value + 1)) {
-                if (value != p.value)
-                    result.add(new Potential(p.cell, value, false, p,
-                            Potential.Cause.NakedSingle, "the cell can contain only one value"));
-            }
-        }
-
-        // Second rule: other potential position for this value get off
-        Grid.Region box = Grid.getRegionAt(0, potentialCellIndex);
-        BitSet boxPositions = box.copyPotentialPositions(grid, p.value);
-        boxPositions.clear(box.indexOf(p.cell));
-        for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
-            Cell cell = box.getCell(i);
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(0),
-                    "the value can occur only once in the " + box.toString()));
-        }
-        Grid.Region row = Grid.getRegionAt(1, potentialCellIndex);
-        BitSet rowPositions = row.copyPotentialPositions(grid, p.value);
-        rowPositions.clear(row.indexOf(p.cell));
-        for (int i = rowPositions.nextSetBit(0); i >= 0; i = rowPositions.nextSetBit(i + 1)) {
-            Cell cell = row.getCell(i);
-            if(box.contains(cell)) continue;
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(1),
-                    "the value can occur only once in the " + row.toString()));
-        }
-        Grid.Region col = Grid.getRegionAt(2, potentialCellIndex);
-        BitSet colPositions = col.copyPotentialPositions(grid, p.value);
-        colPositions.clear(col.indexOf(p.cell));
-        for (int i = colPositions.nextSetBit(0); i >= 0; i = colPositions.nextSetBit(i + 1)) {
-            Cell cell = col.getCell(i);
-            if(box.contains(cell)) continue;
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(2),
-                    "the value can occur only once in the " + col.toString()));
-        }
-
-        return result;
-}
-else{
     	Set<Potential> result = new LinkedHashSet<Potential>();
 
         int potentialCellIndex = p.cell.getIndex();
@@ -667,7 +619,7 @@ else{
         }
 
         return result;
-}
+
     }
 
 
@@ -737,65 +689,6 @@ else{
     private Set<Potential> getOffToOn(Grid grid, Potential p, Grid source,
             LinkedSet<Potential> offPotentials, boolean isYChainEnabled,
             boolean isXChainEnabled) {
-if (Settings.getInstance().Fixed14Chaining() == 1) {
-		//Set<Potential> result = new LinkedHashSet<Potential>();
-    	LinkedSet<Potential> result = new LinkedSet<Potential>();
-															  
-    	int thisCellIndex = p.cell.getIndex();
-        if (isYChainEnabled) {
-            // First rule: if there is only two potentials in this cell, the other one gets on
-            BitSet potentialValues = grid.getCellPotentialValues(thisCellIndex);
-            if (potentialValues.cardinality() == 2) {
-                int otherValue = potentialValues.nextSetBit(0);
-                if (otherValue == p.value)
-                    otherValue = potentialValues.nextSetBit(otherValue + 1);
-                Potential pOn = new Potential(p.cell, otherValue, true, p,
-                        Potential.Cause.NakedSingle, "only remaining possible value in the cell");
-                addHiddenParentsOfCell(pOn, grid, source, offPotentials);
-                result.add(pOn);
-            }
-        }
-
-        if (isXChainEnabled) {
-            // Second rule: if there are only two positions for this potential, the other one gets on
-        	int thisValue = p.value;
-        	for(int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
-        		Region r = Grid.regions[regionTypeIndex][Grid.cellRegions[thisCellIndex][regionTypeIndex]];
-	        	int otherPosition = -1;
-	        	for(int regionCellIndex = 0; regionCellIndex < 9; regionCellIndex++) {
-	        		int cellIndex = r.getCell(regionCellIndex).getIndex();
-	        		if(cellIndex == thisCellIndex) continue;
-	        		if(grid.hasCellPotentialValue(cellIndex, thisValue)) {
-	        			if(otherPosition >= 0) { //third cell in a house has this candidate
-	        				otherPosition = -1;
-	        				break;
-	        			}
-	        			otherPosition = cellIndex;
-	        		}
-	        	} //region cells
-	        	if(otherPosition >= 0) { //exactly one other position
-                    Potential pOn = new Potential(Grid.getCell(otherPosition), thisValue, true, p,
-                            getRegionCause(regionTypeIndex),
-                            "only remaining possible position in the " + r.toString());
-                    addHiddenParentsOfRegion(pOn, grid, source, r, offPotentials);
-
-					if (!result.contains(pOn))
-						result.add(pOn);
-					else {
-						Potential pCell = result.get(pOn);
-						if (pOn.getAncestorCount() < pCell.getAncestorCount()) {
-							result.remove(pCell);
-							result.add(pOn);
-						}
-					}
-	  
-	        	}
-        	} // region types
-        }
-
-        return result;
-}
-else {
 		Set<Potential> result = new LinkedHashSet<Potential>();
 															  
     	int thisCellIndex = p.cell.getIndex();
@@ -841,7 +734,6 @@ else {
         }
 
         return result;
-}
     }
 
     /**
@@ -968,76 +860,6 @@ else {
     private Potential[] doChaining(Grid grid, LinkedSet<Potential> toOn, LinkedSet<Potential> toOff) {
     	//MD: Note that toOn potentials have higher precedence than toOff which can result in non-shortest contradiction chain finding.
         grid.copyTo(saveGrid);
-if (Settings.getInstance().Fixed14Chaining() == 1){
-		Potential[] pOnRes = new Potential[729];
-		Potential[] pOffRes = new Potential[729];
-		int numRes = 0;
-		try {
-            List<Potential> pendingOn = new LinkedList<Potential>(toOn);
-            List<Potential> pendingOff = new LinkedList<Potential>(toOff);
-            while (!pendingOn.isEmpty() || !pendingOff.isEmpty()) {
-                if (!pendingOn.isEmpty()) {
-                    Potential p = pendingOn.remove(0);
-                    Set<Potential> makeOff = getOnToOff(grid, p, !isNisho);
-	                for (Potential pOff : makeOff) {
-	                    Potential pOn = new Potential(pOff.cell, pOff.value, true); // Conjugate
-	                    if (toOn.contains(pOn)) {
-	                        // Contradiction found
-							pOnRes[numRes] = toOn.get(pOn); // Retrieve version of conjugate with parents
-							pOffRes[numRes++] = pOff;
-	                    } else if (!toOff.contains(pOff)) {
-	                        // Not processed yet
-	                        toOff.add(pOff);
-	                        pendingOff.add(pOff);
-	                   }
-	                }
-                } else {
-                    Potential p = pendingOff.remove(0);
-                    Set<Potential> makeOn = getOffToOn(grid, p, saveGrid, toOff, !isNisho, true);
-                    if (isDynamic)
-                        p.off(grid); // writes to grid
-	                for (Potential pOn : makeOn) {
-	                    Potential pOff = new Potential(pOn.cell, pOn.value, false); // Conjugate
-	                    if (toOff.contains(pOff)) {
-	                        // Contradiction found
-							pOnRes[numRes] = pOn; // Retrieve version of conjugate with parents
-							pOffRes[numRes++] = toOff.get(pOff);
-	                    } else if (!toOn.contains(pOn)) {
-	                        // Not processed yet
-	                        toOn.add(pOn);
-	                        pendingOn.add(pOn);
-						}
-	                }
-				}
-				if (numRes > 0) {
-					// Take minimal length contradiction out of all found
-					int minK = 0;
-					int minKVal = pOnRes[0].getAncestorCount() + pOffRes[0].getAncestorCount();
-					for (int k=1;k<numRes;++k) {
-						int curKVal = pOnRes[k].getAncestorCount() + pOffRes[k].getAncestorCount();
-						if ( curKVal < minKVal ) {
-							minKVal = curKVal;
-							minK = k;
-						}
-					}
-					return new Potential[] {pOnRes[minK], pOffRes[minK]}; // Cannot be both on and off at the same time 
-				}
-                if (level > 0 && pendingOn.isEmpty() && pendingOff.isEmpty()) {
-                    for (Potential pOff : getAdvancedPotentials(grid, saveGrid, toOff)) {
-                        if (!toOff.contains(pOff)) {
-                            // Not processed yet
-                            toOff.add(pOff);
-                            pendingOff.add(pOff);
-                        }
-                    }
-                }
-            }
-            return null;
-        } finally {
-            saveGrid.copyTo(grid);
-        }
-}
-else{										  										   
         try {
             Queue<Potential> pendingOn = new LinkedList<Potential>(toOn);
             Queue<Potential> pendingOff = new LinkedList<Potential>(toOff);
@@ -1094,7 +916,6 @@ else{
         } finally {
             saveGrid.copyTo(grid);
         }
-}
     }
 
     /**
@@ -1152,87 +973,6 @@ else{
         int index = 0;
         while (index < otherRules.size() && result.isEmpty()) {
             IndirectHintProducer rule = otherRules.get(index);
-if (Settings.getInstance().Fixed14Chaining() == 1){
-            try {
-                rule.getHints(grid, new HintsAccumulator() {
-                    public void add(Hint hint0) {
-                        IndirectHint hint = (IndirectHint)hint0;
-                        Collection<Potential> parents =
-                            ((HasParentPotentialHint)hint).getRuleParents(source, grid);
-                        /*
-                         * If no parent can be found, the rule probably already exists without
-                         * the chain. Therefore it is useless to include it in the chain.
-                         */
-                        if (!parents.isEmpty()) {
-                            ChainingHint nested = null;
-                            if (hint instanceof ChainingHint)
-                                nested = (ChainingHint)hint;
-                            Map<Cell, BitSet> removable = hint.getRemovablePotentials();
-                            assert !removable.isEmpty();
-//This is the start of the modified section  that needs a look into
-			                // lksudoku: We sort the removable potentials so that all runs will yield the 
-                            // same resulting chains, if not sorted, same puzzle may get different chains
-                            // when there are different chains for same contradiction, thus causing different
-                            // rating of same puzzle at different times
-							List<Cell> sortedRemKeys=new ArrayList<Cell>(removable.keySet());
-					        Collections.sort(sortedRemKeys, new Comparator<Cell>() {
-					            public int compare(Cell c1, Cell c2) {
-					            	if (c1.getX() != c2.getX())
-					            		return c1.getX() - c2.getX();
-					            	if (c1.getY() != c2.getY())
-					            		return c1.getY() - c2.getY();
-					            	return grid.getCellPotentialValues(c1.getIndex()).nextSetBit(0)-grid.getCellPotentialValues(c2.getIndex()).nextSetBit(0);
-					            }
-					        });
-							////for (Cell cell : removable.keySet()) {
-                            //for (Map.Entry<Cell, BitSet> entry : sortedRemKeys) {
-                            //	Cell cell = entry.getKey();
-                            //    BitSet values = entry.getValue();
-                            for (Cell cell : sortedRemKeys) {
-                                BitSet values = removable.get(cell);
-//This is the end of the modified section  that needs a look into
-
-//This is the start of the section  that shows lksudoku original code
-/*
-                            // lksudoku: We sort the removable potentials so that all runs will yield the 
-                            // same resulting chains, if not sorted, same puzzle may get different chains
-                            // when there are different chains for same contradition, thus causing different
-                            // rating of same puzzle at different times
-							List<Cell> sortedRemKeys=new ArrayList<Cell>(removable.keySet());
-					        Collections.sort(sortedRemKeys, new Comparator<Cell>() {
-					            public int compare(Cell c1, Cell c2) {
-					            	if (c1.getX() != c2.getX())
-					            		return c1.getX() - c2.getX();
-					            	if (c1.getY() != c2.getY())
-					            		return c1.getY() - c2.getY();
-					            	return c1.getPotentialValues().nextSetBit(0)-c2.getPotentialValues().nextSetBit(0);
-					            }
-					        });
-
-                            for (Cell cell : sortedRemKeys) {
-*/
-//This is the end of the section  that shows lksudoku original code
-
-
-                                for (int value = values.nextSetBit(0); value != -1; value = values.nextSetBit(value + 1)) {
-                                    //Potential.Cause cause = Potential.Cause.Advanced;
-                                    Potential toOff = new Potential(cell, value, false, Potential.Cause.Advanced, hint.toString(), nested);
-                                    for (Potential p : parents) {
-                                        Potential real = offPotentials.get(p);
-                                        assert real != null;
-                                        toOff.parents.add(real);
-                                    }
-                                    result.add(toOff);
-                                }
-                            }
-                        }
-                    }
-                });
-            } catch(InterruptedException ex) {
-                ex.printStackTrace();
-            }
-}
-else {
             try {
                 rule.getHints(grid, new HintsAccumulator() {
                     public void add(Hint hint0) {
@@ -1271,7 +1011,6 @@ else {
             } catch(InterruptedException ex) {
                 ex.printStackTrace();
             }
-}
             index++;
         }
         return result;

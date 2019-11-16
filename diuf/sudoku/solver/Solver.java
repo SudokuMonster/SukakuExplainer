@@ -209,13 +209,16 @@ else {
         addIfWorth(SolvingTechnique.NakedQuad, indirectHintProducers, new NakedSet(4));
         addIfWorth(SolvingTechnique.Jellyfish, indirectHintProducers, new Fisherman(4));
         addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
-        addIfWorth(SolvingTechnique.ThreeStrongLinks, indirectHintProducers, new ThreeStrongLinks());
+        addIfWorth(SolvingTechnique.ThreeStrongLinks, indirectHintProducers, new StrongLinks(3));
 		addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing());
         //addIfWorth(SolvingTechnique.VWXYZWing4, indirectHintProducers, new VWXYZWing(true));
 		//addIfWorth(SolvingTechnique.VWXYZWing5, indirectHintProducers, new VWXYZWing(false));
         addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());
+        addIfWorth(SolvingTechnique.FourStrongLinks, indirectHintProducers, new StrongLinks(4));        
         addIfWorth(SolvingTechnique.VWXYZWing, indirectHintProducers, new VWXYZWing());
-        addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
+		addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
+        addIfWorth(SolvingTechnique.FiveStrongLinks, indirectHintProducers, new StrongLinks(5));        
+        addIfWorth(SolvingTechnique.SixStrongLinks, indirectHintProducers, new StrongLinks(6));        
         chainingHintProducers = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0, false, 0));
         addIfWorth(SolvingTechnique.AlignedTripletExclusion, chainingHintProducers, new AlignedExclusion(3));

@@ -141,6 +141,7 @@ public class UniqueLoops implements IndirectHintProducer {
             List<Cell> loop, int allowedEx, BitSet exValues,
             int lastRegionTypeIndex, Collection<List<Cell>> results) {
         loop.add(cell);
+		if (Settings.getInstance().islkSudokuURUL()) {
         for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
             if (regionTypeIndex != lastRegionTypeIndex) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
@@ -178,6 +179,46 @@ public class UniqueLoops implements IndirectHintProducer {
                 } // for i
             } // not last region type
         } // for regionType
+		}
+		else {
+        exValues = (BitSet)exValues.clone(); // Ensure we cleanup ourself
+		for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            if (regionTypeIndex != lastRegionTypeIndex) {
+                Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                for (int i = 0; i < 9; i++) {
+                    Cell next = region.getCell(i);
+                    if (loop.get(0).equals(next) && loop.size() >= 4) {
+                        // Yeah, the loop is closed. Save a copy
+                        results.add(new ArrayList<Cell>(loop));
+                    } else if (!loop.contains(next)) {
+                        //BitSet potentials = next.getPotentialValues();
+                        BitSet potentials = grid.getCellPotentialValues(next.getIndex());
+                        if (potentials.get(v1) && potentials.get(v2)) {
+                            exValues.or(potentials);
+                            exValues.clear(v1);
+                            exValues.clear(v2);
+                            int cardinality = potentials.cardinality();
+                            /*
+                             * We can continue if
+                             * (1) The cell has exactly the two values of the loop
+                             * (2) The cell has one extra value, the same as all previous cells with
+                             * an extra value (for type 2 only)
+                             * (3) The cell has extra values and the maximum number of cells with
+                             * extra values, 2, is not reached
+                             */
+                            if (cardinality == 2 || exValues.cardinality() == 1 || allowedEx > 0) {
+                                int newAllowedEx = allowedEx;
+                                if (cardinality > 2)
+                                    newAllowedEx -= 1;
+                                checkForLoops(grid, next, v1, v2, loop, newAllowedEx, exValues,
+                                        regionTypeIndex, results);
+                            }
+                        }
+                    } // Not in the loop yet
+                } // for i
+            } // not last region type
+        } // for regionType
+		}
         // Rollback
         loop.remove(loop.size() - 1);
     }
@@ -279,6 +320,7 @@ public class UniqueLoops implements IndirectHintProducer {
         extra.clear(v1);
         extra.clear(v2);
         // Look for Naked and hidden Sets. Iterate on degree
+		if (Settings.getInstance().islkSudokuURUL()) {
         for (int degree = 2; degree <= 7; degree++) {
             for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
@@ -373,6 +415,103 @@ public class UniqueLoops implements IndirectHintProducer {
                 } // region common to c1 and c2
             } // for regionType
         } // for degree
+		}
+		else {
+        for (int degree = extra.cardinality(); degree <= 7; degree++) {
+            for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+                Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
+                if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
+                    // Region common to c1 and c2
+                    int nbEmptyCells = region.getEmptyCellCount(grid);
+                    int index1 = region.indexOf(c1);
+                    int index2 = region.indexOf(c2);
+
+                    // Look for naked sets
+                    if (degree * 2 <= nbEmptyCells) {
+                        // Look on combinations of cells that include c1 but not c2
+                        Permutations perm2 = new Permutations(degree, 9);
+                        while (perm2.hasNext()) {
+                            int[] indexes = perm2.nextBitNums();
+                            assert indexes.length == degree;
+                            if (containsFirst(indexes, index1, index2)) {
+                                // This permutation contains c1 (but not c2)
+                                BitSet[] potentials = new BitSet[degree];
+                                // We have to ensure (c1 AND c2) OR otherCells = fullSet
+                                // else, this is not a naked set with both c1 or c2
+                                BitSet nakedSet = (BitSet)extra.clone();
+                                nakedSet.and(grid.getCellPotentialValues(c1.getIndex()));
+                                nakedSet.and(grid.getCellPotentialValues(c2.getIndex())); // Common to c1 and c2
+
+                                Cell[] otherCells = new Cell[degree - 1];
+                                int otherIndex = 0;
+                                for (int i = 0; i < indexes.length; i++) {
+                                    if (indexes[i] == index1)
+                                        potentials[i] = extra; // Index of cell c1. Use extra potentials
+                                    else {
+                                        // Other cell. Use actual potentials
+                                        Cell cell = region.getCell(indexes[i]);
+                                        potentials[i] = grid.getCellPotentialValues(cell.getIndex());
+                                        nakedSet.or(potentials[i]);
+                                        otherCells[otherIndex++] = cell;
+                                    }
+                                }
+                                if (nakedSet.cardinality() == degree) {
+                                    // Look for a common tuple of potential values, with same degree
+                                    BitSet commonPotentialValues = 
+                                        CommonTuples.searchCommonTuple(potentials, degree);
+                                    if (commonPotentialValues != null) {
+                                        // Potential naked set found
+                                        UniqueLoopHint hint = createType3NakedHint(grid, loop, v1, v2, extra, region, c1, c2,
+                                                otherCells, commonPotentialValues);
+                                        if (hint.isWorth())
+                                            result.add(hint);
+                                    }
+                                }
+                            } // if containstFirst
+                        } // while (perm.hasNext())
+                    }
+
+                    if (degree * 2 < nbEmptyCells) {
+                        // Look for hidden sets
+                        int[] remValues = new int[7 - extra.cardinality()];
+                        for (int value = 1, dstIndex = 0; value <= 9; value++) {
+                            if (value != v1 && value != v2 && !extra.get(value))
+                                remValues[dstIndex++] = value;
+                        }
+                        if (degree - 2 <= remValues.length) {
+                            Permutations perm1 = new Permutations(degree - 2, remValues.length);
+                            while (perm1.hasNext()) {
+                                int[] pValues = perm1.nextBitNums();
+                                int[] values = new int[degree];
+                                for (int i = 0; i < pValues.length; i++)
+                                    values[i] = remValues[pValues[i]];
+                                values[degree - 2] = v1;
+                                values[degree - 1] = v2;
+                                BitSet[] potentialIndexes = new BitSet[degree];
+                                for (int i = 0; i < degree; i++) {
+                                    potentialIndexes[i] = region.copyPotentialPositions(grid, values[i]);
+                                    potentialIndexes[i].clear(index2); // Remove one of the two cells
+                                }
+                                BitSet commonPotentialPositions =
+                                    CommonTuples.searchCommonTupleLight(potentialIndexes, degree);
+                                if (commonPotentialPositions != null) {
+                                    // Potential hidden set found
+                                    BitSet hiddenValues = new BitSet(10);
+                                    for (int i = 0; i < values.length; i++)
+                                        hiddenValues.set(values[i]);
+                                    UniqueLoopHint hint = createType3HiddenHint(grid, loop, v1, v2, extra, hiddenValues, region,
+                                            c1, c2, commonPotentialPositions);
+                                    if (hint.isWorth())
+                                        result.add(hint);
+                                }
+                            }
+                        }
+                    }
+
+                } // region common to c1 and c2
+            } // for regionType
+        } // for degree
+		}
         return result;
     }
 

@@ -231,11 +231,18 @@ public class serate {
             System.err.println("ERROR techniques setting, need "+allTechniques.size()+" 1/0 characters in second parameter, per each technique");
                 System.err.println("The techniques are (in this order)");
                 int i=1;
-                for ( SolvingTechnique tech: Settings.getInstance().getTechniques()) {
-                    System.err.println((i<10?"0":"")+i+": "+tech.toString());
+                EnumSet<SolvingTechnique> currentTechniques = Settings.getInstance().getTechniques();
+				String techSet ="";
+				for ( SolvingTechnique tech: allTechniques) {
+                    int enabled = 1;
+					if (!currentTechniques.contains(tech)) {
+						enabled = 0;
+					}
+					System.err.println((i<10?"0":"")+i+": " + enabled + " " + tech.toString());
                     ++i;
+					techSet += enabled;
                 };
-
+			System.err.println("\r\nDefault --techs="+ techSet);
             System.exit(3);
             return false;
         }
@@ -273,7 +280,8 @@ public class serate {
         int             numThreads = 1;
         int             revisedRating = 0;
         int             batchSolving = 0;
-        int             Fixed14Chaining = 0;
+		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
+		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
         char            want = 0;
         int             arg;
         //long            t; //not used anymore
@@ -320,8 +328,10 @@ public class serate {
                         c = 'B';
                     else if (s.equals("revisedRating"))
                         c = 'N';
-                    else if (s.equals("lksudokuChaining"))
-                        c = 'C';
+					else if (s.equals("islkSudokuBUG"))
+                        c = 'G';                    
+					else if (s.equals("islkSudokuURUL"))
+                        c = 'U';
                     else if (s.equals("showArguments"))
                         c = 'S';                    
                     else if (s.equals("after"))
@@ -358,7 +368,8 @@ public class serate {
                 case 'o':
                 case 'B':
                 case 'N':
-                case 'C':               
+                case 'G':
+                case 'U':				
                 case '~':
                     if (v == null)
                         usage(a, 1);
@@ -422,9 +433,13 @@ public class serate {
                     revisedRating = Integer.parseInt(v);
                     Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
                     break;
-                case 'C':
-                    Fixed14Chaining = Integer.parseInt(v);
-                    Settings.getInstance().setFixed14Chaining(Fixed14Chaining);//0: Fixed14Chaining disabled //1:1st iteration of Fixed14 Chaining enabled
+                case 'G':
+                    islkSudokuBUG = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setlkSudokuBUG(islkSudokuBUG);//0: islkSudokuBUG disabled //1:islkSudokuBUG enabled
+                    break;
+                case 'U':
+                    islkSudokuURUL = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setlkSudokuURUL(islkSudokuURUL);//0: islkSudokuURUL disabled //1:islkSudokuURUL enabled
                     break;
                 case '~':
                     setTechniques(v, showArguments);
