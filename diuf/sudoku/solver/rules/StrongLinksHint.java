@@ -165,10 +165,17 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
     @Override
     public String toHtml(Grid grid) {
 		String result;
-		if (groupedLinks() >  0)
+		String fishName = getFishName(linksNumber);
+		if (groupedLinks() >  0) {
 			result = HtmlLoader.loadHtml(this, "GroupedStrongLinksHint.html");
-		else
+			fishName = "Finned " + fishName;
+		}
+		else {
 			result = HtmlLoader.loadHtml(this, "StrongLinksHint.html");
+			fishName = "1 Finned Sashimi " + fishName;
+			for (int i = 1; i < linksNumber; i++)
+				fishName = "2x" + fishName;
+		}
         String name = getName();
         String firstLinkName = this.baseLinkRegion[q[0]].toFullString();
 		String lastLinkName = this.baseLinkRegion[q[linksNumber - 1]].toFullString();
@@ -182,7 +189,6 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 			middleShared += ", " +this.shareRegion[i].toFullString();		
 		String numberOfStrongLinks = Integer.toString(linksNumber);
 		String numberOfWeakLinks = Integer.toString(linksNumber - 1);
-		String fishName = getFishName(linksNumber);
 		String value = Integer.toString(this.value);
         String cell1 = startCell.toString();
         String cell2 = endCell.toString();

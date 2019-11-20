@@ -31,6 +31,7 @@ public class Grid {
      * Cell potential values of the grid, bit 0 is unused.
      */
     private BitSet[] cellPotentialValues = new BitSet[81];
+	private boolean[] isGiven = new boolean[81];
 
 //    //cache for Region.getPotentialPositions(value)
 //    private valueCells valueCellsCache = new valueCells();
@@ -373,6 +374,23 @@ public class Grid {
     //=== Non-static methods ==============
 
     /**
+     * Is the cell a given or not
+     * @param index the cell index [0..80]
+     */	
+	
+	public void setGiven(int index) {
+        this.isGiven[index] = true;
+    }
+
+    public void resetGiven(int index) {
+        this.isGiven[index] = false;
+    }
+
+    public boolean isGiven(int index) {
+        return this.isGiven[index];
+    }
+
+    /**
      * Set the value of a cell
      * @param x the horizontal coordinate of the cell
      * @param y the vertical coordinate of the cell
@@ -380,6 +398,7 @@ public class Grid {
      */
     public void setCellValue(int x, int y, int value) {
     	cellValues[y * 9 + x] = value;
+		setGiven(y * 9 + x);
     }
 
     /**
@@ -389,6 +408,7 @@ public class Grid {
      */
     public void setCellValue(int index, int value) {
         cellValues[index] = value;
+		//setGiven(index);
     }
 
     /**
@@ -535,6 +555,10 @@ public class Grid {
         for (int i = 0; i < 81; i++) {
             other.setCellValue(i, this.cellValues[i]);
             other.setCellPotentialValues(i, cellPotentialValues[i]);
+			if (this.isGiven(i))
+				other.setGiven(i);
+			else
+				other.resetGiven(i);
         }
 //        //clone the cache as well
 //        for(int regionType = 0; regionType < 3; regionType++) {
@@ -755,7 +779,7 @@ public class Grid {
                     }
                 }
                 if(isnakedsingle) {
-                	setCellValue(i, singleclue);
+                	setCellValue(i % 9, i / 9, singleclue);
                 	clearCellPotentialValues(i);
                 }
             }

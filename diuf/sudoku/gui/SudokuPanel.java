@@ -33,7 +33,7 @@ public class SudokuPanel extends JPanel {
     private int LEGEND_GAP_SIZE = 42;
     private int CELL_PAD = (CELL_OUTER_SIZE - CELL_INNER_SIZE) / 2;
     private int GRID_SIZE = CELL_OUTER_SIZE * 9;
-    private String FONT_NAME = "Verdana";
+    private String FONT_NAME = "Arial Black";
     private int FONT_SIZE_SMALL = 12;
     private int FONT_SIZE_BIG = 36;
     private int FONT_SIZE_LEGEND = 24;
@@ -76,9 +76,9 @@ public class SudokuPanel extends JPanel {
             rescale();
         initialize();
         super.setOpaque(false);
-        smallFont = new Font(FONT_NAME, Font.BOLD, FONT_SIZE_SMALL);
-        bigFont = new Font(FONT_NAME, Font.BOLD, FONT_SIZE_BIG);
-        legendFont = new Font(FONT_NAME, Font.BOLD, FONT_SIZE_LEGEND);
+        smallFont = new Font(FONT_NAME, Font.PLAIN, FONT_SIZE_SMALL);
+        bigFont = new Font(FONT_NAME, Font.PLAIN, FONT_SIZE_BIG);
+        legendFont = new Font(FONT_NAME, Font.PLAIN, FONT_SIZE_LEGEND);
     }
 
     private void rescale() {
@@ -482,7 +482,9 @@ public class SudokuPanel extends JPanel {
     }
 
     private void initValueColor(Graphics g, Cell cell, int x, int y) {
-        Color col = Color.black;
+        //Modified on request from rjamil using what 1to9only implemented in his 16x16 version but changed to accomodate dobrichev Grid & Cell changes
+		//Color col = Color.black;
+		Color col = grid.isGiven(y * 9 + x) ? Color.black : Color.blue;
         if (null != selectedCell && grid.getCellValue(selectedCell.getX(), selectedCell.getY()) == grid.getCellValue(x, y))
             col = sameCellValueColor;
         if (cell == selectedCell)

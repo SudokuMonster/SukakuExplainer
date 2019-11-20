@@ -211,8 +211,6 @@ else {
         addIfWorth(SolvingTechnique.HiddenQuad, indirectHintProducers, new HiddenSet(4, false));
         addIfWorth(SolvingTechnique.ThreeStrongLinks, indirectHintProducers, new StrongLinks(3));
 		addIfWorth(SolvingTechnique.WXYZWing, indirectHintProducers, new WXYZWing());
-        //addIfWorth(SolvingTechnique.VWXYZWing4, indirectHintProducers, new VWXYZWing(true));
-		//addIfWorth(SolvingTechnique.VWXYZWing5, indirectHintProducers, new VWXYZWing(false));
         addIfWorth(SolvingTechnique.BivalueUniversalGrave, indirectHintProducers, new BivalueUniversalGrave());
         addIfWorth(SolvingTechnique.FourStrongLinks, indirectHintProducers, new StrongLinks(4));        
         addIfWorth(SolvingTechnique.VWXYZWing, indirectHintProducers, new VWXYZWing());

@@ -930,7 +930,15 @@ public class Chaining implements IndirectHintProducer {
             otherRules.add(new HiddenSet(2, false));
             otherRules.add(new NakedSet(2));
             otherRules.add(new Fisherman(2));
-            
+//          otherRules.add(new TurbotFish());
+//          otherRules.add(new XYWing(false));
+//          otherRules.add(new XYWing(true));
+//          otherRules.add(new HiddenSet(3, false));
+//          otherRules.add(new NakedSet(3));
+//          otherRules.add(new Fisherman(3));
+//          otherRules.add(new StrongLinks(3));
+//          otherRules.add(new WXYZWing());
+
 //            //otherRules.add(new HiddenSingle());
 //            //otherRules.add(new Locking(true));
 //            //otherRules.add(new HiddenSet(2, true));
