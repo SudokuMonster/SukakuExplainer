@@ -98,6 +98,11 @@ public class SudokuFrame extends JFrame implements Asker {
     private JRadioButtonMenuItem mitMathMode = null;
     private JRadioButtonMenuItem mitChessMode = null;
     private JCheckBoxMenuItem mitAntiAliasing = null;
+    private JMenu variantsMenu = null;
+    private JCheckBoxMenuItem mitVanilla = null;
+    private JCheckBoxMenuItem mitLQ = null;
+    private JCheckBoxMenuItem mitX = null;	
+    private JCheckBoxMenuItem mitDG = null;	
     private JMenu helpMenu = null;
     private JMenuItem mitAbout = null;
     private JMenuItem mitGetSmallClue = null;
@@ -322,6 +327,9 @@ public class SudokuFrame extends JFrame implements Asker {
 		if (getInstance().revisedRating() > 0) {
 			Experimental = ".1";
 			ExSuffix ="New Rating ";
+		}
+		if (getInstance().isBringBackSE121()) {
+			Experimental =" (Original Sudoku Explainer 1.2.1 mode)";
 		}
 		this.setTitle(ExSuffix + "Sukaku Explainer " + VERSION + "." + REVISION + SUBREV + Experimental);
         JMenuBar menuBar = getJJMenuBar();
@@ -787,6 +795,7 @@ public class SudokuFrame extends JFrame implements Asker {
             jJMenuBar.add(getEditMenu());
             jJMenuBar.add(getToolMenu());
             jJMenuBar.add(getOptionsMenu());
+            jJMenuBar.add(getVariantsMenu());			
             jJMenuBar.add(getHelpMenu());
         }
         return jJMenuBar;
@@ -1375,6 +1384,81 @@ public class SudokuFrame extends JFrame implements Asker {
         return mitAntiAliasing;
     }
 
+    private JMenu getVariantsMenu() {
+        if (variantsMenu == null) {
+            variantsMenu = new JMenu();
+            variantsMenu.setText("Variants");
+            //variantsMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
+            variantsMenu.add(getMitVanilla());
+            variantsMenu.add(getMitLQ());
+            //getMitShowWelcome().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+            //variantsMenu.addSeparator();
+            variantsMenu.add(getMitX());
+            variantsMenu.add(getMitDG());			
+        }
+        return variantsMenu;
+    }
+
+    private JCheckBoxMenuItem getMitVanilla() {
+        if (mitVanilla == null) {
+            mitVanilla = new JCheckBoxMenuItem();
+            mitVanilla.setText("Vanilla Sudoku");
+            mitVanilla.setSelected(true);
+            mitVanilla.setToolTipText("Vanilla Sudoku with Row, Columns and Blocks");
+            mitVanilla.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					mitVanilla.setSelected(true);
+                }
+            });
+       }
+        return mitVanilla;
+    }
+
+    private JCheckBoxMenuItem getMitLQ() {
+        if (mitLQ == null) {
+            mitLQ = new JCheckBoxMenuItem();
+            mitLQ.setText("Latin Square (LQ)");
+            mitLQ.setSelected(false);
+            mitLQ.setToolTipText("Latin Square with Row and columns only. No Blocks");
+            mitLQ.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					mitLQ.setSelected(false);
+                }
+            });
+        }
+        return mitLQ;
+    }
+
+    private JCheckBoxMenuItem getMitX() {
+        if (mitX == null) {
+            mitX = new JCheckBoxMenuItem();
+            mitX.setText("X main diagonals");
+            mitX.setSelected(false);
+            mitX.setToolTipText("Adds the 2 main diagonals (X) as constraints");
+            mitX.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					mitX.setSelected(false);
+                }
+            });
+        }
+        return mitX;
+    }
+	
+    private JCheckBoxMenuItem getMitDG() {
+        if (mitDG == null) {
+            mitDG = new JCheckBoxMenuItem();
+            mitDG.setText("DG");
+            mitDG.setSelected(false);
+            mitDG.setToolTipText("Add 9 disjoint groups");
+            mitDG.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					mitDG.setSelected(false);
+                }
+            });
+        }
+        return mitDG;
+    }
+
     private JMenu getHelpMenu() {
         if (helpMenu == null) {
             helpMenu = new JMenu();
@@ -1544,10 +1628,12 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitBringBackSE121.setSelected(false);
 						Settings.getInstance().setlkSudokuBUG(true);
 						Settings.getInstance().setlkSudokuURUL(true);
-						engine.clearGrid();
-						engine.clearHints();
 					}
-					repaint();					
+				engine.clearGrid();
+				engine.clearHints();
+				initialize();
+				repaintViews();
+				showWelcomeText();					
                 }
             });
         }
@@ -1574,10 +1660,12 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitNewRevisedRatings.setSelected(false);
 						Settings.getInstance().setlkSudokuBUG(false);
 						Settings.getInstance().setlkSudokuURUL(false);
-						engine.clearGrid();
-						engine.clearHints();
 					}
-                    repaint();
+				engine.clearGrid();
+				engine.clearHints();
+				initialize();
+				repaintViews();
+				showWelcomeText();
                 }
             });
         }

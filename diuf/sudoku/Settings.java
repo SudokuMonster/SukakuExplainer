@@ -18,7 +18,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 10;
-    public final static String SUBREV = ".2";
+    public final static String SUBREV = ".4";
 	public final static String releaseDate = "2019-11-14";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
@@ -38,6 +38,11 @@ public class Settings {
     private boolean isShowingCandidateMasks = true;
 	private boolean isBringBackSE121 = false;//SE121 technique set, order and ratings
     private String lookAndFeelClassName = null;
+	
+	//Variants
+	private boolean isBlocks = true;
+	private boolean isX = false;
+	private boolean isDG = false;
 
     private EnumSet<SolvingTechnique> techniques;
     
@@ -145,6 +150,33 @@ public class Settings {
 
     public boolean isBringBackSE121() {
         return this.isBringBackSE121;
+    }
+
+    public void setBlocks(boolean value) {
+        this.isBlocks = value;
+        save();
+    }
+
+    public boolean isBlocks() {
+        return this.isBlocks;
+    }
+
+    public void setDG(boolean value) {
+        this.isDG = value;
+        save();
+    }
+
+    public boolean isDG() {
+        return this.isDG;
+    }
+	
+    public void setX(boolean value) {
+        this.isX = value;
+        save();
+    }
+
+    public boolean isX() {
+        return this.isX;
     }
 
     public String getLookAndFeelClassName() {
@@ -257,7 +289,9 @@ public class Settings {
             prefs.putBoolean("isAntialiasing", isAntialiasing);
             prefs.putBoolean("isShowingCandidates", isShowingCandidates);
             prefs.putBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
-            prefs.putBoolean("isBringBackSE121", isBringBackSE121);			
+            prefs.putBoolean("isBlocks", isBlocks);			
+            prefs.putBoolean("isX", isX);			
+            prefs.putBoolean("isDG", isDG);			
             if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {
