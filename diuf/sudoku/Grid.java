@@ -76,15 +76,14 @@ public class Grid {
     private static final Cell cells[];
     public static final int[][] regionCellIndex;
     public static final int[][] cellRegions;
-    public static final int[][] visibleCellIndex;
-	public static final int[][] forwardVisibleCellIndex;
+    public static int[][] visibleCellIndex;
+	public static int[][] forwardVisibleCellIndex;
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
     public static final Region[][] regions;
-    public static final CellSet[] visibleCellsSet;
-	public static final CellSet[] forwardVisibleCellsSet;
-	
+    public static CellSet[] visibleCellsSet;
+	public static CellSet[] forwardVisibleCellsSet;
     static {
     	cells = new Cell[] {
     		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
@@ -182,7 +181,7 @@ public class Grid {
     		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
     		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
 			};
-		forwardVisibleCellIndex = new int [][] {
+    	forwardVisibleCellIndex = new int [][] {
 			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
 			{2,3,4,5,6,7,8,9,10,11,18,19,20,28,37,46,55,64,73},
 			{3,4,5,6,7,8,9,10,11,18,19,20,29,38,47,56,65,74},
@@ -265,7 +264,7 @@ public class Grid {
 			{80},
 			{}
 			};
-		visibleCellsSet = new CellSet[] {
+    	visibleCellsSet = new CellSet[] {
 				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
 				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
 				new CellSet(visibleCellIndex[18]),new CellSet(visibleCellIndex[19]),new CellSet(visibleCellIndex[20]),new CellSet(visibleCellIndex[21]),new CellSet(visibleCellIndex[22]),new CellSet(visibleCellIndex[23]),new CellSet(visibleCellIndex[24]),new CellSet(visibleCellIndex[25]),new CellSet(visibleCellIndex[26]),
@@ -370,14 +369,13 @@ public class Grid {
     public static Grid.Region getRegionAt(int regionTypeIndex, int cellIndex) {
         return Grid.regions[regionTypeIndex][Grid.cellRegions[cellIndex][regionTypeIndex]];
     }
-
     //=== Non-static methods ==============
 
     /**
      * Is the cell a given or not
      * @param index the cell index [0..80]
      */	
-	
+		
 	public void setGiven(int index) {
         this.isGiven[index] = true;
     }
@@ -389,6 +387,370 @@ public class Grid {
     public boolean isGiven(int index) {
         return this.isGiven[index];
     }
+
+//Change visible cells according to variant
+	public static void changeVisibleCells() {
+    	if (Settings.getInstance().isBlocks())
+    	visibleCellIndex = new int[][] {
+    		{ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,27,36,45,54,63,72},
+    		{ 0, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,28,37,46,55,64,73},
+    		{ 0, 1, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,29,38,47,56,65,74},
+    		{ 0, 1, 2, 4, 5, 6, 7, 8,12,13,14,21,22,23,30,39,48,57,66,75},
+    		{ 0, 1, 2, 3, 5, 6, 7, 8,12,13,14,21,22,23,31,40,49,58,67,76},
+    		{ 0, 1, 2, 3, 4, 6, 7, 8,12,13,14,21,22,23,32,41,50,59,68,77},
+    		{ 0, 1, 2, 3, 4, 5, 7, 8,15,16,17,24,25,26,33,42,51,60,69,78},
+    		{ 0, 1, 2, 3, 4, 5, 6, 8,15,16,17,24,25,26,34,43,52,61,70,79},
+    		{ 0, 1, 2, 3, 4, 5, 6, 7,15,16,17,24,25,26,35,44,53,62,71,80},
+    		{ 0, 1, 2,10,11,12,13,14,15,16,17,18,19,20,27,36,45,54,63,72},
+    		{ 0, 1, 2, 9,11,12,13,14,15,16,17,18,19,20,28,37,46,55,64,73},
+    		{ 0, 1, 2, 9,10,12,13,14,15,16,17,18,19,20,29,38,47,56,65,74},
+    		{ 3, 4, 5, 9,10,11,13,14,15,16,17,21,22,23,30,39,48,57,66,75},
+    		{ 3, 4, 5, 9,10,11,12,14,15,16,17,21,22,23,31,40,49,58,67,76},
+    		{ 3, 4, 5, 9,10,11,12,13,15,16,17,21,22,23,32,41,50,59,68,77},
+    		{ 6, 7, 8, 9,10,11,12,13,14,16,17,24,25,26,33,42,51,60,69,78},
+    		{ 6, 7, 8, 9,10,11,12,13,14,15,17,24,25,26,34,43,52,61,70,79},
+    		{ 6, 7, 8, 9,10,11,12,13,14,15,16,24,25,26,35,44,53,62,71,80},
+    		{ 0, 1, 2, 9,10,11,19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+    		{ 0, 1, 2, 9,10,11,18,20,21,22,23,24,25,26,28,37,46,55,64,73},
+    		{ 0, 1, 2, 9,10,11,18,19,21,22,23,24,25,26,29,38,47,56,65,74},
+    		{ 3, 4, 5,12,13,14,18,19,20,22,23,24,25,26,30,39,48,57,66,75},
+    		{ 3, 4, 5,12,13,14,18,19,20,21,23,24,25,26,31,40,49,58,67,76},
+    		{ 3, 4, 5,12,13,14,18,19,20,21,22,24,25,26,32,41,50,59,68,77},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,25,26,33,42,51,60,69,78},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,24,26,34,43,52,61,70,79},
+    		{ 6, 7, 8,15,16,17,18,19,20,21,22,23,24,25,35,44,53,62,71,80},
+    		{ 0, 9,18,28,29,30,31,32,33,34,35,36,37,38,45,46,47,54,63,72},
+    		{ 1,10,19,27,29,30,31,32,33,34,35,36,37,38,45,46,47,55,64,73},
+    		{ 2,11,20,27,28,30,31,32,33,34,35,36,37,38,45,46,47,56,65,74},
+    		{ 3,12,21,27,28,29,31,32,33,34,35,39,40,41,48,49,50,57,66,75},
+    		{ 4,13,22,27,28,29,30,32,33,34,35,39,40,41,48,49,50,58,67,76},
+    		{ 5,14,23,27,28,29,30,31,33,34,35,39,40,41,48,49,50,59,68,77},
+    		{ 6,15,24,27,28,29,30,31,32,34,35,42,43,44,51,52,53,60,69,78},
+    		{ 7,16,25,27,28,29,30,31,32,33,35,42,43,44,51,52,53,61,70,79},
+    		{ 8,17,26,27,28,29,30,31,32,33,34,42,43,44,51,52,53,62,71,80},
+    		{ 0, 9,18,27,28,29,37,38,39,40,41,42,43,44,45,46,47,54,63,72},
+    		{ 1,10,19,27,28,29,36,38,39,40,41,42,43,44,45,46,47,55,64,73},
+    		{ 2,11,20,27,28,29,36,37,39,40,41,42,43,44,45,46,47,56,65,74},
+    		{ 3,12,21,30,31,32,36,37,38,40,41,42,43,44,48,49,50,57,66,75},
+    		{ 4,13,22,30,31,32,36,37,38,39,41,42,43,44,48,49,50,58,67,76},
+    		{ 5,14,23,30,31,32,36,37,38,39,40,42,43,44,48,49,50,59,68,77},
+    		{ 6,15,24,33,34,35,36,37,38,39,40,41,43,44,51,52,53,60,69,78},
+    		{ 7,16,25,33,34,35,36,37,38,39,40,41,42,44,51,52,53,61,70,79},
+    		{ 8,17,26,33,34,35,36,37,38,39,40,41,42,43,51,52,53,62,71,80},
+    		{ 0, 9,18,27,28,29,36,37,38,46,47,48,49,50,51,52,53,54,63,72},
+    		{ 1,10,19,27,28,29,36,37,38,45,47,48,49,50,51,52,53,55,64,73},
+    		{ 2,11,20,27,28,29,36,37,38,45,46,48,49,50,51,52,53,56,65,74},
+    		{ 3,12,21,30,31,32,39,40,41,45,46,47,49,50,51,52,53,57,66,75},
+    		{ 4,13,22,30,31,32,39,40,41,45,46,47,48,50,51,52,53,58,67,76},
+    		{ 5,14,23,30,31,32,39,40,41,45,46,47,48,49,51,52,53,59,68,77},
+    		{ 6,15,24,33,34,35,42,43,44,45,46,47,48,49,50,52,53,60,69,78},
+    		{ 7,16,25,33,34,35,42,43,44,45,46,47,48,49,50,51,53,61,70,79},
+    		{ 8,17,26,33,34,35,42,43,44,45,46,47,48,49,50,51,52,62,71,80},
+    		{ 0, 9,18,27,36,45,55,56,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 1,10,19,28,37,46,54,56,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 2,11,20,29,38,47,54,55,57,58,59,60,61,62,63,64,65,72,73,74},
+    		{ 3,12,21,30,39,48,54,55,56,58,59,60,61,62,66,67,68,75,76,77},
+    		{ 4,13,22,31,40,49,54,55,56,57,59,60,61,62,66,67,68,75,76,77},
+    		{ 5,14,23,32,41,50,54,55,56,57,58,60,61,62,66,67,68,75,76,77},
+    		{ 6,15,24,33,42,51,54,55,56,57,58,59,61,62,69,70,71,78,79,80},
+    		{ 7,16,25,34,43,52,54,55,56,57,58,59,60,62,69,70,71,78,79,80},
+    		{ 8,17,26,35,44,53,54,55,56,57,58,59,60,61,69,70,71,78,79,80},
+    		{ 0, 9,18,27,36,45,54,55,56,64,65,66,67,68,69,70,71,72,73,74},
+    		{ 1,10,19,28,37,46,54,55,56,63,65,66,67,68,69,70,71,72,73,74},
+    		{ 2,11,20,29,38,47,54,55,56,63,64,66,67,68,69,70,71,72,73,74},
+    		{ 3,12,21,30,39,48,57,58,59,63,64,65,67,68,69,70,71,75,76,77},
+    		{ 4,13,22,31,40,49,57,58,59,63,64,65,66,68,69,70,71,75,76,77},
+    		{ 5,14,23,32,41,50,57,58,59,63,64,65,66,67,69,70,71,75,76,77},
+    		{ 6,15,24,33,42,51,60,61,62,63,64,65,66,67,68,70,71,78,79,80},
+    		{ 7,16,25,34,43,52,60,61,62,63,64,65,66,67,68,69,71,78,79,80},
+    		{ 8,17,26,35,44,53,60,61,62,63,64,65,66,67,68,69,70,78,79,80},
+    		{ 0, 9,18,27,36,45,54,55,56,63,64,65,73,74,75,76,77,78,79,80},
+    		{ 1,10,19,28,37,46,54,55,56,63,64,65,72,74,75,76,77,78,79,80},
+    		{ 2,11,20,29,38,47,54,55,56,63,64,65,72,73,75,76,77,78,79,80},
+    		{ 3,12,21,30,39,48,57,58,59,66,67,68,72,73,74,76,77,78,79,80},
+    		{ 4,13,22,31,40,49,57,58,59,66,67,68,72,73,74,75,77,78,79,80},
+    		{ 5,14,23,32,41,50,57,58,59,66,67,68,72,73,74,75,76,78,79,80},
+    		{ 6,15,24,33,42,51,60,61,62,69,70,71,72,73,74,75,76,77,79,80},
+    		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
+    		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
+			};
+    	else
+			visibleCellIndex = new int[][] {
+				{ 1, 2, 3, 4, 5, 6, 7, 8, 9,18,27,36,45,54,63,72},
+				{ 0, 2, 3, 4, 5, 6, 7, 8,10,19,28,37,46,55,64,73},
+				{ 0, 1, 3, 4, 5, 6, 7, 8,11,20,29,38,47,56,65,74},
+				{ 0, 1, 2, 4, 5, 6, 7, 8,12,21,30,39,48,57,66,75},
+				{ 0, 1, 2, 3, 5, 6, 7, 8,13,22,31,40,49,58,67,76},
+				{ 0, 1, 2, 3, 4, 6, 7, 8,14,23,32,41,50,59,68,77},
+				{ 0, 1, 2, 3, 4, 5, 7, 8,15,24,33,42,51,60,69,78},
+				{ 0, 1, 2, 3, 4, 5, 6, 8,16,25,34,43,52,61,70,79},
+				{ 0, 1, 2, 3, 4, 5, 6, 7,17,26,35,44,53,62,71,80},
+				{ 0,10,11,12,13,14,15,16,17,18,27,36,45,54,63,72},
+				{ 1, 9,11,12,13,14,15,16,17,19,28,37,46,55,64,73},
+				{ 2, 9,10,12,13,14,15,16,17,20,29,38,47,56,65,74},
+				{ 3, 9,10,11,13,14,15,16,17,21,30,39,48,57,66,75},
+				{ 4, 9,10,11,12,14,15,16,17,22,31,40,49,58,67,76},
+				{ 5, 9,10,11,12,13,15,16,17,23,32,41,50,59,68,77},
+				{ 6, 9,10,11,12,13,14,16,17,24,33,42,51,60,69,78},
+				{ 7, 9,10,11,12,13,14,15,17,25,34,43,52,61,70,79},
+				{ 8, 9,10,11,12,13,14,15,16,26,35,44,53,62,71,80},
+				{ 0, 9,19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+				{ 1,10,18,20,21,22,23,24,25,26,28,37,46,55,64,73},
+				{ 2,11,18,19,21,22,23,24,25,26,29,38,47,56,65,74},
+				{ 3,12,18,19,20,22,23,24,25,26,30,39,48,57,66,75},
+				{ 4,13,18,19,20,21,23,24,25,26,31,40,49,58,67,76},
+				{ 5,14,18,19,20,21,22,24,25,26,32,41,50,59,68,77},
+				{ 6,15,18,19,20,21,22,23,25,26,33,42,51,60,69,78},
+				{ 7,16,18,19,20,21,22,23,24,26,34,43,52,61,70,79},
+				{ 8,17,18,19,20,21,22,23,24,25,35,44,53,62,71,80},
+				{ 0, 9,18,28,29,30,31,32,33,34,35,36,45,54,63,72},
+				{ 1,10,19,27,29,30,31,32,33,34,35,37,46,55,64,73},
+				{ 2,11,20,27,28,30,31,32,33,34,35,38,47,56,65,74},
+				{ 3,12,21,27,28,29,31,32,33,34,35,39,48,57,66,75},
+				{ 4,13,22,27,28,29,30,32,33,34,35,40,49,58,67,76},
+				{ 5,14,23,27,28,29,30,31,33,34,35,41,50,59,68,77},
+				{ 6,15,24,27,28,29,30,31,32,34,35,42,51,60,69,78},
+				{ 7,16,25,27,28,29,30,31,32,33,35,43,52,61,70,79},
+				{ 8,17,26,27,28,29,30,31,32,33,34,44,53,62,71,80},
+				{ 0, 9,18,27,37,38,39,40,41,42,43,44,45,54,63,72},
+				{ 1,10,19,28,36,38,39,40,41,42,43,44,46,55,64,73},
+				{ 2,11,20,29,36,37,39,40,41,42,43,44,47,56,65,74},
+				{ 3,12,21,30,36,37,38,40,41,42,43,44,48,57,66,75},
+				{ 4,13,22,31,36,37,38,39,41,42,43,44,49,58,67,76},
+				{ 5,14,23,32,36,37,38,39,40,42,43,44,50,59,68,77},
+				{ 6,15,24,33,36,37,38,39,40,41,43,44,51,60,69,78},
+				{ 7,16,25,34,36,37,38,39,40,41,42,44,52,61,70,79},
+				{ 8,17,26,35,36,37,38,39,40,41,42,43,53,62,71,80},
+				{ 0, 9,18,27,36,46,47,48,49,50,51,52,53,54,63,72},
+				{ 1,10,19,28,37,45,47,48,49,50,51,52,53,55,64,73},
+				{ 2,11,20,29,38,45,46,48,49,50,51,52,53,56,65,74},
+				{ 3,12,21,30,39,45,46,47,49,50,51,52,53,57,66,75},
+				{ 4,13,22,31,40,45,46,47,48,50,51,52,53,58,67,76},
+				{ 5,14,23,32,41,45,46,47,48,49,51,52,53,59,68,77},
+				{ 6,15,24,33,42,45,46,47,48,49,50,52,53,60,69,78},
+				{ 7,16,25,34,43,45,46,47,48,49,50,51,53,61,70,79},
+				{ 8,17,26,35,44,45,46,47,48,49,50,51,52,62,71,80},
+				{ 0, 9,18,27,36,45,55,56,57,58,59,60,61,62,63,72},
+				{ 1,10,19,28,37,46,54,56,57,58,59,60,61,62,64,73},
+				{ 2,11,20,29,38,47,54,55,57,58,59,60,61,62,65,74},
+				{ 3,12,21,30,39,48,54,55,56,58,59,60,61,62,66,75},
+				{ 4,13,22,31,40,49,54,55,56,57,59,60,61,62,67,76},
+				{ 5,14,23,32,41,50,54,55,56,57,58,60,61,62,68,77},
+				{ 6,15,24,33,42,51,54,55,56,57,58,59,61,62,69,78},
+				{ 7,16,25,34,43,52,54,55,56,57,58,59,60,62,70,79},
+				{ 8,17,26,35,44,53,54,55,56,57,58,59,60,61,71,80},
+				{ 0, 9,18,27,36,45,54,64,65,66,67,68,69,70,71,72},
+				{ 1,10,19,28,37,46,55,63,65,66,67,68,69,70,71,73},
+				{ 2,11,20,29,38,47,56,63,64,66,67,68,69,70,71,74},
+				{ 3,12,21,30,39,48,57,63,64,65,67,68,69,70,71,75},
+				{ 4,13,22,31,40,49,58,63,64,65,66,68,69,70,71,76},
+				{ 5,14,23,32,41,50,59,63,64,65,66,67,69,70,71,77},
+				{ 6,15,24,33,42,51,60,63,64,65,66,67,68,70,71,78},
+				{ 7,16,25,34,43,52,61,63,64,65,66,67,68,69,71,79},
+				{ 8,17,26,35,44,53,62,63,64,65,66,67,68,69,70,80},
+				{ 0, 9,18,27,36,45,54,63,73,74,75,76,77,78,79,80},
+				{ 1,10,19,28,37,46,55,64,72,74,75,76,77,78,79,80},
+				{ 2,11,20,29,38,47,56,65,72,73,75,76,77,78,79,80},
+				{ 3,12,21,30,39,48,57,66,72,73,74,76,77,78,79,80},
+				{ 4,13,22,31,40,49,58,67,72,73,74,75,77,78,79,80},
+				{ 5,14,23,32,41,50,59,68,72,73,74,75,76,78,79,80},
+				{ 6,15,24,33,42,51,60,69,72,73,74,75,76,77,79,80},
+				{ 7,16,25,34,43,52,61,70,72,73,74,75,76,77,78,80},
+				{ 8,17,26,35,44,53,62,71,72,73,74,75,76,77,78,79}
+			};
+		if (Settings.getInstance().isBlocks())	
+		forwardVisibleCellIndex = new int [][] {
+			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
+			{2,3,4,5,6,7,8,9,10,11,18,19,20,28,37,46,55,64,73},
+			{3,4,5,6,7,8,9,10,11,18,19,20,29,38,47,56,65,74},
+			{4,5,6,7,8,12,13,14,21,22,23,30,39,48,57,66,75},
+			{5,6,7,8,12,13,14,21,22,23,31,40,49,58,67,76},
+			{6,7,8,12,13,14,21,22,23,32,41,50,59,68,77},
+			{7,8,15,16,17,24,25,26,33,42,51,60,69,78},
+			{8,15,16,17,24,25,26,34,43,52,61,70,79},
+			{15,16,17,24,25,26,35,44,53,62,71,80},
+			{10,11,12,13,14,15,16,17,18,19,20,27,36,45,54,63,72},
+			{11,12,13,14,15,16,17,18,19,20,28,37,46,55,64,73},
+			{12,13,14,15,16,17,18,19,20,29,38,47,56,65,74},
+			{13,14,15,16,17,21,22,23,30,39,48,57,66,75},
+			{14,15,16,17,21,22,23,31,40,49,58,67,76},
+			{15,16,17,21,22,23,32,41,50,59,68,77},
+			{16,17,24,25,26,33,42,51,60,69,78},
+			{17,24,25,26,34,43,52,61,70,79},
+			{24,25,26,35,44,53,62,71,80},
+			{19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+			{20,21,22,23,24,25,26,28,37,46,55,64,73},
+			{21,22,23,24,25,26,29,38,47,56,65,74},
+			{22,23,24,25,26,30,39,48,57,66,75},
+			{23,24,25,26,31,40,49,58,67,76},
+			{24,25,26,32,41,50,59,68,77},
+			{25,26,33,42,51,60,69,78},
+			{26,34,43,52,61,70,79},
+			{35,44,53,62,71,80},
+			{28,29,30,31,32,33,34,35,36,37,38,45,46,47,54,63,72},
+			{29,30,31,32,33,34,35,36,37,38,45,46,47,55,64,73},
+			{30,31,32,33,34,35,36,37,38,45,46,47,56,65,74},
+			{31,32,33,34,35,39,40,41,48,49,50,57,66,75},
+			{32,33,34,35,39,40,41,48,49,50,58,67,76},
+			{33,34,35,39,40,41,48,49,50,59,68,77},
+			{34,35,42,43,44,51,52,53,60,69,78},
+			{35,42,43,44,51,52,53,61,70,79},
+			{42,43,44,51,52,53,62,71,80},
+			{37,38,39,40,41,42,43,44,45,46,47,54,63,72},
+			{38,39,40,41,42,43,44,45,46,47,55,64,73},
+			{39,40,41,42,43,44,45,46,47,56,65,74},
+			{40,41,42,43,44,48,49,50,57,66,75},
+			{41,42,43,44,48,49,50,58,67,76},
+			{42,43,44,48,49,50,59,68,77},
+			{43,44,51,52,53,60,69,78},
+			{44,51,52,53,61,70,79},
+			{51,52,53,62,71,80},
+			{46,47,48,49,50,51,52,53,54,63,72},
+			{47,48,49,50,51,52,53,55,64,73},
+			{48,49,50,51,52,53,56,65,74},
+			{49,50,51,52,53,57,66,75},
+			{50,51,52,53,58,67,76},
+			{51,52,53,59,68,77},
+			{52,53,60,69,78},
+			{53,61,70,79},
+			{62,71,80},
+			{55,56,57,58,59,60,61,62,63,64,65,72,73,74},
+			{56,57,58,59,60,61,62,63,64,65,72,73,74},
+			{57,58,59,60,61,62,63,64,65,72,73,74},
+			{58,59,60,61,62,66,67,68,75,76,77},
+			{59,60,61,62,66,67,68,75,76,77},
+			{60,61,62,66,67,68,75,76,77},
+			{61,62,69,70,71,78,79,80},
+			{62,69,70,71,78,79,80},
+			{69,70,71,78,79,80},
+			{64,65,66,67,68,69,70,71,72,73,74},
+			{65,66,67,68,69,70,71,72,73,74},
+			{66,67,68,69,70,71,72,73,74},
+			{67,68,69,70,71,75,76,77},
+			{68,69,70,71,75,76,77},
+			{69,70,71,75,76,77},
+			{70,71,78,79,80},
+			{71,78,79,80},
+			{78,79,80},
+			{73,74,75,76,77,78,79,80},
+			{74,75,76,77,78,79,80},
+			{75,76,77,78,79,80},
+			{76,77,78,79,80},
+			{77,78,79,80},
+			{78,79,80},
+			{79,80},
+			{80},
+			{}
+			};
+    	else
+			forwardVisibleCellIndex = new int [][] {
+				{1,2,3,4,5,6,7,8,9,18,27,36,45,54,63,72},
+				{2,3,4,5,6,7,8,10,19,28,37,46,55,64,73},
+				{3,4,5,6,7,8,11,20,29,38,47,56,65,74},
+				{4,5,6,7,8,12,21,30,39,48,57,66,75},
+				{5,6,7,8,13,22,31,40,49,58,67,76},
+				{6,7,8,14,23,32,41,50,59,68,77},
+				{7,8,15,24,33,42,51,60,69,78},
+				{8,16,25,34,43,52,61,70,79},
+				{17,26,35,44,53,62,71,80},
+				{10,11,12,13,14,15,16,17,18,27,36,45,54,63,72},
+				{11,12,13,14,15,16,17,19,28,37,46,55,64,73},
+				{12,13,14,15,16,17,20,29,38,47,56,65,74},
+				{13,14,15,16,17,21,30,39,48,57,66,75},
+				{14,15,16,17,22,31,40,49,58,67,76},
+				{15,16,17,23,32,41,50,59,68,77},
+				{16,17,24,33,42,51,60,69,78},
+				{17,25,34,43,52,61,70,79},
+				{26,35,44,53,62,71,80},
+				{19,20,21,22,23,24,25,26,27,36,45,54,63,72},
+				{20,21,22,23,24,25,26,28,37,46,55,64,73},
+				{21,22,23,24,25,26,29,38,47,56,65,74},
+				{22,23,24,25,26,30,39,48,57,66,75},
+				{23,24,25,26,31,40,49,58,67,76},
+				{24,25,26,32,41,50,59,68,77},
+				{25,26,33,42,51,60,69,78},
+				{26,34,43,52,61,70,79},
+				{35,44,53,62,71,80},
+				{28,29,30,31,32,33,34,35,36,45,54,63,72},
+				{29,30,31,32,33,34,35,37,46,55,64,73},
+				{30,31,32,33,34,35,38,47,56,65,74},
+				{31,32,33,34,35,39,48,57,66,75},
+				{32,33,34,35,40,49,58,67,76},
+				{33,34,35,41,50,59,68,77},
+				{34,35,42,51,60,69,78},
+				{35,43,52,61,70,79},
+				{44,53,62,71,80},
+				{37,38,39,40,41,42,43,44,45,54,63,72},
+				{38,39,40,41,42,43,44,46,55,64,73},
+				{39,40,41,42,43,44,47,56,65,74},
+				{40,41,42,43,44,48,57,66,75},
+				{41,42,43,44,49,58,67,76},
+				{42,43,44,50,59,68,77},
+				{43,44,51,60,69,78},
+				{44,52,61,70,79},
+				{53,62,71,80},
+				{46,47,48,49,50,51,52,53,54,63,72},
+				{47,48,49,50,51,52,53,55,64,73},
+				{48,49,50,51,52,53,56,65,74},
+				{49,50,51,52,53,57,66,75},
+				{50,51,52,53,58,67,76},
+				{51,52,53,59,68,77},
+				{52,53,60,69,78},
+				{53,61,70,79},
+				{62,71,80},
+				{55,56,57,58,59,60,61,62,63,72},
+				{56,57,58,59,60,61,62,64,73},
+				{57,58,59,60,61,62,65,74},
+				{58,59,60,61,62,66,75},
+				{59,60,61,62,67,76},
+				{60,61,62,68,77},
+				{61,62,69,78},
+				{62,70,79},
+				{71,80},
+				{64,65,66,67,68,69,70,71,72},
+				{65,66,67,68,69,70,71,73},
+				{66,67,68,69,70,71,74},
+				{67,68,69,70,71,75},
+				{68,69,70,71,76},
+				{69,70,71,77},
+				{70,71,78},
+				{71,79},
+				{80},
+				{73,74,75,76,77,78,79,80},
+				{74,75,76,77,78,79,80},
+				{75,76,77,78,79,80},
+				{76,77,78,79,80},
+				{77,78,79,80},
+				{78,79,80},
+				{79,80},
+				{80},
+				{}
+			};
+    	visibleCellsSet = new CellSet[] {
+				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
+				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
+				new CellSet(visibleCellIndex[18]),new CellSet(visibleCellIndex[19]),new CellSet(visibleCellIndex[20]),new CellSet(visibleCellIndex[21]),new CellSet(visibleCellIndex[22]),new CellSet(visibleCellIndex[23]),new CellSet(visibleCellIndex[24]),new CellSet(visibleCellIndex[25]),new CellSet(visibleCellIndex[26]),
+				new CellSet(visibleCellIndex[27]),new CellSet(visibleCellIndex[28]),new CellSet(visibleCellIndex[29]),new CellSet(visibleCellIndex[30]),new CellSet(visibleCellIndex[31]),new CellSet(visibleCellIndex[32]),new CellSet(visibleCellIndex[33]),new CellSet(visibleCellIndex[34]),new CellSet(visibleCellIndex[35]),
+				new CellSet(visibleCellIndex[36]),new CellSet(visibleCellIndex[37]),new CellSet(visibleCellIndex[38]),new CellSet(visibleCellIndex[39]),new CellSet(visibleCellIndex[40]),new CellSet(visibleCellIndex[41]),new CellSet(visibleCellIndex[42]),new CellSet(visibleCellIndex[43]),new CellSet(visibleCellIndex[44]),
+				new CellSet(visibleCellIndex[45]),new CellSet(visibleCellIndex[46]),new CellSet(visibleCellIndex[47]),new CellSet(visibleCellIndex[48]),new CellSet(visibleCellIndex[49]),new CellSet(visibleCellIndex[50]),new CellSet(visibleCellIndex[51]),new CellSet(visibleCellIndex[52]),new CellSet(visibleCellIndex[53]),
+				new CellSet(visibleCellIndex[54]),new CellSet(visibleCellIndex[55]),new CellSet(visibleCellIndex[56]),new CellSet(visibleCellIndex[57]),new CellSet(visibleCellIndex[58]),new CellSet(visibleCellIndex[59]),new CellSet(visibleCellIndex[60]),new CellSet(visibleCellIndex[61]),new CellSet(visibleCellIndex[62]),
+				new CellSet(visibleCellIndex[63]),new CellSet(visibleCellIndex[64]),new CellSet(visibleCellIndex[65]),new CellSet(visibleCellIndex[66]),new CellSet(visibleCellIndex[67]),new CellSet(visibleCellIndex[68]),new CellSet(visibleCellIndex[69]),new CellSet(visibleCellIndex[70]),new CellSet(visibleCellIndex[71]),
+				new CellSet(visibleCellIndex[72]),new CellSet(visibleCellIndex[73]),new CellSet(visibleCellIndex[74]),new CellSet(visibleCellIndex[75]),new CellSet(visibleCellIndex[76]),new CellSet(visibleCellIndex[77]),new CellSet(visibleCellIndex[78]),new CellSet(visibleCellIndex[79]),new CellSet(visibleCellIndex[80])
+				};
+		forwardVisibleCellsSet = new CellSet[] {
+				new CellSet(forwardVisibleCellIndex[0]),new CellSet(forwardVisibleCellIndex[1]),new CellSet(forwardVisibleCellIndex[2]),new CellSet(forwardVisibleCellIndex[3]),new CellSet(forwardVisibleCellIndex[4]),new CellSet(forwardVisibleCellIndex[5]),new CellSet(forwardVisibleCellIndex[6]),new CellSet(forwardVisibleCellIndex[7]),new CellSet(forwardVisibleCellIndex[8]),
+				new CellSet(forwardVisibleCellIndex[9]),new CellSet(forwardVisibleCellIndex[10]),new CellSet(forwardVisibleCellIndex[11]),new CellSet(forwardVisibleCellIndex[12]),new CellSet(forwardVisibleCellIndex[13]),new CellSet(forwardVisibleCellIndex[14]),new CellSet(forwardVisibleCellIndex[15]),new CellSet(forwardVisibleCellIndex[16]),new CellSet(forwardVisibleCellIndex[17]),
+				new CellSet(forwardVisibleCellIndex[18]),new CellSet(forwardVisibleCellIndex[19]),new CellSet(forwardVisibleCellIndex[20]),new CellSet(forwardVisibleCellIndex[21]),new CellSet(forwardVisibleCellIndex[22]),new CellSet(forwardVisibleCellIndex[23]),new CellSet(forwardVisibleCellIndex[24]),new CellSet(forwardVisibleCellIndex[25]),new CellSet(forwardVisibleCellIndex[26]),
+				new CellSet(forwardVisibleCellIndex[27]),new CellSet(forwardVisibleCellIndex[28]),new CellSet(forwardVisibleCellIndex[29]),new CellSet(forwardVisibleCellIndex[30]),new CellSet(forwardVisibleCellIndex[31]),new CellSet(forwardVisibleCellIndex[32]),new CellSet(forwardVisibleCellIndex[33]),new CellSet(forwardVisibleCellIndex[34]),new CellSet(forwardVisibleCellIndex[35]),
+				new CellSet(forwardVisibleCellIndex[36]),new CellSet(forwardVisibleCellIndex[37]),new CellSet(forwardVisibleCellIndex[38]),new CellSet(forwardVisibleCellIndex[39]),new CellSet(forwardVisibleCellIndex[40]),new CellSet(forwardVisibleCellIndex[41]),new CellSet(forwardVisibleCellIndex[42]),new CellSet(forwardVisibleCellIndex[43]),new CellSet(forwardVisibleCellIndex[44]),
+				new CellSet(forwardVisibleCellIndex[45]),new CellSet(forwardVisibleCellIndex[46]),new CellSet(forwardVisibleCellIndex[47]),new CellSet(forwardVisibleCellIndex[48]),new CellSet(forwardVisibleCellIndex[49]),new CellSet(forwardVisibleCellIndex[50]),new CellSet(forwardVisibleCellIndex[51]),new CellSet(forwardVisibleCellIndex[52]),new CellSet(forwardVisibleCellIndex[53]),
+				new CellSet(forwardVisibleCellIndex[54]),new CellSet(forwardVisibleCellIndex[55]),new CellSet(forwardVisibleCellIndex[56]),new CellSet(forwardVisibleCellIndex[57]),new CellSet(forwardVisibleCellIndex[58]),new CellSet(forwardVisibleCellIndex[59]),new CellSet(forwardVisibleCellIndex[60]),new CellSet(forwardVisibleCellIndex[61]),new CellSet(forwardVisibleCellIndex[62]),
+				new CellSet(forwardVisibleCellIndex[63]),new CellSet(forwardVisibleCellIndex[64]),new CellSet(forwardVisibleCellIndex[65]),new CellSet(forwardVisibleCellIndex[66]),new CellSet(forwardVisibleCellIndex[67]),new CellSet(forwardVisibleCellIndex[68]),new CellSet(forwardVisibleCellIndex[69]),new CellSet(forwardVisibleCellIndex[70]),new CellSet(forwardVisibleCellIndex[71]),
+				new CellSet(forwardVisibleCellIndex[72]),new CellSet(forwardVisibleCellIndex[73]),new CellSet(forwardVisibleCellIndex[74]),new CellSet(forwardVisibleCellIndex[75]),new CellSet(forwardVisibleCellIndex[76]),new CellSet(forwardVisibleCellIndex[77]),new CellSet(forwardVisibleCellIndex[78]),new CellSet(forwardVisibleCellIndex[79]),new CellSet(forwardVisibleCellIndex[80])
+				};			
+	}
+
+
 
     /**
      * Set the value of a cell
@@ -539,7 +901,7 @@ public class Grid {
      */
     public Cell getFirstCancellerOf(Cell target, int value) {
         int[] visible = Grid.visibleCellIndex[target.getIndex()];
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < (Settings.getInstance().isBlocks() ? 20 : 16); i++) {
         	if(cellValues[visible[i]] == value) return Grid.getCell(visible[i]);
         }
         return null;

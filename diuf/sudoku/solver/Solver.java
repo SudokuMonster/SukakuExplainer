@@ -193,12 +193,14 @@ if (Settings.getInstance().revisedRating()==1) {
 }
 else {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
-        addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
+        if (Settings.getInstance().isBlocks())
+			addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
         addIfWorth(SolvingTechnique.DirectHiddenTriplet, directHintProducers, new HiddenSet(3, true));
         indirectHintProducers = new ArrayList<IndirectHintProducer>();
-        addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
+        if (Settings.getInstance().isBlocks())
+			addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
         addIfWorth(SolvingTechnique.NakedPair, indirectHintProducers, new NakedSet(2));
         addIfWorth(SolvingTechnique.XWing, indirectHintProducers, new Fisherman(2));
         addIfWorth(SolvingTechnique.HiddenPair, indirectHintProducers, new HiddenSet(2, false));

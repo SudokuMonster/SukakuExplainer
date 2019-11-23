@@ -31,7 +31,8 @@ public class HiddenSet implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, 0, accu); //block
+        if (Settings.getInstance().isBlocks())
+			getHints(grid, 0, accu); //block
         getHints(grid, 2, accu); //column
         getHints(grid, 1, accu); //row
     }

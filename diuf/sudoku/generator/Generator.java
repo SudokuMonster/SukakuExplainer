@@ -107,9 +107,11 @@ public class Generator {
                 for (Point p : points) {
                     //Cell cell = grid.getCell(p.x, p.y);
                     //if (cell.getValue() != 0) {
+					grid.resetGiven(y * 9 + x);
                     if (grid.getCellValue(p.x, p.y) != 0) {
                         //cell.setValue(0);
                     	grid.setCellValue(p.x, p.y, 0);
+						
                         cellRemoved = true;
                     }
                 }
@@ -124,8 +126,10 @@ public class Generator {
                         assert false : "Invalid grid";
                     } else {
                         // Failed. Put the cells back and try with next cell
-                        for (Point p : points)
+                        for (Point p : points){
                             grid.setCellValue(p.x, p.y, solution.getCellValue(p.x, p.y));
+							grid.setGiven(y * 9 + x);
+						}
                         //attempts += 1;
                     }
                 }

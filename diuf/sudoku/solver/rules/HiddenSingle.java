@@ -18,11 +18,13 @@ public class HiddenSingle implements DirectHintProducer {
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
         // First alone cells (last empty cell in a region)
-        getHints(grid, 0, accu, true); //block
+        if (Settings.getInstance().isBlocks())
+			getHints(grid, 0, accu, true); //block
         getHints(grid, 2, accu, true); //column
         getHints(grid, 1, accu, true); //row
         // Then hidden cells
-        getHints(grid, 0, accu, false); //block
+        if (Settings.getInstance().isBlocks())
+			getHints(grid, 0, accu, false); //block
         getHints(grid, 2, accu, false); //column
         getHints(grid, 1, accu, false); //row
     }

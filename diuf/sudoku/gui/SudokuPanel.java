@@ -442,7 +442,7 @@ public class SudokuPanel extends JPanel {
         Color col;
         boolean ret = false;
 
-        if ((cell.getX() / 3 % 2 == 0) ^ (cell.getY() / 3 % 2 == 0)) {
+        if (((cell.getX() / 3 % 2 == 0) ^ (cell.getY() / 3 % 2 == 0)) && Settings.getInstance().isBlocks()) {
             col = alternativeColor;
         } else {
             col = Color.white;
@@ -622,7 +622,7 @@ public class SudokuPanel extends JPanel {
     private void paintGrid(Graphics g) {
         for (int i = 0; i <= 9; i++) {
             int lineWidth;
-            if (i % 3 == 0) {
+            if ((i % 3 == 0  && Settings.getInstance().isBlocks()) || i % 9 == 0) {
                 lineWidth = 4;
                 g.setColor(borderColor);
             } else {

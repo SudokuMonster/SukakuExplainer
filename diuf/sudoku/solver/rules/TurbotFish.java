@@ -27,7 +27,7 @@ public class TurbotFish implements IndirectHintProducer {
 		};
 		List<TurbotFishHint> hintsFinal = new ArrayList<TurbotFishHint>();
 		List<TurbotFishHint> hintsStart;
-        for (int i = 0; i < 5 ; i++) {	
+        for (int i = 0; i < (Settings.getInstance().isBlocks() ? 5 : 3) ; i++) {	
 			hintsStart = getHints(grid, Sets[i][0], Sets[i][1]);
 			for (TurbotFishHint hint : hintsStart)
 				hintsFinal.add(hint);
@@ -87,20 +87,21 @@ public class TurbotFish implements IndirectHintProducer {
 			else if (bridge2.getY() == bridge1Support.getY())
 				return (Grid.Row)Grid.getRegionAt(1,bridge1.getIndex());		
         } 
-		if (bridge1.getB() == bridge2.getB()) {
-			if (bridge1Support == null && bridge2Support == null)
-				return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			else if (bridge1Support == null) {
-				if (bridge1.getB() == bridge2Support.getB())
+		if (Settings.getInstance().isBlocks())
+			if (bridge1.getB() == bridge2.getB()) {
+				if (bridge1Support == null && bridge2Support == null)
 					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			}
-			else if (bridge2Support == null) {
-				if (bridge2.getB() == bridge1Support.getB())
-					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			}
-			else if (bridge2.getB() == bridge1Support.getB())
-				return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());		
-        } 
+				else if (bridge1Support == null) {
+					if (bridge1.getB() == bridge2Support.getB())
+						return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
+				}
+				else if (bridge2Support == null) {
+					if (bridge2.getB() == bridge1Support.getB())
+						return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
+				}
+				else if (bridge2.getB() == bridge1Support.getB())
+					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());		
+			} 
 		return null;
     }
 

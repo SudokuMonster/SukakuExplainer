@@ -142,7 +142,7 @@ public class UniqueLoops implements IndirectHintProducer {
             int lastRegionTypeIndex, Collection<List<Cell>> results) {
         loop.add(cell);
 		if (Settings.getInstance().islkSudokuURUL()) {
-        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             if (regionTypeIndex != lastRegionTypeIndex) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
@@ -182,7 +182,7 @@ public class UniqueLoops implements IndirectHintProducer {
 		}
 		else {
         exValues = (BitSet)exValues.clone(); // Ensure we cleanup ourself
-		for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             if (regionTypeIndex != lastRegionTypeIndex) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
@@ -241,7 +241,7 @@ public class UniqueLoops implements IndirectHintProducer {
         HashSet<Grid.Region> visitedEven = new HashSet<Grid.Region>();
         boolean isOdd = false;
         for (Cell cell : loop) {
-            for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (isOdd) {
                     if (visitedOdd.contains(region))
@@ -322,7 +322,7 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for Naked and hidden Sets. Iterate on degree
 		if (Settings.getInstance().islkSudokuURUL()) {
         for (int degree = 2; degree <= 7; degree++) {
-            for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
                 if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
@@ -418,7 +418,7 @@ public class UniqueLoops implements IndirectHintProducer {
 		}
 		else {
         for (int degree = extra.cardinality(); degree <= 7; degree++) {
-            for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+            for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
                 if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
@@ -595,7 +595,7 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for v1 or v2 locked in a region of c1 and c2
         Grid.Region r1 = null;
         Grid.Region r2 = null;
-        for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
             if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                 // Region common to c1 and c2

@@ -83,7 +83,7 @@ public class Cell {
         assert value != 0;
         targetGrid.setCellValue(this.index, value);
         targetGrid.clearCellPotentialValues(this.index);
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < (Settings.getInstance().isBlocks() ? 20 : 16); i++) {
         	targetGrid.removeCellPotentialValue(Grid.visibleCellIndex[this.index][i], value);
         }
     }

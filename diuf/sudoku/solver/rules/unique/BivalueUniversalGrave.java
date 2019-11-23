@@ -31,7 +31,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 			CellSet allExtraCells = null;
 			int onlyValue = 0;
 			boolean oneValue = true;
-			for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {																			   
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {																			   
 				Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 				for (int i = 0; i < regions.length; i++) {
 					Grid.Region region = regions[i];
@@ -113,7 +113,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 			}
 		}
 		else {
-			for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {																			   
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {																			   
 				Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 				for (int i = 0; i < regions.length; i++) {
 					Grid.Region region = regions[i];
@@ -173,7 +173,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         }
         // When bug values have been removed, all remaining candidates must have
         // two positions in each region
-        for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
             for (int i = 0; i < regions.length; i++) {
                 Grid.Region region = regions[i];
@@ -243,7 +243,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         if (Settings.getInstance().islkSudokuBUG()) {
 		for (int degree = 2; degree <= 6; degree++) {
 	        //for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {			
-			for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
@@ -323,7 +323,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         } // for (degree)
 		}
 		else {
-		for (int regionTypeIndex = 0; regionTypeIndex < 3; regionTypeIndex++) {
+		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
@@ -422,7 +422,7 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             return; // No BUG type 4
 
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-        for (int regionTypeIndex  = 0; regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
             // Look for a region of this type shared by all bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {

@@ -282,7 +282,8 @@ public class serate {
         int             batchSolving = 0;
 		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
-        char            want = 0;
+        boolean			isBlocks = true; //Blocks are y default enabled. Disable to transform into Latin square (LQ)
+		char            want = 0;
         int             arg;
         //long            t; //not used anymore
         long            tt = System.currentTimeMillis();
@@ -333,7 +334,9 @@ public class serate {
 					else if (s.equals("islkSudokuURUL"))
                         c = 'U';
                     else if (s.equals("showArguments"))
-                        c = 'S';                    
+                        c = 'S'; 
+                    else if (s.equals("isBlocks"))
+                        c = 'Q'; 					
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
@@ -369,7 +372,8 @@ public class serate {
                 case 'B':
                 case 'N':
                 case 'G':
-                case 'U':				
+                case 'U':
+                case 'Q':				
                 case '~':
                     if (v == null)
                         usage(a, 1);
@@ -441,6 +445,10 @@ public class serate {
                     islkSudokuURUL = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setlkSudokuURUL(islkSudokuURUL);//0: islkSudokuURUL disabled //1:islkSudokuURUL enabled
                     break;
+                case 'Q':
+                    isBlocks = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setBlocks(isBlocks);//0: isBlocks disabled //1:isBlocks enabled
+                    break;					
                 case '~':
                     setTechniques(v, showArguments);
                     break;                  

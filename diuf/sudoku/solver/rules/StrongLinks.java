@@ -74,6 +74,12 @@ public class StrongLinks implements IndirectHintProducer {
 		int linkNumber = 0;
 		int setNumber = 0;
 		while (linkNumber < degree) {
+			//For Latin Square
+			if (!Settings.getInstance().isBlocks() && setsAll[setNumber][8 - degree + linkNumber] == 0) {
+				linkNumber = 0;
+				setNumber++;
+				continue;
+			}
 			Set[linkNumber] = setsAll[setNumber][8 - degree + linkNumber];
 			linkNumber++;
 			if (linkNumber == degree && (setNumber < 45 && (degree == 8 || setsAll[setNumber][8 - degree - 1] != 1)))  {
@@ -140,20 +146,21 @@ public class StrongLinks implements IndirectHintProducer {
 			else if (bridge2.getY() == bridge1Support.getY() && bridge1.getY() == bridge2Support.getY())
 				return (Grid.Row)Grid.getRegionAt(1,bridge1.getIndex());		
         } 
-		if (bridge1.getB() == bridge2.getB()) {
-			if (bridge1Support == null && bridge2Support == null)
-				return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			else if (bridge1Support == null) {
-				if (bridge1.getB() == bridge2Support.getB())
+		if (Settings.getInstance().isBlocks())
+			if (bridge1.getB() == bridge2.getB()) {
+				if (bridge1Support == null && bridge2Support == null)
 					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			}
-			else if (bridge2Support == null) {
-				if (bridge2.getB() == bridge1Support.getB())
-					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
-			}
-			else if (bridge2.getB() == bridge1Support.getB() && bridge1.getB() == bridge2Support.getB())
-				return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());		
-        } 
+				else if (bridge1Support == null) {
+					if (bridge1.getB() == bridge2Support.getB())
+						return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
+				}
+				else if (bridge2Support == null) {
+					if (bridge2.getB() == bridge1Support.getB())
+						return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());
+				}
+				else if (bridge2.getB() == bridge1Support.getB() && bridge1.getB() == bridge2Support.getB())
+					return (Grid.Block)Grid.getRegionAt(0,bridge1.getIndex());		
+			} 
 		return null;
     }
 
