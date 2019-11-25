@@ -181,6 +181,7 @@ public class Grid {
     		{ 7,16,25,34,43,52,60,61,62,69,70,71,72,73,74,75,76,77,78,80},
     		{ 8,17,26,35,44,53,60,61,62,69,70,71,72,73,74,75,76,77,78,79}
 			};
+//@SudokuMonster: Visible indexes >  Cell index; used to speed search and minimize repeats in some techniques (e.g WXYZ wing)
     	forwardVisibleCellIndex = new int [][] {
 			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
 			{2,3,4,5,6,7,8,9,10,11,18,19,20,28,37,46,55,64,73},
@@ -387,7 +388,8 @@ public class Grid {
     public boolean isGiven(int index) {
         return this.isGiven[index];
     }
-
+//@SudokuMonster: Static for Variant this has to be called if a variant technique relies on Visible Cells
+//					until a better way to de-clutter code is found
 //Change visible cells according to variant
 	public static void changeVisibleCells() {
     	if (Settings.getInstance().isBlocks())
@@ -1035,15 +1037,18 @@ public class Grid {
         if ( crd > 1 )
         {
             for (int i=0; i<3; i++ ) {
-                s = "+";
-                for (int j=0; j<3; j++ ) {
-                    for (int k=0; k<3; k++ ) { s += "-";
-                        for (int l=0; l<crd; l++ ) { s += "-";
-                        }
-                    }
-                    s += "-+";
-                }
-                res += s + System.lineSeparator();
+                if (Settings.getInstance().isBlocks() || i == 0) {
+					s = "+";
+						for (int j=0; j<3; j++ ) {
+							for (int k=0; k<3; k++ ) { s += "-";
+								for (int l=0; l<crd; l++ ) { s += "-";
+								}
+							}
+							if (Settings.getInstance().isBlocks() || j == 2)
+								s += "-+";
+						}
+						res += s + System.lineSeparator();
+				}
                 for (int j=0; j<3; j++ ) {
                     s = "|";
                     for (int k=0; k<3; k++ ) {
@@ -1070,7 +1075,8 @@ public class Grid {
                             for (int pad=cnt; pad<crd; pad++ ) { s += " ";
                             }
                         }
-                        s += " |";
+						if (Settings.getInstance().isBlocks() || k == 2)
+							s += " |";
                     }
                     res += s + System.lineSeparator();
                 }
@@ -1081,7 +1087,8 @@ public class Grid {
                     for (int l=0; l<crd; l++ ) { s += "-";
                     }
                 }
-                s += "-+";
+                if (Settings.getInstance().isBlocks() || j == 2)
+					s += "-+";
             }
             res += s;
         }

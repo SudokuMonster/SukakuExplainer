@@ -929,7 +929,8 @@ public class Chaining implements IndirectHintProducer {
         final Collection<Potential> result = new ArrayList<Potential>();
         if (otherRules == null) {
             otherRules = new ArrayList<IndirectHintProducer>();
-            otherRules.add(new Locking(false));
+            if (Settings.getInstance().isBlocks())
+				otherRules.add(new Locking(false));
             otherRules.add(new HiddenSet(2, false));
             otherRules.add(new NakedSet(2));
             otherRules.add(new Fisherman(2));

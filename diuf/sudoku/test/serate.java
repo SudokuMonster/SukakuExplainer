@@ -278,8 +278,9 @@ public class serate {
         BufferedReader  reader = null;
         PrintWriter     writer = null;
         int             numThreads = 1;
-        int             revisedRating = 0;
-        int             batchSolving = 0;
+            //@SudokuMonster: 
+        int             revisedRating = 0;//New revised Rating
+        int             batchSolving = 0;//Batch soving mode
 		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
         boolean			isBlocks = true; //Blocks are y default enabled. Disable to transform into Latin square (LQ)
@@ -323,18 +324,25 @@ public class serate {
                         c = 'o';
                     else if (s.equals("pearl"))
                         c = 'p';
+            //@SudokuMonster: 
                     else if (s.equals("version"))
                         c = 'V';
+            //@SudokuMonster: 
                     else if (s.equals("batch"))
                         c = 'B';
+            //@SudokuMonster: 
                     else if (s.equals("revisedRating"))
                         c = 'N';
+            //@SudokuMonster: 
 					else if (s.equals("islkSudokuBUG"))
                         c = 'G';                    
+            //@SudokuMonster: 
 					else if (s.equals("islkSudokuURUL"))
                         c = 'U';
+            //@SudokuMonster: 
                     else if (s.equals("showArguments"))
                         c = 'S'; 
+            //@SudokuMonster: 
                     else if (s.equals("isBlocks"))
                         c = 'Q'; 					
                     else if (s.equals("after"))
@@ -345,6 +353,7 @@ public class serate {
                         c = 's';
                     else if (s.equals("threads"))
                         c = 't';
+            //@SudokuMonster: 
                     else if (s.equals("techs"))
                     c = '~';
                     else if (s.equals("totalTime"))
@@ -422,33 +431,41 @@ public class serate {
                     if(numThreads == 0) numThreads = Runtime.getRuntime().availableProcessors();
                     if(numThreads < 1) numThreads = 1; //no parallel processing
                     break;
+            //@SudokuMonster: 
                 case 'V':
                     System.out.println(VER);
                     System.exit(0);
                     break;
+            //@SudokuMonster: 
                 case 'T':
                     totalTime = true;
                     break;                  
+            //@SudokuMonster: (lkSudoku +)
                 case 'B':
                     batchSolving = Integer.parseInt(v);//0: Batch solving disabled 1: Batch solve applying lowest rated hints together 2: Batch solve applying all hints lower than maximum diffculty together
                     Settings.getInstance().setBatchSolving(batchSolving);
                     break;
+            //@SudokuMonster: 
                 case 'N':
                     revisedRating = Integer.parseInt(v);
                     Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
                     break;
+            //@SudokuMonster: 
                 case 'G':
                     islkSudokuBUG = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setlkSudokuBUG(islkSudokuBUG);//0: islkSudokuBUG disabled //1:islkSudokuBUG enabled
                     break;
+            //@SudokuMonster: 
                 case 'U':
                     islkSudokuURUL = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setlkSudokuURUL(islkSudokuURUL);//0: islkSudokuURUL disabled //1:islkSudokuURUL enabled
                     break;
+            //@SudokuMonster: 
                 case 'Q':
                     isBlocks = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setBlocks(isBlocks);//0: isBlocks disabled //1:isBlocks enabled
                     break;					
+            //@SudokuMonster: (lkSudoku)
                 case '~':
                     setTechniques(v, showArguments);
                     break;                  
@@ -489,8 +506,10 @@ public class serate {
                 writer = new PrintWriter(writer1);
             }
             formatter = new Formatter(writer, formatStart, formatAfter, formatBefore, format);
+            //@SudokuMonster: The following is to target the static visibleCells in case there are variants
+			Grid.changeVisibleCells();
             //loop over input puzzles
-            for (;;) {
+			for (;;) {
                 if (reader != null) {
                     puzzle = reader.readLine();
                     if (puzzle == null)
@@ -504,7 +523,7 @@ public class serate {
                 {
                     //process puzzle
                     Grid grid = new Grid();
-                    grid.fromString(puzzle);
+					grid.fromString(puzzle);
                     formatter.setPuzzleLine(puzzle);
                     grid.adjustPencilmarks();
                     //t = System.currentTimeMillis();
@@ -649,9 +668,10 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
+            //@SudokuMonster: 
                         case 'S':
                             s += solver.shortERtN;
-                            break;
+                            break; 
                         case 'R':
                             s += solver.ERtN;
                             break;
@@ -733,6 +753,7 @@ public class serate {
                 else {
                     switch (f = formatFinal.charAt(i)) { //format specifier
                         
+            //@SudokuMonster: 
                         case 'U':
                             s += solver.shortEDtN;
                             break;
@@ -757,6 +778,7 @@ public class serate {
                         case 'n':
                             s += ordinal;
                             break;
+            //@SudokuMonster: 
                         case 'T':
                             s += solver.shortEPtN;
                             break;
@@ -766,6 +788,7 @@ public class serate {
                         case 'p':
                             s += ratingToString(solver.pearl);
                             break;
+            //@SudokuMonster: 
                         case 'S':
                             s += solver.shortERtN;
                             break;

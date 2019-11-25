@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 11;
-    public final static String SUBREV = ".1";
-	public final static String releaseDate = "2019-11-14";
+    public final static String SUBREV = ".3";
+	public final static String releaseDate = "2019-11-24";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -152,8 +152,8 @@ public class Settings {
         return this.isBringBackSE121;
     }
 
-    public void setBlocks(boolean value) {
-        this.isBlocks = value;
+    public void setBlocks(boolean isBlocks) {
+        this.isBlocks = isBlocks;
         save();
     }
 
