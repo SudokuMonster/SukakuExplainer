@@ -23,10 +23,12 @@ public class Locking implements IndirectHintProducer {
     }
 
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
-        getHints(grid, 0, 2, accu); //block, column
-        getHints(grid, 0, 1, accu); //block, row
-        getHints(grid, 2, 0, accu); //column, block
-        getHints(grid, 1, 0, accu); //row, block
+        if (Settings.getInstance().isBlocks()) {
+			getHints(grid, 0, 2, accu); //block, column
+			getHints(grid, 0, 1, accu); //block, row
+			getHints(grid, 2, 0, accu); //column, block
+			getHints(grid, 1, 0, accu); //row, block
+		}
     }
 
     /**

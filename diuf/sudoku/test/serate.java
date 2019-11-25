@@ -281,6 +281,7 @@ public class serate {
             //@SudokuMonster: 
         int             revisedRating = 0;//New revised Rating
         int             batchSolving = 0;//Batch soving mode
+		int				FCPlus = 0;//non-trivial implications to add in FC+
 		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
         boolean			isBlocks = true; //Blocks are y default enabled. Disable to transform into Latin square (LQ)
@@ -344,7 +345,10 @@ public class serate {
                         c = 'S'; 
             //@SudokuMonster: 
                     else if (s.equals("isBlocks"))
-                        c = 'Q'; 					
+                        c = 'Q'; 
+            //@SudokuMonster: 
+                    else if (s.equals("FCPlus"))
+                        c = 'P'; 					
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
@@ -382,7 +386,8 @@ public class serate {
                 case 'N':
                 case 'G':
                 case 'U':
-                case 'Q':				
+                case 'Q':
+                case 'P':				
                 case '~':
                     if (v == null)
                         usage(a, 1);
@@ -464,6 +469,11 @@ public class serate {
                 case 'Q':
                     isBlocks = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setBlocks(isBlocks);//0: isBlocks disabled //1:isBlocks enabled
+                    break;					
+            //@SudokuMonster: 
+                case 'P':
+                    FCPlus = Integer.parseInt(v);
+                    Settings.getInstance().setFCPlus(FCPlus);//0: Default (similar to SE121) //1:More non trivial implications added //2: More non trivial implications added 
                     break;					
             //@SudokuMonster: (lkSudoku)
                 case '~':

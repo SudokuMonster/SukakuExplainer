@@ -659,11 +659,11 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 			public String getincludeTechnique1() {
-				return "";
+				return "XY";
 			}
             @Override
 			public String getincludeTechnique2() {
-				return "XY";
+				return "";
 			}
             @Override
 			public String getincludeTechnique3() {

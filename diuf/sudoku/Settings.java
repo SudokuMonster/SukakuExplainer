@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 11;
-    public final static String SUBREV = ".3";
-	public final static String releaseDate = "2019-11-24";
+    public final static String SUBREV = ".4";
+	public final static String releaseDate = "2019-11-25";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -32,6 +32,7 @@ public class Settings {
 	private boolean islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 	private boolean islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
     private int batchSolving = 0;//lksudoku revised bacth solving (Disabled by default)
+	private int FCPlus = 0;//Increasing non-trivial implications used in FC+ //0: Default (Same as SE121) //1:More //2:More
 	private boolean isRCNotation = false;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
@@ -105,6 +106,13 @@ public class Settings {
     }
     public int batchSolving() {
         return batchSolving;
+    }
+
+    public void setFCPlus(int FCPlus) {
+        this.FCPlus = FCPlus;
+    }
+    public int FCPlus() {
+        return FCPlus;
     }
 
     public void setRCNotation(boolean isRCNotation) {
