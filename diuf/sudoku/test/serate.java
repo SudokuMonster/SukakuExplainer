@@ -115,7 +115,17 @@ public class serate {
         System.err.println("      Batch solving. Default 0=disabled.");
         System.err.println("                             1=Apply all available hints that have the lowest rating");
         System.err.println("                             2=Apply all available hints with rating lower than maximum puzzle rating");
-        System.err.println("  -~, --techs=TECHSTRING");
+        System.err.println("  -G, --islkSudokuBUG=N");
+        System.err.println("  	Fix to BUG algorithm by lkSudoku. 0=disabled	1=enabled (default)");
+        System.err.println("  -U, --islkSudokuURUL=NAME");
+        System.err.println("  	Fix to UR and UL algorithm by lkSudoku. 0=disabled	1=enabled (default)");
+        System.err.println("  -P, --FCPlus=N");
+        System.err.println("  	Control non-trivial implications in FC+ and nested chains	0:default (similar to SE121)");
+        System.err.println("  																1:More techniques added");
+        System.err.println("  																2:More techniques added");
+        System.err.println("  -Q, --isBlocks=N");
+        System.err.println("  	Enable/disable block(box) constraints. 0:disable (For Latin Square), 1:enabled (default)");
+		System.err.println("  -~, --techs=TECHSTRING");
         System.err.println("      Specific techniques only, set which techniques to use");
         System.err.println("      the techniques string TECHSTRING is a string consisting of the letters '0' and '1',");
         System.err.println("      where '1' means the technique should be used and '0' means it should not be used");

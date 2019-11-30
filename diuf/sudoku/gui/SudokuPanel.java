@@ -67,6 +67,16 @@ public class SudokuPanel extends JPanel {
     private Color borderColor = Color.blue.darker();
     private Color cellColor = new Color(170, 170, 221);
     private Color alternativeColor = new Color(220, 244, 244);
+	private Color DG1 =  new Color(254, 186, 186);
+	private Color DG2 =  new Color(186, 254, 186);
+	private Color DG3 =  new Color(186, 186, 254);
+	private Color DG4 =  new Color(255, 255, 187);
+	private Color DG5 =  new Color(254, 186, 254);
+	private Color DG6 =  new Color(186, 254, 254);
+	private Color DG7 =  new Color(187, 187, 187);
+	private Color DG8 =  new Color(254, 240, 240);
+	private Color DG9 =  new Color(220, 254, 220);
+	private Color[] DG_Colors = { DG1 , DG2 , DG3 , DG4 , DG5 , DG6 , DG7 , DG8 , DG9 }; 
 
 
    public SudokuPanel(SudokuFrame parent) {
@@ -445,8 +455,19 @@ public class SudokuPanel extends JPanel {
         if (((cell.getX() / 3 % 2 == 0) ^ (cell.getY() / 3 % 2 == 0)) && Settings.getInstance().isBlocks()) {
             col = alternativeColor;
         } else {
-            col = Color.white;
+            if (Settings.getInstance().isWindows() && !Settings.getInstance().isBlocks() && Settings.regionsWindows[cell.getIndex()] < 5 && Settings.regionsWindows[cell.getIndex()] >0)
+				col = alternativeColor;
+			else
+				col = Color.white;
         }
+		if (Settings.getInstance().isDG())
+			col = DG_Colors[cell.getX() % 3 + cell.getY() % 3 * 3 ];
+		if (Settings.getInstance().isGirandola() && Settings.regionsGirandola[cell.getIndex()] > 0)
+			col = Color.orange;
+		if (Settings.getInstance().isCD() && Settings.regionsCD[cell.getIndex()] > 0)
+			col = Color.orange;
+		if (Settings.getInstance().isAsterisk() && Settings.regionsAsterisk[cell.getIndex()] > 0)
+			col = Color.orange;
         if (origin) {
             g.setColor(col);
             return ret;
@@ -633,9 +654,33 @@ public class SudokuPanel extends JPanel {
             g.fillRect(i * CELL_OUTER_SIZE - offset, 0 - offset, lineWidth, GRID_SIZE + lineWidth);
             g.fillRect(0 - offset, i * CELL_OUTER_SIZE - offset, GRID_SIZE + lineWidth, lineWidth);
         }
+		if (Settings.getInstance().isWindows())
+			paintWindows(g);
+		if (Settings.getInstance().isX())
+			paintX(g);
     }
 
-    private void paintHighlightedRegions(Graphics g) {
+    private void paintX(Graphics g) {
+		Color col = new Color(75, 75, 75);
+		g.setColor(col);
+		g.drawLine( CELL_OUTER_SIZE / 6 , CELL_OUTER_SIZE / 6, 9 * CELL_OUTER_SIZE - CELL_OUTER_SIZE / 6, 9 * CELL_OUTER_SIZE - CELL_OUTER_SIZE / 6);	
+		g.drawLine( CELL_OUTER_SIZE / 6 , 9 * CELL_OUTER_SIZE - CELL_OUTER_SIZE / 6, 9 * CELL_OUTER_SIZE - CELL_OUTER_SIZE / 6, CELL_OUTER_SIZE / 6);	
+	}
+
+    private void paintWindows(Graphics g) {
+		int lineWidth = 4;
+		int offset = lineWidth / 2;
+		g.setColor(Color.black);
+		for (int i = 0; i < 4; i++) {
+			g.fillRect( ( ( i / 2 ) * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, (i % 2 * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, lineWidth, GRID_SIZE / 3 + lineWidth);
+			g.fillRect( ( ( i / 2 ) * 4 + 3 + 1 ) * CELL_OUTER_SIZE - offset, (i % 2 * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, lineWidth, GRID_SIZE / 3 + lineWidth);
+			g.fillRect( (i % 2 * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, ( ( i / 2 ) * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, GRID_SIZE / 3 + lineWidth, lineWidth);
+			g.fillRect( (i % 2 * 4 + 0 + 1 ) * CELL_OUTER_SIZE - offset, ( ( i / 2 ) * 4 + 3 + 1 ) * CELL_OUTER_SIZE - offset, GRID_SIZE / 3 + lineWidth, lineWidth);
+		}
+		
+	}
+	
+	private void paintHighlightedRegions(Graphics g) {
         if (blueRegions != null) {
             Color[] colors = new Color[] {new Color(0, 128, 0), new Color(255, 0, 0)};
             for (int rev = 0; rev < 2; rev++) {

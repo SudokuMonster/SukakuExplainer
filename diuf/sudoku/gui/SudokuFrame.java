@@ -102,7 +102,11 @@ public class SudokuFrame extends JFrame implements Asker {
     //private JCheckBoxMenuItem mitVanilla = null;
     private JCheckBoxMenuItem mitLQ = null;
     private JCheckBoxMenuItem mitX = null;	
-    private JCheckBoxMenuItem mitDG = null;	
+    private JCheckBoxMenuItem mitDG = null;
+	private JCheckBoxMenuItem mitWindows = null;
+	private JCheckBoxMenuItem mitAsterisk = null;
+	private JCheckBoxMenuItem mitCD = null;
+	private JCheckBoxMenuItem mitGirandola = null;	
     private JMenu helpMenu = null;
     private JMenuItem mitAbout = null;
     private JMenuItem mitGetSmallClue = null;
@@ -1396,7 +1400,11 @@ public class SudokuFrame extends JFrame implements Asker {
             //getMitShowWelcome().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
             //variantsMenu.addSeparator();
             variantsMenu.add(getMitX());
-            variantsMenu.add(getMitDG());			
+            variantsMenu.add(getMitDG());
+			variantsMenu.add(getMitWindows());
+			variantsMenu.add(getMitAsterisk());
+			variantsMenu.add(getMitCD());
+			variantsMenu.add(getMitGirandola());
         }
         return variantsMenu;
     }
@@ -1419,9 +1427,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitLQ() {
         if (mitLQ == null) {
             mitLQ = new JCheckBoxMenuItem();
-            mitLQ.setText("Latin Square (LQ)");
+            mitLQ.setText("Remove Blocks (Latin Square)");
             mitLQ.setSelected(false);
-            mitLQ.setToolTipText("Latin Square with Row and columns only. No Blocks");
+            mitLQ.setToolTipText("Remove Blocks (Popular for Latin Square Puzzles)");
             mitLQ.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     Settings.getInstance().setBlocks(!mitLQ.isSelected());
@@ -1442,12 +1450,17 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitX() {
         if (mitX == null) {
             mitX = new JCheckBoxMenuItem();
-            mitX.setText("X main diagonals");
+            mitX.setText("Add X main diagonals (Not implemeted yet)");
             mitX.setSelected(false);
             mitX.setToolTipText("Adds the 2 main diagonals (X) as constraints");
             mitX.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-					mitX.setSelected(false);
+					Settings.getInstance().setX(mitX.isSelected());
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();	
                 }
             });
         }
@@ -1457,16 +1470,119 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitDG() {
         if (mitDG == null) {
             mitDG = new JCheckBoxMenuItem();
-            mitDG.setText("DG");
+            mitDG.setText("Add Disjoint Groups (Not implemeted yet)");
             mitDG.setSelected(false);
             mitDG.setToolTipText("Add 9 disjoint groups");
             mitDG.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-					mitDG.setSelected(false);
+					Settings.getInstance().setDG(mitDG.isSelected());
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();
                 }
             });
         }
         return mitDG;
+    }
+
+    private JCheckBoxMenuItem getMitWindows() {
+        if (mitWindows == null) {
+            mitWindows = new JCheckBoxMenuItem();
+            mitWindows.setText("Add Windows (Not implemeted yet)");
+            mitWindows.setSelected(false);
+            mitWindows.setToolTipText("Add Window constraints (Use for Windoku)");
+            mitWindows.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setWindows(mitWindows.isSelected());
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();
+                }
+            });
+        }
+        return mitWindows;
+    }
+
+    private JCheckBoxMenuItem getMitAsterisk() {
+        if (mitAsterisk == null) {
+            mitAsterisk = new JCheckBoxMenuItem();
+            mitAsterisk.setText("Add Asterisk (Not implemeted yet)");
+            mitAsterisk.setSelected(false);
+            mitAsterisk.setToolTipText("Adds 9 cell (Asterisk) Extra group as constraint");
+            mitAsterisk.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setAsterisk(mitAsterisk.isSelected());
+					if (Settings.getInstance().isAsterisk()) {
+						Settings.getInstance().setCD(false);
+						Settings.getInstance().setGirandola(false);
+						mitCD.setSelected(false);
+						mitGirandola.setSelected(false);
+					}
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();	
+                }
+            });
+        }
+        return mitAsterisk;
+    }
+	
+    private JCheckBoxMenuItem getMitCD() {
+        if (mitCD == null) {
+            mitCD = new JCheckBoxMenuItem();
+            mitCD.setText("Add CD (Not implemeted yet)");
+            mitCD.setSelected(false);
+            mitCD.setToolTipText("Adds 9 cell (CD) Extra group as constraint");
+            mitCD.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setCD(mitCD.isSelected());
+					if (Settings.getInstance().isCD()) {
+						Settings.getInstance().setAsterisk(false);
+						Settings.getInstance().setGirandola(false);
+						mitAsterisk.setSelected(false);
+						mitGirandola.setSelected(false);
+					}
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();	
+                }
+            });
+        }
+        return mitCD;
+    }
+	
+    private JCheckBoxMenuItem getMitGirandola() {
+        if (mitGirandola == null) {
+            mitGirandola = new JCheckBoxMenuItem();
+            mitGirandola.setText("Add Girandola (Not implemeted yet)");
+            mitGirandola.setSelected(false);
+            mitGirandola.setToolTipText("Adds 9 cell (Girandola) Extra group as constraint");
+            mitGirandola.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setGirandola(mitGirandola.isSelected());
+					if (Settings.getInstance().isGirandola()) {
+						Settings.getInstance().setAsterisk(false);
+						Settings.getInstance().setCD(false);
+						mitAsterisk.setSelected(false);
+						mitCD.setSelected(false);
+					}
+					engine.clearGrid();
+					engine.clearHints();
+					initialize();
+					repaintViews();
+					showWelcomeText();	
+                }
+            });
+        }
+        return mitGirandola;
     }
 
     private JMenu getHelpMenu() {

@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 11;
-    public final static String SUBREV = ".4";
-	public final static String releaseDate = "2019-11-25";
+    public final static int REVISION = 12;
+    public final static String SUBREV = ".5";
+	public final static String releaseDate = "2019-11-30";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -39,12 +39,55 @@ public class Settings {
     private boolean isShowingCandidateMasks = true;
 	private boolean isBringBackSE121 = false;//SE121 technique set, order and ratings
     private String lookAndFeelClassName = null;
-	
 	//Variants
-	private boolean isBlocks = true;
-	private boolean isX = false;
-	private boolean isDG = false;
-
+	private boolean isBlocks = true;//Sudoku: true Latin Square: false
+	private boolean isX = false;//2 Regions, 9 cells x 2. Each forming a main diagonal, intersecting at r5c5 (40)
+	private boolean isDG = false;//Disjoint Groups (P). with Vanilla (SudokuP)
+	private boolean isWindows = false;//4 Windows hich force 5 hidden groups (W). with Sudoku (Windoku, HyperSudoku, SudokuW)
+	private boolean isAsterisk = false;//9 cell asterisk group
+	private boolean isCD = false;//9 cell Centre (center) Dot group
+	private boolean isGirandola = false;//9 cell Girandola group
+	public final static int[] regionsWindows = 
+		{0,5,5,5,0,6,6,6,0,
+		 7,1,1,1,7,2,2,2,7,
+		 7,1,1,1,7,2,2,2,7,
+		 7,1,1,1,7,2,2,2,7,
+		 0,5,5,5,0,6,6,6,0,
+		 8,3,3,3,8,4,4,4,8,
+		 8,3,3,3,8,4,4,4,8,
+		 8,3,3,3,8,4,4,4,8,
+		 0,5,5,5,0,6,6,6,0};
+	public final static int[] regionsGirandola = 
+		{1,0,0,0,0,0,0,0,1,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,1,0,0,1,0,0,1,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 1,0,0,0,0,0,0,0,1};
+	public final static int[] regionsCD =
+		{0,0,0,0,0,0,0,0,0,
+		 0,1,0,0,1,0,0,1,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,1,0,0,1,0,0,1,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,1,0,0,1,0,0,1,0,
+		 0,0,0,0,0,0,0,0,0};
+	public final static int[] regionsAsterisk =
+		{0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,1,0,0,0,1,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,1,0,0,1,0,0,1,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,1,0,0,0,1,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0};
+	
     private EnumSet<SolvingTechnique> techniques;
     
     private int numThreads = 1;
@@ -187,6 +230,42 @@ public class Settings {
         return this.isX;
     }
 
+    public void setWindows(boolean value) {
+        this.isWindows = value;
+        save();
+    }
+
+    public boolean isWindows() {
+        return this.isWindows;
+    }
+
+    public void setGirandola(boolean value) {
+        this.isGirandola = value;
+        save();
+    }
+
+    public boolean isGirandola() {
+        return this.isGirandola;
+    }
+
+    public void setCD(boolean value) {
+        this.isCD = value;
+        save();
+    }
+
+    public boolean isCD() {
+        return this.isCD;
+    }
+
+    public void setAsterisk(boolean value) {
+        this.isAsterisk = value;
+        save();
+    }
+
+    public boolean isAsterisk() {
+        return this.isAsterisk;
+    }
+
     public String getLookAndFeelClassName() {
         return lookAndFeelClassName;
     }
@@ -300,7 +379,8 @@ public class Settings {
             prefs.putBoolean("isBlocks", isBlocks);			
             prefs.putBoolean("isX", isX);			
             prefs.putBoolean("isDG", isDG);			
-            if (lookAndFeelClassName != null)
+            prefs.putBoolean("isWindows", isWindows);
+			if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {
                 prefs.flush();
