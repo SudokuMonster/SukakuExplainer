@@ -83,7 +83,9 @@ public class Cell {
         assert value != 0;
         targetGrid.setCellValue(this.index, value);
         targetGrid.clearCellPotentialValues(this.index);
-        for(int i = 0; i < (Settings.getInstance().isBlocks() ? 20 : 16); i++) {
+//SudokuMonster: Grid.visibleCellIndex[this.index].length changes with Variants and can be variable in some variants (i.e. Sudoku X)
+		int j = Grid.visibleCellIndex[this.index].length;
+        for(int i = 0; i < j; i++) {
         	targetGrid.removeCellPotentialValue(Grid.visibleCellIndex[this.index][i], value);
         }
     }

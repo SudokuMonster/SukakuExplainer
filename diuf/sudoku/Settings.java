@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 12;
-    public final static String SUBREV = ".5";
-	public final static String releaseDate = "2019-11-30";
+    public final static String SUBREV = ".7";
+	public final static String releaseDate = "2019-12-01";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -47,6 +47,8 @@ public class Settings {
 	private boolean isAsterisk = false;//9 cell asterisk group
 	private boolean isCD = false;//9 cell Centre (center) Dot group
 	private boolean isGirandola = false;//9 cell Girandola group
+	private boolean isVanilla = true;//Check to see if we are using variants (to minimize extra code calls use in Vanilla sudoku)
+	public String variantString = "";
 	public final static int[] regionsWindows = 
 		{0,5,5,5,0,6,6,6,0,
 		 7,1,1,1,7,2,2,2,7,
@@ -203,7 +205,33 @@ public class Settings {
         return this.isBringBackSE121;
     }
 
-    public void setBlocks(boolean isBlocks) {
+    public boolean isVanilla() {
+        return this.isVanilla;
+    }
+
+	public void toggleVariants() {
+        this.isVanilla = true;
+		String temp = "";
+		if (!isBlocks())
+			temp += "Latin Square ";
+		if (isDG())
+			temp += "Disjoint Groups ";
+		if (isWindows())
+			temp += "Windows ";
+		if (isAsterisk())
+			temp += "Asterisk ";
+		if (isCD())
+			temp += "Center Dot ";
+		if (isGirandola())
+			temp += "Girandola ";
+		if (isX())
+			temp += "X ";
+		if (!isBlocks() || isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk())
+			this.isVanilla = false;
+		this.variantString = temp;
+    }
+	
+	public void setBlocks(boolean isBlocks) {
         this.isBlocks = isBlocks;
         save();
     }

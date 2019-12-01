@@ -140,7 +140,20 @@ public class SudokuFrame extends JFrame implements Asker {
     }
 
     public void showWelcomeText() {
-        String welcomeText = HtmlLoader.loadHtml(this, "Welcome.html");
+        String Experimental = "";
+		String ExSuffix = "";
+		String welcomeFinal = "";
+		if (getInstance().revisedRating() > 0) {
+			Experimental = ".1";
+			ExSuffix ="New Rating ";
+		}
+		ExSuffix += Settings.getInstance().variantString;
+		if (getInstance().isBringBackSE121()) {
+			Experimental =" (Explainer 1.2.1 mode)";
+		}
+        welcomeFinal = ExSuffix + "Sukaku Explainer " + VERSION + "." + REVISION + SUBREV + Experimental;
+		String welcomeText = HtmlLoader.loadHtml(this, "Welcome.html");
+		welcomeText = HtmlLoader.format(welcomeText, welcomeFinal);
         setExplanations(welcomeText);
     }
 
@@ -332,8 +345,7 @@ public class SudokuFrame extends JFrame implements Asker {
 			Experimental = ".1";
 			ExSuffix ="New Rating ";
 		}
-		if (!getInstance().isBlocks())
-			ExSuffix += "Latin Square ";
+		ExSuffix += Settings.getInstance().variantString;
 		if (getInstance().isBringBackSE121()) {
 			Experimental =" (Explainer 1.2.1 mode)";
 		}
@@ -1436,6 +1448,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					if (Settings.getInstance().isBlocks()) {	
 					}
+				Settings.getInstance().toggleVariants();
 				engine.clearGrid();
 				engine.clearHints();
 				initialize();
@@ -1456,6 +1469,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitX.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setX(mitX.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();
@@ -1476,6 +1491,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitDG.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setDG(mitDG.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();
@@ -1496,6 +1513,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitWindows.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setWindows(mitWindows.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();
@@ -1522,6 +1541,8 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitCD.setSelected(false);
 						mitGirandola.setSelected(false);
 					}
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();
@@ -1548,6 +1569,8 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitAsterisk.setSelected(false);
 						mitGirandola.setSelected(false);
 					}
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();
@@ -1574,6 +1597,8 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitAsterisk.setSelected(false);
 						mitCD.setSelected(false);
 					}
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
 					initialize();

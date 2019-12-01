@@ -79,6 +79,11 @@ public class Grid {
     public static int[][] visibleCellIndex;
 	public static int[][] forwardVisibleCellIndex;
 	private static final int [][] windowsVisibleCellIndex;
+	private static final int [][] DGVisibleCellIndex;
+	private static final int [][] XVisibleCellIndex;
+	private static final int [][] asteriskVisibleCellIndex;
+	private static final int [][] girandolaVisibleCellIndex;
+	private static final int [][] CDVisibleCellIndex;
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
@@ -266,6 +271,432 @@ public class Grid {
 			{ 5, 6, 7, 41, 42, 43, 77, 78, 79},
 			{ 0, 4, 8, 36, 40, 44, 72, 76, 80}
 			};
+			
+//@SudokuMonster: VisibleCellIndex for Disjoint Groups (DG)
+		DGVisibleCellIndex = new int [][] {
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{0, 3,  6,  27, 30, 33, 54, 57, 60},
+			{1, 4,  7,  28, 31, 34, 55, 58, 61},
+			{2, 5,  8,  29, 32, 35, 56, 59, 62},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{9, 12, 15, 36, 39, 42, 63, 66, 69},
+			{10,13, 16, 37, 40, 43, 64, 67, 70},
+			{11,14, 17, 38, 41, 44, 65, 68, 71},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80},
+			{18,21, 24, 45, 48, 51, 72, 75, 78},
+			{19,22, 25, 46, 49, 52, 73, 76, 79},
+			{20,23, 26, 47, 50, 53, 74, 77, 80}
+			};
+			
+//@SudokuMonster: VisibleCellIndex for X (2 Main Diagonals) groups
+		XVisibleCellIndex = new int [][] {
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,	8,	10,	16,	20,	24,	30,	32,	40,	48,	50,	56,	60,	64,	70,	72,	80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80},
+			{},
+			{8,	16,	24,	32,	40,	48,	56,	64,	72},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,	10,	20,	30,	40,	50,	60,	70,	80}
+			};
+
+//@SudokuMonster: VisibleCellIndex for Asterisk Extra group {13,20,24,37,40,43,56,60,67}
+		asteriskVisibleCellIndex = new int [][] {
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{13,20,24,37,40,43,56,60,67},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{}
+			};
+
+//@SudokuMonster: VisibleCellIndex for Girandola Extra group {0,8,13,37,40,43,67,72,80}
+		girandolaVisibleCellIndex = new int [][] {
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{0,8,13,37,40,43,67,72,80}
+			};
+
+//@SudokuMonster: VisibleCellIndex for Center Dot (CD) Extra group {10,13,16,37,40,43,64,67,70}
+		CDVisibleCellIndex = new int [][] {
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{10,13,16,37,40,43,64,67,70},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
+			{}
+			};
+
 //@SudokuMonster: Visible indexes >  Cell index; used to speed search and minimize repeats in some techniques (e.g WXYZ wing)
     	forwardVisibleCellIndex = new int [][] {
 			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
@@ -476,6 +907,7 @@ public class Grid {
 //@SudokuMonster: Static for Variant this has to be called if a variant technique relies on Visible Cells
 //					until a better way to de-clutter code is found
 //Change visible cells according to variant
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void changeVisibleCells() {
     	if (Settings.getInstance().isBlocks())
     	visibleCellIndex = new int[][] {
@@ -813,6 +1245,81 @@ public class Grid {
 				{80},
 				{}
 			};
+		//@SudokuMonster Changining Static visibleCellIndex & visibleCellsSet with variants
+		//To change the least possible what @dobrichev has changed with cellSets
+		//Eperimental area to change visible cell index
+		//The base is either Sudoku or Latin Square already determined above
+		//What remains are additions
+		//Next 10 lines must be before any additions done
+		int visibilityMax = 0;
+		ArrayList<ArrayList<Integer>> tempList1 = new ArrayList();
+		ArrayList<ArrayList<Integer>> tempList2 = new ArrayList();		
+		for (int i = 0; i < 81; i++) {
+			ArrayList<Integer> list1 = new ArrayList();
+			ArrayList<Integer> list2 = new ArrayList();
+			for (int j = 0; j < visibleCellIndex[i].length; j++)
+				list1.add(visibleCellIndex[i][j]);
+			for (int j = 0; j < forwardVisibleCellIndex[i].length; j++)
+				list2.add(forwardVisibleCellIndex[i][j]);			
+		//above 10 lines must be before any additions done	
+			if (Settings.getInstance().isWindows())//Windows constraints
+				for (int j = 0; j < windowsVisibleCellIndex[i].length; j++)
+					if (windowsVisibleCellIndex[i][j] != i && list1.indexOf(windowsVisibleCellIndex[i][j]) < 0) {
+						list1.add(windowsVisibleCellIndex[i][j]);
+						if (windowsVisibleCellIndex[i][j] > i)
+							list2.add(windowsVisibleCellIndex[i][j]);
+					}
+			if (Settings.getInstance().isDG())//DG constraints
+				for (int j = 0; j < DGVisibleCellIndex[i].length; j++)
+					if (DGVisibleCellIndex[i][j] != i && list1.indexOf(DGVisibleCellIndex[i][j]) < 0) {
+						list1.add(DGVisibleCellIndex[i][j]);
+						if (DGVisibleCellIndex[i][j] > i)
+							list2.add(DGVisibleCellIndex[i][j]);
+					}
+			if (Settings.getInstance().isX())//X constraints
+				for (int j = 0; j < XVisibleCellIndex[i].length; j++)
+					if (XVisibleCellIndex[i][j] != i && list1.indexOf(XVisibleCellIndex[i][j]) < 0) {
+						list1.add(XVisibleCellIndex[i][j]);
+						if (XVisibleCellIndex[i][j] > i)
+							list2.add(XVisibleCellIndex[i][j]);
+					}
+			if (Settings.getInstance().isCD())//CD constraints
+				for (int j = 0; j < CDVisibleCellIndex[i].length; j++)
+					if (CDVisibleCellIndex[i][j] != i && list1.indexOf(CDVisibleCellIndex[i][j]) < 0) {
+						list1.add(CDVisibleCellIndex[i][j]);
+						if (CDVisibleCellIndex[i][j] > i)
+							list2.add(CDVisibleCellIndex[i][j]);
+					}
+			if (Settings.getInstance().isGirandola())//girandola constraints
+				for (int j = 0; j < girandolaVisibleCellIndex[i].length; j++)
+					if (girandolaVisibleCellIndex[i][j] != i && list1.indexOf(girandolaVisibleCellIndex[i][j]) < 0) {
+						list1.add(girandolaVisibleCellIndex[i][j]);
+						if (girandolaVisibleCellIndex[i][j] > i)
+							list2.add(girandolaVisibleCellIndex[i][j]);
+					}
+			if (Settings.getInstance().isAsterisk())//asterisk constraints
+				for (int j = 0; j < asteriskVisibleCellIndex[i].length; j++)
+					if (asteriskVisibleCellIndex[i][j] != i && list1.indexOf(asteriskVisibleCellIndex[i][j]) < 0) {
+						list1.add(asteriskVisibleCellIndex[i][j]);
+						if (asteriskVisibleCellIndex[i][j] > i)
+							list2.add(asteriskVisibleCellIndex[i][j]);
+					}
+		//The following 3 lines need to be at bottom of loop
+			visibilityMax = visibilityMax > list1.size() ? visibilityMax : list1.size();
+			tempList1.add(list1);
+			tempList2.add(list2);
+		}
+		//@SudokuMonster: recreating array from ArrayList
+				visibleCellIndex = new int[81][visibilityMax];
+					for (int i = 0; i < 81; i++){
+						visibleCellIndex [i] = new int[tempList1.get(i).size()];
+						forwardVisibleCellIndex [i] = new int[tempList2.get(i).size()];
+						for (int j = 0; j < tempList1.get(i).size(); j++) {
+							visibleCellIndex [i][j] = tempList1.get(i).get(j);
+							if (j < tempList2.get(i).size())
+								forwardVisibleCellIndex [i][j] = tempList2.get(i).get(j);
+						}
+					}
     	visibleCellsSet = new CellSet[] {
 				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
 				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
@@ -834,7 +1341,8 @@ public class Grid {
 				new CellSet(forwardVisibleCellIndex[54]),new CellSet(forwardVisibleCellIndex[55]),new CellSet(forwardVisibleCellIndex[56]),new CellSet(forwardVisibleCellIndex[57]),new CellSet(forwardVisibleCellIndex[58]),new CellSet(forwardVisibleCellIndex[59]),new CellSet(forwardVisibleCellIndex[60]),new CellSet(forwardVisibleCellIndex[61]),new CellSet(forwardVisibleCellIndex[62]),
 				new CellSet(forwardVisibleCellIndex[63]),new CellSet(forwardVisibleCellIndex[64]),new CellSet(forwardVisibleCellIndex[65]),new CellSet(forwardVisibleCellIndex[66]),new CellSet(forwardVisibleCellIndex[67]),new CellSet(forwardVisibleCellIndex[68]),new CellSet(forwardVisibleCellIndex[69]),new CellSet(forwardVisibleCellIndex[70]),new CellSet(forwardVisibleCellIndex[71]),
 				new CellSet(forwardVisibleCellIndex[72]),new CellSet(forwardVisibleCellIndex[73]),new CellSet(forwardVisibleCellIndex[74]),new CellSet(forwardVisibleCellIndex[75]),new CellSet(forwardVisibleCellIndex[76]),new CellSet(forwardVisibleCellIndex[77]),new CellSet(forwardVisibleCellIndex[78]),new CellSet(forwardVisibleCellIndex[79]),new CellSet(forwardVisibleCellIndex[80])
-				};			
+				};
+
 	}
 
 

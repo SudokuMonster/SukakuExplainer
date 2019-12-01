@@ -1,12 +1,13 @@
 <html>
  <body>
-  <h2>Welcome to the <b>Sukaku Explainer</b>!</h2>
+  <h2>Welcome to the <b>{0}</b></h2>
   <p>
-  This application can solve a Sudoku step by step, and explain at each step the technique that
-  is used. It also allows you to get <i>all</i> the techniques that can be applied at any step
-  of the solving process, and to explain and apply any of them.
+  This application can solve a Sudoku, Sukaku (Pencilmark Sudoku) and a number of their
+  variants step by step, and explain at each step the technique that is used. It also allows
+  you to get <i>all</i> the techniques that can be applied at any step of the solving process,
+  and to explain and apply any of them.
   </p><p>
-  To enter the Sudoku puzzle, select a cell with the arrow keys or by clicking on it. Then
+  To enter the Sudoku\Sukaku puzzle, select a cell with the arrow keys or by clicking on it. Then
   type the value, or click on one of the possible values. Press the spacebar or click
   again to clear the cell. Hold the Ctrl-key while clicking to toggle a
   candidate of an empty cell.
@@ -30,6 +31,23 @@
     and click on <b>Apply hint</b> to apply it.
    <li><b>Undo step</b> Go back one step.
   </ul>
+  </p><p>
+  The following variants are available (Some of them can be combined):
+  <ul>
+   <li><b>Latin Square</b>: Also known as QWH, LQ or LS. Removing the blocks will leave only the rows
+   and columns as constraints. Sudoku can therefore be considered a subset of Latin Square.
+   <li><b>Disjoint Groups</b>: Adds 9 block position groups. In combination with Sudoku it is also known
+   as SudokuDG, SudokuP or Sudoku4D.
+   <li><b>Windows</b>: Adds 4 Extra Blocks (Windows) as constraints. These would force the creation of 5
+   other hidden groups which can be used to help advancing the solution. In combination with Sudoku it
+   is also known as Windoku, Hyper Sudoku or SudokuW.
+   <li><b>X diagonals</b>: Adds 2 main diagonals as constraints (No repeating symbols in a main diagonal).
+   With sudoku it also called SudokuX.
+   <li><b>Asterisk</b>: Adds a 9 cell <i>Asterisk</i> Extra group.
+   <li><b>Center Dot</b>: Adds a 9 cell <i>Center Dot</i> Extra group.
+   <li><b>Girandola</b>: Adds a 9 cell <i>Girandola</i> Extra group.
+  </ul>
   </p>
+
  </body>
 </html>

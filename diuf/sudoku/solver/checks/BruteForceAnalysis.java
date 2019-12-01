@@ -214,6 +214,7 @@ public class BruteForceAnalysis implements WarningHintProducer {
         return false;
     }
 
+//@SudokuMonster: Changes to accommodate Variants
     /**
      * Check that every missing values can be placed in every column,
      * row and block. The test use the current state of the grid and
