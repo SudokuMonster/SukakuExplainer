@@ -506,9 +506,21 @@ public class Chaining implements IndirectHintProducer {
 
     private void doRegionChainings(Grid grid, List<ChainingHint> result, Cell cell,
             int value, LinkedSet<Potential> onToOn, LinkedSet<Potential> onToOff) {
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-            Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
-            BitSet potentialPositions = region.getPotentialPositions(grid, value);
+//@SudokuMonster: Changes for variants
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0)
+						continue;
+			}
+			Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
+			BitSet potentialPositions = region.getPotentialPositions(grid, value);
 
             // Is this region worth ?
             int cardinality = potentialPositions.cardinality();
@@ -620,7 +632,161 @@ public class Chaining implements IndirectHintProducer {
                     getRegionCause(2),
                     "the value can occur only once in the " + col.toString()));
         }
-
+//@SudokuMonster: Added Variants changes
+		if (!Settings.getInstance().isVLatin()){
+			Grid.Region dg = null;
+			Grid.Region window = null;
+			Grid.Region md = null;
+			Grid.Region ad = null;
+			Grid.Region girandola = null;
+			Grid.Region asterisk = null;
+			Grid.Region cd = null;
+			if (Settings.getInstance().isDG()){
+				dg = Grid.getRegionAt(3, potentialCellIndex);
+				BitSet dgPositions = dg.copyPotentialPositions(grid, p.value);
+				dgPositions.clear(dg.indexOf(p.cell));
+				for (int i = dgPositions.nextSetBit(0); i >= 0; i = dgPositions.nextSetBit(i + 1)) {
+					Cell cell = dg.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(3),
+							"the value can occur only once in the " + dg.toString()));
+				}
+			}
+			if (Settings.getInstance().isWindows()){
+				window = Grid.getRegionAt(4, potentialCellIndex);
+				BitSet windowPositions = window.copyPotentialPositions(grid, p.value);
+				windowPositions.clear(window.indexOf(p.cell));
+				for (int i = windowPositions.nextSetBit(0); i >= 0; i = windowPositions.nextSetBit(i + 1)) {
+					Cell cell = window.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(4),
+							"the value can occur only once in the " + window.toString()));
+				}
+			}
+			if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0){
+				md = Grid.getRegionAt(5, potentialCellIndex);
+				BitSet mdPositions = md.copyPotentialPositions(grid, p.value);
+				mdPositions.clear(md.indexOf(p.cell));
+				for (int i = mdPositions.nextSetBit(0); i >= 0; i = mdPositions.nextSetBit(i + 1)) {
+					Cell cell = md.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					if (Settings.getInstance().isWindows())
+						if(window.contains(cell)) continue;				
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(5),
+							"the value can occur only once in the " + md.toString()));
+				}
+			}
+			if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0){
+				ad = Grid.getRegionAt(6, potentialCellIndex);
+				BitSet adPositions = ad.copyPotentialPositions(grid, p.value);
+				adPositions.clear(ad.indexOf(p.cell));
+				for (int i = adPositions.nextSetBit(0); i >= 0; i = adPositions.nextSetBit(i + 1)) {
+					Cell cell = ad.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					if (Settings.getInstance().isWindows())
+						if(window.contains(cell)) continue;				
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(6),
+							"the value can occur only once in the " + ad.toString()));
+				}
+			}
+			if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0){
+				girandola = Grid.getRegionAt(7, potentialCellIndex);
+				BitSet girandolaPositions = girandola.copyPotentialPositions(grid, p.value);
+				girandolaPositions.clear(girandola.indexOf(p.cell));
+				for (int i = girandolaPositions.nextSetBit(0); i >= 0; i = girandolaPositions.nextSetBit(i + 1)) {
+					Cell cell = girandola.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					if (Settings.getInstance().isWindows())
+						if(window.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
+						if(md.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
+						if(ad.contains(cell)) continue;
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(7),
+							"the value can occur only once in the " + girandola.toString()));
+				}
+			}
+			if (Settings.getInstance().isAsterisk() && Grid.cellRegions[potentialCellIndex][8] == 0){
+				asterisk = Grid.getRegionAt(8, potentialCellIndex);
+				BitSet asteriskPositions = asterisk.copyPotentialPositions(grid, p.value);
+				asteriskPositions.clear(asterisk.indexOf(p.cell));
+				for (int i = asteriskPositions.nextSetBit(0); i >= 0; i = asteriskPositions.nextSetBit(i + 1)) {
+					Cell cell = asterisk.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					if (Settings.getInstance().isWindows())
+						if(window.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
+						if(md.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
+						if(ad.contains(cell)) continue;
+					if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0)
+						if(girandola.contains(cell)) continue;
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(8),
+							"the value can occur only once in the " + asterisk.toString()));
+				}
+			}
+			if (Settings.getInstance().isCD() && Grid.cellRegions[potentialCellIndex][9] == 0){
+				cd = Grid.getRegionAt(9, potentialCellIndex);
+				BitSet cdPositions = cd.copyPotentialPositions(grid, p.value);
+				cdPositions.clear(cd.indexOf(p.cell));
+				for (int i = cdPositions.nextSetBit(0); i >= 0; i = cdPositions.nextSetBit(i + 1)) {
+					Cell cell = cd.getCell(i);
+					if (Settings.getInstance().isBlocks())
+						if(box.contains(cell)) continue;
+					if(col.contains(cell)) continue;
+					if(row.contains(cell)) continue;
+					if (Settings.getInstance().isDG())
+						if(dg.contains(cell)) continue;
+					if (Settings.getInstance().isWindows())
+						if(window.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
+						if(md.contains(cell)) continue;
+					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
+						if(ad.contains(cell)) continue;
+					if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0)
+						if(girandola.contains(cell)) continue;
+					if (Settings.getInstance().isAsterisk() && Grid.cellRegions[potentialCellIndex][8] == 0)
+						if(asterisk.contains(cell)) continue;
+					result.add(new Potential(cell, p.value, false, p,
+							getRegionCause(9),
+							"the value can occur only once in the " + cd.toString()));
+				}
+			}
+		}
         return result;
 
     }
@@ -667,14 +833,39 @@ public class Chaining implements IndirectHintProducer {
             return Potential.Cause.HiddenBlock;
         else if (region instanceof Column)
             return Potential.Cause.HiddenColumn;
-        else
+         else if (region instanceof Row)
             return Potential.Cause.HiddenRow;
+//@SudokuMonster: Variants changes
+         else if (region instanceof DG && Settings.getInstance().isDG())
+            return Potential.Cause.HiddenDG;
+         else if (region instanceof Window && Settings.getInstance().isWindows())
+            return Potential.Cause.HiddenWindow;
+         else if (region instanceof diagonalMain && Settings.getInstance().isX())
+            return Potential.Cause.HiddenMD;
+         else if (region instanceof diagonalAnti && Settings.getInstance().isX())
+            return Potential.Cause.HiddenAD;
+         else if (region instanceof Girandola && Settings.getInstance().isGirandola())
+            return Potential.Cause.HiddenGirandola;
+         else if (region instanceof Asterisk && Settings.getInstance().isAsterisk())
+            return Potential.Cause.HiddenAsterisk;
+         else if (region instanceof CD && Settings.getInstance().isCD())
+            return Potential.Cause.HiddenCD;
+//@SudokuMonster: Variants changes	Added to stop warning
+		return Potential.Cause.HiddenRow;		
     }
-    
+
+//@SudokuMonster: Variants changes    
     static Potential.Cause regionCauses[] = {
     		Potential.Cause.HiddenBlock,
     		Potential.Cause.HiddenRow,
-    		Potential.Cause.HiddenColumn
+    		Potential.Cause.HiddenColumn,
+			Potential.Cause.HiddenDG,
+			Potential.Cause.HiddenWindow,
+			Potential.Cause.HiddenMD,
+			Potential.Cause.HiddenAD,
+			Potential.Cause.HiddenGirandola,
+			Potential.Cause.HiddenAsterisk,
+			Potential.Cause.HiddenCD
     };
     
     static Potential.Cause getRegionCause(int regionTypeIndex) {
@@ -712,9 +903,21 @@ public class Chaining implements IndirectHintProducer {
         if (isXChainEnabled) {
             // Second rule: if there are only two positions for this potential, the other one gets on
         	int thisValue = p.value;
-        	for(int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-        		Region r = Grid.regions[regionTypeIndex][Grid.cellRegions[thisCellIndex][regionTypeIndex]];
-	        	int otherPosition = -1;
+        	//SudokuMonster: Variants changes
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+					if (Grid.cellRegions[thisCellIndex][regionTypeIndex] < 0)
+						continue;
+				}      		
+				Region r = Grid.regions[regionTypeIndex][Grid.cellRegions[thisCellIndex][regionTypeIndex]];
+				int otherPosition = -1;
 	        	for(int regionCellIndex = 0; regionCellIndex < 9; regionCellIndex++) {
 	        		int cellIndex = r.getCell(regionCellIndex).getIndex();
 	        		if(cellIndex == thisCellIndex) continue;
@@ -929,46 +1132,66 @@ public class Chaining implements IndirectHintProducer {
         final Collection<Potential> result = new ArrayList<Potential>();
         if (otherRules == null) {
             otherRules = new ArrayList<IndirectHintProducer>();
-            if (Settings.getInstance().isBlocks())
-				otherRules.add(new Locking(false));
-            otherRules.add(new HiddenSet(2, false));
-            otherRules.add(new NakedSet(2));
-            otherRules.add(new Fisherman(2));
-//@SudokuMonster: FCPlus will control non-trivial implications added
-			if (Settings.getInstance().FCPlus() > 0) {
-				otherRules.add(new TurbotFish());
-				otherRules.add(new XYWing(false));
-				otherRules.add(new XYWing(true));
+			if (Settings.getInstance().isVLatin()) {
+				if (Settings.getInstance().isBlocks())
+					otherRules.add(new Locking(false));
+				otherRules.add(new HiddenSet(2, false));
+				otherRules.add(new NakedSet(2));
+				otherRules.add(new Fisherman(2));
+	//@SudokuMonster: FCPlus will control non-trivial implications added
+				if (Settings.getInstance().FCPlus() > 0) {
+					otherRules.add(new TurbotFish());
+					otherRules.add(new XYWing(false));
+					otherRules.add(new XYWing(true));
+				}
+				if (Settings.getInstance().FCPlus() > 1) {
+					otherRules.add(new HiddenSet(3, false));
+					otherRules.add(new NakedSet(3));
+					otherRules.add(new Fisherman(3));
+					otherRules.add(new StrongLinks(3));
+					otherRules.add(new WXYZWing());
+				}
+	//            //otherRules.add(new HiddenSingle());
+	//            //otherRules.add(new Locking(true));
+	//            //otherRules.add(new HiddenSet(2, true));
+	//            //otherRules.add(new NakedSingle());
+	//            //otherRules.add(new HiddenSet(3, true));
+	//            otherRules.add(new Locking(false));
+	//            otherRules.add(new NakedSet(2));
+	//            otherRules.add(new Fisherman(2));
+	//            otherRules.add(new HiddenSet(2, false));
+	//            otherRules.add(new NakedSet(3));
+	//            otherRules.add(new Fisherman(3));
+	//            otherRules.add(new HiddenSet(3, false));
+	//            otherRules.add(new XYWing(false));
+	//            otherRules.add(new XYWing(true));
+	//            //otherRules.add(new UniqueLoops());
+	//            otherRules.add(new NakedSet(4));
+	//            otherRules.add(new Fisherman(4));
+	//            otherRules.add(new HiddenSet(4, false));
+	//            //otherRules.add(new BivalueUniversalGrave());
+	//            //otherRules.add(new AlignedPairExclusion());
+	//            //otherRules.add(new AlignedExclusion(3));
 			}
-			if (Settings.getInstance().FCPlus() > 1) {
-				otherRules.add(new HiddenSet(3, false));
-				otherRules.add(new NakedSet(3));
-				otherRules.add(new Fisherman(3));
-				otherRules.add(new StrongLinks(3));
-				otherRules.add(new WXYZWing());
+			else {
+				otherRules.add(new VLocking());
+				otherRules.add(new HiddenSet(2, false));
+				otherRules.add(new NakedSetGen(2));
+				otherRules.add(new Fisherman(2));
+	//@SudokuMonster: FCPlus will control non-trivial implications added
+				if (Settings.getInstance().FCPlus() > 0) {
+					otherRules.add(new TurbotFish());
+					otherRules.add(new XYWing(false));
+					otherRules.add(new XYWing(true));
+				}
+				if (Settings.getInstance().FCPlus() > 1) {
+					otherRules.add(new HiddenSet(3, false));
+					otherRules.add(new NakedSetGen(3));
+					otherRules.add(new Fisherman(3));
+					//otherRules.add(new StrongLinks(3));
+					otherRules.add(new WXYZWing());
+				}				
 			}
-//            //otherRules.add(new HiddenSingle());
-//            //otherRules.add(new Locking(true));
-//            //otherRules.add(new HiddenSet(2, true));
-//            //otherRules.add(new NakedSingle());
-//            //otherRules.add(new HiddenSet(3, true));
-//            otherRules.add(new Locking(false));
-//            otherRules.add(new NakedSet(2));
-//            otherRules.add(new Fisherman(2));
-//            otherRules.add(new HiddenSet(2, false));
-//            otherRules.add(new NakedSet(3));
-//            otherRules.add(new Fisherman(3));
-//            otherRules.add(new HiddenSet(3, false));
-//            otherRules.add(new XYWing(false));
-//            otherRules.add(new XYWing(true));
-//            //otherRules.add(new UniqueLoops());
-//            otherRules.add(new NakedSet(4));
-//            otherRules.add(new Fisherman(4));
-//            otherRules.add(new HiddenSet(4, false));
-//            //otherRules.add(new BivalueUniversalGrave());
-//            //otherRules.add(new AlignedPairExclusion());
-//            //otherRules.add(new AlignedExclusion(3));
-            
             if (level < 4) {
                 if (level >= 2)
                     otherRules.add(new Chaining(false, false, false, 0, true, 0)); // Forcing chains

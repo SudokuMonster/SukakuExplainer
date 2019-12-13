@@ -62,6 +62,69 @@ public class Cell {
     }
 
     /**
+     * Get the d (disjoint group, box position group) index of this cell.
+     * 0 = top left box position, 8 = bottomm right box position
+     * @return the y coordinate of this cell
+     */
+    public int getD() {
+        return this.index % 3 + (( this.index / 9 ) % 3 ) * 3;
+    }
+
+    /**
+     * Get the W (window) index of this cell.
+     * regionsWindows in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getW() {
+        return Settings.regionsWindows[this.index];
+    }
+
+    /**
+     * Get the Main Diagonal index of this cell. [1 or 0]
+     * regionsMainDiagonal in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getMD() {
+        return Settings.regionsMainDiagonal[this.index];
+    }
+	
+    /**
+     * Get the Anti Diagonal index of this cell. [1 or 0]
+     * regionsWindows in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getAD() {
+        return Settings.regionsAntiDiagonal[this.index];
+    }
+	
+    /**
+     * Get the G (girandola) index of this cell. [1 or 0]
+     * regionsWindows in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getG() {
+        return Settings.regionsGirandola[this.index];
+    }
+	
+    /**
+     * Get the A (Asterisk) index of this cell. [1 or 0]
+     * regionsWindows in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getA() {
+        return Settings.regionsAsterisk[this.index];
+    }
+
+    /**
+     * Get the CD (Center Dot) index of this cell. [1 or 0]
+     * regionsWindows in Settings has the configuration
+     * @return the y coordinate of this cell
+     */
+    public int getCD() {
+        return Settings.regionsCD[this.index];
+    }
+
+    /**
      * Get the index of this cell.
      * 0 ..8 = top row, ... 81 = bottom right
      * @return the index of this cell

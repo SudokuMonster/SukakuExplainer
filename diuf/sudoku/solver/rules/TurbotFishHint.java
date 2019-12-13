@@ -68,6 +68,9 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 		result.put(startCell, fishDigitSet); // orange
         result.put(bridgeCell1, fishDigitSet);
 	}
+	else if (Settings.getInstance().isDG() || (Settings.getInstance().isDG() && emptyRegion2))
+		for (Cell cell : emptyRegionCells)
+			result.put(cell, fishDigitSet); // orange
 	if (!emptyRegion2) {
         result.put(bridgeCell2, fishDigitSet); // orange
         result.put(endCell, fishDigitSet);
@@ -177,11 +180,13 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     @Override
     public String getName() {
 		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "Empty Rectangle" + " " + getSuffix();
+			return "Grouped Turbot Crane" + " " + getSuffix();
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
 			return "Grouped Skyscraper" + " " + getSuffix();
 		if (emptyRegion1 || emptyRegion2)
 			return "Grouped 2-String Kite" + " " + getSuffix();
+		if (baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2)
+			return "Generalized 2 strong links" + " " + getSuffix();
 		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
 
     }	
@@ -193,7 +198,9 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
 			return "gSky" + getSuffix();
 		if (emptyRegion1 || emptyRegion2)
-			return "g2SK" + getSuffix();		
+			return "g2SK" + getSuffix();
+		if (baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2)
+			return "g2SL" + getSuffix();		
 		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
     }
 
@@ -220,7 +227,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public double getDifficulty() {
-		if (emptyRegion1 || emptyRegion2)
+		if (emptyRegion1 || emptyRegion2 || baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2) 
 			return 4.3;
     	return difficulties[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()];
     }

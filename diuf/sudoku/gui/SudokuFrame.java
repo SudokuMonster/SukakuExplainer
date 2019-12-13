@@ -195,7 +195,9 @@ public class SudokuFrame extends JFrame implements Asker {
             sudokuPanel.clearSelection();
             if (currentHint instanceof DirectHint) {
                 DirectHint dHint = (DirectHint)currentHint;
-                sudokuPanel.setGreenCells(Collections.singleton(dHint.getCell()));
+				//SudokuMonster: Some changes in gui to limit colour salad in DG
+                if (!Settings.getInstance().isDG())
+					sudokuPanel.setGreenCells(Collections.singleton(dHint.getCell()));
                 BitSet values = new BitSet(10);
                 values.set(dHint.getValue());
                 sudokuPanel.setGreenPotentials(Collections.singletonMap(
@@ -206,7 +208,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setRedPotentials(iHint.getRedPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setBluePotentials(iHint.getBluePotentials(sudokuPanel.getSudokuGrid(), viewNum));
-                if (iHint.getSelectedCells() != null)
+                if (iHint.getSelectedCells() != null && !Settings.getInstance().isDG())
                     sudokuPanel.setGreenCells(Arrays.asList(iHint.getSelectedCells()));
                 if (iHint instanceof WarningHint)
                     sudokuPanel.setRedCells(((WarningHint)iHint).getRedCells());
@@ -1475,7 +1477,8 @@ public class SudokuFrame extends JFrame implements Asker {
 					engine.clearHints();
 					initialize();
 					repaintViews();
-					showWelcomeText();	
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
                 }
             });
         }
@@ -1498,6 +1501,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					initialize();
 					repaintViews();
 					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
                 }
             });
         }
@@ -1520,6 +1524,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					initialize();
 					repaintViews();
 					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
                 }
             });
         }
@@ -1548,6 +1553,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					initialize();
 					repaintViews();
 					showWelcomeText();	
+					Settings.getInstance().Settings_Variants();
                 }
             });
         }
@@ -1575,7 +1581,8 @@ public class SudokuFrame extends JFrame implements Asker {
 					engine.clearHints();
 					initialize();
 					repaintViews();
-					showWelcomeText();	
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();					
                 }
             });
         }
@@ -1604,6 +1611,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					initialize();
 					repaintViews();
 					showWelcomeText();	
+					Settings.getInstance().Settings_Variants();
                 }
             });
         }

@@ -142,8 +142,20 @@ public class UniqueLoops implements IndirectHintProducer {
             int lastRegionTypeIndex, Collection<List<Cell>> results) {
         loop.add(cell);
 		if (Settings.getInstance().islkSudokuURUL()) {
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-            if (regionTypeIndex != lastRegionTypeIndex) {
+//@SudokuMonster: Variants changes //regionTypeIndex < 3 && regionTypeIndex checks in all 6 loops
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0)
+						continue;
+			}
+			if (regionTypeIndex != lastRegionTypeIndex) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
                     Cell next = region.getCell(i);
@@ -182,8 +194,19 @@ public class UniqueLoops implements IndirectHintProducer {
 		}
 		else {
         exValues = (BitSet)exValues.clone(); // Ensure we cleanup ourself
-		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-            if (regionTypeIndex != lastRegionTypeIndex) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0)
+						continue;
+			}
+			if (regionTypeIndex != lastRegionTypeIndex) {
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 for (int i = 0; i < 9; i++) {
                     Cell next = region.getCell(i);
@@ -241,8 +264,19 @@ public class UniqueLoops implements IndirectHintProducer {
         HashSet<Grid.Region> visitedEven = new HashSet<Grid.Region>();
         boolean isOdd = false;
         for (Cell cell : loop) {
-            for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-                Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+					if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0)
+						continue;
+				}           
+				Grid.Region region = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (isOdd) {
                     if (visitedOdd.contains(region))
                         return false;
@@ -322,9 +356,20 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for Naked and hidden Sets. Iterate on degree
 		if (Settings.getInstance().islkSudokuURUL()) {
         for (int degree = 2; degree <= 7; degree++) {
-            for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+					if (Grid.cellRegions[c1.getIndex()][regionTypeIndex] < 0 || Grid.cellRegions[c2.getIndex()][regionTypeIndex] < 0)
+						continue;
+				}
                 Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
-                if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
+				if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
                     int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
@@ -418,14 +463,24 @@ public class UniqueLoops implements IndirectHintProducer {
 		}
 		else {
         for (int degree = extra.cardinality(); degree <= 7; degree++) {
-            for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-                Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+					if (Grid.cellRegions[c1.getIndex()][regionTypeIndex] < 0 || Grid.cellRegions[c2.getIndex()][regionTypeIndex] < 0)
+						continue;
+				}
+				Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
                 if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                     // Region common to c1 and c2
                     int nbEmptyCells = region.getEmptyCellCount(grid);
                     int index1 = region.indexOf(c1);
                     int index2 = region.indexOf(c2);
-
                     // Look for naked sets
                     if (degree * 2 <= nbEmptyCells) {
                         // Look on combinations of cells that include c1 but not c2
@@ -595,7 +650,18 @@ public class UniqueLoops implements IndirectHintProducer {
         // Look for v1 or v2 locked in a region of c1 and c2
         Grid.Region r1 = null;
         Grid.Region r2 = null;
-        for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+					if (Grid.cellRegions[c1.getIndex()][regionTypeIndex] < 0 || Grid.cellRegions[c2.getIndex()][regionTypeIndex] < 0)
+						continue;
+			}
             Grid.Region region = Grid.getRegionAt(regionTypeIndex, c1.getIndex());
             if (region.equals(Grid.getRegionAt(regionTypeIndex, c2.getIndex()))) {
                 // Region common to c1 and c2

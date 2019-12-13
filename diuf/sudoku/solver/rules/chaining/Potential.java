@@ -20,12 +20,19 @@ import diuf.sudoku.*;
  */
 public class Potential {
 //public class Potential implements Comparable<Potential> {
-
+	//SudokuMonster: Variants changes
     public enum Cause {
         NakedSingle,
         HiddenBlock,
         HiddenRow,
         HiddenColumn,
+		HiddenDG,
+		HiddenWindow,
+		HiddenMD,
+		HiddenAD,
+		HiddenGirandola,
+		HiddenAsterisk,
+		HiddenCD,
         Advanced
     }
 

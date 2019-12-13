@@ -226,10 +226,18 @@ public class BruteForceAnalysis implements WarningHintProducer {
      * imply that the sudoku has no solution.
      */
     private boolean isFillable(Grid grid) {
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
-        	Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
-            for (int i = 0; i < 9; i++) {
-                Grid.Region region = regions[i];
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
+			Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
+            for (Grid.Region region : regions) {
                 for (int value = 1; value <= 9; value++) {
                     if (!region.contains(grid, value) && region.getPotentialPositions(grid, value).isEmpty())
                         return false; // No room for the value in the region

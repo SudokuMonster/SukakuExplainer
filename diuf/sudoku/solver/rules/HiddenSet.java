@@ -35,6 +35,22 @@ public class HiddenSet implements IndirectHintProducer {
 			getHints(grid, 0, accu); //block
         getHints(grid, 2, accu); //column
         getHints(grid, 1, accu); //row
+		if (!Settings.getInstance().isVLatin()) {
+			if (Settings.getInstance().isDG())
+				getHints(grid, 3, accu); //DG
+			if (Settings.getInstance().isWindows())
+				getHints(grid, 4, accu); //Windows
+			if (Settings.getInstance().isX()) {
+				getHints(grid, 5, accu); //Main diagonal
+				getHints(grid, 6, accu); //Anti diagonal
+			}
+			if (Settings.getInstance().isGirandola())
+				getHints(grid, 7, accu); //Girandola			
+			if (Settings.getInstance().isAsterisk())
+				getHints(grid, 8, accu); //Asterisk			
+			if (Settings.getInstance().isCD())
+				getHints(grid, 9, accu); //CD	
+		}
     }
 
     /**

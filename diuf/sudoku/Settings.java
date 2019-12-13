@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 12;
-    public final static String SUBREV = ".7";
-	public final static String releaseDate = "2019-12-01";
+    public final static int REVISION = 14;
+    public final static String SUBREV = ".3";
+	public final static String releaseDate = "2019-12-12";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -48,6 +48,7 @@ public class Settings {
 	private boolean isCD = false;//9 cell Centre (center) Dot group
 	private boolean isGirandola = false;//9 cell Girandola group
 	private boolean isVanilla = true;//Check to see if we are using variants (to minimize extra code calls use in Vanilla sudoku)
+	private boolean isVLatin = true;//Check to see if we are using variants with Latin Square(to minimize extra code calls use in Latin square)	
 	public String variantString = "";
 	public final static int[] regionsWindows = 
 		{0,5,5,5,0,6,6,6,0,
@@ -89,6 +90,26 @@ public class Settings {
 		 0,0,1,0,0,0,1,0,0,
 		 0,0,0,0,1,0,0,0,0,
 		 0,0,0,0,0,0,0,0,0};
+	public final static int[] regionsMainDiagonal =
+		{1,0,0,0,0,0,0,0,0,
+		 0,1,0,0,0,0,0,0,0,
+		 0,0,1,0,0,0,0,0,0,
+		 0,0,0,1,0,0,0,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,0,0,0,1,0,0,0,
+		 0,0,0,0,0,0,1,0,0,
+		 0,0,0,0,0,0,0,1,0,
+		 0,0,0,0,0,0,0,0,1};
+	public final static int[] regionsAntiDiagonal =
+		{0,0,0,0,0,0,0,0,1,
+		 0,0,0,0,0,0,0,1,0,
+		 0,0,0,0,0,0,1,0,0,
+		 0,0,0,0,0,1,0,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,0,1,0,0,0,0,0,
+		 0,0,1,0,0,0,0,0,0,
+		 0,1,0,0,0,0,0,0,0,
+		 1,0,0,0,0,0,0,0,0};
 	
     private EnumSet<SolvingTechnique> techniques;
     
@@ -120,6 +141,10 @@ public class Settings {
 	
     public void Settings_BBSE121() {
         init121();
+    }	
+
+    public void Settings_Variants() {
+        initVariants();
     }	
 
     public static Settings getInstance() {
@@ -204,16 +229,23 @@ public class Settings {
     public boolean isBringBackSE121() {
         return this.isBringBackSE121;
     }
-
+//SudokuMonster: isVanilla() controls added variants and therefore is the check needed for Old style sukaku Explainer
     public boolean isVanilla() {
         return this.isVanilla;
     }
+//SudokuMonster: isVLatin() controls added variants and therefore is the check needed for Latin square without added variants
+    public boolean isVLatin() {
+        return this.isVLatin;
+    }	
 
 	public void toggleVariants() {
         this.isVanilla = true;
+		this.isVLatin = true;
 		String temp = "";
-		if (!isBlocks())
+		if (!isBlocks()) {
 			temp += "Latin Square ";
+			this.isVanilla = false;
+		}
 		if (isDG())
 			temp += "Disjoint Groups ";
 		if (isWindows())
@@ -226,13 +258,17 @@ public class Settings {
 			temp += "Girandola ";
 		if (isX())
 			temp += "X ";
-		if (!isBlocks() || isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk())
+		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk()) {
+			this.isVLatin = false;
 			this.isVanilla = false;
+		}
 		this.variantString = temp;
+		Grid.changeVisibleCells();
     }
 	
 	public void setBlocks(boolean isBlocks) {
         this.isBlocks = isBlocks;
+		toggleVariants();
         save();
     }
 
@@ -242,6 +278,7 @@ public class Settings {
 
     public void setDG(boolean value) {
         this.isDG = value;
+		toggleVariants();
         save();
     }
 
@@ -251,6 +288,7 @@ public class Settings {
 	
     public void setX(boolean value) {
         this.isX = value;
+		toggleVariants();
         save();
     }
 
@@ -260,7 +298,8 @@ public class Settings {
 
     public void setWindows(boolean value) {
         this.isWindows = value;
-        save();
+		toggleVariants();
+         save();
     }
 
     public boolean isWindows() {
@@ -269,7 +308,8 @@ public class Settings {
 
     public void setGirandola(boolean value) {
         this.isGirandola = value;
-        save();
+		toggleVariants();
+         save();
     }
 
     public boolean isGirandola() {
@@ -278,7 +318,8 @@ public class Settings {
 
     public void setCD(boolean value) {
         this.isCD = value;
-        save();
+		toggleVariants();
+         save();
     }
 
     public boolean isCD() {
@@ -287,7 +328,8 @@ public class Settings {
 
     public void setAsterisk(boolean value) {
         this.isAsterisk = value;
-        save();
+		toggleVariants();
+         save();
     }
 
     public boolean isAsterisk() {
@@ -365,11 +407,32 @@ public class Settings {
 		techniques.remove(SolvingTechnique.FourStrongLinks);
 		techniques.remove(SolvingTechnique.FiveStrongLinks);
  		techniques.remove(SolvingTechnique.SixStrongLinks);
+		techniques.remove(SolvingTechnique.VLocking);
+		techniques.remove(SolvingTechnique.NakedPairGen);
+		techniques.remove(SolvingTechnique.NakedTripletGen);
+		techniques.remove(SolvingTechnique.NakedQuadGen);
+		techniques.remove(SolvingTechnique.NakedQuintGen);
     }
 
+    private void initVariants() {
+        techniques = EnumSet.allOf(SolvingTechnique.class);
+		//default deselected techniques are added here
+		techniques.remove(SolvingTechnique.PointingClaiming);
+		techniques.remove(SolvingTechnique.ThreeStrongLinks);
+		techniques.remove(SolvingTechnique.FourStrongLinks);
+		techniques.remove(SolvingTechnique.FiveStrongLinks);
+ 		techniques.remove(SolvingTechnique.SixStrongLinks);
+		techniques.remove(SolvingTechnique.NakedPair);
+		techniques.remove(SolvingTechnique.NakedTriplet);
+		techniques.remove(SolvingTechnique.NakedQuad);
+		techniques.remove(SolvingTechnique.NakedQuintGen);
+		if (isVLatin())
+			init();
+    }
     private void init121() {
         techniques = EnumSet.allOf(SolvingTechnique.class);
 		//The following techniques are not part of SE121
+		techniques.remove(SolvingTechnique.VLocking);
 		techniques.remove(SolvingTechnique.TurbotFish);
 		techniques.remove(SolvingTechnique.ThreeStrongLinks);
 		techniques.remove(SolvingTechnique.FourStrongLinks);
@@ -377,6 +440,10 @@ public class Settings {
  		techniques.remove(SolvingTechnique.SixStrongLinks);
 		techniques.remove(SolvingTechnique.WXYZWing);
 		techniques.remove(SolvingTechnique.VWXYZWing);
+		techniques.remove(SolvingTechnique.NakedPairGen);
+		techniques.remove(SolvingTechnique.NakedTripletGen);
+		techniques.remove(SolvingTechnique.NakedQuadGen);
+		techniques.remove(SolvingTechnique.NakedQuintGen);
     }
 
     public void load() {

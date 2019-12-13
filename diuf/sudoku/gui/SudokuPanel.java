@@ -687,7 +687,8 @@ public class SudokuPanel extends JPanel {
                 for (int i = 0; i < blueRegions.length; i++) {
                     int index = (rev == 0 ? i : blueRegions.length - 1 - i);
                     Grid.Region region = blueRegions[index];
-                    if (region != null) {
+                    //@SudokuMonster: Temp arrangement to disable Region highlighting for regions in variants
+					if (region != null && region.getRegionTypeIndex() < 3) {
                         int x, y, w, h; // coordinates, width, height (in cells)
                         if (region instanceof Grid.Row) {
                             Grid.Row row = (Grid.Row)region;

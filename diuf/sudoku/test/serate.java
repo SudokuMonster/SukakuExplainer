@@ -37,6 +37,8 @@ public class serate {
         System.err.println("  serate [--after=FORMAT] [--before=FORMAT] [--format=FORMAT]");
         System.err.println("    [--techs=TECHSTRING] [--showArguments] [--start=FORMAT]");
         System.err.println("    [--revisedRating=N] [--threads=N] [--totalTime] [--batch=N]");
+        System.err.println("    [--isBlocks=N] [--isDG=N] [--isWindows=N] [--isX=N]");
+        System.err.println("    [--isGirandola=N] [--isAsterisk=N] [--isCD=N]");		
         System.err.println("    [--input=FILE] [--output=FILE] [--pearl] [--diamond] [puzzle ...]");
         System.err.println("");
         System.err.println("DESCRIPTION");
@@ -115,10 +117,16 @@ public class serate {
         System.err.println("      Batch solving. Default 0=disabled.");
         System.err.println("                             1=Apply all available hints that have the lowest rating");
         System.err.println("                             2=Apply all available hints with rating lower than maximum puzzle rating");
+        System.err.println("  -D, --isDG=N");
+        System.err.println("  	Enable/disable Disjoint Group constraints. 0:disable (default), 1:enabled");
+        System.err.println("  -E, --isCD=N");
+        System.err.println("  	Enable/disable Center Dot group constraints. 0:disable (default), 1:enabled");
         System.err.println("  -G, --islkSudokuBUG=N");
         System.err.println("  	Fix to BUG algorithm by lkSudoku. 0=disabled	1=enabled (default)");
         System.err.println("  -U, --islkSudokuURUL=NAME");
         System.err.println("  	Fix to UR and UL algorithm by lkSudoku. 0=disabled	1=enabled (default)");
+        System.err.println("  -K, --isAsterisk=N");
+        System.err.println("  	Enable/disable Asterisk group constraints. 0:disable (default), 1:enabled");
         System.err.println("  -P, --FCPlus=N");
         System.err.println("  	Control non-trivial implications in FC+ and nested chains	0:default (similar to SE121)");
         System.err.println("  																1:More techniques added");
@@ -133,10 +141,16 @@ public class serate {
         System.err.println("      there, just type --techs= without any string after the = in TECHSTRING");
         System.err.println("  -T, --totalTime");
         System.err.println("      The time required to process all puzzles parsed to standard output");
+        System.err.println("  -R, --isGirandola=N");
+        System.err.println("  	Enable/disable Girandola group constraints. 0:disable (default), 1:enabled");
         System.err.println("  -S, --showArguments");
         System.err.println("      Show parameters used");
         System.err.println("  -V, --version");
         System.err.println("      Print the Sudoku Explainer (serate) version and exit.");
+        System.err.println("  -W, --isWindows=N");
+        System.err.println("  	Enable/disable Windows constraints. 0:disable (default), 1:enabled");
+        System.err.println("  -X, --isX=N");
+        System.err.println("  	Enable/disable X diagonal constraints. 0:disable (default), 1:enabled");
         System.err.println("");
         System.err.println("INVOCATION");
         System.err.println("");
@@ -294,7 +308,13 @@ public class serate {
 		int				FCPlus = 0;//non-trivial implications to add in FC+
 		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
-        boolean			isBlocks = true; //Blocks are y default enabled. Disable to transform into Latin square (LQ)
+        boolean			isBlocks = true; //Blocks areb y default enabled. Disable to transform into Latin square (LQ)
+        boolean			isDG = false; //Disjoint Groups are by default disabled.
+        boolean			isWindows = false; //Windows are by default disabled.
+        boolean			isX = false; //X (Main diagonal and Anti diagonal groups) are by default disabled.
+        boolean			isGirandola = false; //Girandola is by default disabled.
+        boolean			isAsterisk = false; //Asterisk is by default disabled.
+        boolean			isCD = false; //Center Dot is by default disabled.		
 		char            want = 0;
         int             arg;
         //long            t; //not used anymore
@@ -357,6 +377,24 @@ public class serate {
                     else if (s.equals("isBlocks"))
                         c = 'Q'; 
             //@SudokuMonster: 
+                    else if (s.equals("isDG"))
+                        c = 'D'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isWindows"))
+                        c = 'W'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isX"))
+                        c = 'X'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isGirandola"))
+                        c = 'R'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isAsterisk"))
+                        c = 'K'; 
+             //@SudokuMonster: 
+                    else if (s.equals("isCD"))
+                        c = 'E'; 
+           //@SudokuMonster: 
                     else if (s.equals("FCPlus"))
                         c = 'P'; 					
                     else if (s.equals("after"))
@@ -397,7 +435,12 @@ public class serate {
                 case 'G':
                 case 'U':
                 case 'Q':
-                case 'P':				
+                case 'D':
+                case 'W':
+                case 'X':
+                case 'R':
+                case 'K':
+                case 'E':				
                 case '~':
                     if (v == null)
                         usage(a, 1);
@@ -481,6 +524,36 @@ public class serate {
                     Settings.getInstance().setBlocks(isBlocks);//0: isBlocks disabled //1:isBlocks enabled
                     break;					
             //@SudokuMonster: 
+                case 'D':
+                    isDG = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setDG(isDG);//0: isDG disabled //1:isDG enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'W':
+                    isWindows = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setWindows(isWindows);//0: isWindows disabled //1:isWindows enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'X':
+                    isX = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setX(isX);//0: isX disabled //1:isX enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'R':
+                    isGirandola = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setGirandola(isGirandola);//0: isGirandola disabled //1:isGirandola enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'K':
+                    isAsterisk = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setAsterisk(isAsterisk);//0: isAsterisk disabled //1:isAsterisk enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'E':
+                    isCD = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setCD(isCD);//0: isCD disabled //1:isCD enabled
+                    break;					
+             //@SudokuMonster: 
                 case 'P':
                     FCPlus = Integer.parseInt(v);
                     Settings.getInstance().setFCPlus(FCPlus);//0: Default (similar to SE121) //1:More non trivial implications added //2: More non trivial implications added 

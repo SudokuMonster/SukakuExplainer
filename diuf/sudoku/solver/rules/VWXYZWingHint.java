@@ -198,6 +198,8 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
 
     @Override
     public Cell[] getSelectedCells() {
+		if (Settings.getInstance().isDG())
+			return null;
         return new Cell[] {vwxyzCell, vzCell, wzCell, xzCell, yzCell};
     }
 

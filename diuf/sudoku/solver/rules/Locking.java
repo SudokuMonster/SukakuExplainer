@@ -28,6 +28,28 @@ public class Locking implements IndirectHintProducer {
 			getHints(grid, 0, 1, accu); //block, row
 			getHints(grid, 2, 0, accu); //column, block
 			getHints(grid, 1, 0, accu); //row, block
+//@SudokuMonster: Added Variants
+			if (Settings.getInstance().isDG()) {
+				getHints(grid, 3, 2, accu); //DG, column
+				getHints(grid, 3, 1, accu); //DG, row
+				getHints(grid, 2, 3, accu); //column, DG
+				getHints(grid, 1, 3, accu); //row, DG
+				getHints(grid, 0, 3, accu); //block, DG
+				getHints(grid, 3, 0, accu); //DG, block					
+			}
+			if (Settings.getInstance().isWindows()) {
+				getHints(grid, 4, 2, accu); //window, column
+				getHints(grid, 4, 1, accu); //window, row
+				getHints(grid, 2, 4, accu); //column, window
+				getHints(grid, 1, 4, accu); //row, window
+				getHints(grid, 0, 4, accu); //block, window
+				getHints(grid, 4, 0, accu); //window, block					
+			}
+			if (Settings.getInstance().isWindows() && Settings.getInstance().isDG()) {
+				getHints(grid, 4, 3, accu); //window, DG
+				getHints(grid, 3, 4, accu); //DG, window
+			}
+			
 		}
     }
 

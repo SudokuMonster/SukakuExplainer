@@ -209,6 +209,20 @@ public abstract class ChainingHint extends IndirectHint implements Rule, HasPare
             return 2;
         case HiddenRow:
             return 1;
+        case HiddenDG:
+			return 3;
+		case HiddenWindow:
+			return 4;
+		case HiddenMD:
+			return 5;
+		case HiddenAD:
+			return 6;
+		case HiddenGirandola:
+			return 7;
+		case HiddenAsterisk:
+			return 8;
+		case HiddenCD:
+			return 9;
         default:
             return 0;
         }

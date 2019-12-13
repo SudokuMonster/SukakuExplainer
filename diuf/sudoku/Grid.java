@@ -87,6 +87,13 @@ public class Grid {
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
+    private static final DG[] DGs;
+    private static final Window[] windows;
+    private static final diagonalMain[] diagonal1;
+    private static final diagonalAnti[] diagonal2;
+	private static final Girandola[] girandola;
+	private static final Asterisk[] asterisk;
+	private static final CD[] cd;
     public static final Region[][] regions;
     public static CellSet[] visibleCellsSet;
 	public static CellSet[] forwardVisibleCellsSet;
@@ -102,8 +109,8 @@ public class Grid {
     		new Cell(63), new Cell(64), new Cell(65), new Cell(66), new Cell(67), new Cell(68), new Cell(69), new Cell(70), new Cell(71),
     		new Cell(72), new Cell(73), new Cell(74), new Cell(75), new Cell(76), new Cell(77), new Cell(78), new Cell(79), new Cell(80)
     		};
-    	regionCellIndex = new int[81][3]; //[cell][getRegionTypeIndex()]
-    	cellRegions = new int[81][3]; //[cell][getRegionTypeIndex()]
+    	regionCellIndex = new int[81][10]; //[cell][getRegionTypeIndex()] //@sudokuMonster 5 is Temp
+    	cellRegions = new int[81][10]; //[cell][getRegionTypeIndex()]//@sudokuMonster 5 is Temp
     	visibleCellIndex = new int[][] {
     		{ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,27,36,45,54,63,72},
     		{ 0, 2, 3, 4, 5, 6, 7, 8, 9,10,11,18,19,20,28,37,46,55,64,73},
@@ -805,8 +812,15 @@ public class Grid {
 				};
     	blocks = new Block[] {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     	rows = new Row[] {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
-    	columns = new Column[]{new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)};
-    	regions = new Region[][] {blocks, rows, columns};
+    	columns = new Column[]{new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)}; 
+		DGs = new DG[]{new DG(0), new DG(1), new DG(2), new DG(3), new DG(4), new DG(5), new DG(6), new DG(7), new DG(8)};
+		windows = new Window[]{new Window(0), new Window(1), new Window(2), new Window(3), new Window(4), new Window(5), new Window(6), new Window(7), new Window(8)};
+		girandola = new Girandola[]{new Girandola(0)};
+		diagonal1 = new diagonalMain[]{new diagonalMain(0)};
+		diagonal2 = new diagonalAnti[]{new diagonalAnti(0)};
+		asterisk = new Asterisk[]{new Asterisk(0)};
+		cd = new CD[]{new CD(0)};
+		regions = new Region[][] {blocks, rows, columns, DGs, windows, diagonal1, diagonal2, girandola, asterisk, cd};
     }
 
     //temporary development/debug counters
@@ -1569,6 +1583,109 @@ public class Grid {
         }
         return result.toString();
     }
+
+    /**
+     * Get a string representation of this grid with Jigsaw region. If No Jigsaw the Variants region (except DG & X).
+	 If not then Sudoku if not then Box
+     */
+    
+    public String toStringVariantRegions() {
+		int[] regionArray = new int[81];
+		if (Settings.getInstance().isWindows())
+			regionArray = Arrays.copyOf(Settings.regionsWindows, 81);
+		else
+			if (Settings.getInstance().isAsterisk())
+				regionArray = Arrays.copyOf(Settings.regionsAsterisk, 81);
+			else
+				if (Settings.getInstance().isCD())
+					regionArray = Arrays.copyOf(Settings.regionsCD, 81);
+				else
+					if (Settings.getInstance().isGirandola())
+						regionArray = Arrays.copyOf(Settings.regionsGirandola, 81);
+					else
+						regionArray = Arrays.copyOf(Settings.regionsCD, 81);
+        StringBuilder result = new StringBuilder();
+        int xp = 0;
+		int yp = 0;
+		for (int y = 0; y < 19; y++) {
+			yp = y%2;
+            for (int x = 0; x < 19; x++) {
+				xp = x%2;
+				if (y == 0)
+						if (x == 0 || x == 18 || (xp == 0 && regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2]))
+							result.append('+');
+						else
+							result.append('-');
+				else
+					if (y == 18)
+							if (x == 0 || x == 18 || (xp == 0 && regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]))
+								result.append('+');
+							else
+								result.append('-');
+					else
+						if (yp == 0)
+							if (x == 0)
+								if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] != regionArray[( y / 2 ) * 9 + x / 2])
+									result.append('+');
+								else
+									result.append('|');
+							else
+								if (x == 18)
+									if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2 - 1])
+										result.append('+');
+									else
+										result.append('|');
+								else
+									if (xp == 0)
+										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
+													regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1] &&
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2])
+													result.append(' ');
+										else
+											if (regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
+												regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2])
+												result.append('-');
+											else
+												if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1])
+													result.append('|');
+												else
+													result.append('+');
+									else
+										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2])
+											result.append(' ');
+										else
+											result.append('-');	
+						else
+							if (xp == 1) {
+								int value = getCellValue(x / 2 , y / 2);
+								if (value == 0)
+									result.append('.');
+								else
+									result.append(value);
+							}
+							else
+								if (x == 0 || x == 18 || regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2])
+									result.append('|');
+								else
+									result.append(' ');
+															
+													
+									
+								
+							
+                //int value = getCellValue(x, y);
+               // if (value == 0)
+                    //result.append('.');
+                //else
+                    //result.append(value);
+            }
+            result.append('\n');
+        }
+        return result.toString();
+    }	
+
     
     /**
      * Get a single-line string representation of this grid.
@@ -1589,7 +1706,7 @@ public class Grid {
 
     /**
      * Get a pencilmark-string representation of this grid.
-     */
+    */ 
     public String toStringPencilmarks() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < 81; i++) {
@@ -2156,6 +2273,334 @@ public class Grid {
         @Override
         public String toFullString() {
             return toString() + " " + (vNum * 3 + hNum + 1);
+        }
+    }
+
+    /**
+     * A 9 cell region of DG configuration (Block position group)
+     */
+    public static class DG extends Region {
+
+        private final int vNum, hNum, index;
+        private DG(int index) {
+        	final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
+        	final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
+            this.vNum = vNums[index];
+            this.hNum = hNums[index];
+            this.index = index;
+            for(int i = 0; i < 9; i++) {
+				regionCells[i] = 9 * vNums[index] + hNums[index] +  3 * hNums[i] + 27 * vNums[i];
+				regionCellIndex[regionCells[i]][getRegionTypeIndex()] = i;
+				regionCellsBitSet.set(regionCells[i]);
+				cellRegions[regionCells[i]][getRegionTypeIndex()] = index;
+            }
+        }
+
+        public int getRegionTypeIndex() {
+        	return 3;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "disjoint group";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString() + " " + (vNum * 3 + hNum + 1);
+        }
+    }
+	
+    /**
+     * A 9 cell region of Windows configuration
+     */
+    public static class Window extends Region {
+
+        private final int /*vNum, hNum,*/ index;
+		private final int[] windows = new int[]{
+			8,4,4,4,8,5,5,5,8,
+			6,0,0,0,6,1,1,1,6,
+			6,0,0,0,6,1,1,1,6,
+			6,0,0,0,6,1,1,1,6,
+			8,4,4,4,8,5,5,5,8,
+			7,2,2,2,7,3,3,3,7,
+			7,2,2,2,7,3,3,3,7,
+			7,2,2,2,7,3,3,3,7,
+			8,4,4,4,8,5,5,5,8
+		};
+		private final int[] paths = new int[]{
+			0,0,1,2,1,0,1,2,2,
+			0,0,1,2,3,0,1,2,6,
+			1,3,4,5,4,3,4,5,7,
+			2,6,7,8,5,6,7,8,8,
+			3,3,4,5,4,3,4,5,5,
+			0,0,1,2,3,0,1,2,6,
+			1,3,4,5,4,3,4,5,7,
+			2,6,7,8,5,6,7,8,8,
+			6,6,7,8,7,6,7,8,8
+		};
+        private Window(int index) {
+        	//final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
+        	//final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
+            //this.vNum = vNums[index];
+            //this.hNum = hNums[index];
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+            	if (windows[i] == index) {
+					regionCells[paths[i]] = i;
+					regionCellIndex[i][getRegionTypeIndex()] = paths[i];
+					regionCellsBitSet.set(regionCells[paths[i]]);
+					cellRegions[regionCells[paths[i]]][getRegionTypeIndex()] = index;
+				}
+            }
+        }
+
+        public int getRegionTypeIndex() {
+        	return 4;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "window group";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString() + " " + (index + 1);
+        }
+    }
+
+    /**
+     * A 9 cell region of Main Diagonal configuration
+     */
+    public static class diagonalMain extends Region {
+		private final int index;
+		private final int[] paths = new int[]{
+			0,	10,	20,	30,	40,	50,	60,	70,	80
+		};
+        private diagonalMain(int index) {
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+				regionCellIndex[i][getRegionTypeIndex()] = -1;
+				cellRegions[i][getRegionTypeIndex()] = -1;
+			}
+			for(int i = 0; i < 9; i++) {
+						regionCells[i] = paths[i];
+						regionCellIndex[paths[i]][getRegionTypeIndex()] = i;
+						regionCellsBitSet.set(regionCells[i]);
+						cellRegions[regionCells[i]][getRegionTypeIndex()] = 0;
+			}
+        }
+
+        public int getRegionTypeIndex() {
+        	return 5;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "Main Diagonal";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString();
+        }
+    }
+
+    /**
+     * A 9 cell region of Anti Diagonal configuration
+     */
+    public static class diagonalAnti extends Region {
+		private final int index;
+		private final int[] paths = new int[]{
+			8,	16,	24,	32,	40,	48,	56,	64,	72
+		};
+        private diagonalAnti(int index) {
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+				regionCellIndex[i][getRegionTypeIndex()] = -1;
+				cellRegions[i][getRegionTypeIndex()] = -1;
+			}
+            for(int i = 0; i < 9; i++) {
+						regionCells[i] = paths[i];
+						regionCellIndex[paths[i]][getRegionTypeIndex()] = i;
+						regionCellsBitSet.set(regionCells[i]);
+						cellRegions[regionCells[i]][getRegionTypeIndex()] = 0;
+			}
+        }
+
+        public int getRegionTypeIndex() {
+        	return 6;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "Anti Diagonal";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString();
+        }
+    }
+
+    /**
+     * A 9 cell region of Girandola configuration
+     */
+    public static class Girandola extends Region {
+		private final int /*vNum, hNum,*/ index;
+		public final static int[] regionsGirandola = 
+			{1,0,0,0,0,0,0,0,1,
+			 0,0,0,0,1,0,0,0,0,
+			 0,0,0,0,0,0,0,0,0,
+			 0,0,0,0,0,0,0,0,0,
+			 0,1,0,0,1,0,0,1,0,
+			 0,0,0,0,0,0,0,0,0,
+			 0,0,0,0,0,0,0,0,0,
+			 0,0,0,0,1,0,0,0,0,
+			 1,0,0,0,0,0,0,0,1};
+		private final int[] paths = new int[]{
+			0, 8, 13, 37, 40, 43, 67, 72, 80
+		};
+        private Girandola(int index) {
+        	//final int[] vNums = new int[]{0,0,0,1,1,1,2,2,2};
+        	//final int[] hNums = new int[]{0,1,2,0,1,2,0,1,2};
+            //this.vNum = vNums[index];
+            //this.hNum = hNums[index];
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+				regionCellIndex[i][getRegionTypeIndex()] = -1;
+				cellRegions[i][getRegionTypeIndex()] = -1;
+			}
+            for(int i = 0; i < 9; i++) {
+						regionCells[i] = paths[i];
+						regionCellIndex[paths[i]][getRegionTypeIndex()] = i;
+						regionCellsBitSet.set(regionCells[i]);
+						cellRegions[regionCells[i]][getRegionTypeIndex()] = 0;
+			}
+        }
+
+        public int getRegionTypeIndex() {
+        	return 7;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "Girandola group";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString();
+        }
+    }
+
+    /**
+     * A 9 cell region of Asterisk configuration
+     */
+    public static class Asterisk extends Region {
+		private final int index;
+		private final int[] paths = new int[]{
+			13,20,24,37,40,43,56,60,67
+		};
+        private Asterisk(int index) {
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+				regionCellIndex[i][getRegionTypeIndex()] = -1;
+				cellRegions[i][getRegionTypeIndex()] = -1;
+			}
+            for(int i = 0; i < 9; i++) {
+						regionCells[i] = paths[i];
+						regionCellIndex[paths[i]][getRegionTypeIndex()] = i;
+						regionCellsBitSet.set(regionCells[i]);
+						cellRegions[regionCells[i]][getRegionTypeIndex()] = 0;
+			}
+        }
+
+        public int getRegionTypeIndex() {
+        	return 8;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "Asterisk group";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString();
+        }
+    }
+	
+    /**
+     * A 9 cell region of Center Dot configuration
+     */
+    public static class CD extends Region {
+		private final int index;
+		private final int[] paths = new int[]{
+			10,13,16,37,40,43,64,67,70
+		};
+        private CD(int index) {
+            this.index = index;
+            for(int i = 0; i < 81; i++) {
+				regionCellIndex[i][getRegionTypeIndex()] = -1;
+				cellRegions[i][getRegionTypeIndex()] = -1;
+			}
+            for(int i = 0; i < 9; i++) {
+						regionCells[i] = paths[i];
+						regionCellIndex[paths[i]][getRegionTypeIndex()] = i;
+						regionCellsBitSet.set(regionCells[i]);
+						cellRegions[regionCells[i]][getRegionTypeIndex()] = 0;
+			}
+        }
+
+        public int getRegionTypeIndex() {
+        	return 9;
+        }
+        
+        public int getRegionIndex() {
+        	return index;
+        }
+       
+
+        @Override
+        public String toString() {
+            return "Center Dot group";
+        }
+
+        @Override
+        public String toFullString() {
+            return toString();
         }
     }
 }

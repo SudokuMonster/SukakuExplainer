@@ -30,6 +30,10 @@ public class NakedSet implements IndirectHintProducer {
 			getHints(grid, 0, accu); //block
         getHints(grid, 2, accu); //column
         getHints(grid, 1, accu); //row
+		if (Settings.getInstance().isDG())
+			getHints(grid, 3, accu); //DG
+		if (Settings.getInstance().isWindows())
+			getHints(grid, 4, accu); //Windows
     }
 
     /**

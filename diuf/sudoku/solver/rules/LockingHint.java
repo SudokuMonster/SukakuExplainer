@@ -65,9 +65,11 @@ public class LockingHint extends IndirectHint implements Rule, HasParentPotentia
 
     public double getDifficulty() {
         int degree = regions.length / 2;
+//@SudokuMonster: Revised Rating
 if (Settings.getInstance().revisedRating() == 1) {
         if (degree == 1) {
-            if (regions[0] instanceof Grid.Block)
+//@SudokuMonster: minor swap to accommodate variant region interactions with row/Columns
+            if (regions[1] instanceof Grid.Column || regions[1] instanceof Grid.Row)
                 return 2.6; // Pointing
             else
                 return 2.8; // Claiming
@@ -80,7 +82,8 @@ if (Settings.getInstance().revisedRating() == 1) {
 }
 else {
         if (degree == 1) {
-            if (regions[0] instanceof Grid.Block)
+//@SudokuMonster: minor swap to accommodate variant region interactions with row/Columns
+            if (regions[1] instanceof Grid.Column || regions[1] instanceof Grid.Row)
                 return 2.6; // Pointing
             else
                 return 2.8; // Claiming
@@ -96,7 +99,8 @@ else {
     public String getName() {
         int degree = regions.length / 2;
         if (degree == 1) {
-            if (regions[0] instanceof Grid.Block)
+//@SudokuMonster: minor swap to accommodate variant region interactions with row/Columns
+            if (regions[1] instanceof Grid.Column || regions[1] instanceof Grid.Row)
                 return "Pointing";
             else
                 return "Claiming";
@@ -116,7 +120,8 @@ else {
     public String getShortName() {
         int degree = regions.length / 2;
         if (degree == 1) {
-            if (regions[0] instanceof Grid.Block)
+//@SudokuMonster: minor swap to accommodate variant region interactions with row/Columns
+            if (regions[1] instanceof Grid.Column || regions[1] instanceof Grid.Row)
                 return "Po";
             else
                 return "Cl";

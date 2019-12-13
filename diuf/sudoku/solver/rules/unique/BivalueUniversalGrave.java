@@ -31,10 +31,18 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 			CellSet allExtraCells = null;
 			int onlyValue = 0;
 			boolean oneValue = true;
-			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {																			   
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				}																			   
 				Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
-				for (int i = 0; i < regions.length; i++) {
-					Grid.Region region = regions[i];
+				for (Grid.Region region : regions) {
 					for (int value = 1; value <= 9; value++) {
 						// Possible positions of a value in a region (row/column/block):
 						BitSet positions = region.getPotentialPositions(grid, value);
@@ -113,10 +121,18 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 			}
 		}
 		else {
-			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {																			   
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				}																			   
 				Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
-				for (int i = 0; i < regions.length; i++) {
-					Grid.Region region = regions[i];
+				for (Grid.Region region : regions) {
 					for (int value = 1; value <= 9; value++) {
 						// Possible positions of a value in a region (row/column/block):
 						BitSet positions = region.getPotentialPositions(grid, value);
@@ -173,10 +189,18 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         }
         // When bug values have been removed, all remaining candidates must have
         // two positions in each region
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
             Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
-            for (int i = 0; i < regions.length; i++) {
-                Grid.Region region = regions[i];
+            for (Grid.Region region : regions) {
                 for (int value = 1; value <= 9; value++) {
                     // Possible positions of a value in a region (row/column/block):
                     BitSet positions = region.getPotentialPositions(temp, value);
@@ -243,11 +267,24 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         if (Settings.getInstance().islkSudokuBUG()) {
 		for (int degree = 2; degree <= 6; degree++) {
 	        //for (Class<? extends Grid.Region> regionType : grid.getRegionTypes()) {			
-			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+				if (!Settings.getInstance().isVLatin()) {
+					if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+					if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+					if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+					if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+				}
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
-                Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
+                if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0) {
+					region = null;
+					break;
+				}
+				Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (region == null) {
                     region = cellRegion;
                 } else if (!region.equals(cellRegion)) {
@@ -323,10 +360,23 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
         } // for (degree)
 		}
 		else {
-		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
             // Look for a region of this type shared by bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
+				if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0) {
+					region = null;
+					break;
+				}
                 Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
                 if (region == null) {
                     region = cellRegion;
@@ -422,13 +472,26 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             return; // No BUG type 4
 
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
-        for (int regionTypeIndex  = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
             // Look for a region of this type shared by all bugCells
             Grid.Region region = null;
             for (Cell cell : bugCells) {
+				if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0) {
+					region = null;
+					break;
+				}
                 //Grid.Region cellRegion = grid.getRegionAt(regionType, cell.getX(), cell.getY());
                 Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
-                if (region == null) {
+				if (region == null) {
                     region = cellRegion;
                 } else if (!region.equals(cellRegion)) {
                     // Cells do not share a region of this type

@@ -23,12 +23,20 @@ public class NoDoubles implements WarningHintProducer {
         // Iterate on region types
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
         //    Grid.Region[] regions = grid.getRegions(regionType);
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
             Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 
             // Iterate on occurances of a region
-            for (int i = 0; i < 9; i++) {
-                final Grid.Region region = regions[i];
+            for (Grid.Region region : regions) {
                 BitSet values = new BitSet(10);
 
                 // Iterate on cells of a region
@@ -74,12 +82,20 @@ public class NoDoubles implements WarningHintProducer {
         // Iterate on region types
         //for (Class<? extends Grid.Region> regionType : Grid.getRegionTypes()) {
         //    Grid.Region[] regions = grid.getRegions(regionType);
-        for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < 3; regionTypeIndex++) {
+		for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex < (Settings.getInstance().isVLatin() ? 3 : 10); regionTypeIndex++) {
+        	if (!Settings.getInstance().isVLatin()) {
+				if (regionTypeIndex == 3 && !Settings.getInstance().isDG()) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
+				if (regionTypeIndex == 7 && !Settings.getInstance().isGirandola()) continue;
+				if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
+				if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
+			}
             Grid.Region[] regions = Grid.getRegions(regionTypeIndex);
 
             // Iterate on occurances of a region
-            for (int i = 0; i < 9; i++) {
-                final Grid.Region region = regions[i];
+            for (Grid.Region region : regions) {
                 BitSet values = new BitSet(10);
 
                 // Iterate on cells of a region
