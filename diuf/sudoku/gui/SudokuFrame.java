@@ -74,9 +74,11 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenuItem mitSave = null;
     private JMenu editMenu = null;
     private JMenuItem mitCopy = null;
+    private JMenuItem mitCopyPencilmarksVariant = null;	
     private JMenuItem mitCopyLine81 = null;
 	private JMenuItem mitCopyLine729 = null;
 	private JMenuItem mitCopyPencilmarks = null;
+	private JMenuItem mitCopyVariant81 = null;
     private JMenuItem mitClear = null;
     private JMenuItem mitPaste = null;
     private JMenu toolMenu = null;
@@ -980,13 +982,17 @@ public class SudokuFrame extends JFrame implements Asker {
             editMenu.setText("Edit");
             editMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
             editMenu.add(getMitCopy());
-            setCommand(getMitCopy(), 'C');
+            setCommand(getMitCopy(), 'C');			
+            editMenu.add(getMitCopyVariant81());
+            setCommand(getMitCopyVariant81(), 'U');
             editMenu.add(getMitCopyLine81());
             setCommand(getMitCopyLine81(), 'K');
             editMenu.add(getMitCopyLine729());
             setCommand(getMitCopyLine729(), 'Z');
             editMenu.add(getMitCopyPencilmarks());
             setCommand(getMitCopyPencilmarks(), 'J');
+			editMenu.add(getMitCopyPencilmarksVariant());
+			setCommand(getMitCopyPencilmarksVariant(), 'X');
             editMenu.add(getMitPaste());
             setCommand(getMitPaste(), 'V');
             editMenu.addSeparator();
@@ -1036,6 +1042,26 @@ public class SudokuFrame extends JFrame implements Asker {
         return mitCopyLine81;
     }
 
+    private JMenuItem getMitCopyVariant81() {
+        if (mitCopyVariant81 == null) {
+            mitCopyVariant81 = new JMenuItem();
+            mitCopyVariant81.setText("Copy Grid81 variant regions");
+            mitCopyVariant81.setMnemonic(KeyEvent.VK_K);
+            mitCopyVariant81.setToolTipText("Copy the 81 character variant grid to the clipboard as plain text");
+			boolean line = true;
+            mitCopyVariant81.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {
+                        engine.copyVariantGrid(line);
+                    } catch (AccessControlException ex) {
+                        warnAccessError(ex);
+                    }
+                }
+            });
+        }
+        return mitCopyVariant81;
+    }
+
     private JMenuItem getMitCopyLine729() {
         if (mitCopyLine729 == null) {
             mitCopyLine729 = new JMenuItem();
@@ -1074,6 +1100,26 @@ public class SudokuFrame extends JFrame implements Asker {
             });
         }
         return mitCopyPencilmarks;
+    }
+
+    private JMenuItem getMitCopyPencilmarksVariant() {
+        if (mitCopyPencilmarksVariant == null) {
+            mitCopyPencilmarksVariant = new JMenuItem();
+            mitCopyPencilmarksVariant.setText("Copy Pencilmark variant regions");
+            mitCopyPencilmarksVariant.setMnemonic(KeyEvent.VK_K);
+            mitCopyPencilmarksVariant.setToolTipText("Copy the Pencilmark Variant Grid to the clipboard as plain text");
+			boolean line = false;
+            mitCopyPencilmarksVariant.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    try {
+                        engine.copyVariantGrid(line);
+                    } catch (AccessControlException ex) {
+                        warnAccessError(ex);
+                    }
+                }
+            });
+        }
+        return mitCopyPencilmarksVariant;
     }
 
     private JMenuItem getMitClear() {
@@ -1465,7 +1511,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitX() {
         if (mitX == null) {
             mitX = new JCheckBoxMenuItem();
-            mitX.setText("Add X main diagonals (Not implemeted yet)");
+            mitX.setText("Add X main diagonals");
             mitX.setSelected(false);
             mitX.setToolTipText("Adds the 2 main diagonals (X) as constraints");
             mitX.addItemListener(new java.awt.event.ItemListener() {
@@ -1488,7 +1534,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitDG() {
         if (mitDG == null) {
             mitDG = new JCheckBoxMenuItem();
-            mitDG.setText("Add Disjoint Groups (Not implemeted yet)");
+            mitDG.setText("Add Disjoint Groups");
             mitDG.setSelected(false);
             mitDG.setToolTipText("Add 9 disjoint groups");
             mitDG.addItemListener(new java.awt.event.ItemListener() {
@@ -1511,9 +1557,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitWindows() {
         if (mitWindows == null) {
             mitWindows = new JCheckBoxMenuItem();
-            mitWindows.setText("Add Windows (Not implemeted yet)");
+            mitWindows.setText("Add Windows");
             mitWindows.setSelected(false);
-            mitWindows.setToolTipText("Add Window constraints (Use for Windoku)");
+            mitWindows.setToolTipText("Add Window groups (Use for Windoku)");
             mitWindows.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setWindows(mitWindows.isSelected());
@@ -1534,9 +1580,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitAsterisk() {
         if (mitAsterisk == null) {
             mitAsterisk = new JCheckBoxMenuItem();
-            mitAsterisk.setText("Add Asterisk (Not implemeted yet)");
+            mitAsterisk.setText("Add Asterisk");
             mitAsterisk.setSelected(false);
-            mitAsterisk.setToolTipText("Adds 9 cell (Asterisk) Extra group as constraint");
+            mitAsterisk.setToolTipText("Adds 9-cell ASTERISK extra group");
             mitAsterisk.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setAsterisk(mitAsterisk.isSelected());
@@ -1563,9 +1609,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitCD() {
         if (mitCD == null) {
             mitCD = new JCheckBoxMenuItem();
-            mitCD.setText("Add CD (Not implemeted yet)");
+            mitCD.setText("Add CD");
             mitCD.setSelected(false);
-            mitCD.setToolTipText("Adds 9 cell (CD) Extra group as constraint");
+            mitCD.setToolTipText("Adds 9-cell CENTER DOT extra group");
             mitCD.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setCD(mitCD.isSelected());
@@ -1592,9 +1638,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitGirandola() {
         if (mitGirandola == null) {
             mitGirandola = new JCheckBoxMenuItem();
-            mitGirandola.setText("Add Girandola (Not implemeted yet)");
+            mitGirandola.setText("Add Girandola");
             mitGirandola.setSelected(false);
-            mitGirandola.setToolTipText("Adds 9 cell (Girandola) Extra group as constraint");
+            mitGirandola.setToolTipText("Adds 9-cell GIRANDOLA extra group");
             mitGirandola.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setGirandola(mitGirandola.isSelected());

@@ -1585,25 +1585,31 @@ public class Grid {
     }
 
     /**
-     * Get a string representation of this grid with Jigsaw region. If No Jigsaw the Variants region (except DG & X).
-	 If not then Sudoku if not then Box
+     * Get a string representation of this grid81 with Jigsaw region. If No Jigsaw then Variants region (except DG & X).
+	 If not then No regions at all by @SudokuMonster
      */
     
-    public String toStringVariantRegions() {
+    public String toStringVariantGrid() {
 		int[] regionArray = new int[81];
 		if (Settings.getInstance().isWindows())
 			regionArray = Arrays.copyOf(Settings.regionsWindows, 81);
 		else
-			if (Settings.getInstance().isAsterisk())
-				regionArray = Arrays.copyOf(Settings.regionsAsterisk, 81);
+			if (Settings.getInstance().isX())
+				regionArray = Arrays.copyOf(Settings.regionsBothDiagonals, 81);	
 			else
-				if (Settings.getInstance().isCD())
-					regionArray = Arrays.copyOf(Settings.regionsCD, 81);
+				if (Settings.getInstance().isAsterisk())
+					regionArray = Arrays.copyOf(Settings.regionsAsterisk, 81);
 				else
-					if (Settings.getInstance().isGirandola())
-						regionArray = Arrays.copyOf(Settings.regionsGirandola, 81);
-					else
+					if (Settings.getInstance().isCD())
 						regionArray = Arrays.copyOf(Settings.regionsCD, 81);
+					else
+						if (Settings.getInstance().isGirandola())
+							regionArray = Arrays.copyOf(Settings.regionsGirandola, 81);
+						else
+							if (Settings.getInstance().isDG())
+								regionArray = Arrays.copyOf(Settings.regionsDG, 81);
+							else
+								regionArray = Arrays.copyOf(Settings.regionsNoVariants, 81);
         StringBuilder result = new StringBuilder();
         int xp = 0;
 		int yp = 0;
@@ -1611,24 +1617,34 @@ public class Grid {
 			yp = y%2;
             for (int x = 0; x < 19; x++) {
 				xp = x%2;
-				if (y == 0)
-						if (x == 0 || x == 18 || (xp == 0 && regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2]))
+				if (y == 0) {
+					if (x == 0 || x == 18 || (xp == 0 && regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2]))
+						result.append('+');
+					else
+						result.append('-');
+					if (x != 18)
+						result.append('-');	
+				}
+				else
+					if (y == 18) {
+						if (x == 0 || x == 18 || (xp == 0 && regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]))
 							result.append('+');
 						else
 							result.append('-');
-				else
-					if (y == 18)
-							if (x == 0 || x == 18 || (xp == 0 && regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]))
-								result.append('+');
-							else
-								result.append('-');
+						if (x != 18)
+							result.append('-');	
+					}
 					else
 						if (yp == 0)
 							if (x == 0)
-								if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] != regionArray[( y / 2 ) * 9 + x / 2])
+								if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] != regionArray[( y / 2 ) * 9 + x / 2]) {
 									result.append('+');
-								else
+									result.append('-');									
+								}
+								else {
 									result.append('|');
+									result.append(' ');
+								}
 							else
 								if (x == 18)
 									if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2 - 1])
@@ -1640,24 +1656,41 @@ public class Grid {
 										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
 													regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
 													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1] &&
-													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2])
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]){
 													result.append(' ');
+													result.append(' ');
+										}
 										else
 											if (regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
-												regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2])
+												regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]){
 												result.append('-');
+												result.append('-');
+											}
 											else
 												if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
-													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1])
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1]){
 													result.append('|');
-												else
+													result.append(' ');
+												}
+												else {
 													result.append('+');
+													if (x < 17 &&
+														regionArray[(( y / 2 ) - 1 ) * 9 + (x + 1) / 2 ] == regionArray[( y / 2 ) * 9 + (x + 1) / 2]){
+														result.append(' ');
+													}
+													else
+														result.append('-');
+												}
 									else
-										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2])
+										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2]){
 											result.append(' ');
-										else
+											result.append(' ');
+										}
+										else {
 											result.append('-');	
-						else
+											result.append('-');	
+										}
+						else {
 							if (xp == 1) {
 								int value = getCellValue(x / 2 , y / 2);
 								if (value == 0)
@@ -1670,16 +1703,8 @@ public class Grid {
 									result.append('|');
 								else
 									result.append(' ');
-															
-													
-									
-								
-							
-                //int value = getCellValue(x, y);
-               // if (value == 0)
-                    //result.append('.');
-                //else
-                    //result.append(value);
+							result.append(' ');
+						}
             }
             result.append('\n');
         }
@@ -1804,7 +1829,169 @@ public class Grid {
         }
         return res;
     }
-   
+ 
+    /**
+     * Get a multi-line pencilmark-string representation of this grid with Jigsaw region. If No Jigsaw then Variants region (except DG & X).
+	 If not then No regions at all by @SudokuMonster
+     */
+    
+    public String toStringMultilinePencilmarksVariant() {
+		int[] regionArray = new int[81];
+		if (Settings.getInstance().isWindows())
+			regionArray = Arrays.copyOf(Settings.regionsWindows, 81);
+		else
+			if (Settings.getInstance().isX())
+				regionArray = Arrays.copyOf(Settings.regionsBothDiagonals, 81);	
+			else
+				if (Settings.getInstance().isAsterisk())
+					regionArray = Arrays.copyOf(Settings.regionsAsterisk, 81);
+				else
+					if (Settings.getInstance().isCD())
+						regionArray = Arrays.copyOf(Settings.regionsCD, 81);
+					else
+						if (Settings.getInstance().isGirandola())
+							regionArray = Arrays.copyOf(Settings.regionsGirandola, 81);
+						else
+							if (Settings.getInstance().isDG())
+								regionArray = Arrays.copyOf(Settings.regionsDG, 81);
+							else
+								regionArray = Arrays.copyOf(Settings.regionsNoVariants, 81);
+        String s = "";
+		String minuses = "";
+		String spaces = "";
+		int cnt = 0;
+		int pad = 0;
+		int xp = 0;
+		int yp = 0;
+        int crd = 1;
+        for (int i = 0; i < 81; i++) {
+            int n = getCellPotentialValues(i).cardinality();
+            if ( n > crd ) { crd = n; }
+        }
+		for (int n = 0; n < crd; n++) {
+            minuses += "-";
+			spaces += " ";
+        }
+        if ( crd > 1 ){
+			for (int y = 0; y < 19; y++) {
+				yp = y%2;
+				for (int x = 0; x < 19; x++) {
+					xp = x%2;
+					if (y == 0) {
+						if (x == 0 || x == 18 || (xp == 0 && regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2])){
+							s +="+";
+							if (x != 18)
+								s +=  "-" ;
+						}
+						else {
+							s += "-";
+							if (xp == 0)
+								s += "-";
+							else
+							 s += minuses;
+						}
+					}
+					else
+						if (y == 18) {
+							if (x == 0 || x == 18 || (xp == 0 && regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[(( y / 2 ) - 1 ) * 9 + x / 2])){
+								s +="+";
+								if (x != 18)
+									s += "-";
+							}
+							else {
+								s += "-";
+								if (xp == 0)
+									s += "-";
+								else
+								 s += minuses;
+							}	
+						}
+						else
+							if (yp == 0)
+								if (x == 0)
+									if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] != regionArray[( y / 2 ) * 9 + x / 2]) {
+										s +="+-";									
+									}
+									else {
+										s +="| ";
+									}
+								else
+									if (x == 18)
+										if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2 - 1])
+											s +="+";
+										else
+											s +="|";
+									else
+										if (xp == 0)
+											if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
+														regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
+														regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1] &&
+														regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]){
+														s +="  ";
+											}
+											else
+												if (regionArray[( y / 2 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2] &&
+													regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[(( y / 2 ) - 1 ) * 9 + x / 2]){
+													s +="--";
+												}
+												else
+													if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2] &&
+														regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 - 1] == regionArray[( y / 2 ) * 9 + x / 2 - 1]){
+														s +="| ";
+													}
+													else {
+														s +="+";
+														if (x < 17 &&
+															regionArray[(( y / 2 ) - 1 ) * 9 + (x + 1) / 2 ] == regionArray[( y / 2 ) * 9 + (x + 1) / 2]){
+															s +=" ";
+														}
+														else
+															s +="-";
+													}
+										else
+											if (regionArray[(( y / 2 ) - 1 ) * 9 + x / 2 ] == regionArray[( y / 2 ) * 9 + x / 2]){
+												s += " " + spaces;
+											}
+											else {
+												s += "-" + minuses;	
+											}
+							else {
+								if (xp == 1) {
+									cnt = pad = 0;
+									Cell cell = getCell(x / 2 , y / 2);
+									int n = getCellValue(x / 2 , y / 2);
+									if ( n != 0 ) {
+										s += n;
+										cnt += 1;
+									}
+									if ( n == 0 ) {
+										for (int pv=1; pv<=9; pv++ ) {
+											if ( hasCellPotentialValue(cell.getIndex(), pv) ) {
+												s += pv;
+												cnt += 1;
+											}
+										}
+									}
+									pad = crd - cnt;
+									for (n = 0; n < pad; n++) {
+										s += " ";
+									}
+								}
+								else
+									if (x == 0 || x == 18 || regionArray[( y / 2 ) * 9 + x / 2 - 1] != regionArray[( y / 2 ) * 9 + x / 2])
+										s +="|";
+									else
+										s +=" ";
+								s +=" ";
+							}
+				}
+				s +="\n";
+			}
+		}
+        return s;
+    }	
+
+ 
     /**
      * rebuilds grid from a string of either 81 givens or 729 pencilmarks
      * @param string a string with 0 or '.' for non-givens and positional mapping to cells/pencilmarks
@@ -2126,6 +2313,14 @@ public class Grid {
             }
             return result;
         }
+		
+		public int getRegionCellIndexRow(int regionCellIndex) {
+			return this.regionCells[regionCellIndex] / 9;
+		}
+
+		public int getRegionCellIndexColumn(int regionCellIndex) {
+			return this.regionCells[regionCellIndex] % 9;
+		}
 
         /**
          * Get a string representation of this region's type
@@ -2303,7 +2498,7 @@ public class Grid {
         public int getRegionIndex() {
         	return index;
         }
-       
+
 
         @Override
         public String toString() {
@@ -2368,7 +2563,6 @@ public class Grid {
         	return index;
         }
        
-
         @Override
         public String toString() {
             return "window group";
@@ -2409,7 +2603,6 @@ public class Grid {
         public int getRegionIndex() {
         	return index;
         }
-       
 
         @Override
         public String toString() {
@@ -2452,7 +2645,6 @@ public class Grid {
         	return index;
         }
        
-
         @Override
         public String toString() {
             return "Anti Diagonal";
@@ -2508,7 +2700,6 @@ public class Grid {
         	return index;
         }
        
-
         @Override
         public String toString() {
             return "Girandola group";
@@ -2550,7 +2741,6 @@ public class Grid {
         	return index;
         }
        
-
         @Override
         public String toString() {
             return "Asterisk group";
@@ -2592,7 +2782,6 @@ public class Grid {
         	return index;
         }
        
-
         @Override
         public String toString() {
             return "Center Dot group";

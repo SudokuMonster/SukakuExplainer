@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 14;
-    public final static String SUBREV = ".3";
-	public final static String releaseDate = "2019-12-12";
+    public final static String SUBREV = ".5";
+	public final static String releaseDate = "2019-12-15";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -110,6 +110,36 @@ public class Settings {
 		 0,0,1,0,0,0,0,0,0,
 		 0,1,0,0,0,0,0,0,0,
 		 1,0,0,0,0,0,0,0,0};
+	public final static int[] regionsBothDiagonals =
+		{1,0,0,0,0,0,0,0,1,
+		 0,1,0,0,0,0,0,1,0,
+		 0,0,1,0,0,0,1,0,0,
+		 0,0,0,1,0,1,0,0,0,
+		 0,0,0,0,1,0,0,0,0,
+		 0,0,0,1,0,1,0,0,0,
+		 0,0,1,0,0,0,1,0,0,
+		 0,1,0,0,0,0,0,1,0,
+		 1,0,0,0,0,0,0,0,1};
+	public final static int[] regionsDG =
+		{0,1,2,0,1,2,0,1,2,
+		3,4,5,3,4,5,3,4,5,
+		6,7,8,6,7,8,6,7,8,
+		0,1,2,0,1,2,0,1,2,
+		3,4,5,3,4,5,3,4,5,
+		6,7,8,6,7,8,6,7,8,
+		0,1,2,0,1,2,0,1,2,
+		3,4,5,3,4,5,3,4,5,
+		6,7,8,6,7,8,6,7,8};
+	public final static int[] regionsNoVariants =
+		{0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0,
+		 0,0,0,0,0,0,0,0,0};
 	
     private EnumSet<SolvingTechnique> techniques;
     

@@ -12,7 +12,7 @@ import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
 
 /**
- * Implementation of Pointing and Claiming solving techniques.
+ * Implementation of Generalized Intersectio  technique by Tarek Maani (@SudokuMonster).
  */
 public class VLocking implements IndirectHintProducer {
     public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
@@ -94,7 +94,6 @@ public class VLocking implements IndirectHintProducer {
 						removablePotentials.put(cell, SingletonBitSet.create(value));
             }
         }
-
         // Build hint
         return new VLockingHint(this, hcell, value,
                     removablePotentials, p1, eliminationsTotal);

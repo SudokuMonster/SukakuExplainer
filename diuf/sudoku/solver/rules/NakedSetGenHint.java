@@ -76,7 +76,9 @@ public class NakedSetGenHint extends IndirectHint implements Rule, HasParentPote
 
     public String getName() {
         final String[] groupNames = new String[] {"Pair", "Triplet", "Quad", "Quintuplet", "Sextuplet"};
-        return "Generalized Naked " + groupNames[values.length - 2];
+		if (values.length < 7)
+			return "Generalized Naked " + groupNames[values.length - 2];
+		return "Generalized Naked Sets " + (values.length - 2);
     }
 
     public String getShortName() {

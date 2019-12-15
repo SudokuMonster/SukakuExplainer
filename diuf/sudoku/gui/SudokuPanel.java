@@ -688,40 +688,54 @@ public class SudokuPanel extends JPanel {
                     int index = (rev == 0 ? i : blueRegions.length - 1 - i);
                     Grid.Region region = blueRegions[index];
                     //@SudokuMonster: Temp arrangement to disable Region highlighting for regions in variants
-					if (region != null && region.getRegionTypeIndex() < 3) {
-                        int x, y, w, h; // coordinates, width, height (in cells)
-                        if (region instanceof Grid.Row) {
-                            Grid.Row row = (Grid.Row)region;
-                            y = row.getRowNum();
-                            h = 1;
-                            x = 0;
-                            w = 9;
-                        } else if (region instanceof Grid.Column) {
-                            Grid.Column column = (Grid.Column)region;
-                            x = column.getColumnNum();
-                            w = 1;
-                            y = 0;
-                            h = 9;
-                        } else {
-                            Grid.Block square = (Grid.Block)region;
-                            x = square.getHIndex() * 3;
-                            y = square.getVIndex() * 3;
-                            w = 3;
-                            h = 3;
-                        }
-                        g.setColor(colors[index % 2]);
-                        for (int s = -2 + rev; s <= 2; s+= 2) {
-                            g.drawRect(x * CELL_OUTER_SIZE + s, y * CELL_OUTER_SIZE + s,
-                                    w * CELL_OUTER_SIZE - s * 2, h * CELL_OUTER_SIZE - s * 2);
-                        }
-                        if (rev == 0) {
-                            Color base = colors[index % 2];
-                            g.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 12));
-                            g.fillRect(x * CELL_OUTER_SIZE + 3, y * CELL_OUTER_SIZE + 3,
-                                    w * CELL_OUTER_SIZE - 6, h * CELL_OUTER_SIZE - 6);
-                        }
-                        index++;
-                    }
+                    int x, y, w, h; // coordinates, width, height (in cells)
+					if (region != null)
+						if (region.getRegionTypeIndex() < 3) {
+							if (region instanceof Grid.Row) {
+								Grid.Row row = (Grid.Row)region;
+								y = row.getRowNum();
+								h = 1;
+								x = 0;
+								w = 9;
+							} else if (region instanceof Grid.Column) {
+								Grid.Column column = (Grid.Column)region;
+								x = column.getColumnNum();
+								w = 1;
+								y = 0;
+								h = 9;
+							} else {
+								Grid.Block square = (Grid.Block)region;
+								x = square.getHIndex() * 3;
+								y = square.getVIndex() * 3;
+								w = 3;
+								h = 3;
+							}
+							g.setColor(colors[index % 2]);
+							for (int s = -2 + rev; s <= 2; s+= 2) {
+								g.drawRect(x * CELL_OUTER_SIZE + s, y * CELL_OUTER_SIZE + s,
+										w * CELL_OUTER_SIZE - s * 2, h * CELL_OUTER_SIZE - s * 2);
+							}
+							if (rev == 0) {
+								Color base = colors[index % 2];
+								g.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 12));
+								g.fillRect(x * CELL_OUTER_SIZE + 3, y * CELL_OUTER_SIZE + 3,
+										w * CELL_OUTER_SIZE - 6, h * CELL_OUTER_SIZE - 6);
+							}
+						}
+						else {
+							g.setColor(colors[index % 2]);
+							for (int j = 0; j < 9 ; j++) {
+								x = region.getRegionCellIndexColumn(j);
+								y = region.getRegionCellIndexRow(j);
+								w = 1;
+								h = 1;
+								for (int s = -2 + rev; s <= 2; s+= 2) {
+									g.drawRect(x * CELL_OUTER_SIZE + s, y * CELL_OUTER_SIZE + s,
+											w * CELL_OUTER_SIZE - s * 2, h * CELL_OUTER_SIZE - s * 2);
+								}
+							}
+						}
+                    index++;
                 }
             }
         }

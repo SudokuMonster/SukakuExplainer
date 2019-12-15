@@ -243,8 +243,18 @@ public class SudokuIO {
     private static void saveToWriterPencilmarks(Grid grid, Writer writer, boolean line) throws IOException {
 		if (line)
 			writer.write(grid.toStringPencilmarks());
+		
 		else
 			writer.write(grid.toStringMultilinePencilmarks());
+    }
+
+//@SudokuMonster: The process to copy Variant region grid SudokuFrame ---> SudokuExplainer ----> SudokuIO ----> Grid
+    private static void saveToWriterVariant(Grid grid, Writer writer, boolean line) throws IOException {
+		if (line)
+			writer.write(grid.toStringVariantGrid());
+		
+		else
+			writer.write(grid.toStringMultilinePencilmarksVariant());
     }
 
     /**
@@ -301,6 +311,17 @@ public class SudokuIO {
         StringWriter writer = new StringWriter();
         try {
             saveToWriterPencilmarks(grid, writer, line);
+            StringSelection data = new StringSelection(writer.toString());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, data);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+	
+    public static void saveVariantToClipboard(Grid grid, boolean line) {
+        StringWriter writer = new StringWriter();
+        try {
+            saveToWriterVariant(grid, writer, line);
             StringSelection data = new StringSelection(writer.toString());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, data);
         } catch (IOException ex) {

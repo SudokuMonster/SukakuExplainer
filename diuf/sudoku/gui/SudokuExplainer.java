@@ -525,6 +525,11 @@ public class SudokuExplainer {
         SudokuIO.saveToClipboard(grid, line);
     }
 
+//@sudokuMonster: Frame --> Engine ---> IO ---> Grid
+    public void copyVariantGrid(boolean line) {
+        SudokuIO.saveVariantToClipboard(grid, line);
+    }
+
 	public void copyPencilmarkGrid(boolean line) {	
 		SudokuIO.savePencilmarksToClipboard(grid, line);
 	}

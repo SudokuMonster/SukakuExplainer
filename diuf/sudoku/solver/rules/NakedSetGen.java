@@ -130,12 +130,9 @@ public class NakedSetGen implements IndirectHintProducer {
 
     @Override
     public String toString() {
-        if (degree == 2)
-            return "Generalized Naked Pairs";
-        else if (degree == 3)
-            return "Generalized Naked Triplets";
-        else if (degree == 4)
-            return "Generalized Naked Quads";
+        final String[] groupNames = new String[] {"Pair", "Triplet", "Quad", "Quintuplet", "Sextuplet"};
+        if (degree < 7)
+			return "Generalized Naked " + groupNames[degree - 2];
         return "Generalized Naked Sets " + degree;
     }
 
