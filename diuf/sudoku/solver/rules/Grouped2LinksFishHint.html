@@ -10,11 +10,11 @@
 		<p>
 			the arrangement of cells with value <b>{1}</b> in <b>{6}</b> and
 			in  <b>{7}</b> (Green outlined regions) form strong links (conjugate pairs shown as green values) or grouped strong
-			links (yellow cell background). These strong links are weakly linked through <b>{8}</b> (Red outlined region).
+			links (orange cell outline or yellow cell background). These strong links are weakly linked through <b>{8}</b> (Red outlined region).
 		</p>
 		<p>
 			Any occurrence of the value <b>{1}</b> can therefore be removed from
-			any cells sharing a row, column or block with all cells with value
+			any cells sharing a {9} with all cells with value
 			<b>{1}</b> in <b>{6}</b> and <b>{7}</b> that are not part of <b>{8}</b>.
 		</p>
 		<p>
@@ -27,9 +27,10 @@
 		<p>			
 			The inference of a strong link from a group of cells with value <b>{1}</b> in
 			any region can be spotted when a an "Empty mini Area (EmA)" is observed. This EmA
-			could be an empty mini-Line (EmL) in a row, column or block. In the case of "Empty
+			could be an empty mini-Line (EmL) in a {9}. In the case of "Empty
 			rectangle" the EmA is a group of empty cells that can also be referred to as
-			"Empty mini Rectangle (EmR)".
+			"Empty mini Rectangle (EmR)". Variants like "Disjoint groups" and "Windows" can
+			infer a strong link from cell arrangements similar to blocks.
 		</p>
 	</body>
 </html>

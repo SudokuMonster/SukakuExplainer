@@ -73,6 +73,39 @@ public class Bug1Hint extends BugHint implements Rule {
         return "BUG type 1: " + bugCell.toString();
     }
 
+	private String sharedRegions(){
+		if (Settings.getInstance().isVanilla())
+			return "row, column or block";
+		else {
+			String res[] = new String[10];
+			int i = 0;
+			String finalRes = "row";
+			if (Settings.getInstance().isVLatin())
+				return "row or column";
+			else
+				res[i++]= "column";
+			if (Settings.getInstance().isBlocks())
+				res[i++]= "block";
+			if (Settings.getInstance().isDG())
+				res[i++]= "disjoint group";
+			if (Settings.getInstance().isWindows())
+				res[i++]= "window group";
+			if (Settings.getInstance().isX())
+				res[i++]= "diagonal";
+			if (Settings.getInstance().isGirandola())
+				res[i++]= "girandola group";
+			if (Settings.getInstance().isAsterisk())
+				res[i++]= "asterisk group";
+			if (Settings.getInstance().isCD())
+				res[i++]= "center dot group";
+			i--;
+			for (int j = 0; j < i; j++)
+				finalRes += ", " + res[j];
+			finalRes += " or " + res[i];
+			return finalRes;
+		}
+	}
+
     @Override
     public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave1.html");
@@ -80,7 +113,7 @@ public class Bug1Hint extends BugHint implements Rule {
         String orExtra = ValuesFormatter.formatValues(bugValues, " or ");
         BitSet removable = super.getRemovablePotentials().get(bugCell);
         String remList = ValuesFormatter.formatValues(removable, " and ");
-        result = HtmlLoader.format(result, andExtra, bugCell, orExtra, remList);
+        result = HtmlLoader.format(result, andExtra, bugCell, orExtra, remList, sharedRegions());
         return result;
     }
 

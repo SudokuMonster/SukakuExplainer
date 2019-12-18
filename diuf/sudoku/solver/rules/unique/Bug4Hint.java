@@ -97,6 +97,39 @@ public class Bug4Hint extends BugHint implements Rule {
         return "BUG type 4: " + bugCell1.toString() + "," + bugCell2.toString() + " on " + value;
     }
 
+	private String sharedRegions(){
+		if (Settings.getInstance().isVanilla())
+			return "row, column or block";
+		else {
+			String res[] = new String[10];
+			int i = 0;
+			String finalRes = "row";
+			if (Settings.getInstance().isVLatin())
+				return "row or column";
+			else
+				res[i++]= "column";
+			if (Settings.getInstance().isBlocks())
+				res[i++]= "block";
+			if (Settings.getInstance().isDG())
+				res[i++]= "disjoint group";
+			if (Settings.getInstance().isWindows())
+				res[i++]= "window group";
+			if (Settings.getInstance().isX())
+				res[i++]= "diagonal";
+			if (Settings.getInstance().isGirandola())
+				res[i++]= "girandola group";
+			if (Settings.getInstance().isAsterisk())
+				res[i++]= "asterisk group";
+			if (Settings.getInstance().isCD())
+				res[i++]= "center dot group";
+			i--;
+			for (int j = 0; j < i; j++)
+				finalRes += ", " + res[j];
+			finalRes += " or " + res[i];
+			return finalRes;
+		}
+	}
+
     @Override
     public String toHtml(Grid grid) {
         String result = HtmlLoader.loadHtml(this, "BivalueUniversalGrave4.html");
@@ -111,7 +144,7 @@ public class Bug4Hint extends BugHint implements Rule {
             removable.or(r);
         String removableValues = ValuesFormatter.formatValues(removable, " and ");
         return HtmlLoader.format(result, bugValuesAnd, bugCellsAnd, bugCellsOr, bugValuesOr,
-                lockedValue, regionName, removableValues);
+                lockedValue, regionName, removableValues, sharedRegions());
     }
 
 }

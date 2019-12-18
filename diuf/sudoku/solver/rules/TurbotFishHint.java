@@ -114,11 +114,44 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
                 value;
     }
 
+	private String sharedRegions(){
+		if (Settings.getInstance().isVanilla())
+			return "row, column or block";
+		else {
+			String res[] = new String[10];
+			int i = 0;
+			String finalRes = "row";
+			if (Settings.getInstance().isVLatin())
+				return "row or column";
+			else
+				res[i++]= "column";
+			if (Settings.getInstance().isBlocks())
+				res[i++]= "block";
+			if (Settings.getInstance().isDG())
+				res[i++]= "disjoint group";
+			if (Settings.getInstance().isWindows())
+				res[i++]= "window group";
+			if (Settings.getInstance().isX())
+				res[i++]= "diagonal";
+			if (Settings.getInstance().isGirandola())
+				res[i++]= "girandola group";
+			if (Settings.getInstance().isAsterisk())
+				res[i++]= "asterisk group";
+			if (Settings.getInstance().isCD())
+				res[i++]= "center dot group";
+			i--;
+			for (int j = 0; j < i; j++)
+				finalRes += ", " + res[j];
+			finalRes += " or " + res[i];
+			return finalRes;
+		}
+	}
+
     @Override
     public String toHtml(Grid grid) {
         String result;
 		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			result = HtmlLoader.loadHtml(this, "ERFishHint.html");
+			result = HtmlLoader.loadHtml(this, "GroupedTCFishHint.html");
 		else if (emptyRegion1 || emptyRegion2)
 			result = HtmlLoader.loadHtml(this, "Grouped2LinksFishHint.html");
 		else
@@ -132,7 +165,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         String cell2 = bridgeCell1.toString();
         String cell3 = bridgeCell2.toString();
         String cell4 = endCell.toString();
-        result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared);
+        result = HtmlLoader.format(result, name, value, cell1, cell2, cell3, cell4, base, cover, shared, sharedRegions());
         return result;
     }
   
@@ -194,7 +227,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     @Override
     public String getShortName() {
 		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "ER" + getSuffix();
+			return "gTC" + getSuffix();
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
 			return "gSky" + getSuffix();
 		if (emptyRegion1 || emptyRegion2)

@@ -197,6 +197,39 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         return builder.toString();
     }
 
+	private String sharedRegions(){
+		if (Settings.getInstance().isVanilla())
+			return "row, column or block";
+		else {
+			String res[] = new String[10];
+			int i = 0;
+			String finalRes = "row";
+			if (Settings.getInstance().isVLatin())
+				return "row or column";
+			else
+				res[i++]= "column";
+			if (Settings.getInstance().isBlocks())
+				res[i++]= "block";
+			if (Settings.getInstance().isDG())
+				res[i++]= "disjoint group";
+			if (Settings.getInstance().isWindows())
+				res[i++]= "window group";
+			if (Settings.getInstance().isX())
+				res[i++]= "diagonal";
+			if (Settings.getInstance().isGirandola())
+				res[i++]= "girandola group";
+			if (Settings.getInstance().isAsterisk())
+				res[i++]= "asterisk group";
+			if (Settings.getInstance().isCD())
+				res[i++]= "center dot group";
+			i--;
+			for (int j = 0; j < i; j++)
+				finalRes += ", " + res[j];
+			finalRes += " or " + res[i];
+			return finalRes;
+		}
+	}
+
     @Override
     public String toHtml(Grid grid) {
         String result;
@@ -207,7 +240,7 @@ public class XYWingHint extends IndirectHint implements Rule, HasParentPotential
         String cell1 = xyCell.toString();
         String cell2 = xzCell.toString();
         String cell3 = yzCell.toString();
-        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(grid), getY(grid));
+        result = HtmlLoader.format(result, cell1, cell2, cell3, value, getX(grid), getY(grid), sharedRegions());
         return result;
     }
 

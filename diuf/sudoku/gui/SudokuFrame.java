@@ -200,6 +200,8 @@ public class SudokuFrame extends JFrame implements Asker {
 				//SudokuMonster: Some changes in gui to limit colour salad in DG
                 if (!Settings.getInstance().isDG())
 					sudokuPanel.setGreenCells(Collections.singleton(dHint.getCell()));
+				else
+					sudokuPanel.setHighlightedCells(new Cell[] {dHint.getCell()});
                 BitSet values = new BitSet(10);
                 values.set(dHint.getValue());
                 sudokuPanel.setGreenPotentials(Collections.singletonMap(
@@ -210,8 +212,11 @@ public class SudokuFrame extends JFrame implements Asker {
                 sudokuPanel.setGreenPotentials(iHint.getGreenPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setRedPotentials(iHint.getRedPotentials(sudokuPanel.getSudokuGrid(), viewNum));
                 sudokuPanel.setBluePotentials(iHint.getBluePotentials(sudokuPanel.getSudokuGrid(), viewNum));
-                if (iHint.getSelectedCells() != null && !Settings.getInstance().isDG())
-                    sudokuPanel.setGreenCells(Arrays.asList(iHint.getSelectedCells()));
+                if (iHint.getSelectedCells() != null)
+					if (!Settings.getInstance().isDG())
+						sudokuPanel.setGreenCells(Arrays.asList(iHint.getSelectedCells()));
+					else
+						sudokuPanel.setHighlightedCells(iHint.getSelectedCells());
                 if (iHint instanceof WarningHint)
                     sudokuPanel.setRedCells(((WarningHint)iHint).getRedCells());
                 // Set links (rendered as arrows)
@@ -1511,7 +1516,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitX() {
         if (mitX == null) {
             mitX = new JCheckBoxMenuItem();
-            mitX.setText("Add X main diagonals");
+            mitX.setText("X main diagonals");
             mitX.setSelected(false);
             mitX.setToolTipText("Adds the 2 main diagonals (X) as constraints");
             mitX.addItemListener(new java.awt.event.ItemListener() {
@@ -1534,7 +1539,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitDG() {
         if (mitDG == null) {
             mitDG = new JCheckBoxMenuItem();
-            mitDG.setText("Add Disjoint Groups");
+            mitDG.setText("Disjoint Groups");
             mitDG.setSelected(false);
             mitDG.setToolTipText("Add 9 disjoint groups");
             mitDG.addItemListener(new java.awt.event.ItemListener() {
@@ -1557,9 +1562,9 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitWindows() {
         if (mitWindows == null) {
             mitWindows = new JCheckBoxMenuItem();
-            mitWindows.setText("Add Windows");
+            mitWindows.setText("Windows");
             mitWindows.setSelected(false);
-            mitWindows.setToolTipText("Add Window groups (Use for Windoku)");
+            mitWindows.setToolTipText("Add Window groups (Use for Windoku, Hypersudoku)");
             mitWindows.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setWindows(mitWindows.isSelected());
@@ -1580,7 +1585,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitAsterisk() {
         if (mitAsterisk == null) {
             mitAsterisk = new JCheckBoxMenuItem();
-            mitAsterisk.setText("Add Asterisk");
+            mitAsterisk.setText("Asterisk");
             mitAsterisk.setSelected(false);
             mitAsterisk.setToolTipText("Adds 9-cell ASTERISK extra group");
             mitAsterisk.addItemListener(new java.awt.event.ItemListener() {
@@ -1609,7 +1614,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitCD() {
         if (mitCD == null) {
             mitCD = new JCheckBoxMenuItem();
-            mitCD.setText("Add CD");
+            mitCD.setText("Center Dot");
             mitCD.setSelected(false);
             mitCD.setToolTipText("Adds 9-cell CENTER DOT extra group");
             mitCD.addItemListener(new java.awt.event.ItemListener() {
@@ -1638,7 +1643,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitGirandola() {
         if (mitGirandola == null) {
             mitGirandola = new JCheckBoxMenuItem();
-            mitGirandola.setText("Add Girandola");
+            mitGirandola.setText("Girandola");
             mitGirandola.setSelected(false);
             mitGirandola.setToolTipText("Adds 9-cell GIRANDOLA extra group");
             mitGirandola.addItemListener(new java.awt.event.ItemListener() {

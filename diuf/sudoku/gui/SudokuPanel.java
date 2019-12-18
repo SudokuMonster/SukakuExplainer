@@ -48,6 +48,7 @@ public class SudokuPanel extends JPanel {
     private Collection<Cell> greenCells;
     private Collection<Cell> redCells;
     private Grid.Region[] blueRegions;
+	private Cell[] highlightedCells;
     private Collection<Link> links;
 
     private SudokuFrame parent;
@@ -337,6 +338,9 @@ public class SudokuPanel extends JPanel {
         this.blueRegions = regions;
     }
 
+    public void setHighlightedCells(Cell[] cells) {
+        this.highlightedCells = cells;
+    }
     public void setLinks(Collection<Link> links) {
         this.links = links;
     }
@@ -529,6 +533,7 @@ public class SudokuPanel extends JPanel {
         paintSelectionAndFocus(g);
         paintGrid(g);
         paintHighlightedRegions(g);
+		paintOutlineSingleCells(g);
         paintCellsValues(g);
         paintLinks(g);
         paintCellsPotentials(g);
@@ -679,7 +684,32 @@ public class SudokuPanel extends JPanel {
 		}
 		
 	}
-	
+
+//@SudokuMonster: Small Square Cell outline designed to replace yellow cell background highlighting in multi-colour variants (e.g. Disjoint groups)	
+	private void paintOutlineSingleCells(Graphics g) {
+        if (highlightedCells != null) {
+            Color[] colors = new Color[] {Color.orange, new Color(255, 128, 0)};
+            for (int rev = 0; rev < 2; rev++) {
+                for (int i = 0; i < 1; i++) {
+                    int x, y, w, h; // coordinates, width, height (in cells)
+					g.setColor(colors[1]);
+					for (int j = 0; j < highlightedCells.length ; j++) {
+						if (highlightedCells[j] == null)
+							continue;
+						x = highlightedCells[j].getX();
+						y = highlightedCells[j].getY();
+						w = 1;
+						h = 1;
+						for (int s = -2 + rev; s <= 2; s++) {
+							g.drawRect(x * CELL_OUTER_SIZE + (CELL_PAD + 4) + s, y * CELL_OUTER_SIZE + (CELL_PAD + 4) + s,
+									w * (CELL_INNER_SIZE - 8) - s * 2, h * (CELL_INNER_SIZE - 8) - s * 2);
+						}
+					}
+                }
+            }
+        }
+	}
+
 	private void paintHighlightedRegions(Graphics g) {
         if (blueRegions != null) {
             Color[] colors = new Color[] {new Color(0, 128, 0), new Color(255, 0, 0)};
@@ -687,7 +717,6 @@ public class SudokuPanel extends JPanel {
                 for (int i = 0; i < blueRegions.length; i++) {
                     int index = (rev == 0 ? i : blueRegions.length - 1 - i);
                     Grid.Region region = blueRegions[index];
-                    //@SudokuMonster: Temp arrangement to disable Region highlighting for regions in variants
                     int x, y, w, h; // coordinates, width, height (in cells)
 					if (region != null)
 						if (region.getRegionTypeIndex() < 3) {
@@ -723,6 +752,7 @@ public class SudokuPanel extends JPanel {
 							}
 						}
 						else {
+//@SudokuMonster: individual cells of region outlined in variants	
 							g.setColor(colors[index % 2]);
 							for (int j = 0; j < 9 ; j++) {
 								x = region.getRegionCellIndexColumn(j);

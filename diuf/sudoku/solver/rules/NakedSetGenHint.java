@@ -38,9 +38,7 @@ public class NakedSetGenHint extends IndirectHint implements Rule, HasParentPote
 
     @Override
     public Cell[] getSelectedCells() {
-        if (Settings.getInstance().isDG())
-			return null;
-		return cells;
+        return cells;
     }
 
     @Override
@@ -117,7 +115,7 @@ public class NakedSetGenHint extends IndirectHint implements Rule, HasParentPote
         StringBuilder builder = new StringBuilder();
         builder.append(getName());
         builder.append(": ");
-        if (cells.length <= 4)
+        if (cells.length <= 6)
             builder.append(Cell.toFullString(this.cells));
         else
             builder.append("Cells [...]");

@@ -84,6 +84,39 @@ public class UniqueLoopType3NakedHint extends UniqueLoopHint {
     public int getType() {
         return 3;
     }
+	
+	private String sharedRegions(){
+		if (Settings.getInstance().isVanilla())
+			return "row, column or block";
+		else {
+			String res[] = new String[10];
+			int i = 0;
+			String finalRes = "row";
+			if (Settings.getInstance().isVLatin())
+				return "row or column";
+			else
+				res[i++]= "column";
+			if (Settings.getInstance().isBlocks())
+				res[i++]= "block";
+			if (Settings.getInstance().isDG())
+				res[i++]= "disjoint group";
+			if (Settings.getInstance().isWindows())
+				res[i++]= "window group";
+			if (Settings.getInstance().isX())
+				res[i++]= "diagonal";
+			if (Settings.getInstance().isGirandola())
+				res[i++]= "girandola group";
+			if (Settings.getInstance().isAsterisk())
+				res[i++]= "asterisk group";
+			if (Settings.getInstance().isCD())
+				res[i++]= "center dot group";
+			i--;
+			for (int j = 0; j < i; j++)
+				finalRes += ", " + res[j];
+			finalRes += " or " + res[i];
+			return finalRes;
+		}
+	}
 
     @Override
     public String toHtml(Grid grid) {
@@ -95,14 +128,14 @@ public class UniqueLoopType3NakedHint extends UniqueLoopHint {
         String cell1 = c1.toString();
         String cell2 = c2.toString();
         String valuesOrName = ValuesFormatter.formatValues(otherValues, " or ");
-        final String[] setNames = new String[] {"Pair", "Triplet", "Quad", "Set (5)",
-                "Set (6)", "Set (7)"};
+        final String[] setNames = new String[] {"Pair", "Triplet", "Quad", "Quintuplet",
+                "Sextuplet", "Septuplet"};
         String setName = setNames[nakedValues.length - 2];
         String otherCells = ValuesFormatter.formatCells(cells, " and ");
         String valuesAndName = ValuesFormatter.formatValues(nakedValues, " and ");
         String regionName = region.toString();
         result = HtmlLoader.format(result, type, v1, v2, allCells, cell1,
-                cell2, valuesOrName, setName, otherCells, valuesAndName, regionName);
+                cell2, valuesOrName, setName, otherCells, valuesAndName, regionName, sharedRegions());
         return result;
     }
 
