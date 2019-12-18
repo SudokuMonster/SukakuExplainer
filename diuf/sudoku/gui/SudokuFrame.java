@@ -257,6 +257,7 @@ public class SudokuFrame extends JFrame implements Asker {
         } else {
             getHintDetailArea().setText(null);
             getSudokuPanel().setBlueRegions();
+			getSudokuPanel().setHighlightedCells(null);
             getSudokuPanel().setLinks(null);
             viewCount = 1;
             viewNum = 0;
