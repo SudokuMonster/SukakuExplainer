@@ -48,6 +48,7 @@ public class SudokuPanel extends JPanel {
     private Collection<Cell> greenCells;
     private Collection<Cell> redCells;
     private Grid.Region[] blueRegions;
+//SudokuMonster: Modification to yellow background cells getSelectedCells()
 	private Cell[] highlightedCells;
     private Collection<Link> links;
 
@@ -337,7 +338,7 @@ public class SudokuPanel extends JPanel {
     public void setBlueRegions(Grid.Region... regions) {
         this.blueRegions = regions;
     }
-
+//SudokuMonster: Modification to yellow background cells getSelectedCells()
     public void setHighlightedCells(Cell[] cells) {
         this.highlightedCells = cells;
     }

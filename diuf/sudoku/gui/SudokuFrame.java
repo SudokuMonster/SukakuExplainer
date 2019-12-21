@@ -257,6 +257,7 @@ public class SudokuFrame extends JFrame implements Asker {
         } else {
             getHintDetailArea().setText(null);
             getSudokuPanel().setBlueRegions();
+			//SudokuMonster: setHighlightedCells is an alternative to yellow cell backgrounds getSelectedCells()
 			getSudokuPanel().setHighlightedCells(null);
             getSudokuPanel().setLinks(null);
             viewCount = 1;

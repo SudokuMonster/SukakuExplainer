@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 14;
-    public final static String SUBREV = ".8";
-	public final static String releaseDate = "2019-12-18";
+    public final static String SUBREV = ".11";
+	public final static String releaseDate = "2019-12-21";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -298,7 +298,7 @@ public class Settings {
 	
 	public void setBlocks(boolean isBlocks) {
         this.isBlocks = isBlocks;
-		toggleVariants();
+		toggleVariants();;
         save();
     }
 
@@ -308,7 +308,7 @@ public class Settings {
 
     public void setDG(boolean value) {
         this.isDG = value;
-		toggleVariants();
+		toggleVariants();;
         save();
     }
 
@@ -318,7 +318,7 @@ public class Settings {
 	
     public void setX(boolean value) {
         this.isX = value;
-		toggleVariants();
+		toggleVariants();;
         save();
     }
 
@@ -328,7 +328,7 @@ public class Settings {
 
     public void setWindows(boolean value) {
         this.isWindows = value;
-		toggleVariants();
+		toggleVariants();;
          save();
     }
 
@@ -338,7 +338,7 @@ public class Settings {
 
     public void setGirandola(boolean value) {
         this.isGirandola = value;
-		toggleVariants();
+		toggleVariants();;
          save();
     }
 
@@ -348,7 +348,7 @@ public class Settings {
 
     public void setCD(boolean value) {
         this.isCD = value;
-		toggleVariants();
+		toggleVariants();;
          save();
     }
 
@@ -358,7 +358,7 @@ public class Settings {
 
     public void setAsterisk(boolean value) {
         this.isAsterisk = value;
-		toggleVariants();
+		toggleVariants();;
          save();
     }
 

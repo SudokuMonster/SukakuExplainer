@@ -227,7 +227,7 @@ public class serate {
      * 1 for use
      */
     private static boolean setTechniques(String techniques, boolean showArguments) {
-        EnumSet<SolvingTechnique> allTechniques = EnumSet.allOf(SolvingTechnique.class);
+		EnumSet<SolvingTechnique> allTechniques = EnumSet.allOf(SolvingTechnique.class);
         try {   
             EnumSet<SolvingTechnique> useTechniques = EnumSet.noneOf(SolvingTechnique.class);
             Iterator<SolvingTechnique> iter = allTechniques.iterator();
@@ -314,7 +314,8 @@ public class serate {
         boolean			isX = false; //X (Main diagonal and Anti diagonal groups) are by default disabled.
         boolean			isGirandola = false; //Girandola is by default disabled.
         boolean			isAsterisk = false; //Asterisk is by default disabled.
-        boolean			isCD = false; //Center Dot is by default disabled.		
+        boolean			isCD = false; //Center Dot is by default disabled.	
+        boolean			isTechs = false; //This checks if --techs has been used.		
 		char            want = 0;
         int             arg;
         //long            t; //not used anymore
@@ -560,7 +561,7 @@ public class serate {
                     break;					
             //@SudokuMonster: (lkSudoku)
                 case '~':
-                    setTechniques(v, showArguments);
+                    isTechs = setTechniques(v, showArguments);
                     break;                  
                     default:
                     usage(a, 0);
@@ -599,8 +600,9 @@ public class serate {
                 writer = new PrintWriter(writer1);
             }
             formatter = new Formatter(writer, formatStart, formatAfter, formatBefore, format);
-            //@SudokuMonster: The following is to target the static visibleCells in case there are variants
-			Grid.changeVisibleCells();
+            //@SudokuMonster: The following is to default to the default set of techniques even if variants
+			if (!isTechs)
+				Settings.getInstance().Settings_Variants();
             //loop over input puzzles
 			for (;;) {
                 if (reader != null) {

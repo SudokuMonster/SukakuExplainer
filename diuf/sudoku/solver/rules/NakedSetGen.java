@@ -107,7 +107,8 @@ public class NakedSetGen implements IndirectHintProducer {
         }
         // Build removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-        int eliminationsTotal = 0;
+        //SudokuMonster: eliminationsTotal can be enabled to sort hints
+		//int eliminationsTotal = 0;
 		for(int i = commonPotentialValues.nextSetBit(0); i >= 0; i = commonPotentialValues.nextSetBit(i + 1)) {
 			CellSet Victims = null;
 			for (Cell cell : cells)
@@ -118,7 +119,7 @@ public class NakedSetGen implements IndirectHintProducer {
 						Victims.retainAll(cell.getVisibleCells());
 			for (Cell cell : Victims)
 				if (grid.hasCellPotentialValue(cell.getIndex(), i)) {		
-					eliminationsTotal++;
+					//eliminationsTotal++;
 					if (removablePotentials.containsKey(cell))
 						removablePotentials.get(cell).set(i);
 					else
