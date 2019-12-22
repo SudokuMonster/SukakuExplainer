@@ -127,7 +127,7 @@ public class SudokuFrame extends JFrame implements Asker {
 
     public SudokuFrame() {
         super();
-        initialize();
+        initialize(true);
         repaintViews();
         AutoBusy.addFullAutoBusy(this);
         showWelcomeText();
@@ -348,8 +348,8 @@ public class SudokuFrame extends JFrame implements Asker {
         }
 
     }
-
-    private void initialize() {
+	//@SudokuMonster: boolean firstPass added to prevent repeated calls to setupLookAndFeelMenu() which inflates LookAndFeelMenu
+    private void initialize(boolean firstPass) {
         String Experimental = "";
 		String ExSuffix = "";
 		if (getInstance().revisedRating() > 0) {
@@ -362,7 +362,8 @@ public class SudokuFrame extends JFrame implements Asker {
 		}
 		this.setTitle(ExSuffix + "Sukaku Explainer " + VERSION + "." + REVISION + SUBREV + Experimental);
         JMenuBar menuBar = getJJMenuBar();
-        setupLookAndFeelMenu();
+        if (firstPass)
+			setupLookAndFeelMenu();
         this.setJMenuBar(menuBar);
         this.setContentPane(getJContentPane());
         try {
@@ -1506,7 +1507,7 @@ public class SudokuFrame extends JFrame implements Asker {
 				Settings.getInstance().toggleVariants();
 				engine.clearGrid();
 				engine.clearHints();
-				initialize();
+				initialize(false);
 				repaintViews();
 				showWelcomeText();					
                 }
@@ -1528,7 +1529,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
@@ -1551,7 +1552,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
@@ -1574,7 +1575,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
@@ -1603,7 +1604,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();	
 					Settings.getInstance().Settings_Variants();
@@ -1632,7 +1633,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();					
@@ -1661,7 +1662,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					Grid.changeVisibleCells();
 					engine.clearGrid();
 					engine.clearHints();
-					initialize();
+					initialize(false);
 					repaintViews();
 					showWelcomeText();	
 					Settings.getInstance().Settings_Variants();
@@ -1843,7 +1844,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					}
 				engine.clearGrid();
 				engine.clearHints();
-				initialize();
+				initialize(false);
 				repaintViews();
 				showWelcomeText();					
                 }
@@ -1875,7 +1876,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					}
 				engine.clearGrid();
 				engine.clearHints();
-				initialize();
+				initialize(false);
 				repaintViews();
 				showWelcomeText();
                 }
