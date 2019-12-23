@@ -512,7 +512,7 @@ public class SudokuExplainer {
       
       private void popGrid() {
         if (!this.gridStack.isEmpty()) {
-          Grid prev = (Grid)this.gridStack.pop();
+          Grid prev = this.gridStack.pop();
           prev.copyTo(this.grid);
 		  //This next line will mess UNDO with Sukaku
           //this.solver.rebuildPotentialValues();
