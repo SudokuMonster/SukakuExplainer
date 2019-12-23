@@ -248,7 +248,7 @@ public class SudokuExplainer {
 
     public boolean isValueAllGiven(Grid grid, int value) {
         //Region[] regions = grid.getRegions(Grid.Block.class);
-        Region[] regions = Grid.getRegions(0); //blocks
+        Region[] regions = Grid.getRegions(1); //rows, works with latin sqaures!
         for (Region region : regions) {
             if (!region.contains(grid, value))
                 return false;
