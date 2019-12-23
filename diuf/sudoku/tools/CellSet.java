@@ -130,7 +130,7 @@ public class CellSet implements Set<Cell> {
 			return false;
 		}
 		else if(o instanceof CellSet) {
-			bits.andNot((BitSet)(((CellSet) o).bits));
+			bits.andNot(((CellSet) o).bits);
 			return false;
 		}
 		throw new ClassCastException();
@@ -139,7 +139,7 @@ public class CellSet implements Set<Cell> {
 	@Override
 	public boolean removeAll(Collection<?> c) {
 		if(c instanceof CellSet) {
-			bits.andNot((BitSet)(((CellSet) c).bits));
+			bits.andNot(((CellSet) c).bits);
 			return false;
 		}
 		//for(Cell cell : (Collection<Cell>)c) {
@@ -154,7 +154,7 @@ public class CellSet implements Set<Cell> {
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		if(c instanceof CellSet) {
-			bits.and((BitSet)(((CellSet) c).bits));
+			bits.and(((CellSet) c).bits);
 			return false;
 		}
 		//CellSet other = new CellSet((Collection<Cell>)c);
