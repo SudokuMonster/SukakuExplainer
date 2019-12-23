@@ -361,9 +361,9 @@ public class SudokuFrame extends JFrame implements Asker {
 			Experimental =" (Explainer 1.2.1 mode)";
 		}
 		this.setTitle(ExSuffix + "Sukaku Explainer " + VERSION + "." + REVISION + SUBREV + Experimental);
-	  if (firstPass) {
         JMenuBar menuBar = getJJMenuBar();
-		setupLookAndFeelMenu();
+        if (firstPass)
+			setupLookAndFeelMenu();
         this.setJMenuBar(menuBar);
         this.setContentPane(getJContentPane());
         try {
@@ -371,7 +371,6 @@ public class SudokuFrame extends JFrame implements Asker {
         } catch (SecurityException ex) {
             // May happen in "applet" mode !
         }
-	  }
         this.getSudokuPanel().requestFocusInWindow();
     }
 
