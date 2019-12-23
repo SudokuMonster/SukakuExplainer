@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 14;
-    public final static String SUBREV = ".12";
-	public final static String releaseDate = "2019-12-22";
+    public final static String SUBREV = ".14";
+	public final static String releaseDate = "2019-12-23";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -47,7 +47,12 @@ public class Settings {
 	private boolean isAsterisk = false;//9 cell asterisk group
 	private boolean isCD = false;//9 cell Centre (center) Dot group
 	private boolean isGirandola = false;//9 cell Girandola group
+	private boolean isToroidal = false;//Toroidal Board
+	private boolean isAntiFerz = false;//(0,1) diagonal neighbouring cells
+	private boolean isAntiKnight = false;//(1,2) cells that are a knight chess move away
 	private boolean isVanilla = true;//Check to see if we are using variants (to minimize extra code calls use in Vanilla sudoku)
+	private boolean isForbiddenPairs = false;//Check to see if we are using Forbidden pairs (NC or cNC, ...) but doeasn't apply to Antichess
+	private int whichNC = 0;//0: disabled (default) 1:NC 1-9 but excludes (9,1) 2:cNC which include (1,9)
 	private boolean isVLatin = true;//Check to see if we are using variants with Latin Square(to minimize extra code calls use in Latin square)	
 	public String variantString = "";
 	public final static int[] regionsWindows = 
@@ -288,7 +293,17 @@ public class Settings {
 			temp += "Girandola ";
 		if (isX())
 			temp += "X ";
-		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk()) {
+		if (isAntiFerz())
+			temp += "Anti-King ";
+		if (isAntiKnight())
+			temp += "Anti-kNight ";
+		if (isForbiddenPairs())
+			if (whichNC == 1)
+				temp += "Non-Consecutive (Ex. 1,9) ";
+			else
+				if (whichNC == 2)
+					temp += "Non-Consecutive (Inc. 1,9) ";
+		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isForbiddenPairs() || isAntiFerz || isAntiKnight) {
 			this.isVLatin = false;
 			this.isVanilla = false;
 		}
@@ -364,6 +379,53 @@ public class Settings {
 
     public boolean isAsterisk() {
         return this.isAsterisk;
+    }
+
+    public void setToroidal(boolean value) {
+        this.isToroidal = value;
+        save();
+    }
+
+    public boolean isToroidal() {
+        return this.isToroidal;
+    }
+	
+    public void setAntiFerz(boolean value) {
+        this.isAntiFerz = value;
+		toggleVariants();
+        save();
+    }
+
+    public boolean isAntiFerz() {
+        return this.isAntiFerz;
+    }
+
+    public void setAntiKnight(boolean value) {
+        this.isAntiKnight = value;
+		toggleVariants();
+        save();
+    }
+
+    public boolean isAntiKnight() {
+        return this.isAntiKnight;
+    }
+
+    public void setforbiddenPairs(boolean value) {
+        this.isForbiddenPairs = value;
+        save();
+    }
+
+    public boolean isForbiddenPairs() {
+        return this.isForbiddenPairs;
+    }
+
+    public void setNC(int value) {
+        this.whichNC = value;
+        save();
+    }
+
+    public int whichNC() {
+        return this.whichNC;
     }
 
     public String getLookAndFeelClassName() {
