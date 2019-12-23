@@ -459,12 +459,14 @@ public class SudokuExplainer {
     }
 
     public void applySelectedHints() {
+	  if ( !grid.isSolved() ) {
 		pushGrid();
         for (Hint hint : selectedHints)
             //hint.apply();
         	hint.apply(grid);
         clearHints();
         repaintAll();
+	  }
     }
 
     public void undoStep() {
@@ -472,8 +474,10 @@ public class SudokuExplainer {
     }
 
     public void applySelectedHintsAndContinue() {
+	  if ( !grid.isSolved() ) {
         applySelectedHints();
         getNextHint();
+	  }
     }
 
     private void repaintHintsTree() {
