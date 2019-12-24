@@ -1518,38 +1518,48 @@ public class Grid {
 					}
 			if (Settings.getInstance().isAntiFerz())//Anti Ferz (0,1)
 				for (int j = 0; j < ferzCellIndex.length; j++) { 
-					boolean isOutsideBoardX =  (i / 9 + ferzCellIndex[j][0]) < 0 && (i / 9 + ferzCellIndex[j][0]) > 8 ? true : false;
-					boolean isOutsideBoardY =	 (i % 9 + ferzCellIndex[j][1]) < 0 && (i % 9 + ferzCellIndex[j][1]) > 8 ? true : false;
-					int leapCellIndex = i + ferzCellIndex[j][0] + ferzCellIndex[j][0];
-						if (Settings.getInstance().isToroidal())  {
+					boolean isOutsideBoardX = (i / 9 + ferzCellIndex[j][0]) < 0 || (i / 9 + ferzCellIndex[j][0]) > 8;
+					boolean isOutsideBoardY = (i % 9 + ferzCellIndex[j][1]) < 0 || (i % 9 + ferzCellIndex[j][1]) > 8;
+					int correctedX = (i / 9 + ferzCellIndex[j][0]) < 0 ? 9 + (i / 9 + ferzCellIndex[j][0]): (i / 9 + ferzCellIndex[j][0]) % 9;
+					int correctedY = (i % 9 + ferzCellIndex[j][1]) < 0 ? 9 + (i % 9 + ferzCellIndex[j][1]): (i % 9 + ferzCellIndex[j][1]) % 9;
+					int leapCellIndex = correctedX * 9 + correctedY;
+					if (Settings.getInstance().isToroidal())  {
+						if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 							list1.add(leapCellIndex);
 							if (leapCellIndex > i)
-								list2.add(leapCellIndex);	
+								list2.add(leapCellIndex);
 						}
-						else
-							if (!isOutsideBoardX && !isOutsideBoardY) {
+					}
+					else
+						if (!isOutsideBoardX && !isOutsideBoardY) {
+							if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 								list1.add(leapCellIndex);
 								if (leapCellIndex > i)
 									list2.add(leapCellIndex);
-								
+							}		
 						}	
 				}
 			if (Settings.getInstance().isAntiKnight())//Anti Knight (1,2)
 				for (int j = 0; j < knightCellIndex.length; j++) { 
-					boolean isOutsideBoardX =  (i / 9 + knightCellIndex[j][0]) < 0 && (i / 9 + knightCellIndex[j][0]) > 8 ? true : false;
-					boolean isOutsideBoardY =	 (i % 9 + knightCellIndex[j][1]) < 0 && (i % 9 + knightCellIndex[j][1]) > 8 ? true : false;
-					int leapCellIndex = i + knightCellIndex[j][0] + knightCellIndex[j][0];
-						if (Settings.getInstance().isToroidal())  {
+					boolean isOutsideBoardX = (i / 9 + knightCellIndex[j][0]) < 0 || (i / 9 + knightCellIndex[j][0]) > 8;
+					boolean isOutsideBoardY = (i % 9 + knightCellIndex[j][1]) < 0 || (i % 9 + knightCellIndex[j][1]) > 8;
+					int correctedX = (i / 9 + knightCellIndex[j][0]) < 0 ? 9 + (i / 9 + knightCellIndex[j][0]) : (i / 9 + knightCellIndex[j][0]) % 9;
+					int correctedY = (i % 9 + knightCellIndex[j][1]) < 0 ? 9 + (i % 9 + knightCellIndex[j][1]) : (i % 9 + knightCellIndex[j][1]) % 9;
+					int leapCellIndex = correctedX * 9 + correctedY;
+					if (Settings.getInstance().isToroidal())  {
+						if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 							list1.add(leapCellIndex);
 							if (leapCellIndex > i)
-								list2.add(leapCellIndex);	
-						}
-						else
-							if (!isOutsideBoardX && !isOutsideBoardY) {
+								list2.add(leapCellIndex);
+						}	
+					}
+					else
+						if (!isOutsideBoardX && !isOutsideBoardY) {
+							if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 								list1.add(leapCellIndex);
 								if (leapCellIndex > i)
 									list2.add(leapCellIndex);
-								
+							}
 						}	
 				}
 		//The following 3 lines need to be at bottom of loop
@@ -2260,7 +2270,7 @@ public class Grid {
             }
     	}
     }
-    
+//@SudokuMonster: Changes to allow for FP (NC)    
     /**
      * Applies Naked Single not causing direct eliminations.
      * For adjustment of the board immediately after Pencilmarks loading.
@@ -2278,6 +2288,40 @@ public class Grid {
                         break;
                     }
                 }
+				if (Settings.getInstance().isForbiddenPairs() && isnakedsingle){
+					int statusNC = Settings.getInstance().whichNC();
+					if (statusNC > 0)
+						if(Settings.getInstance().isToroidal()) {
+							int j = Grid.wazirCellsToroidal[i].length;
+							for(int k = 0; k < j; k++) {
+								if (statusNC == 2 || singleclue < 9)
+									if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+										isnakedsingle = false;
+										break;
+									}
+								if (statusNC == 2 || singleclue > 1)
+									if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+										isnakedsingle = false;
+										break;
+									}
+							}
+						}
+						else {
+							int j = Grid.wazirCellsRegular[i].length;
+							for(int k = 0; k < j; k++) {
+								if (statusNC == 2 || singleclue < 9)
+									if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+										isnakedsingle = false;
+										break;
+									}
+								if (statusNC == 2 || singleclue > 1)
+									if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+										isnakedsingle = false;
+										break;
+									}
+							}					
+						}
+				}
                 if(isnakedsingle) {
                 	setCellValue(i % 9, i / 9, singleclue);
                 	clearCellPotentialValues(i);

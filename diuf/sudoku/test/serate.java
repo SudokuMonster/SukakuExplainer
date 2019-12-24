@@ -306,6 +306,7 @@ public class serate {
         int             revisedRating = 0;//New revised Rating
         int             batchSolving = 0;//Batch soving mode
 		int				FCPlus = 0;//non-trivial implications to add in FC+
+		int				whichNC = 0;//Non consecutive 0:disabled 1:NC excluding 1,9 2:NC including 1,9
 		boolean			islkSudokuBUG = true; //Fix to BUG algorithm by lkSudoku
 		boolean			islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
         boolean			isBlocks = true; //Blocks areb y default enabled. Disable to transform into Latin square (LQ)
@@ -315,7 +316,10 @@ public class serate {
         boolean			isGirandola = false; //Girandola is by default disabled.
         boolean			isAsterisk = false; //Asterisk is by default disabled.
         boolean			isCD = false; //Center Dot is by default disabled.	
-        boolean			isTechs = false; //This checks if --techs has been used.		
+        boolean			isAntiKnight = false;//AntiKnight is by default disabled.
+		boolean			isAntiKing = false;//AntiKing is by default disabled.
+		boolean			isToroidal = false;//Toroidal board is by default disabled.
+		boolean			isTechs = false; //This checks if --techs has been used.		
 		char            want = 0;
         int             arg;
         //long            t; //not used anymore
@@ -392,6 +396,15 @@ public class serate {
             //@SudokuMonster: 
                     else if (s.equals("isAsterisk"))
                         c = 'K'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isAntiKnight"))
+                        c = 'n'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isAntiKing"))
+                        c = 'k'; 
+            //@SudokuMonster: 
+                    else if (s.equals("isToroidal"))
+                        c = 'O'; 
              //@SudokuMonster: 
                     else if (s.equals("isCD"))
                         c = 'E'; 
@@ -426,11 +439,13 @@ public class serate {
                 switch (c) {
                 case 'a':
                 case 'b':
+				case 'c':
                 case 's':
                 case 't':
                 case 'f':
                 case 'i':
                 case 'o':
+				case 'O':
                 case 'B':
                 case 'N':
                 case 'G':
@@ -441,6 +456,8 @@ public class serate {
                 case 'X':
                 case 'R':
                 case 'K':
+				case 'k':
+				case 'n':
                 case 'E':				
                 case '~':
                     if (v == null)
@@ -510,6 +527,11 @@ public class serate {
                     Settings.getInstance().setRevisedRating(revisedRating);//0: No revised ratings 1:1st iteration of revised ratings
                     break;
             //@SudokuMonster: 
+                case 'c':
+                    whichNC = Integer.parseInt(v);
+                    Settings.getInstance().setNC(whichNC);//0: disabled 1:NC excluding 1,9 2: NC including 1,9
+                    break;
+            //@SudokuMonster: 
                 case 'G':
                     islkSudokuBUG = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setlkSudokuBUG(islkSudokuBUG);//0: islkSudokuBUG disabled //1:islkSudokuBUG enabled
@@ -548,6 +570,21 @@ public class serate {
                 case 'K':
                     isAsterisk = Integer.parseInt(v) != 0 ? true : false;
                     Settings.getInstance().setAsterisk(isAsterisk);//0: isAsterisk disabled //1:isAsterisk enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'n':
+                    isAntiKnight = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setAntiKnight(isAntiKnight);//0: isAntiKnight disabled //1:isAntiKnight enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'k':
+                    isAntiKing = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setAntiFerz(isAntiKing);//0: isAntiferz disabled //1:isAntiFerz enabled
+                    break;					
+             //@SudokuMonster: 
+                case 'O':
+                    isToroidal = Integer.parseInt(v) != 0 ? true : false;
+                    Settings.getInstance().setToroidal(isToroidal);//0: isToroidal disabled //1:istoroidal enabled
                     break;					
              //@SudokuMonster: 
                 case 'E':

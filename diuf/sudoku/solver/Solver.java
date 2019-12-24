@@ -268,6 +268,7 @@ else {
         cancelPotentialValues();
     }
 
+//@SudokuMonster: Changes to allow for FP (NC)    
     /**
      * Remove all illegal potential values according
      * to the current values of the cells.
@@ -281,6 +282,28 @@ else {
         	for(int visible : Grid.visibleCellIndex[i]) {
         		grid.removeCellPotentialValue(visible, value);
         	}
+			if (Settings.getInstance().isForbiddenPairs()){
+				int statusNC = Settings.getInstance().whichNC();
+				if (statusNC > 0)
+					if(Settings.getInstance().isToroidal()) {
+						int j = Grid.wazirCellsToroidal[i].length;
+						for(int k = 0; k < j; k++) {
+							if (statusNC == 2 || value < 9)
+								grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 9 ? 1 : value + 1);
+							if (statusNC == 2 || value > 1)
+								grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 1 ? 9 : value - 1);
+						}
+					}
+					else {
+						int j = Grid.wazirCellsRegular[i].length;
+						for(int k = 0; k < j; k++) {
+							if (statusNC == 2 || value < 9)
+								grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 9 ? 1 : value + 1);
+							if (statusNC == 2 || value > 1)
+								grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 1 ? 9 : value - 1);
+						}					
+					}
+			}
         }
     }
 

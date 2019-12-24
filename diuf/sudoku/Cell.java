@@ -136,6 +136,7 @@ public class Cell {
 //SudokuMonster: Believe it or not this method is the most important one when you think of adding variants :)
 //Anti Chess will not require any changes as they have been included in Visible cells
 //Other forbidden pairs including non consecutive will require adjustments here
+//@SudokuMonster: Changes to allow for FP (NC)    
     /**
      * Set the value of this cell, and remove that value
      * from the potential values of all controlled cells.
@@ -154,29 +155,28 @@ public class Cell {
         for(int i = 0; i < j; i++) {
         	targetGrid.removeCellPotentialValue(Grid.visibleCellIndex[this.index][i], value);
         }
-		if (!Settings.getInstance().isVLatin())
-			if (Settings.getInstance().isForbiddenPairs()){
-				int statusNC = Settings.getInstance().whichNC();
-				if (statusNC > 0)
-					if(Settings.getInstance().isToroidal()) {
-						j = Grid.wazirCellsToroidal[this.index].length;
-						for(int i = 0; i < j; i++) {
-							if (statusNC == 2 || value < 9)
-								targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], (value - 1  + 1) % 9 + 1);
-							if (statusNC == 2 || value > 1)
-								targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], (value - 1  - 1) % 9 + 1);
-						}
+		if (Settings.getInstance().isForbiddenPairs()){
+			int statusNC = Settings.getInstance().whichNC();
+			if (statusNC > 0)
+				if(Settings.getInstance().isToroidal()) {
+					j = Grid.wazirCellsToroidal[this.index].length;
+					for(int i = 0; i < j; i++) {
+						if (statusNC == 2 || value < 9)
+							targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 9 ? 1 : value + 1);
+						if (statusNC == 2 || value > 1)
+							targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 1 ? 9 : value - 1);
 					}
-					else {
-						j = Grid.wazirCellsRegular[this.index].length;
-						for(int i = 0; i < j; i++) {
-							if (statusNC == 2 || value < 9)
-								targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], (value - 1  + 1) % 9 + 1);
-							if (statusNC == 2 || value > 1)
-								targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], (value - 1  - 1) % 9 + 1);
-						}					
-					}
-			}
+				}
+				else {
+					j = Grid.wazirCellsRegular[this.index].length;
+					for(int i = 0; i < j; i++) {
+						if (statusNC == 2 || value < 9)
+							targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 9 ? 1 : value + 1);
+						if (statusNC == 2 || value > 1)
+							targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 1 ? 9 : value - 1);
+					}					
+				}
+		}
     }
 
     /**

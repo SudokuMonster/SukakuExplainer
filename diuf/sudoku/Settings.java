@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 14;
-    public final static String SUBREV = ".14";
-	public final static String releaseDate = "2019-12-23";
+    public final static int REVISION = 15;
+    public final static String SUBREV = ".1";
+	public final static String releaseDate = "2019-12-24";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -293,17 +293,19 @@ public class Settings {
 			temp += "Girandola ";
 		if (isX())
 			temp += "X ";
+		if (isToroidal())
+			temp += "Toroidal ";
 		if (isAntiFerz())
 			temp += "Anti-King ";
 		if (isAntiKnight())
 			temp += "Anti-kNight ";
 		if (isForbiddenPairs())
 			if (whichNC == 1)
-				temp += "Non-Consecutive (Ex. 1,9) ";
+				temp += "NC ";
 			else
 				if (whichNC == 2)
-					temp += "Non-Consecutive (Inc. 1,9) ";
-		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isForbiddenPairs() || isAntiFerz || isAntiKnight) {
+					temp += "NC+ ";
+		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight()/* || isForbiddenPairs()*/) {
 			this.isVLatin = false;
 			this.isVanilla = false;
 		}
@@ -333,7 +335,7 @@ public class Settings {
 	
     public void setX(boolean value) {
         this.isX = value;
-		toggleVariants();;
+		toggleVariants();
         save();
     }
 
@@ -373,7 +375,7 @@ public class Settings {
 
     public void setAsterisk(boolean value) {
         this.isAsterisk = value;
-		toggleVariants();;
+		toggleVariants();
          save();
     }
 
@@ -383,6 +385,7 @@ public class Settings {
 
     public void setToroidal(boolean value) {
         this.isToroidal = value;
+		toggleVariants();		
         save();
     }
 
@@ -410,8 +413,9 @@ public class Settings {
         return this.isAntiKnight;
     }
 
-    public void setforbiddenPairs(boolean value) {
+    public void setForbiddenPairs(boolean value) {
         this.isForbiddenPairs = value;
+		toggleVariants();
         save();
     }
 
@@ -421,6 +425,9 @@ public class Settings {
 
     public void setNC(int value) {
         this.whichNC = value;
+		if (value > 0)
+			setForbiddenPairs(true);
+		toggleVariants();
         save();
     }
 
@@ -567,6 +574,12 @@ public class Settings {
             prefs.putBoolean("isX", isX);			
             prefs.putBoolean("isDG", isDG);			
             prefs.putBoolean("isWindows", isWindows);
+			prefs.putBoolean("isAsterisk", isAsterisk);
+			prefs.putBoolean("isCD", isCD);
+			prefs.putBoolean("isGirandola", isGirandola);
+			prefs.putBoolean("isForbiddenPairs", isForbiddenPairs);
+			prefs.putBoolean("isAntiFerz", isAntiFerz);
+			prefs.putBoolean("isAntiKnight", isAntiKnight);			
 			if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {
