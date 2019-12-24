@@ -84,6 +84,11 @@ public class Grid {
 	private static final int [][] asteriskVisibleCellIndex;
 	private static final int [][] girandolaVisibleCellIndex;
 	private static final int [][] CDVisibleCellIndex;
+	private static final int [][] ferzCellIndex;
+	//private static final int [][] wazirCellIndex;
+	private static final int [][] knightCellIndex;
+	public static final int [][] wazirCellsRegular;
+	public static final int [][] wazirCellsToroidal;
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
@@ -704,6 +709,199 @@ public class Grid {
 			{}
 			};
 
+		/*wazirCellIndex = new int [][] {
+			{1,0},
+			{-1,0},
+			{0,1},
+			{0,-1}
+		};*/
+
+		wazirCellsToroidal = new int [][] {
+			{72,9,1,8},
+			{73,10,2,0},
+			{74,11,3,1},
+			{75,12,4,2},
+			{76,13,5,3},
+			{77,14,6,4},
+			{78,15,7,5},
+			{79,16,8,6},
+			{80,17,0,7},
+			{0,18,10,17},
+			{1,19,11,9},
+			{2,20,12,10},
+			{3,21,13,11},
+			{4,22,14,12},
+			{5,23,15,13},
+			{6,24,16,14},
+			{7,25,17,15},
+			{8,26,9,16},
+			{9,27,19,26},
+			{10,28,20,18},
+			{11,29,21,19},
+			{12,30,22,20},
+			{13,31,23,21},
+			{14,32,24,22},
+			{15,33,25,23},
+			{16,34,26,24},
+			{17,35,18,25},
+			{18,36,28,35},
+			{19,37,29,27},
+			{20,38,30,28},
+			{21,39,31,29},
+			{22,40,32,30},
+			{23,41,33,31},
+			{24,42,34,32},
+			{25,43,35,33},
+			{26,44,27,34},
+			{27,45,37,44},
+			{28,46,38,36},
+			{29,47,39,37},
+			{30,48,40,38},
+			{31,49,41,39},
+			{32,50,42,40},
+			{33,51,43,41},
+			{34,52,44,42},
+			{35,53,36,43},
+			{36,54,46,53},
+			{37,55,47,45},
+			{38,56,48,46},
+			{39,57,49,47},
+			{40,58,50,48},
+			{41,59,51,49},
+			{42,60,52,50},
+			{43,61,53,51},
+			{44,62,45,52},
+			{45,63,55,62},
+			{46,64,56,54},
+			{47,65,57,55},
+			{48,66,58,56},
+			{49,67,59,57},
+			{50,68,60,58},
+			{51,69,61,59},
+			{52,70,62,60},
+			{53,71,54,61},
+			{54,72,64,71},
+			{55,73,65,63},
+			{56,74,66,64},
+			{57,75,67,65},
+			{58,76,68,66},
+			{59,77,69,67},
+			{60,78,70,68},
+			{61,79,71,69},
+			{62,80,63,70},
+			{63,0,73,80},
+			{64,1,74,72},
+			{65,2,75,73},
+			{66,3,76,74},
+			{67,4,77,75},
+			{68,5,78,76},
+			{69,6,79,77},
+			{70,7,80,78},
+			{71,8,72,79}
+		};
+		
+		wazirCellsRegular = new int [][] {
+			{9,1},
+			{10,2,0},
+			{11,3,1},
+			{12,4,2},
+			{13,5,3},
+			{14,6,4},
+			{15,7,5},
+			{16,8,6},
+			{17,7},
+			{0,18,10},
+			{1,19,11,9},
+			{2,20,12,10},
+			{3,21,13,11},
+			{4,22,14,12},
+			{5,23,15,13},
+			{6,24,16,14},
+			{7,25,17,15},
+			{8,26,16},
+			{9,27,19},
+			{10,28,20,18},
+			{11,29,21,19},
+			{12,30,22,20},
+			{13,31,23,21},
+			{14,32,24,22},
+			{15,33,25,23},
+			{16,34,26,24},
+			{17,35,25},
+			{18,36,28},
+			{19,37,29,27},
+			{20,38,30,28},
+			{21,39,31,29},
+			{22,40,32,30},
+			{23,41,33,31},
+			{24,42,34,32},
+			{25,43,35,33},
+			{26,44,34},
+			{27,45,37},
+			{28,46,38,36},
+			{29,47,39,37},
+			{30,48,40,38},
+			{31,49,41,39},
+			{32,50,42,40},
+			{33,51,43,41},
+			{34,52,44,42},
+			{35,53,43},
+			{36,54,46},
+			{37,55,47,45},
+			{38,56,48,46},
+			{39,57,49,47},
+			{40,58,50,48},
+			{41,59,51,49},
+			{42,60,52,50},
+			{43,61,53,51},
+			{44,62,52},
+			{45,63,55},
+			{46,64,56,54},
+			{47,65,57,55},
+			{48,66,58,56},
+			{49,67,59,57},
+			{50,68,60,58},
+			{51,69,61,59},
+			{52,70,62,60},
+			{53,71,61},
+			{54,72,64},
+			{55,73,65,63},
+			{56,74,66,64},
+			{57,75,67,65},
+			{58,76,68,66},
+			{59,77,69,67},
+			{60,78,70,68},
+			{61,79,71,69},
+			{62,80,70},
+			{63,73},
+			{64,74,72},
+			{65,75,73},
+			{66,76,74},
+			{67,77,75},
+			{68,78,76},
+			{69,79,77},
+			{70,80,78},
+			{71,79}
+		};
+		
+		ferzCellIndex = new int [][] {
+			{1,1},
+			{-1,1},
+			{-1,-1},
+			{1,-1}
+		};
+				
+		knightCellIndex = new int [][] {
+			{1,2},
+			{-1,2},
+			{1,-2},
+			{-1,-2},
+			{2,1},
+			{-2,1},
+			{2,-1},
+			{-2,-1}
+		};
+
 //@SudokuMonster: Visible indexes >  Cell index; used to speed search and minimize repeats in some techniques (e.g WXYZ wing)
     	forwardVisibleCellIndex = new int [][] {
 			{1,2,3,4,5,6,7,8,9,10,11,18,19,20,27,36,45,54,63,72},
@@ -1318,6 +1516,42 @@ public class Grid {
 						if (asteriskVisibleCellIndex[i][j] > i)
 							list2.add(asteriskVisibleCellIndex[i][j]);
 					}
+			if (Settings.getInstance().isAntiFerz())//Anti Ferz (0,1)
+				for (int j = 0; j < ferzCellIndex.length; j++) { 
+					boolean isOutsideBoardX =  (i / 9 + ferzCellIndex[j][0]) < 0 && (i / 9 + ferzCellIndex[j][0]) > 8 ? true : false;
+					boolean isOutsideBoardY =	 (i % 9 + ferzCellIndex[j][1]) < 0 && (i % 9 + ferzCellIndex[j][1]) > 8 ? true : false;
+					int leapCellIndex = i + ferzCellIndex[j][0] + ferzCellIndex[j][0];
+						if (Settings.getInstance().isToroidal())  {
+							list1.add(leapCellIndex);
+							if (leapCellIndex > i)
+								list2.add(leapCellIndex);	
+						}
+						else
+							if (!isOutsideBoardX && !isOutsideBoardY) {
+								list1.add(leapCellIndex);
+								if (leapCellIndex > i)
+									list2.add(leapCellIndex);
+								
+						}	
+				}
+			if (Settings.getInstance().isAntiKnight())//Anti Knight (1,2)
+				for (int j = 0; j < knightCellIndex.length; j++) { 
+					boolean isOutsideBoardX =  (i / 9 + knightCellIndex[j][0]) < 0 && (i / 9 + knightCellIndex[j][0]) > 8 ? true : false;
+					boolean isOutsideBoardY =	 (i % 9 + knightCellIndex[j][1]) < 0 && (i % 9 + knightCellIndex[j][1]) > 8 ? true : false;
+					int leapCellIndex = i + knightCellIndex[j][0] + knightCellIndex[j][0];
+						if (Settings.getInstance().isToroidal())  {
+							list1.add(leapCellIndex);
+							if (leapCellIndex > i)
+								list2.add(leapCellIndex);	
+						}
+						else
+							if (!isOutsideBoardX && !isOutsideBoardY) {
+								list1.add(leapCellIndex);
+								if (leapCellIndex > i)
+									list2.add(leapCellIndex);
+								
+						}	
+				}
 		//The following 3 lines need to be at bottom of loop
 			visibilityMax = visibilityMax > list1.size() ? visibilityMax : list1.size();
 			tempList1.add(list1);
