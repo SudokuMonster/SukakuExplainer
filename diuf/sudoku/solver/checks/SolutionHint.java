@@ -59,9 +59,10 @@ public class SolutionHint extends WarningHint {
         return HtmlLoader.loadHtml(this, "Solution.html");
     }
 
-//    @Override
-//    public void apply() {
-//        solution.copyTo(grid);
-//    }
+//SudokuMonster: Returned the ability to apply Brute force solution hint
+   @Override
+    public void apply(Grid grid) {
+    solution.copyTo(grid);
+   }
 
 }

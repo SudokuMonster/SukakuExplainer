@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".1";
-	public final static String releaseDate = "2019-12-24";
+    public final static String SUBREV = ".2";
+	public final static String releaseDate = "2019-12-26";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -525,6 +525,12 @@ public class Settings {
 		techniques.remove(SolvingTechnique.NakedTriplet);
 		techniques.remove(SolvingTechnique.NakedQuad);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		//SudokuMonster Deadly pattern can be restricted by FP so until Uniqueness/BUG
+		//techniques are modified to accommodate FP then it is safer to remove them
+		if (isAntiFerz() || isAntiKnight() || isForbiddenPairs()) {
+			techniques.remove(SolvingTechnique.UniqueLoop);
+			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
+		}
 		if (isVLatin())
 			init();
     }
