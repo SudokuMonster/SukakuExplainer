@@ -137,6 +137,7 @@ public class Cell {
 //Anti Chess will not require any changes as they have been included in Visible cells
 //Other forbidden pairs including non consecutive will require adjustments here
 //@SudokuMonster: Changes to allow for FP (NC)    
+
     /**
      * Set the value of this cell, and remove that value
      * from the potential values of all controlled cells.
@@ -177,6 +178,7 @@ public class Cell {
 					}					
 				}
 		}
+
     }
 
     /**
