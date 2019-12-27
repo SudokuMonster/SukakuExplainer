@@ -109,6 +109,13 @@ public class SudokuFrame extends JFrame implements Asker {
 	private JCheckBoxMenuItem mitAsterisk = null;
 	private JCheckBoxMenuItem mitCD = null;
 	private JCheckBoxMenuItem mitGirandola = null;	
+    private JMenu antiChessMenu = null;
+	private JCheckBoxMenuItem mitToroidal = null;
+	private JCheckBoxMenuItem mitAntiFerz = null;
+	private JCheckBoxMenuItem mitAntiKnight = null;
+	private JCheckBoxMenuItem mitCyclicNC = null;
+	private JCheckBoxMenuItem mitRegularNC = null;
+    private JMenu forbiddenPairsMenu = null;
     private JMenu helpMenu = null;
     private JMenuItem mitAbout = null;
     private JMenuItem mitGetSmallClue = null;
@@ -1473,8 +1480,153 @@ public class SudokuFrame extends JFrame implements Asker {
 			variantsMenu.add(getMitAsterisk());
 			variantsMenu.add(getMitCD());
 			variantsMenu.add(getMitGirandola());
+			variantsMenu.addSeparator();
+            variantsMenu.add(getAntiChessMenu());
+			variantsMenu.add(getForbiddenPairsMenu());
+			variantsMenu.add(getMitToroidal());
         }
         return variantsMenu;
+    }
+
+    private JMenu getForbiddenPairsMenu() {
+		if (forbiddenPairsMenu == null) {
+			forbiddenPairsMenu = new JMenu();
+            forbiddenPairsMenu.setText("Forbidden Paris");
+			forbiddenPairsMenu.setToolTipText("Certain Cells have a certain value pairing");
+			forbiddenPairsMenu.add(getMitRegularNC());
+			forbiddenPairsMenu.add(getMitCyclicNC());
+		}
+		return forbiddenPairsMenu;
+	}
+
+    private JCheckBoxMenuItem getMitRegularNC() {
+        if (mitRegularNC == null) {
+            mitRegularNC = new JCheckBoxMenuItem();
+            mitRegularNC.setText("Non Consecutive");
+            mitRegularNC.setSelected(false);
+            mitRegularNC.setToolTipText("Adjacent cells can't have consecutive numbers (Excludes 1,9)");
+            mitRegularNC.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					if (mitRegularNC.isSelected())
+						mitCyclicNC.setSelected(false);
+					engine.clearGrid();
+					engine.clearHints();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+                }
+            });
+        }
+        return mitRegularNC;
+    }
+
+    private JCheckBoxMenuItem getMitCyclicNC() {
+        if (mitCyclicNC == null) {
+            mitCyclicNC = new JCheckBoxMenuItem();
+            mitCyclicNC.setText("Cyclic Non Consecutive");
+            mitCyclicNC.setSelected(false);
+            mitCyclicNC.setToolTipText("Adjacent cells can't have consecutive numbers (Includes 1,9)");
+            mitCyclicNC.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					if (mitCyclicNC.isSelected())
+						mitRegularNC.setSelected(false);
+					engine.clearGrid();
+					engine.clearHints();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+                }
+            });
+        }
+        return mitCyclicNC;
+    }
+
+    private JMenu getAntiChessMenu() {
+		if (antiChessMenu == null) {
+			antiChessMenu = new JMenu();
+            antiChessMenu.setText("Anti Chess");
+			antiChessMenu.setToolTipText("Choose from a variety of (fairy) Chess piece moves");
+			antiChessMenu.add(getMitAntiFerz());
+			antiChessMenu.add(getMitAntiKnight());
+		}
+		return antiChessMenu;
+	}
+
+    private JCheckBoxMenuItem getMitToroidal() {
+        if (mitToroidal == null) {
+            mitToroidal = new JCheckBoxMenuItem();
+            mitToroidal.setText("Toroidal Grid");
+            mitToroidal.setSelected(false);
+            mitToroidal.setToolTipText("Top-Bottom and Rt-Lt Wrap giving it a doughnut 3d shape");
+            mitToroidal.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setToroidal(mitToroidal.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					engine.clearGrid();
+					engine.clearHints();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+                }
+            });
+        }
+        return mitToroidal;
+    }
+
+    private JCheckBoxMenuItem getMitAntiFerz() {
+        if (mitAntiFerz == null) {
+            mitAntiFerz = new JCheckBoxMenuItem();
+            mitAntiFerz.setText("King: (0,1) and (1,1)");
+            mitAntiFerz.setSelected(false);
+            mitAntiFerz.setToolTipText("Cells that are a King's move away are different");
+            mitAntiFerz.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setAntiFerz(mitAntiFerz.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					engine.clearGrid();
+					engine.clearHints();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+                }
+            });
+        }
+        return mitAntiFerz;
+    }
+
+    private JCheckBoxMenuItem getMitAntiKnight() {
+        if (mitAntiKnight == null) {
+            mitAntiKnight = new JCheckBoxMenuItem();
+            mitAntiKnight.setText("Knight: (1,2)");
+            mitAntiKnight.setSelected(false);
+            mitAntiKnight.setToolTipText("Cells that are a Knight's move away are different");
+            mitAntiKnight.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					Settings.getInstance().setAntiKnight(mitAntiKnight.isSelected());
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					engine.clearGrid();
+					engine.clearHints();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+                }
+            });
+        }
+        return mitAntiKnight;
     }
 
  /*   private JCheckBoxMenuItem getMitVanilla() {
@@ -1915,6 +2067,7 @@ public class SudokuFrame extends JFrame implements Asker {
         //No need to worry about deselected techniques
 		//refreshSolvingTechniques();
         engine.rebuildSolver();
+		showWelcomeText();
     }
 
     private JPanel getPnlEnabledTechniques() {

@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 14;
-    public final static String SUBREV = ".13";
-	public final static String releaseDate = "2019-12-23";
+    public final static int REVISION = 15;
+    public final static String SUBREV = ".3";
+	public final static String releaseDate = "2019-12-26";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -288,7 +288,19 @@ public class Settings {
 			temp += "Girandola ";
 		if (isX())
 			temp += "X ";
-		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk()) {
+		if (isToroidal())
+			temp += "Toroidal ";
+		if (isAntiFerz())
+			temp += "Anti-King ";
+		if (isAntiKnight())
+			temp += "Anti-kNight ";
+		if (isForbiddenPairs())
+			if (whichNC == 1)
+				temp += "NC ";
+			else
+				if (whichNC == 2)
+					temp += "NC+ ";
+		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight()/* || isForbiddenPairs()*/) {
 			this.isVLatin = false;
 			this.isVanilla = false;
 		}
@@ -318,7 +330,7 @@ public class Settings {
 	
     public void setX(boolean value) {
         this.isX = value;
-		toggleVariants();;
+		toggleVariants();
         save();
     }
 
@@ -358,12 +370,64 @@ public class Settings {
 
     public void setAsterisk(boolean value) {
         this.isAsterisk = value;
-		toggleVariants();;
+		toggleVariants();
          save();
     }
 
     public boolean isAsterisk() {
         return this.isAsterisk;
+    }
+  
+    public void setToroidal(boolean value) {
+        this.isToroidal = value;
+		toggleVariants();		
+        save();
+    }
+
+    public boolean isToroidal() {
+        return this.isToroidal;
+    }
+	
+    public void setAntiFerz(boolean value) {
+        this.isAntiFerz = value;
+		toggleVariants();
+        save();
+    }
+
+    public boolean isAntiFerz() {
+        return this.isAntiFerz;
+    }
+
+    public void setAntiKnight(boolean value) {
+        this.isAntiKnight = value;
+		toggleVariants();
+        save();
+    }
+
+    public boolean isAntiKnight() {
+        return this.isAntiKnight;
+    }
+
+    public void setForbiddenPairs(boolean value) {
+        this.isForbiddenPairs = value;
+		toggleVariants();
+        save();
+    }
+
+    public boolean isForbiddenPairs() {
+        return this.isForbiddenPairs;
+    }
+
+    public void setNC(int value) {
+        this.whichNC = value;
+		if (value > 0)
+			setForbiddenPairs(true);
+		toggleVariants();
+        save();
+    }
+
+    public int whichNC() {
+        return this.whichNC;
     }
 
     public String getLookAndFeelClassName() {
@@ -456,6 +520,12 @@ public class Settings {
 		techniques.remove(SolvingTechnique.NakedTriplet);
 		techniques.remove(SolvingTechnique.NakedQuad);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		//SudokuMonster Deadly pattern can be restricted by FP so until Uniqueness/BUG
+		//techniques are modified to accommodate FP then it is safer to remove them
+		if (isAntiFerz() || isAntiKnight() || isForbiddenPairs()) {
+			techniques.remove(SolvingTechnique.UniqueLoop);
+			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
+		}
 		if (isVLatin())
 			init();
     }
@@ -505,6 +575,12 @@ public class Settings {
             prefs.putBoolean("isX", isX);			
             prefs.putBoolean("isDG", isDG);			
             prefs.putBoolean("isWindows", isWindows);
+			prefs.putBoolean("isAsterisk", isAsterisk);
+			prefs.putBoolean("isCD", isCD);
+			prefs.putBoolean("isGirandola", isGirandola);
+			prefs.putBoolean("isForbiddenPairs", isForbiddenPairs);
+			prefs.putBoolean("isAntiFerz", isAntiFerz);
+			prefs.putBoolean("isAntiKnight", isAntiKnight);			
 			if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {
