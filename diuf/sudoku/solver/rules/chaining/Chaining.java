@@ -14,8 +14,8 @@ import diuf.sudoku.Grid.*;
 //import diuf.sudoku.Settings.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.solver.rules.*;
-//import diuf.sudoku.solver.rules.unique.BivalueUniversalGrave;
-//import diuf.sudoku.solver.rules.unique.UniqueLoops;
+import diuf.sudoku.solver.rules.unique.BivalueUniversalGrave;
+import diuf.sudoku.solver.rules.unique.UniqueLoops;
 import diuf.sudoku.tools.*;
 
 /**
@@ -1150,6 +1150,10 @@ public class Chaining implements IndirectHintProducer {
 					otherRules.add(new Fisherman(3));
 					otherRules.add(new StrongLinks(3));
 					otherRules.add(new WXYZWing());
+					otherRules.add(new VWXYZWing());
+					otherRules.add(new AlignedExclusion(3));
+					otherRules.add(new UniqueLoops());
+					otherRules.add(new BivalueUniversalGrave());
 				}
 	//            //otherRules.add(new HiddenSingle());
 	//            //otherRules.add(new Locking(true));

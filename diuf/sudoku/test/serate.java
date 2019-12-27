@@ -451,6 +451,7 @@ public class serate {
                 case 'G':
                 case 'U':
                 case 'Q':
+                case 'P':				
                 case 'D':
                 case 'W':
                 case 'X':
