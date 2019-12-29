@@ -47,7 +47,12 @@ public class Settings {
 	private boolean isAsterisk = false;//9 cell asterisk group
 	private boolean isCD = false;//9 cell Centre (center) Dot group
 	private boolean isGirandola = false;//9 cell Girandola group
+	private boolean isToroidal = false;//Toroidal Board
+	private boolean isAntiFerz = false;//(0,1) diagonal neighbouring cells
+	private boolean isAntiKnight = false;//(1,2) cells that are a knight chess move away
 	private boolean isVanilla = true;//Check to see if we are using variants (to minimize extra code calls use in Vanilla sudoku)
+	private boolean isForbiddenPairs = false;//Check to see if we are using Forbidden pairs (NC or cNC, ...) but doeasn't apply to Antichess
+	private int whichNC = 0;//0: disabled (default) 1:NC 1-9 but excludes (9,1) 2:cNC which include (1,9)
 	private boolean isVLatin = true;//Check to see if we are using variants with Latin Square(to minimize extra code calls use in Latin square)	
 	public String variantString = "";
 	public final static int[] regionsWindows = 
@@ -377,7 +382,7 @@ public class Settings {
     public boolean isAsterisk() {
         return this.isAsterisk;
     }
-  
+
     public void setToroidal(boolean value) {
         this.isToroidal = value;
 		toggleVariants();		
