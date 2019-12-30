@@ -411,6 +411,9 @@ public class serate {
            //@SudokuMonster: 
                     else if (s.equals("FCPlus"))
                         c = 'P'; 					
+           //@SudokuMonster: 
+                    else if (s.equals("isNC"))
+                        c = 'c'; 					
                     else if (s.equals("after"))
                         c = 'a';
                     else if (s.equals("before"))
