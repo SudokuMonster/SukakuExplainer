@@ -11,6 +11,8 @@ public enum SolvingTechnique {
     DirectPointing("Direct Pointing"),
     DirectHiddenPair("Direct Hidden Pair"),
     NakedSingle("Naked Single"),
+	forcingCellNC("Non-Consecutive Forcing Cell"),
+	lockedNC("Locked Non-Consecutive"),
     DirectHiddenTriplet("Direct Hidden Triplet"),
     PointingClaiming("Pointing & Claiming"),
 	VLocking("Generalized Intersections"),

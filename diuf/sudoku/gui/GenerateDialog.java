@@ -1723,6 +1723,105 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
 		},
+		UniquenessType3 {
+            @Override
+            public double getMinDifficulty() {
+				if (Settings.getInstance().revisedRating() == 1)
+					return 4.9;
+                return 5.0;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+				if (Settings.getInstance().revisedRating() == 1)
+					return 5.2;
+                return 5.3;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+            @Override
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "Unique";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "type 3";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				if (Settings.getInstance().revisedRating() == 1)
+					return "Naked";
+				return "Jellyfish";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
+		},
 		UL12Type3 {
             @Override
             public double getMinDifficulty() {
@@ -2473,7 +2572,100 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
         },
-        Diabolical {
+ 		DailySudoku {
+
+            @Override
+            public double getMinDifficulty() {
+                return 7.0;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 8.0;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "Forcing Chain";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "Bidirectional Cycle";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "Nishio Forcing Chain";
+			}
+        },
+		Diabolical {
 
             @Override
             public double getMinDifficulty() {

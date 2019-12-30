@@ -1502,18 +1502,18 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitRegularNC() {
         if (mitRegularNC == null) {
             mitRegularNC = new JCheckBoxMenuItem();
-            mitRegularNC.setText("Non Consecutive");
+            mitRegularNC.setText("NC");
             mitRegularNC.setSelected(false);
             mitRegularNC.setToolTipText("Adjacent cells can't have consecutive numbers (Excludes 1,9)");
             mitRegularNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
+					if (mitRegularNC.isSelected())
+						mitCyclicNC.setSelected(false);
+					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);					
 					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
 					Settings.getInstance().toggleVariants();
 					Grid.changeVisibleCells();
-					if (mitRegularNC.isSelected())
-						mitCyclicNC.setSelected(false);
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1527,18 +1527,17 @@ public class SudokuFrame extends JFrame implements Asker {
     private JCheckBoxMenuItem getMitCyclicNC() {
         if (mitCyclicNC == null) {
             mitCyclicNC = new JCheckBoxMenuItem();
-            mitCyclicNC.setText("Cyclic Non Consecutive");
+            mitCyclicNC.setText("NC+");
             mitCyclicNC.setSelected(false);
             mitCyclicNC.setToolTipText("Adjacent cells can't have consecutive numbers (Includes 1,9)");
             mitCyclicNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);
-					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					if (mitCyclicNC.isSelected())
 						mitRegularNC.setSelected(false);
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
+					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);
+					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1570,9 +1569,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setToroidal(mitToroidal.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1593,9 +1590,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setAntiFerz(mitAntiFerz.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1616,9 +1611,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setAntiKnight(mitAntiKnight.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1658,7 +1651,6 @@ public class SudokuFrame extends JFrame implements Asker {
 					}
 				Settings.getInstance().toggleVariants();
 				engine.clearGrid();
-				engine.clearHints();
 				initialize(false);
 				repaintViews();
 				showWelcomeText();					
@@ -1678,9 +1670,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setX(mitX.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1701,9 +1691,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setDG(mitDG.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1724,9 +1712,7 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setWindows(mitWindows.isSelected());
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1753,9 +1739,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitGirandola.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();	
@@ -1782,9 +1766,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitGirandola.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();
@@ -1811,9 +1793,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						mitCD.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
-					Grid.changeVisibleCells();
 					engine.clearGrid();
-					engine.clearHints();
 					initialize(false);
 					repaintViews();
 					showWelcomeText();	
@@ -1995,7 +1975,6 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setlkSudokuURUL(true);
 					}
 				engine.clearGrid();
-				engine.clearHints();
 				initialize(false);
 				repaintViews();
 				showWelcomeText();					
@@ -2027,7 +2006,6 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setlkSudokuURUL(false);
 					}
 				engine.clearGrid();
-				engine.clearHints();
 				initialize(false);
 				repaintViews();
 				showWelcomeText();

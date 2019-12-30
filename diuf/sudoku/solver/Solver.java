@@ -145,6 +145,10 @@ public class Solver {
 if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
+		if (Settings.getInstance().whichNC() > 0) {
+			addIfWorth(SolvingTechnique.forcingCellNC, directHintProducers, new forcingCellNC());
+			addIfWorth(SolvingTechnique.lockedNC, directHintProducers, new lockedNC());
+		}
         addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
         indirectHintProducers = new ArrayList<IndirectHintProducer>();
@@ -202,7 +206,11 @@ else {
 			addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
-        addIfWorth(SolvingTechnique.DirectHiddenTriplet, directHintProducers, new HiddenSet(3, true));
+		if (Settings.getInstance().whichNC() > 0) {
+			addIfWorth(SolvingTechnique.forcingCellNC, directHintProducers, new forcingCellNC());
+			addIfWorth(SolvingTechnique.lockedNC, directHintProducers, new lockedNC());
+		}
+       addIfWorth(SolvingTechnique.DirectHiddenTriplet, directHintProducers, new HiddenSet(3, true));
         indirectHintProducers = new ArrayList<IndirectHintProducer>();
         if (Settings.getInstance().isBlocks())
 			addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
