@@ -626,6 +626,7 @@ else {
         } catch (InterruptedException willHappen) {}
         return accu.getHint();
     }
+
     public void getDifficulty(serate.Formatter formatter) {
         Grid backup = new Grid();
         grid.copyTo(backup);
@@ -706,6 +707,87 @@ else {
                 }
             }
         	formatter.afterPuzzle(this);
+        } finally {
+            backup.copyTo(grid);
+        }
+    }
+
+    public void getDifficulty() {
+        Grid backup = new Grid();
+        grid.copyTo(backup);
+		boolean logStep = Settings.getInstance().isLog();
+		PrintWriter logWriter = Settings.getInstance().getLogWriter();
+		int stepCount = 0;
+        try {
+            difficulty = 0;
+            pearl = 0.0;
+            diamond = 0.0;
+			ERtN ="No solution";
+			EPtN ="No solution";
+			EDtN ="No solution";
+			shortERtN ="O";
+			shortEPtN ="O";
+			shortEDtN ="O";			
+            while (!grid.isSolved()) {
+            	Hint hint = null;
+            	try {
+            		hint = getSingleHint();
+            		if(hint != null) {
+		                assert hint instanceof Rule;
+		                Rule rule = (Rule)hint;
+		                double ruleDiff = rule.getDifficulty();
+						String ruleName = rule.getName();
+						String ruleNameShort = rule.getShortName();						
+						//lksudoku, log steps
+						if (logStep) {
+							++stepCount;
+							logWriter.println("Step "+stepCount+": rate "+ruleDiff);
+							logWriter.println(rule.toString());
+						}
+		                if (ruleDiff > difficulty) {
+		                    difficulty = ruleDiff;
+							ERtN = ruleName;
+							shortERtN = ruleNameShort;
+		                }
+            		}
+            	}
+                catch (UnsupportedOperationException ex) {
+                    difficulty = pearl = diamond = 0.0;
+					ERtN = EPtN = EDtN = "No solution";
+					shortERtN = shortEPtN = shortEDtN = "O";
+                }
+                if (hint == null) {
+                    difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
+                    break;
+                }
+                hint.apply(grid);
+                if (pearl == 0.0) {
+                    if (diamond == 0.0){
+                        diamond = difficulty;
+						EDtN = ERtN;
+						shortEDtN = shortERtN;
+					}
+                    if (hint.getCell() != null) {
+                        if (want == 'd' && difficulty > diamond) {
+                            difficulty = 20.0;
+							ERtN = "Beyond solver";
+							shortERtN = "xx";
+                           break;
+                        }
+                        pearl = difficulty;
+						EPtN = ERtN;
+						shortEPtN = shortERtN;
+                    }
+                }
+                else if (want != 0 && difficulty > pearl) {
+                    difficulty = 20.0;
+					ERtN = "Beyond solver";
+					shortERtN = "xx";
+                    break;
+                }
+            }
         } finally {
             backup.copyTo(grid);
         }

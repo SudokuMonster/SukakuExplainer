@@ -68,6 +68,8 @@ public class Generator {
 
         // Build the solution
         Grid grid = new Grid();
+        Solver solver = new Solver(grid);
+        solver.want = 0;
         boolean result = analyser.solveRandom(grid, rnd);
         assert result;
         Grid solution = new Grid();
@@ -111,7 +113,6 @@ public class Generator {
                     if (grid.getCellValue(p.x, p.y) != 0) {
                         //cell.setValue(0);
                     	grid.setCellValue(p.x, p.y, 0);
-						
                         cellRemoved = true;
                     }
                 }
@@ -122,6 +123,17 @@ public class Generator {
                         // Cells successfully removed: still a unique solution
                         isSuccess = true;
                         //successes += 1;
+						//Following code is to handle Naturally difficult variants: 1to9only
+						if (Settings.getInstance().isAntiFerz() || Settings.getInstance().isAntiKnight() || Settings.getInstance().whichNC() > 0 || Settings.getInstance().variantCount() > 1) {
+							try { solver.getDifficulty(); } catch (UnsupportedOperationException ex) { solver.difficulty = solver.pearl = solver.diamond = 20.0; }
+							if ( solver.difficulty == 20.0 ) { 
+								for (Point p : points){
+									grid.setGiven(y * 9 + x);
+									grid.setCellValue(p.x, p.y, solution.getCellValue(p.x, p.y));
+								}
+								return grid; 
+							}
+						}
                     } else if (state == 0) {
                         assert false : "Invalid grid";
                     } else {

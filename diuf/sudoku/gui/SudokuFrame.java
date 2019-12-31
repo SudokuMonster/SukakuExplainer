@@ -1507,8 +1507,10 @@ public class SudokuFrame extends JFrame implements Asker {
             mitRegularNC.setToolTipText("Adjacent cells can't have consecutive numbers (Excludes 1,9)");
             mitRegularNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-					if (mitRegularNC.isSelected())
+					if (mitRegularNC.isSelected()) {
 						mitCyclicNC.setSelected(false);
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);					
 					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
 					Settings.getInstance().toggleVariants();
@@ -1532,8 +1534,10 @@ public class SudokuFrame extends JFrame implements Asker {
             mitCyclicNC.setToolTipText("Adjacent cells can't have consecutive numbers (Includes 1,9)");
             mitCyclicNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-					if (mitCyclicNC.isSelected())
+					if (mitCyclicNC.isSelected()) {
 						mitRegularNC.setSelected(false);
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
 					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);
 					Settings.getInstance().toggleVariants();
@@ -1589,6 +1593,9 @@ public class SudokuFrame extends JFrame implements Asker {
             mitAntiFerz.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setAntiFerz(mitAntiFerz.isSelected());
+					if (Settings.getInstance().isAntiFerz()) {
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1610,6 +1617,9 @@ public class SudokuFrame extends JFrame implements Asker {
             mitAntiKnight.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setAntiKnight(mitAntiKnight.isSelected());
+					if (Settings.getInstance().isAntiKnight()) {
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1669,6 +1679,9 @@ public class SudokuFrame extends JFrame implements Asker {
             mitX.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setX(mitX.isSelected());
+					if (Settings.getInstance().isX()) {
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1690,6 +1703,9 @@ public class SudokuFrame extends JFrame implements Asker {
             mitDG.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setDG(mitDG.isSelected());
+					if (Settings.getInstance().isDG()) {
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1711,6 +1727,9 @@ public class SudokuFrame extends JFrame implements Asker {
             mitWindows.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					Settings.getInstance().setWindows(mitWindows.isSelected());
+					if (Settings.getInstance().isWindows()) {
+						mitBringBackSE121.setSelected(false);
+					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1737,6 +1756,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setGirandola(false);
 						mitCD.setSelected(false);
 						mitGirandola.setSelected(false);
+						mitBringBackSE121.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
@@ -1764,6 +1784,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setGirandola(false);
 						mitAsterisk.setSelected(false);
 						mitGirandola.setSelected(false);
+						mitBringBackSE121.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
@@ -1791,6 +1812,7 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setCD(false);
 						mitAsterisk.setSelected(false);
 						mitCD.setSelected(false);
+						mitBringBackSE121.setSelected(false);
 					}
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
@@ -1994,7 +2016,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitBringBackSE121.setSelected(Settings.getInstance().isBringBackSE121());
             mitBringBackSE121.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
-                    Settings.getInstance().setBringBackSE121(mitBringBackSE121.isSelected());
+                    Settings.getInstance().setBringBackSE121(mitBringBackSE121.isSelected() && Settings.getInstance().isVLatin());
+					mitBringBackSE121.setSelected(Settings.getInstance().isBringBackSE121());
 					if (Settings.getInstance().isBringBackSE121()) {
 						//uniquess fix false
 						//BUG fix false

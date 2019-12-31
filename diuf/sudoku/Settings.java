@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".5";
-	public final static String releaseDate = "2019-12-30";
+    public final static String SUBREV = ".6";
+	public final static String releaseDate = "2019-12-31";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -52,6 +52,7 @@ public class Settings {
 	private boolean isAntiKnight = false;//(1,2) cells that are a knight chess move away
 	private boolean isVanilla = true;//Check to see if we are using variants (to minimize extra code calls use in Vanilla sudoku)
 	private boolean isForbiddenPairs = false;//Check to see if we are using Forbidden pairs (NC or cNC, ...) but doeasn't apply to Antichess
+	private int variantCount = 0;//Number of variants used
 	private int whichNC = 0;//0: disabled (default) 1:NC 1-9 but excludes (9,1) 2:cNC which include (1,9)
 	private boolean isVLatin = true;//Check to see if we are using variants with Latin Square(to minimize extra code calls use in Latin square)	
 	public String variantString = "";
@@ -172,6 +173,9 @@ public class Settings {
     private Settings() {
         init();
         load();
+		Settings_Variants();
+		if (isBringBackSE121())
+			Settings_BBSE121();
     }
 	
     public void Settings_BBSE121() {
@@ -201,6 +205,7 @@ public class Settings {
     }	
 	public void setRevisedRating(int revisedRating) {
         this.revisedRating = revisedRating;
+		save();
     }
     public int revisedRating() {
         return revisedRating;
@@ -276,46 +281,80 @@ public class Settings {
 	public void toggleVariants() {
         this.isVanilla = true;
 		this.isVLatin = true;
+		int variantsCount = 0;
 		String temp = "";
 		if (!isBlocks()) {
 			temp += "Latin Square ";
 			this.isVanilla = false;
 		}
-		if (isDG())
+		if (isDG()) {
 			temp += "Disjoint Groups ";
-		if (isWindows())
+			variantsCount++;
+		}
+		if (isWindows()){
 			temp += "Windows ";
-		if (isAsterisk())
+			variantsCount++;
+		}
+		if (isAsterisk()){
 			temp += "Asterisk ";
-		if (isCD())
+			variantsCount++;
+		}
+		if (isCD()){
 			temp += "Center Dot ";
-		if (isGirandola())
+			variantsCount++;
+		}
+		if (isGirandola()){
 			temp += "Girandola ";
-		if (isX())
+			variantsCount++;
+		}
+		if (isX()){
 			temp += "X ";
-		if (isToroidal())
+			variantsCount++;
+		}
+		if (isToroidal()){
 			temp += "Toroidal ";
-		if (isAntiFerz())
+			variantsCount++;
+		}
+		if (isAntiFerz()){
 			temp += "Anti-King ";
-		if (isAntiKnight())
+			variantsCount++;
+		}
+		if (isAntiKnight()){
 			temp += "Anti-kNight ";
+			variantsCount++;
+		}
 		if (isForbiddenPairs())
-			if (whichNC == 1)
+			if (whichNC == 1){
 				temp += "NC ";
+				variantsCount++;
+			}
 			else
-				if (whichNC == 2)
+				if (whichNC == 2){
 					temp += "NC+ ";
+					variantsCount++;
+				}
 		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight()/* || isForbiddenPairs()*/) {
 			this.isVLatin = false;
 			this.isVanilla = false;
 		}
+		if (!isVLatin)
+			setBringBackSE121(false);
 		this.variantString = temp;
+		setVariantsCount(variantsCount);
 		Grid.changeVisibleCells();
     }
 	
+	public void setVariantsCount(int value){
+		this.variantCount = value;
+	}
+	
+    public int variantCount() {
+        return this.variantCount;
+    }	
+	
 	public void setBlocks(boolean isBlocks) {
         this.isBlocks = isBlocks;
-		toggleVariants();;
+		toggleVariants();
         save();
     }
 
@@ -325,7 +364,7 @@ public class Settings {
 
     public void setDG(boolean value) {
         this.isDG = value;
-		toggleVariants();;
+		toggleVariants();
         save();
     }
 
@@ -345,7 +384,7 @@ public class Settings {
 
     public void setWindows(boolean value) {
         this.isWindows = value;
-		toggleVariants();;
+		toggleVariants();
          save();
     }
 
@@ -355,7 +394,7 @@ public class Settings {
 
     public void setGirandola(boolean value) {
         this.isGirandola = value;
-		toggleVariants();;
+		toggleVariants();
          save();
     }
 
@@ -365,7 +404,7 @@ public class Settings {
 
     public void setCD(boolean value) {
         this.isCD = value;
-		toggleVariants();;
+		toggleVariants();
          save();
     }
 
@@ -426,7 +465,7 @@ public class Settings {
     public void setNC(int value) {
         this.whichNC = value;
 		if (value > 0)
-			setForbiddenPairs(true);
+			getInstance().setForbiddenPairs(true);
 		toggleVariants();
         save();
     }
@@ -511,6 +550,10 @@ public class Settings {
 		techniques.remove(SolvingTechnique.NakedTripletGen);
 		techniques.remove(SolvingTechnique.NakedQuadGen);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		if (isForbiddenPairs()) {
+			techniques.remove(SolvingTechnique.UniqueLoop);
+			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
+		}
     }
 
     private void initVariants() {
@@ -532,8 +575,14 @@ public class Settings {
 			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
 		}
 		if (isVLatin())
-			init();
+			if (isBringBackSE121())
+				init121();
+			else
+				init();
+		else
+			setBringBackSE121(false);
     }
+	
     private void init121() {
         techniques = EnumSet.allOf(SolvingTechnique.class);
 		//The following techniques are not part of SE121
@@ -560,7 +609,8 @@ public class Settings {
             isAntialiasing = prefs.getBoolean("isAntialiasing", isAntialiasing);
             isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
             isShowingCandidateMasks = prefs.getBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
-            isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121);            
+            isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121); 
+            revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
 			lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
         } catch (SecurityException ex) {
             // Maybe we are running from an applet. Do nothing
@@ -584,8 +634,11 @@ public class Settings {
 			prefs.putBoolean("isCD", isCD);
 			prefs.putBoolean("isGirandola", isGirandola);
 			prefs.putBoolean("isForbiddenPairs", isForbiddenPairs);
+			prefs.putInt("whichNC", whichNC);
 			prefs.putBoolean("isAntiFerz", isAntiFerz);
-			prefs.putBoolean("isAntiKnight", isAntiKnight);			
+			prefs.putBoolean("isAntiKnight", isAntiKnight);
+			prefs.putBoolean("BringBackSE121", isBringBackSE121);
+			prefs.putInt("RevisedRatings", revisedRating);
 			if (lookAndFeelClassName != null)
                 prefs.put("lookAndFeelClassName", lookAndFeelClassName);
             try {
