@@ -18,7 +18,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".6";
+    public final static String SUBREV = ".7";
 	public final static String releaseDate = "2019-12-31";
 	public final static String releaseYear = "2019";
 	public final static String releaseLicence = "Lesser General Public License";
@@ -610,7 +610,19 @@ public class Settings {
             isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
             isShowingCandidateMasks = prefs.getBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
             isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121); 
-            revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
+            isBlocks = prefs.getBoolean("isBlocks", isBlocks);			
+            isX = prefs.getBoolean("isX", isX);			
+            isDG = prefs.getBoolean("isDG", isDG);			
+            isWindows = prefs.getBoolean("isWindows", isWindows);
+			isAsterisk = prefs.getBoolean("isAsterisk", isAsterisk);
+			isCD = prefs.getBoolean("isCD", isCD);
+			isGirandola = prefs.getBoolean("isGirandola", isGirandola);
+			isForbiddenPairs = prefs.getBoolean("isForbiddenPairs", isForbiddenPairs);
+			whichNC = prefs.getInt("whichNC", whichNC);
+			isAntiFerz = prefs.getBoolean("isAntiFerz", isAntiFerz);
+			isAntiKnight = prefs.getBoolean("isAntiKnight", isAntiKnight);            
+			isToroidal = prefs.getBoolean("isToroidal", isToroidal);            
+			revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
 			lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
         } catch (SecurityException ex) {
             // Maybe we are running from an applet. Do nothing
@@ -637,6 +649,7 @@ public class Settings {
 			prefs.putInt("whichNC", whichNC);
 			prefs.putBoolean("isAntiFerz", isAntiFerz);
 			prefs.putBoolean("isAntiKnight", isAntiKnight);
+			prefs.putBoolean("isToroidal", isToroidal);
 			prefs.putBoolean("BringBackSE121", isBringBackSE121);
 			prefs.putInt("RevisedRatings", revisedRating);
 			if (lookAndFeelClassName != null)

@@ -1503,8 +1503,11 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitRegularNC == null) {
             mitRegularNC = new JCheckBoxMenuItem();
             mitRegularNC.setText("NC");
-            mitRegularNC.setSelected(false);
-            mitRegularNC.setToolTipText("Adjacent cells can't have consecutive numbers (Excludes 1,9)");
+            mitRegularNC.setSelected(Settings.getInstance().whichNC() == 1);
+			if (mitRegularNC.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
+             mitRegularNC.setToolTipText("Adjacent cells can't have consecutive numbers (Excludes 1,9)");
             mitRegularNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					if (mitRegularNC.isSelected()) {
@@ -1530,7 +1533,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitCyclicNC == null) {
             mitCyclicNC = new JCheckBoxMenuItem();
             mitCyclicNC.setText("NC+");
-            mitCyclicNC.setSelected(false);
+            mitCyclicNC.setSelected(Settings.getInstance().whichNC() == 2);
+			if (mitCyclicNC.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitCyclicNC.setToolTipText("Adjacent cells can't have consecutive numbers (Includes 1,9)");
             mitCyclicNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1567,7 +1573,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitToroidal == null) {
             mitToroidal = new JCheckBoxMenuItem();
             mitToroidal.setText("Toroidal Grid");
-            mitToroidal.setSelected(false);
+            mitToroidal.setSelected(Settings.getInstance().isToroidal());
+			if (mitToroidal.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitToroidal.setToolTipText("Top-Bottom and Rt-Lt Wrap giving it a doughnut 3d shape");
             mitToroidal.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1588,7 +1597,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitAntiFerz == null) {
             mitAntiFerz = new JCheckBoxMenuItem();
             mitAntiFerz.setText("King: (0,1) and (1,1)");
-            mitAntiFerz.setSelected(false);
+            mitAntiFerz.setSelected(Settings.getInstance().isAntiFerz());
+			if (mitAntiFerz.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitAntiFerz.setToolTipText("Cells that are a King's move away are different");
             mitAntiFerz.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1612,7 +1624,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitAntiKnight == null) {
             mitAntiKnight = new JCheckBoxMenuItem();
             mitAntiKnight.setText("Knight: (1,2)");
-            mitAntiKnight.setSelected(false);
+            mitAntiKnight.setSelected(Settings.getInstance().isAntiKnight());
+			if (mitAntiKnight.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitAntiKnight.setToolTipText("Cells that are a Knight's move away are different");
             mitAntiKnight.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1651,7 +1666,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitLQ == null) {
             mitLQ = new JCheckBoxMenuItem();
             mitLQ.setText("Remove Blocks (Latin Square)");
-            mitLQ.setSelected(false);
+            mitLQ.setSelected(!Settings.getInstance().isBlocks());
+			if (mitLQ.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitLQ.setToolTipText("Remove Blocks (Popular for Latin Square Puzzles)");
             mitLQ.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1674,7 +1692,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitX == null) {
             mitX = new JCheckBoxMenuItem();
             mitX.setText("X main diagonals");
-            mitX.setSelected(false);
+            mitX.setSelected(Settings.getInstance().isX());
+			if (mitX.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitX.setToolTipText("Adds the 2 main diagonals (X) as constraints");
             mitX.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1698,7 +1719,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitDG == null) {
             mitDG = new JCheckBoxMenuItem();
             mitDG.setText("Disjoint Groups");
-            mitDG.setSelected(false);
+            mitDG.setSelected(Settings.getInstance().isDG());
+			if (mitDG.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitDG.setToolTipText("Add 9 disjoint groups");
             mitDG.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1722,7 +1746,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitWindows == null) {
             mitWindows = new JCheckBoxMenuItem();
             mitWindows.setText("Windows");
-            mitWindows.setSelected(false);
+            mitWindows.setSelected(Settings.getInstance().isWindows());
+			if (mitWindows.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitWindows.setToolTipText("Add Window groups (Use for Windoku, Hypersudoku)");
             mitWindows.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1746,7 +1773,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitAsterisk == null) {
             mitAsterisk = new JCheckBoxMenuItem();
             mitAsterisk.setText("Asterisk");
-            mitAsterisk.setSelected(false);
+			if (mitAsterisk.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
+            mitAsterisk.setSelected(Settings.getInstance().isAsterisk());
             mitAsterisk.setToolTipText("Adds 9-cell ASTERISK extra group");
             mitAsterisk.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1774,7 +1804,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitCD == null) {
             mitCD = new JCheckBoxMenuItem();
             mitCD.setText("Center Dot");
-            mitCD.setSelected(false);
+            mitCD.setSelected(Settings.getInstance().isCD());
+			if (mitCD.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitCD.setToolTipText("Adds 9-cell CENTER DOT extra group");
             mitCD.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1802,7 +1835,10 @@ public class SudokuFrame extends JFrame implements Asker {
         if (mitGirandola == null) {
             mitGirandola = new JCheckBoxMenuItem();
             mitGirandola.setText("Girandola");
-            mitGirandola.setSelected(false);
+            mitGirandola.setSelected(Settings.getInstance().isGirandola());
+			if (mitGirandola.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
             mitGirandola.setToolTipText("Adds 9-cell GIRANDOLA extra group");
             mitGirandola.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
