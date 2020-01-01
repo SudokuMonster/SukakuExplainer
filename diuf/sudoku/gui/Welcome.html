@@ -67,7 +67,8 @@
 </pre>  
    <li><b>Windows</b>: Adds 4 Extra Blocks (Windows) as constraints. These would force the creation of 5
    other hidden groups which can be used to help advancing the solution. When combined with Sudoku it
-   is also known as Windoku, Hyper Sudoku or SudokuW.  The regions on a 9x9 grid have this configuration:
+   is also known as Windoku, Hyper Sudoku, NRC Sudoku (Dutch Newspaper) or SudokuW.  The regions on a 9x9
+   grid have this configuration:
 <pre style="font-family:Courier"><b>
 9&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;9&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;9
 7&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;7&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;7
@@ -79,9 +80,9 @@
 8&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;8&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;8
 9&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;9&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;9</b>
 </pre>   
-   <li><b>X diagonals</b>: Adds 2 main diagonals as constraints (No repeating symbols in a main diagonal).
-   when combined with sudoku it is also known as called SudokuX. The diagonals overlap in the center of
-   the grid with that cell at Row 5 and Column 5 capable of seeing all cells of both diagonals:
+   <li><b>X diagonals</b>: Adds 2 9-cell diagonals as constraints (No repeating symbols in corner to
+   corner diagonal). When combined with sudoku it is also known as SudokuX. The diagonals overlap in
+   the center of the grid with that cell at Row 5 and Column 5 capable of seeing all cells of both diagonals:
 <pre style="font-family:Courier"><b>
 \&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;/
 .&#8194;&#8194;\&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;/&#8194;&#8194;.
@@ -129,9 +130,31 @@ O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#81
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
-O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O
-</b>
+O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O</b>
 </pre>
+  </ul>
+  <ul>
+   <li><b>Forbidden pairs variants</b>:These variants impose constraints on pairs of cells,
+    known as binary constraints. These binary constraints are clues which specify that certain
+    value pairs can never occur in cells with a specific location relationship. Each cell that
+	is solved will propagate this relationship to another unsolved cell.
+  </ul>
+  <ul>
+  <u>Non consecutive (NC)</u>: Sukaku Explainer has this variant where no consecutive values can
+    occur in adjacent cells. The values available in a 9x9 sudoku are 1,2,3,4,5,6,7,8,9.
+    If 1 and 9 are not allowed in adjacent cells then it is known as <u>NC+ or cyclic NC</u>.
+  </ul>
+  <ul>
+    Anti Chess: in this subset of Forbidden Pairs, the same value can't occur in cells that
+    are positioned 1 leap (of a specified chess piece) apart. 2 famous Anti Chess varieties
+    are supported by Sukaku Explainer: <u>Anti-King (AK, also known as touchless)</u> and
+    <u>Anti-kNight (AN)</u>.
+  </ul>
+  <ul>
+   <li>A 9x9 <b>Toroidal board</b> is one that wraps the board in way where Row 1 becomes next
+    to Row 9 and Column 1 beocems next to Column 9, transforming the board into a Doughnut shaped
+    (Halo or Toroid) 3D shape. It extands the effect of forbidden pairs to more cells taking
+    advantage of this property.
   </ul>
   </p>
 

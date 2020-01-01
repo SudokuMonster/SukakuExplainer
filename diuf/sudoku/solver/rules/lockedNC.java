@@ -23,9 +23,17 @@ public class lockedNC implements IndirectHintProducer {
 	public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
         int firstValue, valueIndex, secondValue;
         for (int value = 1; value <= 9; value++) {
-			for (int regionTypeIndex = 2; regionTypeIndex >=0; regionTypeIndex--) {
+			for (int regionTypeIndex = 4; regionTypeIndex >= (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex--) {
+				//DG doesn't have cells in proximity
+				if (regionTypeIndex == 3) continue;
+				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				//if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
+				//if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
 				int regionsNumber = Grid.getRegions(regionTypeIndex).length;
 				for (int i = 0; i < regionsNumber; i++) {
+					//Only lines or block regions allowed
+					if (regionTypeIndex == 4 && i > 3) continue;
+					//Decided on i to make it easier
 					Grid.Region region = Grid.getRegions(regionTypeIndex)[i];
 					BitSet ncValues = region.getPotentialPositions(grid, value);
 					int ncValuesCard = ncValues.cardinality();
