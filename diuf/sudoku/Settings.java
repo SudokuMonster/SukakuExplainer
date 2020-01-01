@@ -18,9 +18,9 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".8";
-	public final static String releaseDate = "2019-12-31";
-	public final static String releaseYear = "2019";
+    public final static String SUBREV = ".9";
+	public final static String releaseDate = "2020-01-01";
+	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
 	public final static String releaseLicenceVersion = "2.1";		
@@ -434,6 +434,11 @@ public class Settings {
 	
     public void setAntiFerz(boolean value) {
         this.isAntiFerz = value;
+		if (value)
+			getInstance().setForbiddenPairs(true);
+		else
+			if (!(getInstance().isAntiKnight() || getInstance().whichNC() > 0))
+				getInstance().setForbiddenPairs(false);
 		toggleVariants();
         save();
     }
@@ -444,6 +449,11 @@ public class Settings {
 
     public void setAntiKnight(boolean value) {
         this.isAntiKnight = value;
+		if (value)
+			getInstance().setForbiddenPairs(true);
+		else
+			if (!(getInstance().isAntiFerz() || getInstance().whichNC() > 0))
+				getInstance().setForbiddenPairs(false);
 		toggleVariants();
         save();
     }
@@ -466,6 +476,9 @@ public class Settings {
         this.whichNC = value;
 		if (value > 0)
 			getInstance().setForbiddenPairs(true);
+		else
+			if (!(getInstance().isAntiFerz() || getInstance().isAntiKnight()))
+				getInstance().setForbiddenPairs(false);
 		toggleVariants();
         save();
     }
