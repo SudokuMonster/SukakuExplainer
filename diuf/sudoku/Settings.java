@@ -18,7 +18,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".9";
+    public final static String SUBREV = ".10";
 	public final static String releaseDate = "2020-01-01";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
@@ -39,6 +39,7 @@ public class Settings {
     private boolean isShowingCandidateMasks = true;
 	private boolean isBringBackSE121 = false;//SE121 technique set, order and ratings
     private String lookAndFeelClassName = null;
+	public boolean isGUI = false;//true: GUI has been initialized mainly for preferences
 	//Variants
 	private boolean isBlocks = true;//Sudoku: true Latin Square: false
 	private boolean isX = false;//2 Regions, 9 cells x 2. Each forming a main diagonal, intersecting at r5c5 (40)
@@ -172,7 +173,15 @@ public class Settings {
 
     private Settings() {
         init();
-        load();
+		//disabled as it may interfere with preferences when command / GUI are both is use
+		//load() is called now from engine.main() once only
+		//effectively loading the preferences once at GUI loading
+		//No loading of preferences occurs with command line use
+		//save() for options used by both command and GUI
+		//therfore needs to be invoked from SudokuFrame only or Command changes
+		//may result in GUI preferences changes
+		//GUI only options can be left in Settings
+		//load();
 		Settings_Variants();
 		if (isBringBackSE121())
 			Settings_BBSE121();
@@ -202,10 +211,15 @@ public class Settings {
     }
     public boolean islkSudokuURUL() {
         return islkSudokuURUL;
+    }
+    public void setGUI(boolean isGUI) {
+        this.isGUI = isGUI;
+    }
+    public boolean isGUI() {
+        return isGUI;
     }	
 	public void setRevisedRating(int revisedRating) {
         this.revisedRating = revisedRating;
-		save();
     }
     public int revisedRating() {
         return revisedRating;
@@ -227,7 +241,6 @@ public class Settings {
 
     public void setRCNotation(boolean isRCNotation) {
         this.isRCNotation = isRCNotation;
-        save();
     }
 
     public boolean isRCNotation() {
@@ -236,7 +249,6 @@ public class Settings {
 
     public void setAntialiasing(boolean isAntialiasing) {
         this.isAntialiasing = isAntialiasing;
-        save();
     }
 
     public boolean isAntialiasing() {
@@ -245,7 +257,6 @@ public class Settings {
 
     public void setShowingCandidates(boolean value) {
         this.isShowingCandidates = value;
-        save();
     }
 
     public boolean isShowingCandidates() {
@@ -254,7 +265,6 @@ public class Settings {
 
     public void setShowingCandidateMasks(boolean value) {
         this.isShowingCandidateMasks = value;
-        save();
     }
 
     public boolean isShowingCandidateMasks() {
@@ -263,7 +273,6 @@ public class Settings {
 
     public void setBringBackSE121(boolean value) {
         this.isBringBackSE121 = value;
-        save();
     }
 
     public boolean isBringBackSE121() {
@@ -333,11 +342,11 @@ public class Settings {
 					temp += "NC+ ";
 					variantsCount++;
 				}
-		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight()/* || isForbiddenPairs()*/) {
+		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight() /*|| isForbiddenPairs()*/) {
 			this.isVLatin = false;
 			this.isVanilla = false;
 		}
-		if (!isVLatin)
+		if (!isVLatin || isForbiddenPairs())
 			setBringBackSE121(false);
 		this.variantString = temp;
 		setVariantsCount(variantsCount);
@@ -355,7 +364,6 @@ public class Settings {
 	public void setBlocks(boolean isBlocks) {
         this.isBlocks = isBlocks;
 		toggleVariants();
-        save();
     }
 
     public boolean isBlocks() {
@@ -365,7 +373,6 @@ public class Settings {
     public void setDG(boolean value) {
         this.isDG = value;
 		toggleVariants();
-        save();
     }
 
     public boolean isDG() {
@@ -375,7 +382,6 @@ public class Settings {
     public void setX(boolean value) {
         this.isX = value;
 		toggleVariants();
-        save();
     }
 
     public boolean isX() {
@@ -385,7 +391,6 @@ public class Settings {
     public void setWindows(boolean value) {
         this.isWindows = value;
 		toggleVariants();
-         save();
     }
 
     public boolean isWindows() {
@@ -395,7 +400,6 @@ public class Settings {
     public void setGirandola(boolean value) {
         this.isGirandola = value;
 		toggleVariants();
-         save();
     }
 
     public boolean isGirandola() {
@@ -405,7 +409,6 @@ public class Settings {
     public void setCD(boolean value) {
         this.isCD = value;
 		toggleVariants();
-         save();
     }
 
     public boolean isCD() {
@@ -415,7 +418,6 @@ public class Settings {
     public void setAsterisk(boolean value) {
         this.isAsterisk = value;
 		toggleVariants();
-         save();
     }
 
     public boolean isAsterisk() {
@@ -424,8 +426,7 @@ public class Settings {
 
     public void setToroidal(boolean value) {
         this.isToroidal = value;
-		toggleVariants();		
-        save();
+		toggleVariants();
     }
 
     public boolean isToroidal() {
@@ -440,7 +441,6 @@ public class Settings {
 			if (!(getInstance().isAntiKnight() || getInstance().whichNC() > 0))
 				getInstance().setForbiddenPairs(false);
 		toggleVariants();
-        save();
     }
 
     public boolean isAntiFerz() {
@@ -455,7 +455,6 @@ public class Settings {
 			if (!(getInstance().isAntiFerz() || getInstance().whichNC() > 0))
 				getInstance().setForbiddenPairs(false);
 		toggleVariants();
-        save();
     }
 
     public boolean isAntiKnight() {
@@ -465,7 +464,6 @@ public class Settings {
     public void setForbiddenPairs(boolean value) {
         this.isForbiddenPairs = value;
 		toggleVariants();
-        save();
     }
 
     public boolean isForbiddenPairs() {
@@ -480,7 +478,6 @@ public class Settings {
 			if (!(getInstance().isAntiFerz() || getInstance().isAntiKnight()))
 				getInstance().setForbiddenPairs(false);
 		toggleVariants();
-        save();
     }
 
     public int whichNC() {
@@ -493,7 +490,6 @@ public class Settings {
 
     public void setLookAndFeelClassName(String lookAndFeelClassName) {
         this.lookAndFeelClassName = lookAndFeelClassName;
-        save();
     }
 
     public EnumSet<SolvingTechnique> getTechniques() {
@@ -588,7 +584,7 @@ public class Settings {
 			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
 		}
 		if (isVLatin())
-			if (isBringBackSE121())
+			if (isBringBackSE121() && !isForbiddenPairs())
 				init121();
 			else
 				init();
@@ -614,32 +610,34 @@ public class Settings {
     }
 
     public void load() {
-        try {
-            Preferences prefs = Preferences.userNodeForPackage(Settings.class);
-            if (prefs == null)
-                return; // What can I do there ?
-            isRCNotation = prefs.getBoolean("isRCNotation", isRCNotation);
-            isAntialiasing = prefs.getBoolean("isAntialiasing", isAntialiasing);
-            isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
-            isShowingCandidateMasks = prefs.getBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
-            isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121); 
-            isBlocks = prefs.getBoolean("isBlocks", isBlocks);			
-            isX = prefs.getBoolean("isX", isX);			
-            isDG = prefs.getBoolean("isDG", isDG);			
-            isWindows = prefs.getBoolean("isWindows", isWindows);
-			isAsterisk = prefs.getBoolean("isAsterisk", isAsterisk);
-			isCD = prefs.getBoolean("isCD", isCD);
-			isGirandola = prefs.getBoolean("isGirandola", isGirandola);
-			isForbiddenPairs = prefs.getBoolean("isForbiddenPairs", isForbiddenPairs);
-			whichNC = prefs.getInt("whichNC", whichNC);
-			isAntiFerz = prefs.getBoolean("isAntiFerz", isAntiFerz);
-			isAntiKnight = prefs.getBoolean("isAntiKnight", isAntiKnight);            
-			isToroidal = prefs.getBoolean("isToroidal", isToroidal);            
-			revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
-			lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
-        } catch (SecurityException ex) {
-            // Maybe we are running from an applet. Do nothing
-        }
+		//if (this.isGUI) {
+			try {
+				Preferences prefs = Preferences.userNodeForPackage(Settings.class);
+				if (prefs == null)
+					return; // What can I do there ?
+				isRCNotation = prefs.getBoolean("isRCNotation", isRCNotation);
+				isAntialiasing = prefs.getBoolean("isAntialiasing", isAntialiasing);
+				isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
+				isShowingCandidateMasks = prefs.getBoolean("isShowingCandidateMasks", isShowingCandidateMasks);
+				isBringBackSE121 = prefs.getBoolean("BringBackSE121", isBringBackSE121); 
+				isBlocks = prefs.getBoolean("isBlocks", isBlocks);			
+				isX = prefs.getBoolean("isX", isX);			
+				isDG = prefs.getBoolean("isDG", isDG);			
+				isWindows = prefs.getBoolean("isWindows", isWindows);
+				isAsterisk = prefs.getBoolean("isAsterisk", isAsterisk);
+				isCD = prefs.getBoolean("isCD", isCD);
+				isGirandola = prefs.getBoolean("isGirandola", isGirandola);
+				isForbiddenPairs = prefs.getBoolean("isForbiddenPairs", isForbiddenPairs);
+				whichNC = prefs.getInt("whichNC", whichNC);
+				isAntiFerz = prefs.getBoolean("isAntiFerz", isAntiFerz);
+				isAntiKnight = prefs.getBoolean("isAntiKnight", isAntiKnight);            
+				isToroidal = prefs.getBoolean("isToroidal", isToroidal);            
+				revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
+				lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
+			} catch (SecurityException ex) {
+				// Maybe we are running from an applet. Do nothing
+			}
+		//}
     }
 
     public void save() {

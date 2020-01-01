@@ -133,7 +133,8 @@ public class SudokuFrame extends JFrame implements Asker {
 
 
     public SudokuFrame() {
-        super();
+		super();
+		//getInstance().setGUI(true);
         initialize(true);
         repaintViews();
         AutoBusy.addFullAutoBusy(this);
@@ -1523,6 +1524,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1552,6 +1554,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1587,6 +1590,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1614,6 +1618,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1641,6 +1646,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1678,6 +1684,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					if (Settings.getInstance().isBlocks()) {	
 					}
 				Settings.getInstance().toggleVariants();
+				Settings.getInstance().save();
 				engine.clearGrid();
 				initialize(false);
 				repaintViews();
@@ -1709,6 +1716,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1736,6 +1744,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1763,6 +1772,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1794,6 +1804,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();	
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1825,6 +1836,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();
 					Settings.getInstance().Settings_Variants();					
+					Settings.getInstance().save();
                 }
             });
         }
@@ -1856,6 +1868,7 @@ public class SudokuFrame extends JFrame implements Asker {
 					repaintViews();
 					showWelcomeText();	
 					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
                 }
             });
         }
@@ -2035,7 +2048,8 @@ public class SudokuFrame extends JFrame implements Asker {
 				engine.clearGrid();
 				initialize(false);
 				repaintViews();
-				showWelcomeText();					
+				showWelcomeText();
+				Settings.getInstance().save();				
                 }
             });
         }
@@ -2068,6 +2082,7 @@ public class SudokuFrame extends JFrame implements Asker {
 				initialize(false);
 				repaintViews();
 				showWelcomeText();
+				Settings.getInstance().save();
                 }
             });
         }

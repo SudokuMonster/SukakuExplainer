@@ -48,8 +48,8 @@ public class SudokuExplainer {
 
 
     public SudokuExplainer() {
-        grid = new Grid();
-        solver = new Solver(grid);
+		grid = new Grid();
+		solver = new Solver(grid);
         solver.rebuildPotentialValues();
         frame = new SudokuFrame();
         frame.setEngine(this);
@@ -654,11 +654,13 @@ public class SudokuExplainer {
      * @param args program arguments (not used)
      */
     public static void main(String[] args) {
-        try {
+        Settings.getInstance().load();
+		try {
             String lookAndFeelClassName = Settings.getInstance().getLookAndFeelClassName();
             if (lookAndFeelClassName == null)
                 lookAndFeelClassName = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(lookAndFeelClassName);
+			Settings.getInstance().save();
         } catch(Exception e) {
             e.printStackTrace();
         }
