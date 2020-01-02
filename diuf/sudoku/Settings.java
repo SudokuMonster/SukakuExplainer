@@ -18,7 +18,7 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".10";
+    public final static String SUBREV = ".11";
 	public final static String releaseDate = "2020-01-01";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
@@ -33,7 +33,7 @@ public class Settings {
 	private boolean islkSudokuURUL = true; //Fix to UR and UL algorithm by lkSudoku
     private int batchSolving = 0;//lksudoku revised bacth solving (Disabled by default)
 	private int FCPlus = 0;//Increasing non-trivial implications used in FC+ //0: Default (Same as SE121) //1:More //2:More
-	private boolean isRCNotation = false;
+	private boolean isRCNotation = true;
     private boolean isAntialiasing = true;
     private boolean isShowingCandidates = true;
     private boolean isShowingCandidateMasks = true;
@@ -244,7 +244,7 @@ public class Settings {
     }
 
     public boolean isRCNotation() {
-        return isRCNotation;
+        return this.isRCNotation;
     }
 
     public void setAntialiasing(boolean isAntialiasing) {
@@ -485,7 +485,7 @@ public class Settings {
     }
 
     public String getLookAndFeelClassName() {
-        return lookAndFeelClassName;
+        return this.lookAndFeelClassName;
     }
 
     public void setLookAndFeelClassName(String lookAndFeelClassName) {
@@ -615,6 +615,7 @@ public class Settings {
 				Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 				if (prefs == null)
 					return; // What can I do there ?
+				lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
 				isRCNotation = prefs.getBoolean("isRCNotation", isRCNotation);
 				isAntialiasing = prefs.getBoolean("isAntialiasing", isAntialiasing);
 				isShowingCandidates = prefs.getBoolean("isShowingCandidates", isShowingCandidates);
@@ -633,7 +634,6 @@ public class Settings {
 				isAntiKnight = prefs.getBoolean("isAntiKnight", isAntiKnight);            
 				isToroidal = prefs.getBoolean("isToroidal", isToroidal);            
 				revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
-				lookAndFeelClassName = prefs.get("lookAndFeelClassName", lookAndFeelClassName);
 			} catch (SecurityException ex) {
 				// Maybe we are running from an applet. Do nothing
 			}

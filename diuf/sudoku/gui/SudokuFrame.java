@@ -408,7 +408,7 @@ public class SudokuFrame extends JFrame implements Asker {
                         try {
                             UIManager.setLookAndFeel(lafClassName);
                             Settings.getInstance().setLookAndFeelClassName(lafClassName);
-                            SwingUtilities.updateComponentTreeUI(SudokuFrame.this);
+							SwingUtilities.updateComponentTreeUI(SudokuFrame.this);
                             // Create renderer again to reload the correct icons:
                             hintsTree.setCellRenderer(new HintsTreeCellRenderer());
                             SudokuFrame.this.repaint();
@@ -417,6 +417,7 @@ public class SudokuFrame extends JFrame implements Asker {
                                 generateDialog.pack();
                                 generateDialog.repaint();
                             }
+							Settings.getInstance().save();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -1424,6 +1425,7 @@ public class SudokuFrame extends JFrame implements Asker {
                     if (mitMathMode.isSelected()) {
                         Settings.getInstance().setRCNotation(true);
                         repaint();
+						Settings.getInstance().save();
                     }
                 }
             });
@@ -1442,6 +1444,7 @@ public class SudokuFrame extends JFrame implements Asker {
                     if (mitChessMode.isSelected()) {
                         Settings.getInstance().setRCNotation(false);
                         repaint();
+						Settings.getInstance().save();
                     }
                 }
             });
@@ -1459,7 +1462,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitAntiAliasing.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     Settings.getInstance().setAntialiasing(mitAntiAliasing.isSelected());
-                    repaint();
+					repaint();
+                    Settings.getInstance().save();
                 }
             });
         }
@@ -2004,7 +2008,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitShowCandidates.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     Settings.getInstance().setShowingCandidates(mitShowCandidates.isSelected());
-                    repaint();
+					repaint();
+                    Settings.getInstance().save();
                 }
             });
         }
@@ -2021,7 +2026,8 @@ public class SudokuFrame extends JFrame implements Asker {
             mitShowCandidateMasks.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     Settings.getInstance().setShowingCandidateMasks(mitShowCandidateMasks.isSelected());
-                    repaint();
+					repaint();
+                    Settings.getInstance().save();
                 }
             });
         }
