@@ -12,6 +12,7 @@ import diuf.sudoku.Grid;
 import diuf.sudoku.Grid.*;
 import diuf.sudoku.solver.*;
 import diuf.sudoku.tools.*;
+import diuf.sudoku.*;
 
 /**
  * A information hint produced by the {@link diuf.sudoku.solver.checks.Analyser}
@@ -57,7 +58,7 @@ public class AnalysisInfo extends WarningHint {
         }
 		details.append("The most difficult technique (ER): "+difficultRuleName+"<br>\n");
         String result = HtmlLoader.loadHtml(this, "Analysis.html");
-        result = HtmlLoader.format(result, format.format(difficulty)+" ("+difficultRuleName+")", details);
+        result = HtmlLoader.format(result, format.format(difficulty)+" ("+difficultRuleName+")", details, Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
         return result;
     }
 

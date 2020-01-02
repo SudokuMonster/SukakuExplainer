@@ -170,6 +170,53 @@ public enum Symmetry {
         public String getDescription() {
             return "All symmetries (around the 8 axes and under a 90° rotation)";
         }
+	},
+	Full32 {
+        @Override
+        public Point[] getPoints(int x, int y) {
+            return new Point[] {
+					//q1
+					new Point(x % 4, y % 4),
+                    new Point(4 - x % 4, y % 4),
+                    new Point(x % 4, 4 - y % 4),
+                    new Point(4 - x % 4, 4 - y % 4),
+                    new Point(y % 4, x % 4),
+                    new Point(4 - y % 4, x % 4),
+                    new Point(y % 4, 4 - x % 4),
+                    new Point(4 - y % 4, 4 - x % 4),
+					//q2
+					new Point(x % 4 + 4, y % 4),
+                    new Point(4 - x % 4 + 4, y % 4),
+                    new Point(x % 4 + 4, 4 - y % 4),
+                    new Point(4 - x % 4 + 4, 4 - y % 4),
+                    new Point(y % 4 + 4, x % 4),
+                    new Point(4 - y % 4 + 4, x % 4),
+                    new Point(y % 4 + 4, 4 - x % 4),
+                    new Point(4 - y % 4 + 4, 4 - x % 4),
+					//q3
+					new Point(x % 4, y % 4 + 4),
+                    new Point(4 - x % 4, y % 4 + 4),
+                    new Point(x % 4, 4 - y % 4 + 4),
+                    new Point(4 - x % 4, 4 - y % 4 + 4),
+                    new Point(y % 4, x % 4 + 4),
+                    new Point(4 - y % 4, x % 4 + 4),
+                    new Point(y % 4, 4 - x % 4 + 4),
+                    new Point(4 - y % 4, 4 - x % 4 + 4),
+					//q4
+					new Point(x % 4 + 4, y % 4 + 4),
+                    new Point(4 - x % 4 + 4, y % 4 + 4),
+                    new Point(x % 4 + 4, 4 - y % 4 + 4),
+                    new Point(4 - x % 4 + 4, 4 - y % 4 + 4),
+                    new Point(y % 4 + 4, x % 4 + 4),
+                    new Point(4 - y % 4 + 4, x % 4 + 4),
+                    new Point(y % 4 + 4, 4 - x % 4 + 4),
+					new Point(4 - y % 4 + 4, 4 - x % 4 + 4)};
+        }    
+
+        @Override
+        public String getDescription() {
+            return "Extended full symmetry (32-fold symmetry)";
+        }
     };
 
     public abstract Point[] getPoints(int x, int y);

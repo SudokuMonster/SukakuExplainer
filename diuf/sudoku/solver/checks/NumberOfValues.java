@@ -43,7 +43,7 @@ public class NumberOfValues implements WarningHintProducer {
             }
             WarningMessage message = new WarningMessage(this,
                     "Sudoku has multiple solutions",
-                    "TooFewValues.html", missingValues);
+                    "TooFewValues.html", missingValues, Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
             accu.add(message);
         }
 */

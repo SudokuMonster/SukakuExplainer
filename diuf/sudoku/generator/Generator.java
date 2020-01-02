@@ -88,12 +88,12 @@ public class Generator {
             indexes[p2] = temp;
         }
 
-        //int attempts = 0;
+        int attempts = 0;
         //int successes = 0;
 
         // Randomly remove clues
         boolean isSuccess = true;
-        while (isSuccess) {
+        while (isSuccess && attempts < 6) {
             // Choose a random cell to clear
             int index = rnd.nextInt(81);
             int countDown = 81; // Number of cells
@@ -142,7 +142,7 @@ public class Generator {
                             grid.setCellValue(p.x, p.y, solution.getCellValue(p.x, p.y));
 							grid.setGiven(y * 9 + x);
 						}
-                        //attempts += 1;
+                        attempts += 1;
                     }
                 }
                 index = (index + 1) % 81; // Next index (indexing scrambled array of indexes)

@@ -82,12 +82,13 @@ public class DoubleSolutionWarning extends WarningHint {
 
     @Override
     public String toString() {
-        return "Sudoku has multiple solutions";
+        return Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "") +" has multiple solutions";
     }
 
     @Override
     public String toHtml(Grid grid) {
-        return HtmlLoader.loadHtml(this, "DoubleSolution.html");
+        String result =  HtmlLoader.loadHtml(this, "DoubleSolution.html");
+		return HtmlLoader.format(result, Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
     }
 
 }

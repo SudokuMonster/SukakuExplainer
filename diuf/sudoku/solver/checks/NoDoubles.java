@@ -49,7 +49,7 @@ public class NoDoubles implements WarningHintProducer {
                             // Value appear twice in this region
                             WarningMessage message = new WarningMessage(this,
                                     "More than one \"" + value + "\" in a " + region.toString(),
-                                    "DoubleValue.html", Integer.toString(value), region.toString()) {
+                                    "DoubleValue.html", Integer.toString(value), region.toString(), Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "")) {
 
                                 @Override
                                 public Collection<Cell> getRedCells() {
@@ -117,7 +117,7 @@ public class NoDoubles implements WarningHintProducer {
 
     @Override
     public String toString() {
-        return "Invalid Sudoku";
+        return "Invalid " + Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "");
     }
 
 }

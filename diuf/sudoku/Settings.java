@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 15;
-    public final static String SUBREV = ".11";
-	public final static String releaseDate = "2020-01-01";
+    public final static String SUBREV = ".12";
+	public final static String releaseDate = "2020-01-02";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";

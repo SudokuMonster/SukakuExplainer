@@ -51,17 +51,17 @@ public class BruteForceAnalysis implements WarningHintProducer {
             WarningMessage message;
             if (grid.equals(grid1)) {
                 // All potential values correct - No solution
-                message = new WarningMessage(this, "The Sudoku has no solution",
-                "NoSolution.html");
+                message = new WarningMessage(this, "The " + Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "") + " has no solution",
+                "NoSolution.html", Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
             } else {
                 // Some potential values missing. Check with all
                 hasSolution = analyse(grid1, false);
                 if (!hasSolution)
-                    message = new WarningMessage(this, "The Sudoku has no solution",
-                    "NoSolution.html");
+                    message = new WarningMessage(this, "The " + Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "") + " has no solution",
+                    "NoSolution.html", Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
                 else
-                    message = new WarningMessage(this, "The Sudoku has no solution",
-                    "MissingCandidates.html");
+                    message = new WarningMessage(this, "The " + Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : "") + " has no solution",
+                    "MissingCandidates.html", Settings.getInstance().variantString + (Settings.getInstance().isBlocks() ? " Sudoku" : ""));
             }
             accu.add(message);
             return;
