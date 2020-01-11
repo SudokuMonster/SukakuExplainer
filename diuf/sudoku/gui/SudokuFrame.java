@@ -115,6 +115,8 @@ public class SudokuFrame extends JFrame implements Asker {
 	private JCheckBoxMenuItem mitAntiKnight = null;
 	private JCheckBoxMenuItem mitCyclicNC = null;
 	private JCheckBoxMenuItem mitRegularNC = null;
+	private JCheckBoxMenuItem mitCyclicFNC = null;
+	private JCheckBoxMenuItem mitRegularFNC = null;
     private JMenu forbiddenPairsMenu = null;
     private JMenu helpMenu = null;
     private JMenuItem mitAbout = null;
@@ -1500,6 +1502,8 @@ public class SudokuFrame extends JFrame implements Asker {
 			forbiddenPairsMenu.setToolTipText("Certain Cells have a certain value pairing");
 			forbiddenPairsMenu.add(getMitRegularNC());
 			forbiddenPairsMenu.add(getMitCyclicNC());
+			forbiddenPairsMenu.add(getMitRegularFNC());
+			forbiddenPairsMenu.add(getMitCyclicFNC());			
 		}
 		return forbiddenPairsMenu;
 	}
@@ -1517,10 +1521,11 @@ public class SudokuFrame extends JFrame implements Asker {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					if (mitRegularNC.isSelected()) {
 						mitCyclicNC.setSelected(false);
+						mitRegularFNC.setSelected(false);
+						mitCyclicFNC.setSelected(false);
 						mitBringBackSE121.setSelected(false);
 					}
-					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);					
-					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : mitCyclicNC.isSelected() ? 2 : mitRegularFNC.isSelected() ? 3 : mitCyclicFNC.isSelected() ? 4 : 0);				
 					Settings.getInstance().toggleVariants();
 					Grid.changeVisibleCells();
 					engine.clearGrid();
@@ -1547,11 +1552,12 @@ public class SudokuFrame extends JFrame implements Asker {
             mitCyclicNC.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
 					if (mitCyclicNC.isSelected()) {
+						mitCyclicFNC.setSelected(false);
 						mitRegularNC.setSelected(false);
+						mitRegularFNC.setSelected(false);
 						mitBringBackSE121.setSelected(false);
 					}
-					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : 0);
-					Settings.getInstance().setNC(mitCyclicNC.isSelected() ? 2 : 0);
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : mitCyclicNC.isSelected() ? 2 : mitRegularFNC.isSelected() ? 3 : mitCyclicFNC.isSelected() ? 4 : 0);				
 					Settings.getInstance().toggleVariants();
 					engine.clearGrid();
 					initialize(false);
@@ -1564,6 +1570,70 @@ public class SudokuFrame extends JFrame implements Asker {
         }
         return mitCyclicNC;
     }
+
+    private JCheckBoxMenuItem getMitRegularFNC() {
+        if (mitRegularFNC == null) {
+            mitRegularFNC = new JCheckBoxMenuItem();
+            mitRegularFNC.setText("Ferz NC");
+            mitRegularFNC.setSelected(Settings.getInstance().whichNC() == 3);
+			if (mitRegularFNC.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
+             mitRegularFNC.setToolTipText("Diagonal Neighbouring cells can't have consecutive numbers (Excludes 1,9)");
+            mitRegularFNC.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					if (mitRegularFNC.isSelected()) {
+						mitCyclicNC.setSelected(false);
+						mitRegularNC.setSelected(false);
+						mitCyclicFNC.setSelected(false);
+						mitBringBackSE121.setSelected(false);
+					}
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : mitCyclicNC.isSelected() ? 2 : mitRegularFNC.isSelected() ? 3 : mitCyclicFNC.isSelected() ? 4 : 0);				
+					Settings.getInstance().toggleVariants();
+					Grid.changeVisibleCells();
+					engine.clearGrid();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
+                }
+            });
+        }
+        return mitRegularFNC;
+    }
+
+    private JCheckBoxMenuItem getMitCyclicFNC() {
+        if (mitCyclicFNC == null) {
+            mitCyclicFNC = new JCheckBoxMenuItem();
+            mitCyclicFNC.setText("Ferz NC+");
+            mitCyclicFNC.setSelected(Settings.getInstance().whichNC() == 4);
+			if (mitCyclicFNC.isSelected()) {
+				Settings.getInstance().toggleVariants();
+			}
+            mitCyclicFNC.setToolTipText("Diagonal Neighbouring cells can't have consecutive numbers (Includes 1,9)");
+            mitCyclicFNC.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+					if (mitCyclicFNC.isSelected()) {
+						mitCyclicNC.setSelected(false);
+						mitRegularNC.setSelected(false);
+						mitRegularFNC.setSelected(false);
+						mitBringBackSE121.setSelected(false);
+					}
+					Settings.getInstance().setNC(mitRegularNC.isSelected() ? 1 : mitCyclicNC.isSelected() ? 2 : mitRegularFNC.isSelected() ? 3 : mitCyclicFNC.isSelected() ? 4 : 0);				
+					Settings.getInstance().toggleVariants();
+					engine.clearGrid();
+					initialize(false);
+					repaintViews();
+					showWelcomeText();
+					Settings.getInstance().Settings_Variants();
+					Settings.getInstance().save();
+                }
+            });
+        }
+        return mitCyclicFNC;
+    }
+
 
     private JMenu getAntiChessMenu() {
 		if (antiChessMenu == null) {

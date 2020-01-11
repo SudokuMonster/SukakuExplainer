@@ -20,6 +20,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     private final Grid.Region baseSet;
     private final Grid.Region coverSet;
     private final Grid.Region shareRegion;
+	private final Grid.Region ringRegion;
 	private final boolean emptyRegion1;
 	private final boolean emptyRegion2;
 	//private final boolean r1EmptyRegionBlades;
@@ -29,7 +30,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     public TurbotFishHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
             Cell startCell, Cell endCell, Cell bridgeCell1, Cell bridgeCell2,
-            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRegion1, boolean emptyRegion2, /*boolean r1EmptyRegionBlades, boolean r2EmptyRegionBlades,*/ Cell[] emptyRegionCells, int eliminationsTotal) {
+            int value, Grid.Region base, Grid.Region cover, Grid.Region shareRegion, boolean emptyRegion1, boolean emptyRegion2, /*boolean r1EmptyRegionBlades, boolean r2EmptyRegionBlades,*/ Cell[] emptyRegionCells, int eliminationsTotal, Grid.Region ringRegion) {
         super(rule, removablePotentials);
         this.value = value;
         this.startCell = startCell;
@@ -39,6 +40,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
         this.baseSet = base;
         this.coverSet = cover;
         this.shareRegion = shareRegion;
+        this.ringRegion = ringRegion;
 		this.emptyRegion1 = emptyRegion1;
 		this.emptyRegion2 = emptyRegion2;
 		//this.r1EmptyRegionBlades = r1EmptyRegionBlades;
@@ -172,7 +174,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     static String hintNames[][][] = { //baseSetRegionTypeIndex, coverSetRegionTypeIndex, name/shortName
     			{ //baseSetRegionTypeIndex = 0 box
     				{ //coverSetRegionTypeIndex = 0 box
-    					"Turbot Crane", "GXW"
+    					"Turbot Crane", "2SL"
     				},
     				{ //coverSetRegionTypeIndex = 1 row
     					"Turbot Crane", "TC"
@@ -186,7 +188,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     					"Turbot Crane", "TC"
     				},
     				{ //coverSetRegionTypeIndex = 1 row
-    					"Skyscraper", "Sky"
+    					"Skyscraper", "SS"
     				},
     				{ //coverSetRegionTypeIndex = 2 column
     					"Two-string Kite", "2SK"
@@ -200,7 +202,7 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     					"Two-string Kite", "2SK"
     				},
     				{ //coverSetRegionTypeIndex = 2 column
-    					"Skyscraper", "Sky"
+    					"Skyscraper", "SS"
     				}    								
     			}
 	};
@@ -212,29 +214,33 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
 
     @Override
     public String getName() {
-		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "Grouped Turbot Crane" + " " + getSuffix();
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) ^ (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "Grouped Turbot Crane" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) && (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "Grouped 2 strong links" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
-			return "Grouped Skyscraper" + " " + getSuffix();
+			return "Grouped Skyscraper" +(ringRegion == null ? "" : " Ring") + " " + getSuffix();
 		if (emptyRegion1 || emptyRegion2)
-			return "Grouped 2-String Kite" + " " + getSuffix();
+			return "Grouped 2-String Kite" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
 		if (baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2)
-			return "Generalized 2 strong links" + " " + getSuffix();
-		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0];
+			return "Grouped 2 strong links" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
+		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0] + (ringRegion == null ? "" : " Ring");
 
     }	
 	
     @Override
     public String getShortName() {
-		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) || (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "gTC" + getSuffix();
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) ^ (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "gTC" + (ringRegion == null ? "" : "r") + getSuffix();
+		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) && (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
+			return "g2SL" + (ringRegion == null ? "" : "r") + getSuffix();
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
-			return "gSky" + getSuffix();
+			return "gSS" + (ringRegion == null ? "" : "r") + getSuffix();
 		if (emptyRegion1 || emptyRegion2)
-			return "g2SK" + getSuffix();
+			return "g2SK" + (ringRegion == null ? "" : "r") + getSuffix();
 		if (baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2)
-			return "g2SL" + getSuffix();		
-		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1];
+			return "g2SL" + (ringRegion == null ? "" : "r") + getSuffix();		
+		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][1] + (ringRegion == null ? "" : "r");
     }
 
 	public int getEliminationsTotal() {

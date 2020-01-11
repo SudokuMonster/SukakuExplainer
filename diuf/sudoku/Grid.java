@@ -89,6 +89,8 @@ public class Grid {
 	private static final int [][] knightCellIndex;
 	public static final int [][] wazirCellsRegular;
 	public static final int [][] wazirCellsToroidal;
+	public static final int [][] ferzCellsRegular;
+	public static final int [][] ferzCellsToroidal;
     private static final Block[] blocks;
     private static final Row[] rows;
     private static final Column[] columns;
@@ -716,6 +718,174 @@ public class Grid {
 			{0,-1}
 		};*/
 
+		ferzCellsToroidal = new int [][] {
+			{71,73,8,10},
+			{72,74,9,11},
+			{73,75,10,12},
+			{74,76,11,13},
+			{75,77,12,14},
+			{76,78,13,15},
+			{77,79,14,16},
+			{78,80,15,17},
+			{79,0,16,18},
+			{80,1,17,19},
+			{0,2,18,20},
+			{1,3,19,21},
+			{2,4,20,22},
+			{3,5,21,23},
+			{4,6,22,24},
+			{5,7,23,25},
+			{6,8,24,26},
+			{7,9,25,27},
+			{8,10,26,28},
+			{9,11,27,29},
+			{10,12,28,30},
+			{11,13,29,31},
+			{12,14,30,32},
+			{13,15,31,33},
+			{14,16,32,34},
+			{15,17,33,35},
+			{16,18,34,36},
+			{17,19,35,37},
+			{18,20,36,38},
+			{19,21,37,39},
+			{20,22,38,40},
+			{21,23,39,41},
+			{22,24,40,42},
+			{23,25,41,43},
+			{24,26,42,44},
+			{25,27,43,45},
+			{26,28,44,46},
+			{27,29,45,47},
+			{28,30,46,48},
+			{29,31,47,49},
+			{30,32,48,50},
+			{31,33,49,51},
+			{32,34,50,52},
+			{33,35,51,53},
+			{34,36,52,54},
+			{35,37,53,55},
+			{36,38,54,56},
+			{37,39,55,57},
+			{38,40,56,58},
+			{39,41,57,59},
+			{40,42,58,60},
+			{41,43,59,61},
+			{42,44,60,62},
+			{43,45,61,63},
+			{44,46,62,64},
+			{45,47,63,65},
+			{46,48,64,66},
+			{47,49,65,67},
+			{48,50,66,68},
+			{49,51,67,69},
+			{50,52,68,70},
+			{51,53,69,71},
+			{52,54,70,72},
+			{53,55,71,73},
+			{54,56,72,74},
+			{55,57,73,75},
+			{56,58,74,76},
+			{57,59,75,77},
+			{58,60,76,78},
+			{59,61,77,79},
+			{60,62,78,80},
+			{61,63,79,0},
+			{62,64,80,1},
+			{63,65,0,2},
+			{64,66,1,3},
+			{65,67,2,4},
+			{66,68,3,5},
+			{67,69,4,6},
+			{68,70,5,7},
+			{69,71,6,8},
+			{70,72,7,9}
+		};
+		
+		ferzCellsRegular = new int [][] {
+			{10},
+			{9,11},
+			{10,12},
+			{11,13},
+			{12,14},
+			{13,15},
+			{14,16},
+			{15,17},
+			{16},
+			{1,19},
+			{0,2,18,20},
+			{1,3,19,21},
+			{2,4,20,22},
+			{3,5,21,23},
+			{4,6,22,24},
+			{5,7,23,25},
+			{6,8,24,26},
+			{7,25},
+			{10,28},
+			{9,11,27,29},
+			{10,12,28,30},
+			{11,13,29,31},
+			{12,14,30,32},
+			{13,15,31,33},
+			{14,16,32,34},
+			{15,17,33,35},
+			{16,34},
+			{19,37},
+			{18,20,36,38},
+			{19,21,37,39},
+			{20,22,38,40},
+			{21,23,39,41},
+			{22,24,40,42},
+			{23,25,41,43},
+			{24,26,42,44},
+			{25,43},
+			{28,46},
+			{27,29,45,47},
+			{28,30,46,48},
+			{29,31,47,49},
+			{30,32,48,50},
+			{31,33,49,51},
+			{32,34,50,52},
+			{33,35,51,53},
+			{34,52},
+			{37,55},
+			{36,38,54,56},
+			{37,39,55,57},
+			{38,40,56,58},
+			{39,41,57,59},
+			{40,42,58,60},
+			{41,43,59,61},
+			{42,44,60,62},
+			{43,61},
+			{46,64},
+			{45,47,63,65},
+			{46,48,64,66},
+			{47,49,65,67},
+			{48,50,66,68},
+			{49,51,67,69},
+			{50,52,68,70},
+			{51,53,69,71},
+			{52,70},
+			{55,73},
+			{54,56,72,74},
+			{55,57,73,75},
+			{56,58,74,76},
+			{57,59,75,77},
+			{58,60,76,78},
+			{59,61,77,79},
+			{60,62,78,80},
+			{61,79},
+			{64},
+			{63,65},
+			{64,66},
+			{65,67},
+			{66,68},
+			{67,69},
+			{68,70},
+			{69,71},
+			{70}
+		};
+		
 		wazirCellsToroidal = new int [][] {
 			{72,9,1,8},
 			{73,10,2,0},
@@ -2292,33 +2462,70 @@ public class Grid {
 					int statusNC = Settings.getInstance().whichNC();
 					if (statusNC > 0)
 						if(Settings.getInstance().isToroidal()) {
-							int j = Grid.wazirCellsToroidal[i].length;
+							int j = 0;
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								j = Grid.wazirCellsToroidal[i].length;
+							else
+								j = Grid.ferzCellsToroidal[i].length;
 							for(int k = 0; k < j; k++) {
-								if (statusNC == 2 || singleclue < 9)
-									if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 9 ? 1 : singleclue + 1)){
-										isnakedsingle = false;
-										break;
+								if (statusNC == 2 || statusNC == 4 || singleclue < 9)
+									if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2){
+										if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+											isnakedsingle = false;
+											break;
+										}
 									}
-								if (statusNC == 2 || singleclue > 1)
-									if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 1 ? 9 : singleclue - 1)){
-										isnakedsingle = false;
-										break;
+									else
+										if(hasCellPotentialValue(Grid.ferzCellsToroidal[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+											isnakedsingle = false;
+											break;
+										}
+								if (statusNC == 2 || statusNC == 4 || singleclue > 1)
+									if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2) {
+										if(hasCellPotentialValue(Grid.wazirCellsToroidal[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+											isnakedsingle = false;
+											break;
+										}
 									}
+									else
+										if(hasCellPotentialValue(Grid.ferzCellsToroidal[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+											isnakedsingle = false;
+											break;
+										}
 							}
 						}
 						else {
-							int j = Grid.wazirCellsRegular[i].length;
+							int j = 0;
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								j = Grid.wazirCellsRegular[i].length;
+							else
+								j = Grid.ferzCellsRegular[i].length;
 							for(int k = 0; k < j; k++) {
-								if (statusNC == 2 || singleclue < 9)
-									if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 9 ? 1 : singleclue + 1)){
-										isnakedsingle = false;
-										break;
+								if (statusNC == 2 || statusNC == 4 || singleclue < 9)
+									if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2){
+										if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+											isnakedsingle = false;
+											break;
+										}
 									}
-								if (statusNC == 2 || singleclue > 1)
-									if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 1 ? 9 : singleclue - 1)){
-										isnakedsingle = false;
-										break;
+									else
+										if(hasCellPotentialValue(Grid.ferzCellsRegular[i][k], singleclue == 9 ? 1 : singleclue + 1)){
+											isnakedsingle = false;
+											break;
+										}
+
+								if (statusNC == 2 || statusNC == 4 || singleclue > 1)
+									if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2) {
+										if(hasCellPotentialValue(Grid.wazirCellsRegular[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+											isnakedsingle = false;
+											break;
+										}
 									}
+									else
+										if(hasCellPotentialValue(Grid.ferzCellsRegular[i][k], singleclue == 1 ? 9 : singleclue - 1)){
+											isnakedsingle = false;
+											break;
+										}										
 							}					
 						}
 				}
@@ -2611,6 +2818,23 @@ public class Grid {
          * @return a string representation of this region
          */
         public abstract String toFullString();
+
+        /**
+         * Get a short string representation of this region's type
+         */
+        public abstract String toStringShort();
+
+        /**
+         * Get a short string representation of this region
+         * @return a short string representation of this region
+         */
+        public abstract String toFullStringShort();
+
+        /**
+         * Get a 2-digit integer representation of this regionType and RegionIndex
+         * @return 2-digit integer representation of this regionType and RegionIndex
+         */
+        public abstract int toFullNumber();
     }
 
     /**
@@ -2655,6 +2879,26 @@ public class Grid {
             else
                 return toString() + " " + (rowNum + 1);
         }
+
+		@Override
+        public String toStringShort() {
+            return "r";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            Settings settings = Settings.getInstance();
+            if (settings.isRCNotation())
+                return toStringShort() + (rowNum + 1);
+            else
+                return toStringShort() + (rowNum + 1);
+        }
+
+        @Override
+        public int toFullNumber() {
+			int result = (getRegionTypeIndex() * 10 + (rowNum + 1));
+            return result;
+        }
     }
 
     /**
@@ -2698,6 +2942,26 @@ public class Grid {
                 return toString() + " " + (columnNum + 1);
             else
                 return toString() + " " + (char)('A' + columnNum);
+        }
+
+		@Override
+        public String toStringShort() {
+            return "c";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            Settings settings = Settings.getInstance();
+            if (settings.isRCNotation())
+                return toStringShort() + (columnNum + 1);
+            else
+                return toStringShort() + (columnNum + 1);
+        }
+
+        @Override
+        public int toFullNumber() {
+			int result = (getRegionTypeIndex() * 10 + (columnNum + 1));
+            return result;
         }
     }
 
@@ -2747,6 +3011,21 @@ public class Grid {
         public String toFullString() {
             return toString() + " " + (vNum * 3 + hNum + 1);
         }
+
+		@Override
+        public String toStringShort() {
+            return "b";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort() + (vNum * 3 + hNum + 1);
+        }
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + (vNum * 3 + hNum + 1);
+        }
     }
 
     /**
@@ -2786,6 +3065,21 @@ public class Grid {
         @Override
         public String toFullString() {
             return toString() + " " + (vNum * 3 + hNum + 1);
+        }
+
+		@Override
+        public String toStringShort() {
+            return "p";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort() + (vNum * 3 + hNum + 1);
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + (vNum * 3 + hNum + 1);
         }
     }
 	
@@ -2850,6 +3144,21 @@ public class Grid {
         public String toFullString() {
             return toString() + " " + (index + 1);
         }
+
+		@Override
+        public String toStringShort() {
+            return "w";
+        }
+
+        @Override
+		public String toFullStringShort() {
+            return toStringShort() + (index + 1);
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + (index + 1);
+        }
     }
 
     /**
@@ -2891,6 +3200,21 @@ public class Grid {
         public String toFullString() {
             return toString();
         }
+
+		@Override
+        public String toStringShort() {
+            return "d\\";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort();
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + index;
+        }
     }
 
     /**
@@ -2931,6 +3255,21 @@ public class Grid {
         @Override
         public String toFullString() {
             return toString();
+        }
+
+		@Override
+        public String toStringShort() {
+            return "d/";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort();
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + index;
         }
     }
 
@@ -2987,6 +3326,21 @@ public class Grid {
         public String toFullString() {
             return toString();
         }
+
+		@Override
+        public String toStringShort() {
+            return "g";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort();
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + index;
+        }
     }
 
     /**
@@ -3027,6 +3381,21 @@ public class Grid {
         @Override
         public String toFullString() {
             return toString();
+		}
+
+		@Override
+        public String toStringShort() {
+            return "a";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort();
+        }
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + index;
         }
     }
 	
@@ -3068,6 +3437,21 @@ public class Grid {
         @Override
         public String toFullString() {
             return toString();
+        }
+
+		@Override
+        public String toStringShort() {
+            return ".";
+        }
+
+        @Override
+        public String toFullStringShort() {
+            return toStringShort();
+		}
+
+        @Override
+        public int toFullNumber() {
+            return getRegionTypeIndex() * 10 + index;
         }
     }
 }

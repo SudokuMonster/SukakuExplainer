@@ -149,7 +149,7 @@ public class SudokuIO {
         	return RES_OK;
         }
         
-        singleLine = singleLine.replace("#", ".").replaceAll("[^._01-9]", "");
+        singleLine = singleLine.replace("#", ".").replaceAll("([^._01-9])", "");
         if (TryParseSudoku(grid, singleLine) == RES_OK) 
         {
         	return RES_OK;
@@ -157,7 +157,7 @@ public class SudokuIO {
         
         //Last resort try first 81 parts of candidates separated by space
         String allLines = String.join(" ", lines);
-        String newLines = allLines.replace(".", "0").replace("/", "0").replace("*", "0").replace("-", "").replace("+", "").replace("^", "").replace("%", "").replace("&", "").replace("@", "").replace("$", "").replaceAll("[a-zA-Z]", "").replaceAll("[^1-9]", " ").trim();
+        String newLines = allLines.replace(".", "0").replace("/", "0").replace("*", "0").replace("-", "").replace("+", "").replace("^", "").replace("%", "").replace("&", "").replace("(", "").replace(")", "").replace("@", "").replace("$", "").replaceAll("[a-zA-Z]", "").replaceAll("[^1-9]", " ").trim();
         String[] parts = newLines.split("\\s+");
         int y = 0, x = 0;
         for (String part : parts) {

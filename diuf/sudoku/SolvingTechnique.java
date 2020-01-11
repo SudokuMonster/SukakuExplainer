@@ -13,6 +13,8 @@ public enum SolvingTechnique {
     NakedSingle("Naked Single"),
 	forcingCellNC("Non-Consecutive Forcing Cell"),
 	lockedNC("Locked Non-Consecutive"),
+	forcingCellFNC("Ferz Non-Consecutive Forcing Cell"),
+	lockedFNC("Ferz Locked Non-Consecutive"),
     DirectHiddenTriplet("Direct Hidden Triplet"),
     PointingClaiming("Pointing & Claiming"),
 	VLocking("Generalized Intersections"),

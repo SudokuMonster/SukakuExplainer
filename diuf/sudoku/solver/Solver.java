@@ -145,14 +145,19 @@ public class Solver {
 if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenSingle, directHintProducers, new HiddenSingle());
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
-		if (Settings.getInstance().whichNC() > 0) {
+		if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2) {
 			addIfWorth(SolvingTechnique.forcingCellNC, directHintProducers, new forcingCellNC());
 			addIfWorth(SolvingTechnique.lockedNC, directHintProducers, new lockedNC());
+		}
+		if (Settings.getInstance().whichNC() == 3 || Settings.getInstance().whichNC() == 4) {
+			addIfWorth(SolvingTechnique.forcingCellFNC, directHintProducers, new forcingCellFNC());
+			addIfWorth(SolvingTechnique.lockedFNC, directHintProducers, new lockedFNC());
 		}
         addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
         indirectHintProducers = new ArrayList<IndirectHintProducer>();
-        addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
+        if (Settings.getInstance().isBlocks())
+			addIfWorth(SolvingTechnique.PointingClaiming, indirectHintProducers, new Locking(false));
 		addIfWorth(SolvingTechnique.VLocking, indirectHintProducers, new VLocking());
         addIfWorth(SolvingTechnique.HiddenPair, indirectHintProducers, new HiddenSet(2, false));
         addIfWorth(SolvingTechnique.NakedPair, indirectHintProducers, new NakedSet(2));
@@ -206,9 +211,13 @@ else {
 			addIfWorth(SolvingTechnique.DirectPointing, directHintProducers, new Locking(true));
         addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(2, true));
         addIfWorth(SolvingTechnique.NakedSingle, directHintProducers, new NakedSingle());
-		if (Settings.getInstance().whichNC() > 0) {
+		if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2) {
 			addIfWorth(SolvingTechnique.forcingCellNC, directHintProducers, new forcingCellNC());
 			addIfWorth(SolvingTechnique.lockedNC, directHintProducers, new lockedNC());
+		}
+		if (Settings.getInstance().whichNC() == 3 || Settings.getInstance().whichNC() == 4) {
+			addIfWorth(SolvingTechnique.forcingCellFNC, directHintProducers, new forcingCellFNC());
+			addIfWorth(SolvingTechnique.lockedFNC, directHintProducers, new lockedFNC());
 		}
        addIfWorth(SolvingTechnique.DirectHiddenTriplet, directHintProducers, new HiddenSet(3, true));
         indirectHintProducers = new ArrayList<IndirectHintProducer>();
@@ -223,7 +232,9 @@ else {
         addIfWorth(SolvingTechnique.NakedTripletGen, indirectHintProducers, new NakedSetGen(3));
         addIfWorth(SolvingTechnique.Swordfish, indirectHintProducers, new Fisherman(3));
         addIfWorth(SolvingTechnique.HiddenTriplet, indirectHintProducers, new HiddenSet(3, false));
-		addIfWorth(SolvingTechnique.TurbotFish, indirectHintProducers, new TurbotFish());
+		//addIfWorth(SolvingTechnique.TurbotFish, indirectHintProducers, new TurbotFish());
+        //The following is equivalent to TurbotFish()
+		addIfWorth(SolvingTechnique.TurbotFish, indirectHintProducers, new StrongLinks(2));
         addIfWorth(SolvingTechnique.XYWing, indirectHintProducers, new XYWing(false));
         addIfWorth(SolvingTechnique.XYZWing, indirectHintProducers, new XYWing(true));
 //        addIfWorth(SolvingTechnique.WWing, indirectHintProducers, new WWing());
@@ -285,6 +296,7 @@ else {
     public void cancelPotentialValues() {
         for(int i = 0; i < 81; i++) {
         	int value = grid.getCellValue(i);
+			int j = 0;
             if(value == 0) continue;
         	grid.clearCellPotentialValues(i);
         	for(int visible : Grid.visibleCellIndex[i]) {
@@ -294,22 +306,40 @@ else {
 				int statusNC = Settings.getInstance().whichNC();
 				if (statusNC > 0)
 					if(Settings.getInstance().isToroidal()) {
-						int j = Grid.wazirCellsToroidal[i].length;
+						if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+							j = Grid.wazirCellsToroidal[i].length;
+						else
+							j = Grid.ferzCellsToroidal[i].length;
 						for(int k = 0; k < j; k++) {
-							if (statusNC == 2 || value < 9)
-								grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 9 ? 1 : value + 1);
-							if (statusNC == 2 || value > 1)
-								grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 1 ? 9 : value - 1);
+							if (statusNC == 2 || statusNC == 4 || value < 9)
+								if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+									grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 9 ? 1 : value + 1);
+								else
+									grid.removeCellPotentialValue(Grid.ferzCellsToroidal[i][k], value == 9 ? 1 : value + 1);
+							if (statusNC == 2 || statusNC == 4 || value > 1)
+								if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+									grid.removeCellPotentialValue(Grid.wazirCellsToroidal[i][k], value == 1 ? 9 : value - 1);
+								else
+									grid.removeCellPotentialValue(Grid.ferzCellsToroidal[i][k], value == 1 ? 9 : value - 1);
 						}
 					}
 					else {
-						int j = Grid.wazirCellsRegular[i].length;
+						if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+							j = Grid.wazirCellsRegular[i].length;
+						else
+							j = Grid.ferzCellsRegular[i].length;						
 						for(int k = 0; k < j; k++) {
-							if (statusNC == 2 || value < 9)
-								grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 9 ? 1 : value + 1);
-							if (statusNC == 2 || value > 1)
-								grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 1 ? 9 : value - 1);
-						}					
+							if (statusNC == 2 || statusNC == 4 || value < 9)
+								if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+									grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 9 ? 1 : value + 1);
+								else
+									grid.removeCellPotentialValue(Grid.ferzCellsRegular[i][k], value == 9 ? 1 : value + 1);
+							if (statusNC == 2 || statusNC == 4 || value > 1)
+								if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+									grid.removeCellPotentialValue(Grid.wazirCellsRegular[i][k], value == 1 ? 9 : value - 1);
+								else
+									grid.removeCellPotentialValue(Grid.ferzCellsRegular[i][k], value == 1 ? 9 : value - 1);
+						}				
 					}
 			}
         }

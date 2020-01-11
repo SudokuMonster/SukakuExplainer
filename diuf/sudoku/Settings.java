@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 15;
-    public final static String SUBREV = ".12";
-	public final static String releaseDate = "2020-01-02";
+    public final static int REVISION = 16;
+    public final static String SUBREV = ".11";
+	public final static String releaseDate = "2020-01-11";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -332,16 +332,24 @@ public class Settings {
 			temp += "Anti-kNight ";
 			variantsCount++;
 		}
-		if (isForbiddenPairs())
+		if (isForbiddenPairs()){
 			if (whichNC == 1){
 				temp += "NC ";
 				variantsCount++;
 			}
-			else
-				if (whichNC == 2){
-					temp += "NC+ ";
-					variantsCount++;
-				}
+			if (whichNC == 2){
+				temp += "NC+ ";
+				variantsCount++;
+			}
+			if (whichNC == 3){
+				temp += "Ferz NC ";
+				variantsCount++;
+			}
+			if (whichNC == 4){
+				temp += "Ferz NC+ ";
+				variantsCount++;
+			}
+		}
 		if (isDG() || isWindows() || isX() || isGirandola() || isCD() || isAsterisk() || isAntiFerz() || isAntiKnight() /*|| isForbiddenPairs()*/) {
 			this.isVLatin = false;
 			this.isVanilla = false;

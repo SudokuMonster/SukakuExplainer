@@ -55,7 +55,7 @@ public class Cell {
     /**
      * Get the b (box) index of this cell.
      * 0 = top left, 8 = bottomm right
-     * @return the y coordinate of this cell
+     * @return the b coordinate of this cell
      */
     public int getB() {
         return this.index % 9 / 3 + this.index / 27 * 3;
@@ -73,7 +73,7 @@ public class Cell {
     /**
      * Get the W (window) index of this cell.
      * regionsWindows in Settings has the configuration
-     * @return the y coordinate of this cell
+     * @return the W coordinate of this cell
      */
     public int getW() {
         return Settings.regionsWindows[this.index];
@@ -91,7 +91,7 @@ public class Cell {
     /**
      * Get the Anti Diagonal index of this cell. [1 or 0]
      * regionsWindows in Settings has the configuration
-     * @return the y coordinate of this cell
+     * @return the AD coordinate of this cell
      */
     public int getAD() {
         return Settings.regionsAntiDiagonal[this.index];
@@ -100,7 +100,7 @@ public class Cell {
     /**
      * Get the G (girandola) index of this cell. [1 or 0]
      * regionsWindows in Settings has the configuration
-     * @return the y coordinate of this cell
+     * @return the G coordinate of this cell
      */
     public int getG() {
         return Settings.regionsGirandola[this.index];
@@ -109,7 +109,7 @@ public class Cell {
     /**
      * Get the A (Asterisk) index of this cell. [1 or 0]
      * regionsWindows in Settings has the configuration
-     * @return the y coordinate of this cell
+     * @return the A coordinate of this cell
      */
     public int getA() {
         return Settings.regionsAsterisk[this.index];
@@ -118,7 +118,7 @@ public class Cell {
     /**
      * Get the CD (Center Dot) index of this cell. [1 or 0]
      * regionsWindows in Settings has the configuration
-     * @return the y coordinate of this cell
+     * @return the CD coordinate of this cell
      */
     public int getCD() {
         return Settings.regionsCD[this.index];
@@ -160,21 +160,39 @@ public class Cell {
 			int statusNC = Settings.getInstance().whichNC();
 			if (statusNC > 0)
 				if(Settings.getInstance().isToroidal()) {
-					j = Grid.wazirCellsToroidal[this.index].length;
+					if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+						j = Grid.wazirCellsToroidal[this.index].length;
+					else
+						j = Grid.ferzCellsToroidal[this.index].length;
 					for(int i = 0; i < j; i++) {
-						if (statusNC == 2 || value < 9)
-							targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 9 ? 1 : value + 1);
-						if (statusNC == 2 || value > 1)
-							targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 1 ? 9 : value - 1);
+						if (statusNC == 2 || statusNC == 4 || value < 9)
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 9 ? 1 : value + 1);
+							else
+								targetGrid.removeCellPotentialValue(Grid.ferzCellsToroidal[this.index][i], value == 9 ? 1 : value + 1);
+						if (statusNC == 2 || statusNC == 4 || value > 1)
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								targetGrid.removeCellPotentialValue(Grid.wazirCellsToroidal[this.index][i], value == 1 ? 9 : value - 1);
+							else
+								targetGrid.removeCellPotentialValue(Grid.ferzCellsToroidal[this.index][i], value == 1 ? 9 : value - 1);
 					}
 				}
 				else {
-					j = Grid.wazirCellsRegular[this.index].length;
+					if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+						j = Grid.wazirCellsRegular[this.index].length;
+					else
+						j = Grid.ferzCellsRegular[this.index].length;						
 					for(int i = 0; i < j; i++) {
-						if (statusNC == 2 || value < 9)
-							targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 9 ? 1 : value + 1);
-						if (statusNC == 2 || value > 1)
-							targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 1 ? 9 : value - 1);
+						if (statusNC == 2 || statusNC == 4 || value < 9)
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 9 ? 1 : value + 1);
+							else
+								targetGrid.removeCellPotentialValue(Grid.ferzCellsRegular[this.index][i], value == 9 ? 1 : value + 1);
+						if (statusNC == 2 || statusNC == 4 || value > 1)
+							if (Settings.getInstance().whichNC() == 1 || Settings.getInstance().whichNC() == 2)
+								targetGrid.removeCellPotentialValue(Grid.wazirCellsRegular[this.index][i], value == 1 ? 9 : value - 1);
+							else
+								targetGrid.removeCellPotentialValue(Grid.ferzCellsRegular[this.index][i], value == 1 ? 9 : value - 1);
 					}					
 				}
 		}

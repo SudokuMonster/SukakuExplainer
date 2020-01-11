@@ -25,10 +25,11 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 	private final int[] linkSet;
 	private final boolean[] baseLinkEmptyRegion;
 	private final int linksNumber;
+	private final Grid.Region ringRegion;
 	
 	
     public StrongLinksHint(IndirectHintProducer rule, Map<Cell, BitSet> removablePotentials,
-            Cell startCell, int value, Cell endCell, Cell[] emptyRegionCells, int eliminationsTotal, Grid.Region[] baseLinkRegion, Grid.Region[] shareRegion, Cell[] bridge1, Cell[] bridge2, int[] q, int[] linkSet, boolean[] baseLinkEmptyRegion) {
+            Cell startCell, int value, Cell endCell, Cell[] emptyRegionCells, int eliminationsTotal, Grid.Region[] baseLinkRegion, Grid.Region[] shareRegion, Cell[] bridge1, Cell[] bridge2, int[] q, int[] linkSet, boolean[] baseLinkEmptyRegion, Grid.Region ringRegion) {
         super(rule, removablePotentials);
         this.value = value;
 		this.startCell = startCell;
@@ -43,6 +44,7 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 		this.linkSet = linkSet.clone();
 		this.baseLinkEmptyRegion = baseLinkEmptyRegion.clone();
 		this.linksNumber = linkSet.length;
+		this.ringRegion = ringRegion;
     }
 
 	private boolean isLex(int[] intSet) {
@@ -85,9 +87,9 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 			}
 			else {
 				LinesName += Integer.toString(Set[i]);
-				if (Set[i] == 0){
-					ReverseSwap = "0" + ReverseSwap;
-					CurrentSwap += "0";
+				if (Set[i] < 1 || Set[i] > 2){
+					ReverseSwap = Integer.toString(Set[i]) + ReverseSwap;
+					CurrentSwap += Integer.toString(Set[i]);
 				}
 			}
 		}
@@ -149,7 +151,18 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 
     @Override
     public Grid.Region[] getRegions() {
-        return shareRegion;
+        Grid.Region[] finalRegions = new Grid.Region[linksNumber * 2];
+		if (ringRegion == null)
+			return shareRegion;
+		else
+			for (int i = 0; i < linksNumber; i++) {
+				finalRegions[i * 2] = baseLinkRegion[i];
+				if (i < (linksNumber -1))
+					finalRegions[i * 2 + 1] = shareRegion[i];
+				else
+					finalRegions[i * 2 + 1] = ringRegion;
+			}
+		return finalRegions;
     }
 
     @Override
@@ -162,11 +175,58 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 		return result;
     }
 
-    @Override
+    private String shortBaseCover (Grid.Region [] sequence){
+			String finalSequence = "";
+			for (int i = 0; i < sequence.length; i++)
+				finalSequence +=  sequence[i].toFullStringShort();
+			return finalSequence;
+	}
+	
+	private String fishRC() {
+		return shortBaseCover(baseLinkRegion) + "\\" + shortBaseCover(shareRegion) + ringRegion.toFullStringShort();
+	}
+	
+	private String fishShape() {
+		String conf = fishRC();
+		int halfLength = conf.length()/2;
+		if (conf.indexOf("r") >= 0)
+			if (
+				(conf.indexOf("r") <= halfLength && conf.lastIndexOf("r") > halfLength) ||
+				(conf.lastIndexOf("r") > halfLength && conf.lastIndexOf("c") > halfLength) ||
+				(conf.indexOf("r") <= halfLength && conf.indexOf("c") <= halfLength && conf.indexOf("c") >= 0)
+				)
+				return "Mutant";
+		if (conf.indexOf("c") >= 0)
+			if (conf.indexOf("c") <= halfLength && conf.lastIndexOf("c") > halfLength)
+				return "Mutant";
+		if (conf.indexOf("p") >= 0)
+				return "Mutant";
+		if (conf.indexOf("w") >= 0)
+				return "Mutant";
+		if (conf.indexOf("d") >= 0)
+				return "Mutant";
+		if (conf.indexOf("g") >= 0)
+				return "Mutant";
+		if (conf.indexOf("a") >= 0)
+				return "Mutant";
+		if (conf.indexOf(".") >= 0)
+				return "Mutant";
+		if (conf.indexOf("b") >= 0)
+				return "Franken";
+		return "Basic";
+	}
+	
+	@Override
     public String toHtml(Grid grid) {
 		String result;
 		String fishName = getFishName(linksNumber);
-		if (groupedLinks() >  0) {
+		String loopRegion = "";
+		if (ringRegion != null) {
+			result = HtmlLoader.loadHtml(this, "GroupedStrongLinksLoopHint.html");
+			fishName = fishShape() + " " + getFishName(linksNumber) + " " + fishRC();
+			loopRegion = ringRegion.toFullString();
+		}
+		else if (groupedLinks() >  0) {
 			result = HtmlLoader.loadHtml(this, "GroupedStrongLinksHint.html");
 			fishName = "Finned " + fishName;
 		}
@@ -191,12 +251,12 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 		String numberOfWeakLinks = Integer.toString(linksNumber - 1);
 		String value = Integer.toString(this.value);
         String cell1 = startCell.toString();
-        String cell2 = endCell.toString();
-        result = HtmlLoader.format(result, name, value, firstLinkName + (middleLinksName == "" ? "": middleLinksName), lastLinkName, numberOfStrongLinks, numberOfWeakLinks, firstShared + (middleShared == "" ? "": middleShared), lastShared, cell1, cell2, fishName, firstLinkName, firstShared);
+        String cell2 = endCell.toString(); 
+        result = HtmlLoader.format(result, name, value, firstLinkName + (middleLinksName == "" ? "": middleLinksName), lastLinkName, numberOfStrongLinks, numberOfWeakLinks, firstShared + (middleShared == "" ? "": middleShared), lastShared, cell1, cell2, fishName, firstLinkName, firstShared, loopRegion);
         return result;
     }
 
-	static double baseRatings[] = {0,4.2,5.4,5.8,6.2,6.6,7.0,7.4};
+	static double baseRatings[] = {0,4.0,5.4,5.8,6.2,6.6,7.0,7.4};
 	
 	private String getFishName(int fishSize) {
 		String[] fishNames = new String[] {"Cyclopsfish", "X-Wing", "Swordfish", "Jellyfish", "Starfish", "Whale", "Leviathan", "LNM"};
@@ -233,14 +293,20 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 		String Suffix = getSuffix();
 		String Name = "" + linksNumber;
 		int gL = groupedLinks();
-		if (Suffix.indexOf("0",1) >= 0)
-			Name += " Strong links (including blocks)";
-		else if (Suffix.indexOf("2",1) >= 0)
-			Name += "-String Kite";
+		if (ringRegion != null){
+			Name = "(" + Name + " Strong Links) " + (gL > 0 ? "Grouped " : "") + "X-Loop";
+		}
+		else if (Suffix.indexOf("0",1) < 0 && Suffix.indexOf("2",1) < 0)
+			if (linksNumber < 3)
+				Name = "Skyscraper";
+			else
+				Name += " Skyscrapers";	
+		else if (Suffix.indexOf("0",1) >= 0 || linksNumber > 3)
+			Name += " Strong links";
 		else
-			Name += " Skyscrapers";
-		Name += " " + Suffix;
-		return  (gL > 0 ? (Name + " " + "(Using " + gL + " grouped strong link" + (gL > 1 ? "s" : "") + ")") : Name);
+			Name += "-String Kite";
+		Name = (gL > 0  && ringRegion == null ? "Grouped " : "") + Name + " " + Suffix;
+		return  Name;
     }	
 	
     @Override
@@ -248,14 +314,20 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 		String Suffix = getSuffix();
 		String Name = "" + linksNumber;
 		int gL = groupedLinks();
-		if (Suffix.indexOf("0",1) >= 0)
-			Name += "SB";
-		else if (Suffix.indexOf("2",1) >= 0)
-			Name += "SK";
+		if (ringRegion != null)
+			Name += "XL";
+		else if (Suffix.indexOf("0",1) < 0 && Suffix.indexOf("2",1) < 0)
+			if (linksNumber < 3)
+				Name = "SS";
+			else
+				Name += " SS";	
+		else if (Suffix.indexOf("0",1) >= 0 || linksNumber > 3)
+			Name += "SL";
 		else
-			Name += "SS";
-		Name += Suffix;
-		return  (gL > 0 ? ("g"+ Name) : Name);
+			Name += "SK";
+			
+		Name = (gL > 0 ? "g" : "") + Name + Suffix;
+		return  Name;
     }
 
 	//Will return Total number of eliminations by this hint
@@ -267,10 +339,10 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
     public double getDifficulty() {
 		if (groupedLinks() >  0)
 			return baseRatings[linksNumber - 1] + 0.3;
-        String name = getName();
-		if (name.contains("Skyscraper")) {
+        String Suffix = getSuffix();
+		if (Suffix.indexOf("0",1) < 0 && Suffix.indexOf("2",1) < 0) {
             return baseRatings[linksNumber - 1];
-        } else if (name.contains("Kite")) {
+        } else if (Suffix.indexOf("0",1) > 0 && Suffix.indexOf("2",1) > 0) {
             return baseRatings[linksNumber - 1] + 0.2;
         } else {
             return baseRatings[linksNumber - 1] + 0.1;

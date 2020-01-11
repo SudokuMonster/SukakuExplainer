@@ -13,26 +13,27 @@ import diuf.sudoku.tools.*;
 
 
 /**
- * Implementation of the "NC Forcing Cell" solving technique by Tarek Maani.
+ * Implementation of the "Ferz NC Forcing Cell" solving technique by Tarek Maani.
  * This covers double consecutive claiming, double Middle claiming and triple consecutive claiming
  * http://jcbonsai.free.fr/sudoku/JSudokuUserGuide/relationalTechniques.html
  * http://forum.enjoysudoku.com/sudokuncexplainer-to-solve-and-rate-sudoku-non-consecutive-t36949.html#p285476
  */
-public class lockedNC implements IndirectHintProducer {
+public class lockedFNC implements IndirectHintProducer {
 	
 	public void getHints(Grid grid, HintsAccumulator accu) throws InterruptedException {
         int firstValue, valueIndex, secondValue;
         for (int value = 1; value <= 9; value++) {
-			for (int regionTypeIndex = 4; regionTypeIndex >= (Settings.getInstance().isBlocks() ? 0 : 1); regionTypeIndex--) {
+			for (int regionTypeIndex = (Settings.getInstance().isBlocks() ? 0 : 4); regionTypeIndex < 7; regionTypeIndex++) {
 				//DG doesn't have cells in proximity
 				if (regionTypeIndex == 3) continue;
 				if (regionTypeIndex == 4 && !Settings.getInstance().isWindows()) continue;
+				if ((regionTypeIndex == 5 ||  regionTypeIndex == 6 ) && !Settings.getInstance().isX()) continue;
 				//if (regionTypeIndex == 5 && !Settings.getInstance().isX()) continue;
 				//if (regionTypeIndex == 6 && !Settings.getInstance().isX()) continue;
 				int regionsNumber = Grid.getRegions(regionTypeIndex).length;
 				for (int i = 0; i < regionsNumber; i++) {
 					//Only lines or block regions allowed
-					if (regionTypeIndex == 4 && i > 3) continue;
+					//if (regionTypeIndex == 4 && i > 3) continue;
 					//Decided on i to make it easier
 					Grid.Region region = Grid.getRegions(regionTypeIndex)[i];
 					BitSet ncValues = region.getPotentialPositions(grid, value);
@@ -48,11 +49,11 @@ public class lockedNC implements IndirectHintProducer {
 						Cell[] originalCells =  new Cell[] {region.getCell(firstValue), region.getCell(valueIndex), region.getCell(secondValue)};
 						if (ncValuesCard == 2)
 							originalCells =  new Cell[] {region.getCell(firstValue), region.getCell(valueIndex)};
-						if (regionTypeIndex > 0) {
+						if (regionTypeIndex == 5 || regionTypeIndex == 6) {
 							if ((valueIndex - firstValue) == ( ncValuesCard - 1 ) || (Settings.getInstance().isToroidal() && (valueIndex - firstValue) == 8))
 								if (ncValuesCard == 2) {
 									//Found Locked NC in 2 consecutive cells
-									lockedNCHint hint = createHint1(grid, region.getCell(firstValue), region.getCell(valueIndex), Settings.getInstance().whichNC() == 1 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 1 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
+									lockedFNCHint hint = createHint1(grid, region.getCell(firstValue), region.getCell(valueIndex), Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
 									if (hint.isWorth())
 										accu.add(hint);
 								}
@@ -61,12 +62,12 @@ public class lockedNC implements IndirectHintProducer {
 									//For NC+ check for 100000011, 110000001
 									if ((Settings.getInstance().isToroidal() && (valueIndex - firstValue) == 8)) {//NC+ check
 										if (potentialNC.nextSetBit(firstValue + 1) == (firstValue + 1)) {
-											lockedNCHint hint = createHint1(grid, region.getCell(firstValue), null, Settings.getInstance().whichNC() == 1 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 1 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
+											lockedFNCHint hint = createHint1(grid, region.getCell(firstValue), null, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
 											if (hint.isWorth())
 											accu.add(hint);
 										}
 										if (potentialNC.nextSetBit(firstValue + 1) == (valueIndex - 1)) {
-											lockedNCHint hint = createHint1(grid, region.getCell(valueIndex), null, Settings.getInstance().whichNC() == 1 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 1 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
+											lockedFNCHint hint = createHint1(grid, region.getCell(valueIndex), null, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
 											if (hint.isWorth())
 											accu.add(hint);
 										}
@@ -74,27 +75,51 @@ public class lockedNC implements IndirectHintProducer {
 									}
 									if ((!Settings.getInstance().isToroidal() && (valueIndex - firstValue) == 8))
 											continue;
-									lockedNCHint hint = createHint1(grid, region.getCell(firstValue + 1), null, Settings.getInstance().whichNC() == 1 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 1 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
+									lockedFNCHint hint = createHint1(grid, region.getCell(firstValue + 1), null, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, originalCells);
 									if (hint.isWorth())
 										accu.add(hint);
 								}
+								continue;
 						}
 						//if (ncValuesCard == 2){
-							//Found potential Locked NC in 2 Nearby cells
-							//For NC+ check for 100000010 and 010000001
-							lockedNCHint hint = createHint2(grid, region.getCell(firstValue), region.getCell(valueIndex), Settings.getInstance().whichNC() == 1 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 1 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, region.getCell(secondValue), ncValuesCard);
+							//value locked in block diagonal
+							if (ncValuesCard == 3 && (regionTypeIndex == 4 || regionTypeIndex == 0)) {
+									BitSet Diagonal1= new BitSet();
+									Diagonal1.set(0);
+									Diagonal1.set(4);
+									Diagonal1.set(8);
+									BitSet Diagonal2= new BitSet();
+									Diagonal2.set(2);
+									Diagonal2.set(4);
+									Diagonal2.set(6);	
+								if (ncValues.equals(Diagonal1)){
+									lockedFNCHint hint = createHint3(grid, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, new Cell[] {region.getCell(0), region.getCell(4),region.getCell(8)});
+									if (hint.isWorth())
+										accu.add(hint);									
+									continue; 
+								} 
+								else if (ncValues.equals(Diagonal2)){
+									lockedFNCHint hint = createHint3(grid, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, new Cell[] {region.getCell(2), region.getCell(4),region.getCell(6)});
+									if (hint.isWorth())
+										accu.add(hint);									
+									continue;
+								}
+							}
+							//Found potential Locked NC in 2 or 3 Nearby cells
+							//For NC+ check for 100000010 and 010000001							
+							lockedFNCHint hint = createHint2(grid, region.getCell(firstValue), region.getCell(valueIndex), Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, region.getCell(secondValue), ncValuesCard);
 							if (hint.isWorth())
 							accu.add(hint);
 						//}
 					}//if (ncValuesCard == 2 || ncValuesCard == 3)
 					if (ncValuesCard == 4 && (regionTypeIndex == 4 || regionTypeIndex == 0)) {
 						BitSet fourCorners = new BitSet();
-						fourCorners.set(1);
-						fourCorners.set(3);
-						fourCorners.set(5);
-						fourCorners.set(7);
+						fourCorners.set(0);
+						fourCorners.set(2);
+						fourCorners.set(6);
+						fourCorners.set(8);
 						if (ncValues.equals(fourCorners)) {
-							lockedNCHint hint = createHint3(grid, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value);
+							lockedFNCHint hint = createHint3(grid, Settings.getInstance().whichNC() == 3 ? value - 1 : value > 1 ? value - 1 : 9, Settings.getInstance().whichNC() == 3 ? (value + 1) % 10 : value < 9 ? value + 1 : 1, region, regionTypeIndex, value, new Cell[] {region.getCell(0), region.getCell(2),region.getCell(6),region.getCell(8)});
 							if (hint.isWorth())
 								accu.add(hint);
 						}
@@ -104,7 +129,7 @@ public class lockedNC implements IndirectHintProducer {
 		}// for (int value = 1; value <= 9; value++)
 	}
 
-    private lockedNCHint createHint1(Grid grid, Cell ncCell1, Cell ncCell2, int value1, int value2, Grid.Region region, int regionTypeIndex, int value,  Cell[] original) {
+    private lockedFNCHint createHint1(Grid grid, Cell ncCell1, Cell ncCell2, int value1, int value2, Grid.Region region, int regionTypeIndex, int value,  Cell[] original) {
         // Build list of removable potentials
 		//Cell[] finalCells = null;
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
@@ -137,20 +162,20 @@ public class lockedNC implements IndirectHintProducer {
 		if (value2 == 0)
 			finalValues = new int[] {value1};		
          // Create hint
-        return new lockedNCHint(this, removablePotentials, original, finalValues, region, value);
+        return new lockedFNCHint(this, removablePotentials, original, finalValues, region, value);
     }
 
-    private lockedNCHint createHint2(Grid grid, Cell ncCell1, Cell ncCell2, int value1, int value2, Grid.Region region, int regionTypeIndex, int value, Cell ncCell3, int card) {
+    private lockedFNCHint createHint2(Grid grid, Cell ncCell1, Cell ncCell2, int value1, int value2, Grid.Region region, int regionTypeIndex, int value, Cell ncCell3, int card) {
         Cell[] finalCells = new Cell[] {ncCell1, ncCell2};
 		// Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
-		CellSet victims = new CellSet(Grid.wazirCellsRegular[ncCell1.getIndex()]);
-		CellSet victims2 = new CellSet(Grid.wazirCellsRegular[ncCell2.getIndex()]);
-		CellSet victims3 = new CellSet(Grid.wazirCellsRegular[ncCell3.getIndex()]);
+		CellSet victims = new CellSet(Grid.ferzCellsRegular[ncCell1.getIndex()]);
+		CellSet victims2 = new CellSet(Grid.ferzCellsRegular[ncCell2.getIndex()]);
+		CellSet victims3 = new CellSet(Grid.ferzCellsRegular[ncCell3.getIndex()]);
 		if (Settings.getInstance().isToroidal()) {
-		   victims = new CellSet(Grid.wazirCellsToroidal[ncCell1.getIndex()]);
-		   victims2 = new CellSet(Grid.wazirCellsToroidal[ncCell2.getIndex()]);
-		   victims3 = new CellSet(Grid.wazirCellsToroidal[ncCell3.getIndex()]);
+		   victims = new CellSet(Grid.ferzCellsToroidal[ncCell1.getIndex()]);
+		   victims2 = new CellSet(Grid.ferzCellsToroidal[ncCell2.getIndex()]);
+		   victims3 = new CellSet(Grid.ferzCellsToroidal[ncCell3.getIndex()]);
 		}
 		victims.retainAll(victims2);
 		if (card == 3) {
@@ -174,11 +199,11 @@ public class lockedNC implements IndirectHintProducer {
 		if (value2 == 0)
 			finalValues = new int[] {value1};	
         // Create hint
-        return new lockedNCHint(this, removablePotentials, finalCells, finalValues, region, value);
+        return new lockedFNCHint(this, removablePotentials, finalCells, finalValues, region, value);
     }
 
-    private lockedNCHint createHint3(Grid grid, int value1, int value2, Grid.Region region, int regionTypeIndex, int value) {
-        Cell[] finalCells = new Cell[] {region.getCell(1), region.getCell(3),region.getCell(5),region.getCell(7)};
+    private lockedFNCHint createHint3(Grid grid, int value1, int value2, Grid.Region region, int regionTypeIndex, int value, Cell[] finalCells) {
+		//finalCells = new Cell[] {region.getCell(0), region.getCell(2),region.getCell(6),region.getCell(8)};
 		// Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
 		Cell cell = region.getCell(4);
@@ -197,7 +222,7 @@ public class lockedNC implements IndirectHintProducer {
 		if (value2 == 0)
 			finalValues = new int[] {value1};	
         // Create hint
-        return new lockedNCHint(this, removablePotentials, finalCells, finalValues, region, value);
+        return new lockedFNCHint(this, removablePotentials, finalCells, finalValues, region, value);
     }
 
     @Override

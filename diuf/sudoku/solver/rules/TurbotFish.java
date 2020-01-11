@@ -421,19 +421,19 @@ public class TurbotFish implements IndirectHintProducer {
 							// with cardinality >2 (or it will be a strong link in a block i.e2 turbot fish ) 
 							// and cardinality <6 (because we need 4 empty cells in the region.Rectangle cells)
 							if (coverRegionPotentialsCardinality >= 2){
-								if (coverRegionPotentialsCardinality > 6 || (cover == 0 && coverRegionPotentialsCardinality > 5))
+								if (coverRegionPotentialsCardinality > 6 || ((cover == 0 || cover == 3 || cover == 4) && coverRegionPotentialsCardinality > 5))
 									continue;
 								coverEmptyRegion = false;
 								coverEmptyRegionBlades = false;
 								BitSet coverBlade1 = (BitSet)coverRegionPotentials.clone();
 								BitSet coverBlade2 = (BitSet)coverRegionPotentials.clone();
 								if (coverRegionPotentialsCardinality > 2) {
-									for (e2 = 0; e2 < (cover < 1 ? 9 : 3); e2++) {
-										heartCells[1] = (cover == 0 ? baseRegion.getCell(e2): null);
+									for (e2 = 0; e2 < (cover == 0 || cover == 3 || cover == 4 ? 9 : 3); e2++) {
+										heartCells[1] = (cover == 0 || cover == 3 || cover == 4 ? baseRegion.getCell(e2): null);
 										BitSet coverEmptyArea = (BitSet)coverRegionPotentials.clone();
 										coverBlade1 = (BitSet)coverRegionPotentials.clone();
 										coverBlade2 = (BitSet)coverRegionPotentials.clone();
-										if (cover == 0) {
+										if (cover == 0 || cover == 3 || cover == 4) {
 											//confirm if we have an empty rectangle
 											//block has 9 cells: 4 "Cross" cells, 4 "Rectangle" cells and 1 "Heart" cell
 											//9 configurations for each block depending on "Heart" cell
@@ -443,7 +443,7 @@ public class TurbotFish implements IndirectHintProducer {
 											coverEmptyArea.and(coverRegion.lineEmptyCells(e2));
 										}
 										if (coverEmptyArea.cardinality() == 0) {
-											if (cover == 0) {
+											if (cover == 0 || cover == 3 || cover == 4) {
 												//confirm if we have an empty rectangle
 												//block has 9 cells: 4 "Cross" cells, 4 "Rectangle" cells and 1 "Heart" cell
 												//9 configurations for each block depending on "Heart" cell
@@ -484,7 +484,7 @@ public class TurbotFish implements IndirectHintProducer {
 											if (coverGroupedLinkOrdinal == 0)
 												if (coverBlade1.cardinality() == 1) {
 													coverEmptyRegionBlades = true;
-													if (cover == 0) {
+													if (cover == 0 || cover == 3 || cover == 4) {
 														cells[2] = coverRegion.getCell(coverBlade1.nextSetBit(0));
 														cells[3] = coverRegion.getCell(coverRegion.Heart(e2));
 														cells[6] = cells[10] = cells[11] = null;
@@ -506,7 +506,7 @@ public class TurbotFish implements IndirectHintProducer {
 											if (coverGroupedLinkOrdinal == 1)
 												if (coverBlade2.cardinality() == 1) {
 													coverEmptyRegionBlades = true;
-													if (cover == 0) {
+													if (cover == 0 || cover == 3 || cover == 4) {
 														cells[2] = coverRegion.getCell(coverBlade2.nextSetBit(0));
 														cells[3] = coverRegion.getCell(coverRegion.Heart(e2));
 														cells[6] = cells[10] = cells[11] = null;
@@ -591,7 +591,7 @@ public class TurbotFish implements IndirectHintProducer {
 												break;
 									}
 									if (coverEmptyRegion) {
-										if (cover == 0)
+										if (cover == 0 || cover == 3 || cover == 4)
 											if (cells[0].getB() == cells[3].getB() || cells[1].getB() == cells[3].getB())
 												break;
 										if (cover == 1)
@@ -604,16 +604,18 @@ public class TurbotFish implements IndirectHintProducer {
 //===Check for redundancy End
 									//Process to check shared region (weak link)
 									Grid.Region shareRegion;
-									Cell start, end, bridge1, bridge2, startSupport, endSupport, startSupport2, endSupport2;
+									Grid.Region ringRegion = null;
+									TurbotFishHint hint = null;
+									Cell start, end, bridge1, bridge2, startSupport, endSupport, startSupport2, endSupport2, bridge1Support, bridge1Support2, bridge2Support, bridge2Support2;
 									for (int i = 0; i < 2; i++) {
 										for (j = 2; j < 4; j++) {
 											if ((shareRegion = shareRegionOf(grid,
 														bridge1 = cells[1 - i],
-														cells[1 - i + 4],
+														bridge1Support = cells[1 - i + 4],
 														bridge2 = cells[j],
-														cells[j + 4],
-														cells[1 - i + 8],
-														cells[j + 8])) != null &&
+														bridge2Support = cells[j + 4],
+														bridge1Support2 = cells[1 - i + 8],
+														bridge2Support2 = cells[j + 8])) != null &&
 													!shareRegion.equals(baseRegion) && !shareRegion.equals(coverRegion)) {
 												// Turbot fish found
 												start = cells[i];
@@ -622,8 +624,21 @@ public class TurbotFish implements IndirectHintProducer {
 												end = cells[5 - j];
 												endSupport = cells[5 - j + 4];
 												endSupport2 = cells[5 - j + 8];
-												TurbotFishHint hint = createHint(grid, digit, start, end, bridge1, bridge2,
-														baseRegion, coverRegion, shareRegion, baseEmptyRegion, coverEmptyRegion, startSupport, endSupport, baseEmptyRegionBlades, coverEmptyRegionBlades, emptyRegionCells, startSupport2, endSupport2);
+												if ((ringRegion = shareRegionOf(grid,
+														start,
+														startSupport,
+														end,
+														endSupport,
+														startSupport2,
+														endSupport2)) != null) {
+														//we have a ring
+														hint = createHint1(grid, digit, start, end, bridge1, bridge2,
+														baseRegion, coverRegion, shareRegion, baseEmptyRegion, coverEmptyRegion, startSupport, endSupport, baseEmptyRegionBlades, coverEmptyRegionBlades, emptyRegionCells, startSupport2, endSupport2, new Cell[] {bridge1, bridge1Support, bridge1Support2, bridge2, bridge2Support, bridge2Support2}, ringRegion);
+													}
+												else {
+														hint = createHint(grid, digit, start, end, bridge1, bridge2,
+														baseRegion, coverRegion, shareRegion, baseEmptyRegion, coverEmptyRegion, startSupport, endSupport, baseEmptyRegionBlades, coverEmptyRegionBlades, emptyRegionCells, startSupport2, endSupport2, ringRegion);
+												}
 												if (hint.isWorth())
 													result.add(hint);
 											}
@@ -640,7 +655,7 @@ public class TurbotFish implements IndirectHintProducer {
     }
 
     private TurbotFishHint createHint(Grid grid, int value, Cell start, Cell end, Cell bridgeCell1, Cell bridgeCell2,
-            Grid.Region baseSet, Grid.Region coverSet, Grid.Region shareRegion, boolean baseEmptyRegion, boolean coverEmptyRegion,  Cell startSupport, Cell endSupport, boolean baseEmptyRegionBlades, boolean coverEmptyRegionBlades, Cell[] emptyRegionCells, Cell startSupport2, Cell endSupport2) {
+            Grid.Region baseSet, Grid.Region coverSet, Grid.Region shareRegion, boolean baseEmptyRegion, boolean coverEmptyRegion,  Cell startSupport, Cell endSupport, boolean baseEmptyRegionBlades, boolean coverEmptyRegionBlades, Cell[] emptyRegionCells, Cell startSupport2, Cell endSupport2, Grid.Region ringRegion) {
         // Build list of removable potentials
         Map<Cell,BitSet> removablePotentials = new HashMap<>();
 		int eliminationsTotal = 0;
@@ -671,7 +686,66 @@ public class TurbotFish implements IndirectHintProducer {
         }
         // Create hint
         return new TurbotFishHint(this, removablePotentials,
-                start, end, bridgeCell1, bridgeCell2, value, baseSet, coverSet, shareRegion, baseEmptyRegion, coverEmptyRegion, /*baseEmptyRegionBlades, coverEmptyRegionBlades,*/ emptyRegionCells, eliminationsTotal);
+                start, end, bridgeCell1, bridgeCell2, value, baseSet, coverSet, shareRegion, baseEmptyRegion, coverEmptyRegion, /*baseEmptyRegionBlades, coverEmptyRegionBlades,*/ emptyRegionCells, eliminationsTotal, ringRegion);
+    }
+
+    private TurbotFishHint createHint1(Grid grid, int value, Cell start, Cell end, Cell bridgeCell1, Cell bridgeCell2,
+            Grid.Region baseSet, Grid.Region coverSet, Grid.Region shareRegion, boolean baseEmptyRegion, boolean coverEmptyRegion,  Cell startSupport, Cell endSupport, boolean baseEmptyRegionBlades, boolean coverEmptyRegionBlades, Cell[] emptyRegionCells, Cell startSupport2, Cell endSupport2, Cell[] ringRegionCells, Grid.Region ringRegion) {
+        // Build list of removable potentials
+        Map<Cell,BitSet> removablePotentials = new HashMap<>();
+        //Set<Cell> victims = new LinkedHashSet<>(start.getVisibleCells());
+		int eliminationsTotal = 0;
+		CellSet victims = new CellSet(start.getVisibleCells());
+        victims.retainAll(end.getVisibleCells());
+		if (baseEmptyRegion && startSupport != null) {
+			victims.retainAll(startSupport.getVisibleCells());
+				if (startSupport2 != null)
+					victims.retainAll(startSupport2.getVisibleCells());
+		}		
+		if (coverEmptyRegion && endSupport != null) {
+			victims.retainAll(endSupport.getVisibleCells());
+				if (endSupport2 != null)
+					victims.retainAll(endSupport2.getVisibleCells());
+		}
+        victims.remove(start);
+        victims.remove(end);
+		//victims.removeAll(coverSet.getCellSet());
+		//victims.removeAll(baseSet.getCellSet());
+		victims.bits.andNot(coverSet.regionCellsBitSet);
+		victims.bits.andNot(baseSet.regionCellsBitSet);
+        for (Cell cell : victims) {
+            if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
+				eliminationsTotal++;
+                removablePotentials.put(cell, SingletonBitSet.create(value));
+			}
+        }
+		victims = new CellSet(ringRegionCells[0].getVisibleCells());
+        victims.retainAll(ringRegionCells[3].getVisibleCells());
+		if (ringRegionCells[1] != null) {
+			victims.retainAll(ringRegionCells[1].getVisibleCells());
+				if (ringRegionCells[2] != null)
+					victims.retainAll(ringRegionCells[2].getVisibleCells());
+		}		
+		if (ringRegionCells[4] != null) {
+			victims.retainAll(ringRegionCells[4].getVisibleCells());
+				if (ringRegionCells[5] != null)
+					victims.retainAll(ringRegionCells[5].getVisibleCells());
+		}
+        victims.remove(ringRegionCells[0]);
+        victims.remove(ringRegionCells[3]);
+		//victims.removeAll(coverSet.getCellSet());
+		//victims.removeAll(baseSet.getCellSet());
+		victims.bits.andNot(coverSet.regionCellsBitSet);
+		victims.bits.andNot(baseSet.regionCellsBitSet);
+        for (Cell cell : victims) {
+            if (grid.hasCellPotentialValue(cell.getIndex(), value)) {
+				eliminationsTotal++;
+                removablePotentials.put(cell, SingletonBitSet.create(value));
+			}
+        }
+        // Create hint
+        return new TurbotFishHint(this, removablePotentials,
+                start, end, bridgeCell1, bridgeCell2, value, baseSet, coverSet, shareRegion, baseEmptyRegion, coverEmptyRegion, /*baseEmptyRegionBlades, coverEmptyRegionBlades,*/ emptyRegionCells, eliminationsTotal, ringRegion);
     }
 
     @Override
