@@ -452,7 +452,7 @@ else {
                 for (HintProducer producer : advancedHintProducers)
                     gatherProducer(previousHints, result, accu, producer);
                 for (HintProducer producer : experimentalHintProducers) {
-                    if (result.isEmpty()                                                  )
+                    if (result.isEmpty()                                                 )
                         gatherProducer(previousHints, result, accu, producer);
                 }
             }
