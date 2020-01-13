@@ -452,7 +452,7 @@ else {
                 for (HintProducer producer : advancedHintProducers)
                     gatherProducer(previousHints, result, accu, producer);
                 for (HintProducer producer : experimentalHintProducers) {
-                    if (result.isEmpty() && Settings.getInstance().isUsingAllTechniques())
+                    if (result.isEmpty()                                                  )
                         gatherProducer(previousHints, result, accu, producer);
                 }
             }
@@ -494,7 +494,7 @@ else {
                         producer.getHints(grid, accu);
                 }
                 for (IndirectHintProducer producer : experimentalHintProducers) {
-                    if (result.isEmpty() && Settings.getInstance().isUsingAllTechniques())
+                    if (result.isEmpty()                                                 )
                         producer.getHints(grid, accu);
                 }
             }
@@ -549,7 +549,7 @@ else {
                     for (IndirectHintProducer producer : advancedHintProducers)
                         producer.getHints(grid, accu);
                     for (IndirectHintProducer producer : experimentalHintProducers) {
-                        if (Settings.getInstance().isUsingAllTechniques())
+                    //  if (Settings.getInstance().isUsingAllTechniques())
                             producer.getHints(grid, accu);
                     }
                 }
