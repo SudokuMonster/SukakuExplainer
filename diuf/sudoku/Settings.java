@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 public class Settings {
 
     public final static int VERSION = 1;
-    public final static int REVISION = 16;
-    public final static String SUBREV = ".11";
-	public final static String releaseDate = "2020-01-11";
+    public final static int REVISION = 17;
+    public final static String SUBREV = ".3";
+	public final static String releaseDate = "2020-01-13";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -559,7 +559,7 @@ public class Settings {
     private void init() {
         techniques = EnumSet.allOf(SolvingTechnique.class);
 		//default deselected techniques are added here
-		techniques.remove(SolvingTechnique.FourStrongLinks);
+		//techniques.remove(SolvingTechnique.FourStrongLinks);
 		techniques.remove(SolvingTechnique.FiveStrongLinks);
  		techniques.remove(SolvingTechnique.SixStrongLinks);
 		techniques.remove(SolvingTechnique.VLocking);
@@ -567,6 +567,7 @@ public class Settings {
 		techniques.remove(SolvingTechnique.NakedTripletGen);
 		techniques.remove(SolvingTechnique.NakedQuadGen);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		techniques.remove(SolvingTechnique.NakedSextGen);		
 		if (isForbiddenPairs()) {
 			techniques.remove(SolvingTechnique.UniqueLoop);
 			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
@@ -577,14 +578,15 @@ public class Settings {
         techniques = EnumSet.allOf(SolvingTechnique.class);
 		//default deselected techniques are added here
 		techniques.remove(SolvingTechnique.PointingClaiming);
-		techniques.remove(SolvingTechnique.ThreeStrongLinks);
-		techniques.remove(SolvingTechnique.FourStrongLinks);
+		//techniques.remove(SolvingTechnique.ThreeStrongLinks);
+		//techniques.remove(SolvingTechnique.FourStrongLinks);
 		techniques.remove(SolvingTechnique.FiveStrongLinks);
  		techniques.remove(SolvingTechnique.SixStrongLinks);
 		techniques.remove(SolvingTechnique.NakedPair);
 		techniques.remove(SolvingTechnique.NakedTriplet);
 		techniques.remove(SolvingTechnique.NakedQuad);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		techniques.remove(SolvingTechnique.NakedSextGen);		
 		//SudokuMonster Deadly pattern can be restricted by FP so until Uniqueness/BUG
 		//techniques are modified to accommodate FP then it is safer to remove them
 		if (isAntiFerz() || isAntiKnight() || isForbiddenPairs()) {
@@ -611,10 +613,13 @@ public class Settings {
  		techniques.remove(SolvingTechnique.SixStrongLinks);
 		techniques.remove(SolvingTechnique.WXYZWing);
 		techniques.remove(SolvingTechnique.VWXYZWing);
+		techniques.remove(SolvingTechnique.UVWXYZWing);
+		techniques.remove(SolvingTechnique.TUVWXYZWing);		
 		techniques.remove(SolvingTechnique.NakedPairGen);
 		techniques.remove(SolvingTechnique.NakedTripletGen);
 		techniques.remove(SolvingTechnique.NakedQuadGen);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
+		techniques.remove(SolvingTechnique.NakedSextGen);		
     }
 
     public void load() {

@@ -215,16 +215,16 @@ public class TurbotFishHint extends IndirectHint implements Rule, HasParentPoten
     @Override
     public String getName() {
 		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) ^ (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "Grouped Turbot Crane" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
+			return "Grouped Turbot Crane" + (ringRegion == null ? "" : " X-Loop") + " " + getSuffix();
 		if ((emptyRegion1 && baseSet.getRegionTypeIndex() == 0) && (emptyRegion2 && coverSet.getRegionTypeIndex() == 0))
-			return "Grouped 2 strong links" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
+			return "Grouped 2 strong links" + (ringRegion == null ? "" : " X-Loop") + " " + getSuffix();
 		if ((emptyRegion1 || emptyRegion2) && baseSet.getRegionTypeIndex() ==  coverSet.getRegionTypeIndex())
-			return "Grouped Skyscraper" +(ringRegion == null ? "" : " Ring") + " " + getSuffix();
+			return "Grouped Skyscraper" +(ringRegion == null ? "" : " X-Loop") + " " + getSuffix();
 		if (emptyRegion1 || emptyRegion2)
-			return "Grouped 2-String Kite" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
+			return "Grouped 2-String Kite" + (ringRegion == null ? "" : " X-Loop") + " " + getSuffix();
 		if (baseSet.getRegionTypeIndex() > 2 || coverSet.getRegionTypeIndex() > 2)
-			return "Grouped 2 strong links" + (ringRegion == null ? "" : " Ring") + " " + getSuffix();
-		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0] + (ringRegion == null ? "" : " Ring");
+			return "Grouped 2 strong links" + (ringRegion == null ? "" : " X-Loop") + " " + getSuffix();
+		return hintNames[baseSet.getRegionTypeIndex()][coverSet.getRegionTypeIndex()][0] + (ringRegion == null ? "" : " X-Loop");
 
     }	
 	

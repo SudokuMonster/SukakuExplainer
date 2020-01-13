@@ -259,7 +259,7 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 	static double baseRatings[] = {0,4.0,5.4,5.8,6.2,6.6,7.0,7.4};
 	
 	private String getFishName(int fishSize) {
-		String[] fishNames = new String[] {"Cyclopsfish", "X-Wing", "Swordfish", "Jellyfish", "Starfish", "Whale", "Leviathan", "LNM"};
+		String[] fishNames = new String[] {"Cyclopsfish", "X-Wing", "Swordfish", "Jellyfish", "Starfish", "Whale", "Leviathan", "Octupus", "Enniafish"};
 		return  fishNames[fishSize - 1];
     }	
 	
@@ -320,7 +320,7 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 			if (linksNumber < 3)
 				Name = "SS";
 			else
-				Name += " SS";	
+				Name += "SS";	
 		else if (Suffix.indexOf("0",1) >= 0 || linksNumber > 3)
 			Name += "SL";
 		else

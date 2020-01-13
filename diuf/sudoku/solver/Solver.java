@@ -185,9 +185,12 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.VWXYZWing, indirectHintProducers, new VWXYZWing());
 		addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
         addIfWorth(SolvingTechnique.FiveStrongLinks, indirectHintProducers, new StrongLinks(5));        
+        addIfWorth(SolvingTechnique.NakedSextGen, indirectHintProducers, new NakedSetGen(6));
+        addIfWorth(SolvingTechnique.UVWXYZWing, indirectHintProducers, new UVWXYZWing());
         addIfWorth(SolvingTechnique.SixStrongLinks, indirectHintProducers, new StrongLinks(6));        
         chainingHintProducers = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0, false, 0));
+        addIfWorth(SolvingTechnique.TUVWXYZWing, chainingHintProducers, new TUVWXYZWing());
 		addIfWorth(SolvingTechnique.AlignedTripletExclusion, chainingHintProducers, new AlignedExclusion(3));
         addIfWorth(SolvingTechnique.NishioForcingChain, chainingHintProducers, new Chaining(false, true, true, 0, false, 0));
         addIfWorth(SolvingTechnique.MultipleForcingChain, chainingHintProducers, new Chaining(true, false, false, 0, false, 0));
@@ -251,9 +254,12 @@ else {
         addIfWorth(SolvingTechnique.VWXYZWing, indirectHintProducers, new VWXYZWing());
 		addIfWorth(SolvingTechnique.AlignedPairExclusion, indirectHintProducers, new AlignedPairExclusion());
         addIfWorth(SolvingTechnique.FiveStrongLinks, indirectHintProducers, new StrongLinks(5));        
+        addIfWorth(SolvingTechnique.NakedSextGen, indirectHintProducers, new NakedSetGen(6));
+        addIfWorth(SolvingTechnique.UVWXYZWing, indirectHintProducers, new UVWXYZWing());
         addIfWorth(SolvingTechnique.SixStrongLinks, indirectHintProducers, new StrongLinks(6));        
         chainingHintProducers = new ArrayList<IndirectHintProducer>();
         addIfWorth(SolvingTechnique.ForcingChainCycle, chainingHintProducers, new Chaining(false, false, false, 0, false, 0));
+        addIfWorth(SolvingTechnique.TUVWXYZWing, chainingHintProducers, new TUVWXYZWing());
         addIfWorth(SolvingTechnique.AlignedTripletExclusion, chainingHintProducers, new AlignedExclusion(3));
         addIfWorth(SolvingTechnique.NishioForcingChain, chainingHintProducers, new Chaining(false, true, true, 0, false, 0));
         addIfWorth(SolvingTechnique.MultipleForcingChain, chainingHintProducers, new Chaining(true, false, false, 0, false, 0));
