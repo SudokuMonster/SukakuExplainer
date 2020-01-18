@@ -65,6 +65,10 @@ public class UniqueLoops implements IndirectHintProducer {
                 for (List<Cell> loop : results) {
                     // Potential loop found. Check validity
                     if (isValidLoop(grid, loop)) {
+						//If there are forbidden pairs make sure that there are no restrictions
+						if (Settings.getInstance().isAntiFerz() || Settings.getInstance().isAntiKnight() || Settings.getInstance().whichNC() > 0)
+							if (isRestricted(grid, loop, v1, v2))
+								continue;
                         // This is a unique loop. Get cells with more than 2 potentials
                         List<Cell> extraCells = new ArrayList<Cell>(2);
                         for (Cell loopCell : loop) {
@@ -294,6 +298,51 @@ public class UniqueLoops implements IndirectHintProducer {
         // All regions must have been visited once with each parity (or never)
         return visitedOdd.equals(visitedEven);
     }
+
+    //checks if loop cells can be restricted by forbidden pairs removing the deadly pattern
+	private boolean isRestricted(Grid grid, List<Cell> loop, int v1, int v2) {
+		for (Cell cell : loop) {
+			if (Settings.getInstance().isAntiFerz() || Settings.getInstance().isAntiKnight()){
+				CellSet visible = new CellSet (Grid.antiVisibleCellsSet[cell.getIndex()]);
+				for (Cell vCell : visible) {
+					if (grid.hasCellPotentialValue(vCell.getIndex(), v1)){
+						return true;
+					}
+					if (grid.hasCellPotentialValue(vCell.getIndex(), v2)){
+						return true;
+					}
+				}
+			}
+			if (Settings.getInstance().whichNC() > 0){
+				int[] ncVisible = null;
+				if (Settings.getInstance().whichNC() < 3)
+					if (Settings.getInstance().isToroidal())
+						ncVisible = Grid.wazirCellsToroidal[cell.getIndex()];
+					else
+						ncVisible = Grid.wazirCellsRegular[cell.getIndex()];
+				else if (Settings.getInstance().whichNC() > 2)
+					if (Settings.getInstance().isToroidal())
+						ncVisible = Grid.ferzCellsToroidal[cell.getIndex()];
+					else
+						ncVisible = Grid.ferzCellsRegular[cell.getIndex()];							
+				for (int nextVisible : ncVisible){
+					if (v1 < 9 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+						if (grid.hasCellPotentialValue(nextVisible, v1 == 9 ? 1 : v1 + 1))
+							return true;
+					if (v1 > 1 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+						if (grid.hasCellPotentialValue(nextVisible, v1 == 1 ? 9 : v1 - 1))
+							return true;
+					if (v2 < 9 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+						if (grid.hasCellPotentialValue(nextVisible, v2 == 9 ? 1 : v2 + 1))
+							return true;
+					if (v2 >1 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+						if (grid.hasCellPotentialValue(nextVisible, v2 == 1 ? 9 : v2 - 1))
+							return true;
+				}
+			}
+		}
+		return false;
+	}
 
     private UniqueLoopHint createType1Hint(List<Cell> loop, Cell rescueCell,
             int v1, int v2) {
@@ -626,21 +675,53 @@ public class UniqueLoops implements IndirectHintProducer {
                 nValues[dstIndex++] = value;
         }
         // Build removable potentials
-        Map<Cell,BitSet> removable = new HashMap<Cell,BitSet>();
-        for (int i = 0; i < 9; i++) {
-            Cell otherCell = region.getCell(i);
-            if (!Arrays.asList(cells).contains(otherCell)
-                    && !c1.equals(otherCell) && !c2.equals(otherCell)) {
-                // Get removable potentials
-                BitSet removablePotentials = new BitSet(10);
-                for (int value = 1; value <= 9; value++) {
-                    if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
-                        removablePotentials.set(value);
-                }
-                if (!removablePotentials.isEmpty())
-                    removable.put(otherCell, removablePotentials);
-            }
-        }
+		Map<Cell,BitSet> removable = new HashMap<Cell,BitSet>();
+		if (Settings.getInstance().isVLatin()){
+			for (int i = 0; i < 9; i++) {
+				Cell otherCell = region.getCell(i);
+				if (!Arrays.asList(cells).contains(otherCell)
+						&& !c1.equals(otherCell) && !c2.equals(otherCell)) {
+					// Get removable potentials
+					BitSet removablePotentials = new BitSet(10);
+					for (int value = 1; value <= 9; value++) {
+						if (commonPotentialValues.get(value) && grid.hasCellPotentialValue(otherCell.getIndex(), value))
+							removablePotentials.set(value);
+					}
+					if (!removablePotentials.isEmpty())
+						removable.put(otherCell, removablePotentials);
+				}
+			}
+		}
+		else {
+			//SudokuMonster: Genralized Naked sets if Variants
+			for(int i = commonPotentialValues.nextSetBit(0); i >= 0; i = commonPotentialValues.nextSetBit(i + 1)) {
+				CellSet Victims = null;
+				for (Cell cell : cells)
+					if (grid.hasCellPotentialValue(cell.getIndex(),i))
+							if (Victims == null)
+								Victims = new CellSet (cell.getVisibleCells());
+							else
+								Victims.retainAll(cell.getVisibleCells());
+				if (grid.hasCellPotentialValue(c1.getIndex(),i))
+					if (Victims == null)
+						Victims = new CellSet (c1.getVisibleCells());
+					else
+						Victims.retainAll(c1.getVisibleCells());											
+				if (grid.hasCellPotentialValue(c2.getIndex(),i))
+					if (Victims == null)
+						Victims = new CellSet (c2.getVisibleCells());
+					else
+						Victims.retainAll(c2.getVisibleCells());												
+				for (Cell cell : Victims)
+					if (grid.hasCellPotentialValue(cell.getIndex(), i)) {		
+						//eliminationsTotal++;
+						if (removable.containsKey(cell))
+							removable.get(cell).set(i);
+						else
+							removable.put(cell, SingletonBitSet.create(i));
+					}
+			}			
+		}
         return new UniqueLoopType3NakedHint(this, loop, v1, v2, removable, c1, c2,
                 oValues, region, cells, nValues);
     }

@@ -18,8 +18,8 @@ public class Settings {
 
     public final static int VERSION = 1;
     public final static int REVISION = 17;
-    public final static String SUBREV = ".3";
-	public final static String releaseDate = "2020-01-13";
+    public final static String SUBREV = ".5";
+	public final static String releaseDate = "2020-01-15";
 	public final static String releaseYear = "2020";
 	public final static String releaseLicence = "Lesser General Public License";
 	public final static String releaseLicenceMini = "LGPL";
@@ -568,9 +568,9 @@ public class Settings {
 		techniques.remove(SolvingTechnique.NakedQuadGen);
 		techniques.remove(SolvingTechnique.NakedQuintGen);
 		techniques.remove(SolvingTechnique.NakedSextGen);		
-		if (isForbiddenPairs()) {
-			techniques.remove(SolvingTechnique.UniqueLoop);
-			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
+		if (isAntiFerz() || isAntiKnight() || isForbiddenPairs()) {
+			//techniques.remove(SolvingTechnique.UniqueLoop);
+			//techniques.remove(SolvingTechnique.BivalueUniversalGrave);
 		}
     }
 
@@ -590,8 +590,8 @@ public class Settings {
 		//SudokuMonster Deadly pattern can be restricted by FP so until Uniqueness/BUG
 		//techniques are modified to accommodate FP then it is safer to remove them
 		if (isAntiFerz() || isAntiKnight() || isForbiddenPairs()) {
-			techniques.remove(SolvingTechnique.UniqueLoop);
-			techniques.remove(SolvingTechnique.BivalueUniversalGrave);
+			//techniques.remove(SolvingTechnique.UniqueLoop);
+			//techniques.remove(SolvingTechnique.BivalueUniversalGrave);
 		}
 		if (isVLatin())
 			if (isBringBackSE121() && !isForbiddenPairs())
@@ -646,7 +646,9 @@ public class Settings {
 				isAntiFerz = prefs.getBoolean("isAntiFerz", isAntiFerz);
 				isAntiKnight = prefs.getBoolean("isAntiKnight", isAntiKnight);            
 				isToroidal = prefs.getBoolean("isToroidal", isToroidal);            
-				revisedRating = prefs.getInt("RevisedRatings", revisedRating);			
+				revisedRating = prefs.getInt("RevisedRatings", revisedRating);
+				toggleVariants();
+				Settings_Variants();
 			} catch (SecurityException ex) {
 				// Maybe we are running from an applet. Do nothing
 			}

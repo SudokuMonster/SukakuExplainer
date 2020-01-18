@@ -78,6 +78,7 @@ public class Grid {
     public static final int[][] cellRegions;
     public static int[][] visibleCellIndex;
 	public static int[][] forwardVisibleCellIndex;
+	public static int[][] antiVisibleCellIndex;
 	private static final int [][] windowsVisibleCellIndex;
 	private static final int [][] DGVisibleCellIndex;
 	private static final int [][] XVisibleCellIndex;
@@ -104,6 +105,7 @@ public class Grid {
     public static final Region[][] regions;
     public static CellSet[] visibleCellsSet;
 	public static CellSet[] forwardVisibleCellsSet;
+	public static CellSet[] antiVisibleCellsSet;
     static {
     	cells = new Cell[] {
     		new Cell(0), new Cell(1), new Cell(2), new Cell(3), new Cell(4), new Cell(5), new Cell(6), new Cell(7), new Cell(8),
@@ -1156,6 +1158,7 @@ public class Grid {
 			{80},
 			{}
 			};
+		antiVisibleCellIndex = new int [81][0];
     	visibleCellsSet = new CellSet[] {
 				new CellSet(visibleCellIndex[0]),new CellSet(visibleCellIndex[1]),new CellSet(visibleCellIndex[2]),new CellSet(visibleCellIndex[3]),new CellSet(visibleCellIndex[4]),new CellSet(visibleCellIndex[5]),new CellSet(visibleCellIndex[6]),new CellSet(visibleCellIndex[7]),new CellSet(visibleCellIndex[8]),
 				new CellSet(visibleCellIndex[9]),new CellSet(visibleCellIndex[10]),new CellSet(visibleCellIndex[11]),new CellSet(visibleCellIndex[12]),new CellSet(visibleCellIndex[13]),new CellSet(visibleCellIndex[14]),new CellSet(visibleCellIndex[15]),new CellSet(visibleCellIndex[16]),new CellSet(visibleCellIndex[17]),
@@ -1178,6 +1181,7 @@ public class Grid {
 				new CellSet(forwardVisibleCellIndex[63]),new CellSet(forwardVisibleCellIndex[64]),new CellSet(forwardVisibleCellIndex[65]),new CellSet(forwardVisibleCellIndex[66]),new CellSet(forwardVisibleCellIndex[67]),new CellSet(forwardVisibleCellIndex[68]),new CellSet(forwardVisibleCellIndex[69]),new CellSet(forwardVisibleCellIndex[70]),new CellSet(forwardVisibleCellIndex[71]),
 				new CellSet(forwardVisibleCellIndex[72]),new CellSet(forwardVisibleCellIndex[73]),new CellSet(forwardVisibleCellIndex[74]),new CellSet(forwardVisibleCellIndex[75]),new CellSet(forwardVisibleCellIndex[76]),new CellSet(forwardVisibleCellIndex[77]),new CellSet(forwardVisibleCellIndex[78]),new CellSet(forwardVisibleCellIndex[79]),new CellSet(forwardVisibleCellIndex[80])
 				};
+		antiVisibleCellsSet = null;
     	blocks = new Block[] {new Block(0), new Block(1), new Block(2), new Block(3), new Block(4), new Block(5), new Block(6), new Block(7), new Block(8)};
     	rows = new Row[] {new Row(0), new Row(1), new Row(2), new Row(3), new Row(4), new Row(5), new Row(6), new Row(7), new Row(8)};
     	columns = new Column[]{new Column(0), new Column(1), new Column(2), new Column(3), new Column(4), new Column(5), new Column(6), new Column(7), new Column(8)}; 
@@ -1636,9 +1640,11 @@ public class Grid {
 		int visibilityMax = 0;
 		ArrayList<ArrayList<Integer>> tempList1 = new ArrayList();
 		ArrayList<ArrayList<Integer>> tempList2 = new ArrayList();		
+		ArrayList<ArrayList<Integer>> tempList3 = new ArrayList();		
 		for (int i = 0; i < 81; i++) {
 			ArrayList<Integer> list1 = new ArrayList();
 			ArrayList<Integer> list2 = new ArrayList();
+			ArrayList<Integer> list3 = new ArrayList();
 			for (int j = 0; j < visibleCellIndex[i].length; j++)
 				list1.add(visibleCellIndex[i][j]);
 			for (int j = 0; j < forwardVisibleCellIndex[i].length; j++)
@@ -1696,6 +1702,7 @@ public class Grid {
 					if (Settings.getInstance().isToroidal())  {
 						if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 							list1.add(leapCellIndex);
+							list3.add(leapCellIndex);
 							if (leapCellIndex > i)
 								list2.add(leapCellIndex);
 						}
@@ -1704,6 +1711,7 @@ public class Grid {
 						if (!isOutsideBoardX && !isOutsideBoardY) {
 							if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 								list1.add(leapCellIndex);
+								list3.add(leapCellIndex);
 								if (leapCellIndex > i)
 									list2.add(leapCellIndex);
 							}		
@@ -1719,6 +1727,7 @@ public class Grid {
 					if (Settings.getInstance().isToroidal())  {
 						if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 							list1.add(leapCellIndex);
+							list3.add(leapCellIndex);
 							if (leapCellIndex > i)
 								list2.add(leapCellIndex);
 						}	
@@ -1727,6 +1736,7 @@ public class Grid {
 						if (!isOutsideBoardX && !isOutsideBoardY) {
 							if (leapCellIndex != i && list1.indexOf(leapCellIndex) < 0) {
 								list1.add(leapCellIndex);
+								list3.add(leapCellIndex);
 								if (leapCellIndex > i)
 									list2.add(leapCellIndex);
 							}
@@ -1736,14 +1746,21 @@ public class Grid {
 			visibilityMax = visibilityMax > list1.size() ? visibilityMax : list1.size();
 			tempList1.add(list1);
 			tempList2.add(list2);
+			if (Settings.getInstance().isAntiKnight() || Settings.getInstance().isAntiFerz())
+				tempList3.add(list3);			
 		}
 		//@SudokuMonster: recreating array from ArrayList
 				visibleCellIndex = new int[81][visibilityMax];
 					for (int i = 0; i < 81; i++){
 						visibleCellIndex [i] = new int[tempList1.get(i).size()];
 						forwardVisibleCellIndex [i] = new int[tempList2.get(i).size()];
+						if (Settings.getInstance().isAntiKnight() || Settings.getInstance().isAntiFerz())
+							antiVisibleCellIndex [i] = new int[tempList3.get(i).size()];
 						for (int j = 0; j < tempList1.get(i).size(); j++) {
 							visibleCellIndex [i][j] = tempList1.get(i).get(j);
+							if (Settings.getInstance().isAntiKnight() || Settings.getInstance().isAntiFerz())
+								if (j < tempList3.get(i).size())
+									antiVisibleCellIndex [i][j] = tempList3.get(i).get(j);
 							if (j < tempList2.get(i).size())
 								forwardVisibleCellIndex [i][j] = tempList2.get(i).get(j);
 						}
@@ -1770,7 +1787,18 @@ public class Grid {
 				new CellSet(forwardVisibleCellIndex[63]),new CellSet(forwardVisibleCellIndex[64]),new CellSet(forwardVisibleCellIndex[65]),new CellSet(forwardVisibleCellIndex[66]),new CellSet(forwardVisibleCellIndex[67]),new CellSet(forwardVisibleCellIndex[68]),new CellSet(forwardVisibleCellIndex[69]),new CellSet(forwardVisibleCellIndex[70]),new CellSet(forwardVisibleCellIndex[71]),
 				new CellSet(forwardVisibleCellIndex[72]),new CellSet(forwardVisibleCellIndex[73]),new CellSet(forwardVisibleCellIndex[74]),new CellSet(forwardVisibleCellIndex[75]),new CellSet(forwardVisibleCellIndex[76]),new CellSet(forwardVisibleCellIndex[77]),new CellSet(forwardVisibleCellIndex[78]),new CellSet(forwardVisibleCellIndex[79]),new CellSet(forwardVisibleCellIndex[80])
 				};
-
+		if (Settings.getInstance().isAntiKnight() || Settings.getInstance().isAntiFerz())
+			antiVisibleCellsSet = new CellSet[] {
+					new CellSet(antiVisibleCellIndex[0]),new CellSet(antiVisibleCellIndex[1]),new CellSet(antiVisibleCellIndex[2]),new CellSet(antiVisibleCellIndex[3]),new CellSet(antiVisibleCellIndex[4]),new CellSet(antiVisibleCellIndex[5]),new CellSet(antiVisibleCellIndex[6]),new CellSet(antiVisibleCellIndex[7]),new CellSet(antiVisibleCellIndex[8]),
+					new CellSet(antiVisibleCellIndex[9]),new CellSet(antiVisibleCellIndex[10]),new CellSet(antiVisibleCellIndex[11]),new CellSet(antiVisibleCellIndex[12]),new CellSet(antiVisibleCellIndex[13]),new CellSet(antiVisibleCellIndex[14]),new CellSet(antiVisibleCellIndex[15]),new CellSet(antiVisibleCellIndex[16]),new CellSet(antiVisibleCellIndex[17]),
+					new CellSet(antiVisibleCellIndex[18]),new CellSet(antiVisibleCellIndex[19]),new CellSet(antiVisibleCellIndex[20]),new CellSet(antiVisibleCellIndex[21]),new CellSet(antiVisibleCellIndex[22]),new CellSet(antiVisibleCellIndex[23]),new CellSet(antiVisibleCellIndex[24]),new CellSet(antiVisibleCellIndex[25]),new CellSet(antiVisibleCellIndex[26]),
+					new CellSet(antiVisibleCellIndex[27]),new CellSet(antiVisibleCellIndex[28]),new CellSet(antiVisibleCellIndex[29]),new CellSet(antiVisibleCellIndex[30]),new CellSet(antiVisibleCellIndex[31]),new CellSet(antiVisibleCellIndex[32]),new CellSet(antiVisibleCellIndex[33]),new CellSet(antiVisibleCellIndex[34]),new CellSet(antiVisibleCellIndex[35]),
+					new CellSet(antiVisibleCellIndex[36]),new CellSet(antiVisibleCellIndex[37]),new CellSet(antiVisibleCellIndex[38]),new CellSet(antiVisibleCellIndex[39]),new CellSet(antiVisibleCellIndex[40]),new CellSet(antiVisibleCellIndex[41]),new CellSet(antiVisibleCellIndex[42]),new CellSet(antiVisibleCellIndex[43]),new CellSet(antiVisibleCellIndex[44]),
+					new CellSet(antiVisibleCellIndex[45]),new CellSet(antiVisibleCellIndex[46]),new CellSet(antiVisibleCellIndex[47]),new CellSet(antiVisibleCellIndex[48]),new CellSet(antiVisibleCellIndex[49]),new CellSet(antiVisibleCellIndex[50]),new CellSet(antiVisibleCellIndex[51]),new CellSet(antiVisibleCellIndex[52]),new CellSet(antiVisibleCellIndex[53]),
+					new CellSet(antiVisibleCellIndex[54]),new CellSet(antiVisibleCellIndex[55]),new CellSet(antiVisibleCellIndex[56]),new CellSet(antiVisibleCellIndex[57]),new CellSet(antiVisibleCellIndex[58]),new CellSet(antiVisibleCellIndex[59]),new CellSet(antiVisibleCellIndex[60]),new CellSet(antiVisibleCellIndex[61]),new CellSet(antiVisibleCellIndex[62]),
+					new CellSet(antiVisibleCellIndex[63]),new CellSet(antiVisibleCellIndex[64]),new CellSet(antiVisibleCellIndex[65]),new CellSet(antiVisibleCellIndex[66]),new CellSet(antiVisibleCellIndex[67]),new CellSet(antiVisibleCellIndex[68]),new CellSet(antiVisibleCellIndex[69]),new CellSet(antiVisibleCellIndex[70]),new CellSet(antiVisibleCellIndex[71]),
+					new CellSet(antiVisibleCellIndex[72]),new CellSet(antiVisibleCellIndex[73]),new CellSet(antiVisibleCellIndex[74]),new CellSet(antiVisibleCellIndex[75]),new CellSet(antiVisibleCellIndex[76]),new CellSet(antiVisibleCellIndex[77]),new CellSet(antiVisibleCellIndex[78]),new CellSet(antiVisibleCellIndex[79]),new CellSet(antiVisibleCellIndex[80])
+					};
 	}
 
 

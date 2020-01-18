@@ -620,7 +620,9 @@ else {
                 if (ruleDiff == exclude1 || ruleDiff == exclude2 || ruleDiff == exclude3 || (ruleName.contains(excludeT1) && (!Objects.equals(excludeT1,""))) || (ruleName.contains(excludeT2) && (!Objects.equals(excludeT2,""))) || (ruleName.contains(excludeT3) && (!Objects.equals(excludeT3,""))))
 					return 0.0;
 				if (inRateCounter < 3 && (ruleDiff == include1 || ruleDiff == include2 || ruleDiff == include3)) inRateCounter++;
-				if (inTechCounter < 3 && ((ruleName.contains(includeT1) && (!Objects.equals(includeT1,""))) || (ruleName.contains(includeT2) && (!Objects.equals(includeT2,""))) || (ruleName.contains(includeT3) && (!Objects.equals(includeT3,""))))) inTechCounter++;
+				if (inTechCounter < 3 && (ruleName.contains(includeT1) && (!Objects.equals(includeT1,"")))) inTechCounter++;
+				if (inTechCounter < 3 && (ruleName.contains(includeT2) && (!Objects.equals(includeT2,"")))) inTechCounter++;
+				if (inTechCounter < 3 && (ruleName.contains(includeT3) && (!Objects.equals(includeT3,"")))) inTechCounter++;
 				if (!oneOfThreeCounter && (ruleName.contains(oneOf3_1) || ruleName.contains(oneOf3_2) || ruleName.contains(oneOf3_3)))
 					oneOfThreeCounter = true;
 				if (ruleDiff > difficulty) {

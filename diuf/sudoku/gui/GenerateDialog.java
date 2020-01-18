@@ -1065,7 +1065,100 @@ public class GenerateDialog extends JDialog {
 				return "";
 			}
         },
-		L1Ring {
+		XLoop {
+
+            @Override
+            public double getMinDifficulty() {
+                return 4.0;
+            }
+
+            @Override
+            public double getMaxDifficulty() {
+                return 6.6;
+            }
+            @Override
+            public double getincludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getincludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getexcludeDifficulty3() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty1() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty2() {
+                return 0.0;
+            }
+            @Override
+            public double getnotMaxDifficulty3() {
+                return 0.0;
+            }
+			public String getexcludeTechnique1() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getexcludeTechnique3() {
+				return "";
+			}
+			public String getincludeTechnique1() {
+				return "X-Loop";
+			}
+            @Override
+			public String getincludeTechnique2() {
+				return "";
+			}
+            @Override
+			public String getincludeTechnique3() {
+				return "";
+			}
+			public String getnotMaxTechnique1() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique2() {
+				return "";
+			}
+            @Override
+			public String getnotMaxTechnique3() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_1() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_2() {
+				return "";
+			}
+            @Override
+			public String getOneOfThree_3() {
+				return "";
+			}
+        },
+		gXLoop {
 
             @Override
             public double getMinDifficulty() {
@@ -1147,15 +1240,15 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getOneOfThree_1() {
-				return "L1-Ring 3";
+				return "(2 Strong Links) Grouped X-Loop 2";
 			}
             @Override
 			public String getOneOfThree_2() {
-				return "L1-Ring 4";
+				return "(3 Strong Links) Grouped X-Loop 3";
 			}
             @Override
 			public String getOneOfThree_3() {
-				return "L1-Ring 5";
+				return "(4 Strong Links) Grouped X-Loop 4";
 			}
         },
 		ThreeStrongLinks {
@@ -1820,14 +1913,14 @@ public class GenerateDialog extends JDialog {
             @Override
             public double getMinDifficulty() {
 				if (Settings.getInstance().revisedRating() == 1)
-					return 4.9;
-                return 5.0;
+					return 4.6;
+                return 4.5;
             }
 
             @Override
             public double getMaxDifficulty() {
 				if (Settings.getInstance().revisedRating() == 1)
-					return 5.2;
+					return 5.3;
                 return 5.3;
             }
             @Override
@@ -2855,12 +2948,12 @@ public class GenerateDialog extends JDialog {
 
             @Override
             public double getMinDifficulty() {
-                return 7.0;
+                return 7.1;
             }
 
             @Override
             public double getMaxDifficulty() {
-                return 8.0;
+                return 7.2;
             }
             @Override
             public double getincludeDifficulty1() {
@@ -2899,18 +2992,18 @@ public class GenerateDialog extends JDialog {
                 return 0.0;
             }
 			public String getexcludeTechnique1() {
-				return "";
+				return "Kite";
 			}
             @Override
 			public String getexcludeTechnique2() {
-				return "";
+				return "XY";
 			}
             @Override
 			public String getexcludeTechnique3() {
-				return "";
+				return "Strong";
 			}
 			public String getincludeTechnique1() {
-				return "";
+				return "Forcing Chain";
 			}
             @Override
 			public String getincludeTechnique2() {
@@ -2933,15 +3026,15 @@ public class GenerateDialog extends JDialog {
 			}
             @Override
 			public String getOneOfThree_1() {
-				return "Forcing Chain";
+				return "";
 			}
             @Override
 			public String getOneOfThree_2() {
-				return "Bidirectional Cycle";
+				return "";
 			}
             @Override
 			public String getOneOfThree_3() {
-				return "Nishio Forcing Chain";
+				return "";
 			}
         },
 		Diabolical {

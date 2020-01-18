@@ -210,6 +210,17 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
                 }
             }
         }
+		//if the puzzles has forbidden pairs check all cells in the abscenece of BUG positions if they have restrictions
+		//A restricted cell may not be part of the deadly pattern and therefore this pattern will be rejected
+		if (Settings.getInstance().isAntiFerz() || Settings.getInstance().isAntiKnight() || Settings.getInstance().whichNC() > 0)
+			for (int i = 0; i < 81; i++)
+				if (temp.getCellValue(i) == 0 && temp.getCellPotentialValues(i).cardinality() == 2){
+					BitSet cellValues = temp.getCellPotentialValues(i);
+					int v1 = cellValues.nextSetBit(0);
+					int v2 = cellValues.nextSetBit(v1 + 1);
+					if (isRestricted(grid, i, v1, v2))
+						return; // Possibly not a BUG
+				}
         if (bugCells.size() == 1) {
             // Yeah, potential BUG type-1 pattern found
             addBug1Hint(grid, accu, bugCells, allBugValues);
@@ -227,6 +238,49 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
             addBug3Hint(accu, bugCells, bugValues, allBugValues, commonCells, grid);
         }
     }
+
+    //checks if loop cells can be restricted by forbidden pairs removing the deadly pattern
+	private boolean isRestricted(Grid grid, int cellIndex, int v1, int v2) {
+		if (Settings.getInstance().isAntiFerz() || Settings.getInstance().isAntiKnight()){
+			CellSet visible = new CellSet (Grid.antiVisibleCellsSet[cellIndex]);
+			for (Cell vCell : visible) {
+				if (grid.hasCellPotentialValue(vCell.getIndex(), v1)){
+					return true;
+				}
+				if (grid.hasCellPotentialValue(vCell.getIndex(), v2)){
+					return true;
+				}
+			}
+		}
+		if (Settings.getInstance().whichNC() > 0){
+			int[] ncVisible = null;
+			if (Settings.getInstance().whichNC() < 3)
+				if (Settings.getInstance().isToroidal())
+					ncVisible = Grid.wazirCellsToroidal[cellIndex];
+				else
+					ncVisible = Grid.wazirCellsRegular[cellIndex];
+			else if (Settings.getInstance().whichNC() > 2)
+				if (Settings.getInstance().isToroidal())
+					ncVisible = Grid.ferzCellsToroidal[cellIndex];
+				else
+					ncVisible = Grid.ferzCellsRegular[cellIndex];	
+			for (int nextVisible : ncVisible){
+				if (v1 < 9 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+					if (grid.hasCellPotentialValue(nextVisible, v1 == 9 ? 1 : v1 + 1))
+						return true;
+				if (v1 > 1 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+					if (grid.hasCellPotentialValue(nextVisible, v1 == 1 ? 9 : v1 - 1))
+						return true;
+				if (v2 < 9 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+					if (grid.hasCellPotentialValue(nextVisible, v2 == 9 ? 1 : v2 + 1))
+						return true;
+				if (v2 >1 || Settings.getInstance().whichNC() == 2  || Settings.getInstance().whichNC() == 4)
+					if (grid.hasCellPotentialValue(nextVisible, v2 == 1 ? 9 : v2 - 1))
+						return true;
+			}
+		}
+		return false;
+	}
 
     private void addBug1Hint(Grid grid, HintsAccumulator accu, List<Cell> bugCells, BitSet extraValues) throws InterruptedException {
         Cell bugCell = bugCells.get(0);
@@ -277,85 +331,121 @@ public class BivalueUniversalGrave implements IndirectHintProducer {
 					if (regionTypeIndex == 8 && !Settings.getInstance().isAsterisk()) continue;
 					if (regionTypeIndex == 9 && !Settings.getInstance().isCD()) continue;
 				}
-            // Look for a region of this type shared by bugCells
-            Grid.Region region = null;
-            for (Cell cell : bugCells) {
-                if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0) {
-					region = null;
-					break;
+				// Look for a region of this type shared by bugCells
+				Grid.Region region = null;
+				for (Cell cell : bugCells) {
+					if (Grid.cellRegions[cell.getIndex()][regionTypeIndex] < 0) {
+						region = null;
+						break;
+					}
+					Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
+					if (region == null) {
+						region = cellRegion;
+					} else if (!region.equals(cellRegion)) {
+						// Cells do not share a region of this type
+						region = null;
+						break;
+					}
 				}
-				Grid.Region cellRegion = Grid.getRegionAt(regionTypeIndex, cell.getIndex());
-                if (region == null) {
-                    region = cellRegion;
-                } else if (!region.equals(cellRegion)) {
-                    // Cells do not share a region of this type
-                    region = null;
-                    break;
-                }
-            }
-            if (region != null) {
-                // A shared region of type regionType has been found
-                // Gather other cells of this region
-                List<Cell> regionCells = new ArrayList<Cell>();
-                for (Cell cell : commonCells) {
-                    if (Grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
-                        regionCells.add(cell);
-                }
-
-                    // Iterate on permutations of the missing (degree - 1) cells
-                    if (regionCells.size() >= degree) {
-                        Permutations perm = new Permutations(degree - 1, regionCells.size());
-                        while (perm.hasNext()) {
-                            BitSet[] potentials = new BitSet[degree];
-                            Cell[] nakedCells = new Cell[degree - 1];
-                            BitSet otherCommon = new BitSet(10);
-                            int[] indexes = perm.nextBitNums();
-                            for (int i = 0; i < indexes.length; i++) {
-                                Cell cell = regionCells.get(indexes[i]);
-                                // Fill array of missing naked cells
-                                nakedCells[i] = cell;
-                                BitSet potential = grid.getCellPotentialValues(cell.getIndex());
-                                // Fill potential values array
-                                potentials[i] = potential;
-                                // Gather union of potentials
-                                otherCommon.or(potential);
-                            }
-                            // Get potentials for bug cells
-                            potentials[degree - 1] = allExtraValues;
-                            // Ensure that all values of the naked set are covered by non-bug cells
-                            if (otherCommon.cardinality() == degree) {
-                                // Search for a naked set
-                                BitSet nakedSet = CommonTuples.searchCommonTuple(potentials, degree);
-                                if (nakedSet != null) {
-                                    // One of bugCells form a naked set with nakedCells[]
-                                    // Look for cells not part of the naked set, sharing the region
-                                    Set<Cell> erasable = new HashSet<Cell>(regionCells);
-                                    for (Cell cell : nakedCells)
-                                        erasable.remove(cell); // exclude cells of the naked set
-                                    erasable.removeAll(bugCells); // exclude bug cells
-                                    if (!erasable.isEmpty()) {
-                                        // Ok, some cells in a common region. Look for removable potentials
-                                        Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
-                                        for (Cell cell : erasable) {
-                                            BitSet removable = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
-                                            removable.and(nakedSet);
-                                            if (!removable.isEmpty())
-                                                removablePotentials.put(cell, removable);
-                                        }
-                                        if (!removablePotentials.isEmpty()) {
-                                            // Create hint
-                                            Cell[] arrCells = new Cell[bugCells.size()];
-                                            bugCells.toArray(arrCells);
-                                            IndirectHint hint = new Bug3Hint(this, removablePotentials, arrCells,
-                                                    nakedCells, extraValues, allExtraValues, nakedSet, region);
-                                            accu.add(hint);
-                                        }
-                                    } // if (!erasable.isEmpty())
-                                } // if (nakedSet != null)
-                            } // if (otherCommon.cardinality() == degree)
-                        } // while (perm.hasNext())
-                    } // if (regionCells.size() >= degree)
-                } // if (region != null)
+				if (region != null) {
+					// A shared region of type regionType has been found
+					// Gather other cells of this region
+					List<Cell> regionCells = new ArrayList<Cell>();
+					for (Cell cell : commonCells) {
+						if (Grid.getRegionAt(regionTypeIndex, cell.getIndex()).equals(region))
+							regionCells.add(cell);
+					}
+					// Iterate on permutations of the missing (degree - 1) cells
+					if (regionCells.size() >= degree) {
+						Permutations perm = new Permutations(degree - 1, regionCells.size());
+						while (perm.hasNext()) {
+							BitSet[] potentials = new BitSet[degree];
+							Cell[] nakedCells = new Cell[degree - 1];
+							BitSet otherCommon = new BitSet(10);
+							int[] indexes = perm.nextBitNums();
+							for (int i = 0; i < indexes.length; i++) {
+								Cell cell = regionCells.get(indexes[i]);
+								// Fill array of missing naked cells
+								nakedCells[i] = cell;
+								BitSet potential = grid.getCellPotentialValues(cell.getIndex());
+								// Fill potential values array
+								potentials[i] = potential;
+								// Gather union of potentials
+								otherCommon.or(potential);
+							}
+							// Get potentials for bug cells
+							potentials[degree - 1] = allExtraValues;
+							// Ensure that all values of the naked set are covered by non-bug cells
+							if (otherCommon.cardinality() == degree) {
+								// Search for a naked set
+								BitSet nakedSet = CommonTuples.searchCommonTuple(potentials, degree);
+								if (nakedSet != null) {
+									// One of bugCells form a naked set with nakedCells[]
+									// Look for cells not part of the naked set, sharing the region
+									if (Settings.getInstance().isVLatin()){
+										Set<Cell> erasable = new HashSet<Cell>(regionCells);
+										for (Cell cell : nakedCells)
+											erasable.remove(cell); // exclude cells of the naked set
+										erasable.removeAll(bugCells); // exclude bug cells
+										if (!erasable.isEmpty()) {
+											// Ok, some cells in a common region. Look for removable potentials
+											Map<Cell, BitSet> removablePotentials = new HashMap<Cell, BitSet>();
+											for (Cell cell : erasable) {
+												BitSet removable = (BitSet)grid.getCellPotentialValues(cell.getIndex()).clone();
+												removable.and(nakedSet);
+												if (!removable.isEmpty())
+													removablePotentials.put(cell, removable);
+											}
+											if (!removablePotentials.isEmpty()) {
+												// Create hint
+												Cell[] arrCells = new Cell[bugCells.size()];
+												bugCells.toArray(arrCells);
+												IndirectHint hint = new Bug3Hint(this, removablePotentials, arrCells,
+														nakedCells, extraValues, allExtraValues, nakedSet, region);
+												accu.add(hint);
+											}
+										} // if (!erasable.isEmpty())
+									}
+									//Generalized naked set if variants
+									else{
+										Map<Cell,BitSet> removablePotentials = new HashMap<Cell,BitSet>();
+										for(int i = nakedSet.nextSetBit(0); i >= 0; i = nakedSet.nextSetBit(i + 1)) {
+											CellSet Victims = null;
+											for (Cell cell : nakedCells)
+												if (grid.hasCellPotentialValue(cell.getIndex(),i))
+													if (Victims == null)
+														Victims = new CellSet (cell.getVisibleCells());
+													else
+														Victims.retainAll(cell.getVisibleCells());
+											for (Cell cell : bugCells)
+												if (grid.hasCellPotentialValue(cell.getIndex(),i))
+													if (Victims == null)
+														Victims = new CellSet (cell.getVisibleCells());
+													else
+														Victims.retainAll(cell.getVisibleCells());
+											for (Cell cell : Victims)
+												if (grid.hasCellPotentialValue(cell.getIndex(), i)) {		
+													//eliminationsTotal++;
+													if (removablePotentials.containsKey(cell))
+														removablePotentials.get(cell).set(i);
+													else
+														removablePotentials.put(cell, SingletonBitSet.create(i));
+												}
+										}
+										if (!removablePotentials.isEmpty()) {
+											// Create hint
+											Cell[] arrCells = new Cell[bugCells.size()];
+											bugCells.toArray(arrCells);
+											IndirectHint hint = new Bug3Hint(this, removablePotentials, arrCells,
+													nakedCells, extraValues, allExtraValues, nakedSet, region);
+											accu.add(hint);
+										}
+									}
+								} // if (nakedSet != null)
+							} // if (otherCommon.cardinality() == degree)
+						} // while (perm.hasNext())
+					} // if (regionCells.size() >= degree)
+				} // if (region != null)
             } // for (regionType)
         } // for (degree)
 		}
