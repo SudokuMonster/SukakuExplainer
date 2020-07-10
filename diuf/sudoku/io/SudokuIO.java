@@ -131,7 +131,8 @@ public class SudokuIO {
                 
                 // fixup naked singles
                 grid.adjustPencilmarks();                
-                return RES_OK;
+				grid.setSukaku();
+				return RES_OK;
             }
         }
         return RES_ERROR;
