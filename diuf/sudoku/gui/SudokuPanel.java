@@ -754,17 +754,48 @@ public class SudokuPanel extends JPanel {
 						}
 						else {
 //@SudokuMonster: individual cells of region outlined in variants	
-							g.setColor(colors[index % 2]);
+                          if (region instanceof Grid.Window) {
+                            Grid.Window window = (Grid.Window)region;
+                            int wdi = window.getRegionIndex();
+                            int js = 0, jend = 1, jinc = 1; w = h = 3;
+                            if ( wdi == 0 || wdi == 1 || wdi == 2 || wdi == 3) { w = 3; h = 3; }
+                            if ( wdi == 4 || wdi == 5) { w = 3; h = 1; jend = 9; jinc = 3; }
+                            if ( wdi == 6 || wdi == 7) { w = 1; h = 3; jend = 9; jinc = 3; }
+                            if ( wdi == 8) { w = 1; h = 1; jend = 9; }
+                            for (int j = js; j < jend ; j+=jinc) {
+                                x = region.getRegionCellIndexColumn(j);
+                                y = region.getRegionCellIndexRow(j);
+                                g.setColor(colors[index % 2]);
+                                for (int s = -2 + rev; s <= 2; s+= 2) {
+                                    g.drawRect(x * CELL_OUTER_SIZE + s, y * CELL_OUTER_SIZE + s,
+                                            w * CELL_OUTER_SIZE - s * 2, h * CELL_OUTER_SIZE - s * 2);
+                                }
+                                if (rev == 0) {
+                                    Color base = colors[index % 2];
+                                    g.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 12));
+                                    g.fillRect(x * CELL_OUTER_SIZE + 3, y * CELL_OUTER_SIZE + 3,
+                                            w * CELL_OUTER_SIZE - 6, h * CELL_OUTER_SIZE - 6);
+                                }
+                            }
+                          } else {
 							for (int j = 0; j < 9 ; j++) {
 								x = region.getRegionCellIndexColumn(j);
 								y = region.getRegionCellIndexRow(j);
 								w = 1;
 								h = 1;
+								g.setColor(colors[index % 2]);
 								for (int s = -2 + rev; s <= 2; s+= 2) {
 									g.drawRect(x * CELL_OUTER_SIZE + s, y * CELL_OUTER_SIZE + s,
 											w * CELL_OUTER_SIZE - s * 2, h * CELL_OUTER_SIZE - s * 2);
 								}
+                                if (rev == 0) {
+                                    Color base = colors[index % 2];
+                                    g.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 12));
+                                    g.fillRect(x * CELL_OUTER_SIZE + 3, y * CELL_OUTER_SIZE + 3,
+                                            w * CELL_OUTER_SIZE - 6, h * CELL_OUTER_SIZE - 6);
+                                }
 							}
+						  }
 						}
                     index++;
                 }
