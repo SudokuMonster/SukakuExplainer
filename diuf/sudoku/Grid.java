@@ -33,6 +33,8 @@ public class Grid {
     private BitSet[] cellPotentialValues = new BitSet[81];
 	private boolean[] isGiven = new boolean[81];
 
+	private int isSudoku;  // 1=isSudoku (default), 0=isSukaku (set when Sukaku is loaded)
+	
 //    //cache for Region.getPotentialPositions(value)
 //    private valueCells valueCellsCache = new valueCells();
 //    private class valueCells {
@@ -1207,8 +1209,17 @@ public class Grid {
         for (int i = 0; i < 81; i++) {
         	cellPotentialValues[i] = new BitSet(10);
         }
+		isSudoku = 1;
     }
     
+	public int isSudoku() {
+		return this.isSudoku;
+	}
+
+	public void setSukaku() {
+		this.isSudoku = 0;
+	}
+	
     //=== Static methods ==============
 
     /**
