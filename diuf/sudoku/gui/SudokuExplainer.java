@@ -499,10 +499,14 @@ public class SudokuExplainer {
         this.grid.copyTo(copy);
         clearGrid();
         ErrorMessage message = SudokuIO.loadFromClipboard(grid);
-        if (message == null || !message.isFatal())
-            solver.cancelPotentialValues();
-        else
+        if (message == null || !message.isFatal()) {
+			if ( grid.isSudoku() == 1 ) {
+            	solver.rebuildPotentialValues();
+			}
+		}
+        else {
             copy.copyTo(grid);
+		}
         if (message != null)
             JOptionPane.showMessageDialog(frame, message.toString(), "Paste",
                     (message.isFatal() ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE));
@@ -543,11 +547,14 @@ public class SudokuExplainer {
         this.grid.copyTo(copy);
         clearGrid();
         ErrorMessage message = SudokuIO.loadFromFile(grid, file);
-        if (message == null || !message.isFatal())
-    //      solver.rebuildPotentialValues();
-            ;
-        else
+        if (message == null || !message.isFatal()) {
+			if ( grid.isSudoku() == 1 ) {
+				solver.rebuildPotentialValues();
+			}
+		}
+        else {
             copy.copyTo(grid);
+		}
         if (message != null)
             JOptionPane.showMessageDialog(frame, message.toString(), "Paste",
                     (message.isFatal() ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE));
