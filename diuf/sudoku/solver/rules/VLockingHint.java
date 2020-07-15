@@ -132,7 +132,7 @@ public class VLockingHint extends IndirectHint implements Rule, HasParentPotenti
     public String toHtml(Grid grid) {
 		String result;
 		result = HtmlLoader.loadHtml(this, "VLocking.html");
-        String region = lockedRegion.toString();
+        String region = lockedRegion.toFullString();
 		String ruleName = getName();
         result = HtmlLoader.format(result, region, Value, ruleName);
         return result;
