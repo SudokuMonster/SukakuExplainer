@@ -130,9 +130,9 @@ public class VWXYZWingHint extends IndirectHint implements Rule, HasParentPotent
     public double getDifficulty() {
 		//double-link has no impact on rating
         double result = 6.2; //base rating
-		int sizeDif = (5 + 2) / 2; //Avarage of possible pilot cell size: 4 is size of wing = 4
-		result += ((5-sizeDif)- Math.abs(sizeDif - biggestCardinality)) * 0.1;//Extremeties of size are easier than middle size: 4 is size of wing = 4
-		return result;//difficulty 6.2 if x5  5.6 if x2 or x4 5.7 if x3
+		int sizeDif = (5 + 2) / 2; //Avarage of possible pilot cell size Max 5 Min 2 Ave 3
+		result += ((5-sizeDif)- Math.abs(sizeDif - biggestCardinality)) * 0.1;//Extremeties of size are easier than middle size
+		return result;//Min difficulty 6.2 //Max difficulty 6.4
     }
 
     public String getGroup() {

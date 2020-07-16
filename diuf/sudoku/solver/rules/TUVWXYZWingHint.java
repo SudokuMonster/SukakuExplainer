@@ -164,9 +164,9 @@ public class TUVWXYZWingHint extends IndirectHint implements Rule, HasParentPote
     public double getDifficulty() {
 		//double-link has no impact on rating
         double result = 7.5; //base rating
-		//int sizeDif = (5 + 2) / 2; //Avarage of possible pilot cell size: 4 is size of wing = 4
-		//result += ((5-sizeDif)- Math.abs(sizeDif - biggestCardinality)) * 0.1;//Extremeties of size are easier than middle size: 4 is size of wing = 4
-		return result;//difficulty 6.6
+		//int sizeDif = (7 + 2) / 2; //Avarage of possible pilot cell size
+		//result += ((7-sizeDif)- Math.abs(sizeDif - biggestCardinality)) * 0.1;//Extremeties of size are easier than middle size
+		return result;//difficulty 7.5  (Fixed at base rating)
     }
 
     public String getGroup() {

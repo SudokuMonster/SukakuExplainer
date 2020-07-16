@@ -301,10 +301,10 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 				Name = "Skyscraper";
 			else
 				Name += " Skyscrapers";	
-		else if (Suffix.indexOf("0",1) >= 0 || linksNumber > 3)
-			Name += " Strong links";
-		else
+		else if (Suffix.indexOf("0",1) < 0 && linksNumber <4)
 			Name += "-String Kite";
+		else
+			Name += " Strong links";
 		Name = (gL > 0  && ringRegion == null ? "Grouped " : "") + Name + " " + Suffix;
 		return  Name;
     }	
@@ -337,9 +337,9 @@ public class StrongLinksHint extends IndirectHint implements Rule, HasParentPote
 	
     @Override
     public double getDifficulty() {
-		if (groupedLinks() >  0)
-			return baseRatings[linksNumber - 1] + 0.3;
         String Suffix = getSuffix();
+		if (groupedLinks() >  0 || Suffix.indexOf("3",1) > 0 || Suffix.indexOf("4",1) > 0 || Suffix.indexOf("5",1) > 0 || Suffix.indexOf("6",1) > 0 || Suffix.indexOf("7",1) > 0 || Suffix.indexOf("8",1) > 0 || Suffix.indexOf("9",1) > 0)
+			return baseRatings[linksNumber - 1] + 0.3;
 		if (Suffix.indexOf("0",1) < 0 && Suffix.indexOf("2",1) < 0) {
             return baseRatings[linksNumber - 1];
         } else if (Suffix.indexOf("0",1) > 0 && Suffix.indexOf("2",1) > 0) {

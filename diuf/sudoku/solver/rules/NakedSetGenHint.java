@@ -69,7 +69,9 @@ public class NakedSetGenHint extends IndirectHint implements Rule, HasParentPote
             return 3.6;
         else if (degree == 4)
             return 5.0;
-		return 5.6;
+        else if (degree == 5)
+            return 5.6;	//Genralized Naked Quintuple	
+		return 6.5;//Genralized Naked Sextuple
     }
 
     public String getName() {
