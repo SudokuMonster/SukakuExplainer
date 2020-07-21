@@ -2154,6 +2154,8 @@ public class SudokuFrame extends JFrame implements Asker {
 						Settings.getInstance().setlkSudokuBUG(false);
 						Settings.getInstance().setlkSudokuURUL(false);
 					}
+					else
+						Settings.getInstance().Settings_Variants();
 				engine.clearGrid();
 				initialize(false);
 				repaintViews();
