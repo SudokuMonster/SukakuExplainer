@@ -1208,6 +1208,7 @@ public class Grid {
     public Grid() {
         for (int i = 0; i < 81; i++) {
         	cellPotentialValues[i] = new BitSet(10);
+			isGiven[i] = false;	// fix #99 - initialize to false
         }
 		isSudoku = 1;
     }
@@ -1290,17 +1291,26 @@ public class Grid {
      * @param index the cell index [0..80]
      */	
 		
-	public void setGiven(int index) {
+	private void setGiven(int index) {		// fix #99 - made private
         this.isGiven[index] = true;
     }
 
-    public void resetGiven(int index) {
+    private void resetGiven(int index) {	// fix #99 - made private
         this.isGiven[index] = false;
     }
+
+	public void fixGivens() {				// fix #99 - new method
+		for (int i = 0; i < 81; i++) {
+			if ( getCellValue(i) != 0 ) {
+				this.isGiven[i] = true;
+			}
+		}
+	}
 
     public boolean isGiven(int index) {
         return this.isGiven[index];
     }
+
 //@SudokuMonster: Static for Variant this has to be called if a variant technique relies on Visible Cells
 //					until a better way to de-clutter code is found
 //Change visible cells according to variant
@@ -1822,7 +1832,6 @@ public class Grid {
      */
     public void setCellValue(int x, int y, int value) {
     	cellValues[y * 9 + x] = value;
-		setGiven(y * 9 + x);
     }
 
     /**
@@ -1832,7 +1841,6 @@ public class Grid {
      */
     public void setCellValue(int index, int value) {
         cellValues[index] = value;
-		//setGiven(index);
     }
 
     /**
@@ -2478,7 +2486,9 @@ public class Grid {
                 }
             }
     	}
+		fixGivens();	// fix #99
     }
+
 //@SudokuMonster: Changes to allow for FP (NC)    
     /**
      * Applies Naked Single not causing direct eliminations.

@@ -88,7 +88,7 @@ public class SudokuIO {
                             grid.setCellValue(x, y, ch - '0');
                     }
                 }
-               
+				grid.fixGivens();	// fix #99
                 return RES_OK;
             }
         }
@@ -131,6 +131,7 @@ public class SudokuIO {
                 
                 // fixup naked singles
                 grid.adjustPencilmarks();                
+				grid.fixGivens();	// fix #99
 				grid.setSukaku();
 				return RES_OK;
             }
@@ -184,7 +185,7 @@ public class SudokuIO {
         
         // fixup naked singles
         grid.adjustPencilmarks();
-        
+        grid.fixGivens();	// fix #99
         return parts.length == 81 ? RES_OK : RES_WARN;
     }
 
@@ -222,6 +223,7 @@ public class SudokuIO {
                 }
                 srcIndex += rowGap;
             }
+			grid.fixGivens();	// fix #99
             return (isStandard ? RES_OK : RES_WARN);
         }
         return RES_ERROR;

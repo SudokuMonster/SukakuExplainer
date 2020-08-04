@@ -49,6 +49,7 @@ public class SudokuExplainer {
 
     public SudokuExplainer() {
 		grid = new Grid();
+		gridStack = new Stack<Grid>();	// fix #101 - reset Undo stack (in constructor)
 		solver = new Solver(grid);
         solver.rebuildPotentialValues();
         frame = new SudokuFrame();
@@ -316,6 +317,7 @@ public class SudokuExplainer {
 
     public void clearGrid() {
         grid = new Grid();
+		gridStack = new Stack<Grid>();	// fix #101 - reset Undo stack (clearGrid())
         solver = new Solver(grid);
         solver.rebuildPotentialValues();
         panel.setSudokuGrid(grid);
@@ -325,6 +327,7 @@ public class SudokuExplainer {
 
     public void setGrid(Grid grid) {
         this.grid = grid;
+		gridStack = new Stack<Grid>();	// fix #101 - reset Undo stack (setGrid())
         solver = new Solver(grid);
         solver.rebuildPotentialValues();
         panel.setSudokuGrid(grid);
@@ -459,7 +462,8 @@ public class SudokuExplainer {
     }
 
     public void applySelectedHints() {
-	  if ( !grid.isSolved() ) {
+	 if ( !grid.isSolved() ) {
+	  if ( selectedHints.size() >= 1 ) {
 		pushGrid();
         for (Hint hint : selectedHints)
             //hint.apply();
@@ -467,6 +471,7 @@ public class SudokuExplainer {
         clearHints();
         repaintAll();
 	  }
+	 }
     }
 
     public void undoStep() {
@@ -502,6 +507,7 @@ public class SudokuExplainer {
         if (message == null || !message.isFatal()) {
 			if ( grid.isSudoku() == 1 ) {
             	solver.rebuildPotentialValues();
+				gridStack = new Stack<Grid>();	// fix #101 - reset Undo stack (pasteGrid())
 			}
 		}
         else {
@@ -550,6 +556,7 @@ public class SudokuExplainer {
         if (message == null || !message.isFatal()) {
 			if ( grid.isSudoku() == 1 ) {
 				solver.rebuildPotentialValues();
+				gridStack = new Stack<Grid>();	// fix #101 - reset Undo stack (loadGrid())
 			}
 		}
         else {
