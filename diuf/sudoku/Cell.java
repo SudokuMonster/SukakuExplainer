@@ -10,7 +10,6 @@ import diuf.sudoku.tools.CellSet;
 public class Cell {
 
     private final int index;
-	private boolean isGiven;
 
     /**
      * Create a new cell
@@ -22,18 +21,6 @@ public class Cell {
         this.index = index;
     }
     
-	public void setGiven() {
-        this.isGiven = true;
-    }
-
-    public void resetGiven() {
-        this.isGiven = false;
-    }
-
-    public boolean isGiven() {
-        return this.isGiven;
-    }
-	
     /**
      * Get the x coordinate of this cell.
      * 0 = leftmost, 8 = rightmost
