@@ -136,7 +136,8 @@ public class BinaryChainingHint extends ChainingHint {
         else if (isAbsurd)
             result = "CF";
         else
-            result = "DF";
+//Change to dF
+            result = "dF";
         return super.getShortNamePrefix() + result + super.getShortNameSuffix();
     }
 
