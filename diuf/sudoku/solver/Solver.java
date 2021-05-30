@@ -162,7 +162,7 @@ if (Settings.getInstance().revisedRating()==1) {
         addIfWorth(SolvingTechnique.HiddenPair, indirectHintProducers, new HiddenSet(2, false));
         addIfWorth(SolvingTechnique.NakedPair, indirectHintProducers, new NakedSet(2));
         addIfWorth(SolvingTechnique.NakedPairGen, indirectHintProducers, new NakedSetGen(2));
-        addIfWorth(SolvingTechnique.DirectHiddenPair, directHintProducers, new HiddenSet(3, true));
+        addIfWorth(SolvingTechnique.DirectHiddenTriplet, directHintProducers, new HiddenSet(3, true));
         addIfWorth(SolvingTechnique.XWing, indirectHintProducers, new Fisherman(2));
         addIfWorth(SolvingTechnique.NakedTriplet, indirectHintProducers, new NakedSet(3));
         addIfWorth(SolvingTechnique.NakedTripletGen, indirectHintProducers, new NakedSetGen(3));
