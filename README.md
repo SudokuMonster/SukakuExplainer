@@ -7,7 +7,7 @@ modification of &quot;Sudoku Explainer&quot; by Nicolas Juillerat
 
 ## Installation:
 
-Visit the [releases page](https://github.com/SudokuMonster/SukakuExplainer/releases) to download the latest version(s) of Sukaku Explainer and Serate.
+Visit the [releases page](https://github.com/dclamage/SukakuExplainer/releases) to download the latest version(s) of Sukaku Explainer and Serate.
 
 ## Usage:
 
