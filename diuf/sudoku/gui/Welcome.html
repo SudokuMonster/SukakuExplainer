@@ -1,44 +1,34 @@
 <html>
- <body>
-  <h2>Welcome to the <b>{0}</b></h2>
-  <p>
-  This application can solve a Sudoku, Sukaku (Pencilmark Sudoku) and a number of their
-  variants step by step, and explain at each step the technique that is used. It also allows
-  you to get <i>all</i> the techniques that can be applied at any step of the solving process,
-  and to explain and apply any of them.
-  </p><p>
-  To enter the Sudoku\Sukaku puzzle, select a cell with the arrow keys or by clicking on it. Then
-  type the value, or click on one of the possible values. Press the spacebar or click
-  again to clear the cell. Hold the Ctrl-key while clicking to toggle a
-  candidate of an empty cell.
-  </p><p>
-  The following buttons are available:
-  <ul>
-   <li><b>Check validity</b> to check whether the entered Sudoku is a valid one and has a
-    unique solution.
-   <li><b>Solve step</b> to get the simplest hint that allows you to perform the next
-    solving step. A detailed explanation of the solving technique will be displayed in this area.
-    Click again to apply the hint that is shown, and to get the next solving step. To solve
-    a Sudoku, just click this button multiple times until the Sudoku is fully solved.
-   <li><b>Get next hint</b>: After <b>Solve step</b>, you can use it to get another hint
-    without applying the one that is shown. Click multiple times to get more hints.
-    Hints are sorted in increasing order of difficulty.
-   <li><b>Apply hint</b> to apply the current hint, without getting the next one. It is
-    possible to select multiple hints and to use this button to apply all of them at once.
-   <li><b>Get all hints</b> to get all simple hints that can be applied on the current situation.
-    The hints are grouped by category, and sorted in increasing order of difficulty. The hints
-    appear in the right pane. You can select any hint to get a detailed explanation of it,
-    and click on <b>Apply hint</b> to apply it.
-   <li><b>Undo step</b> Go back one step.
-  </ul>
-  </p><p>
-  The following variants are available (Some of them can be combined):
-  <ul>
-   <li><b>Vanilla Sudoku/Sukaku</b>: This is the default setting bringing you the popular Sudoku where you
-   have to fill a 9 × 9 grid with numbers so that each row, column and 3x3 block contain all of the digits
-   between 1 and 9. <b>Sukaku</b> is the same puzzle but allows you to use Pencilmarks. The same rules as
-   Sudoku still apply. The regions on a 9x9 grid have this configuration:
-<pre style="font-family:Courier"><b>
+
+<body>
+    <h2>Welcome to the <b>{0}</b></h2>
+    <p>
+        This application can solve a Sudoku, Sukaku (Pencilmark Sudoku) and a number of their variants step by step, and explain at each step the technique that is used. It also allows you to get <i>all</i> the techniques that can be applied at any step
+        of the solving process, and to explain and apply any of them.
+    </p>
+    <p>
+        To enter the Sudoku\Sukaku puzzle, select a cell with the arrow keys or by clicking on it. Then type the value, or click on one of the possible values. Press the spacebar or click again to clear the cell. Hold the Ctrl-key while clicking to toggle a candidate
+        of an empty cell.
+    </p>
+    <p>
+        The following buttons are available:
+        <ul>
+            <li><b>Check validity</b> to check whether the entered Sudoku is a valid one and has a unique solution.
+                <li><b>Solve step</b> to get the simplest hint that allows you to perform the next solving step. A detailed explanation of the solving technique will be displayed in this area. Click again to apply the hint that is shown, and to get the next
+                    solving step. To solve a Sudoku, just click this button multiple times until the Sudoku is fully solved.
+                    <li><b>Get next hint</b>: After <b>Solve step</b>, you can use it to get another hint without applying the one that is shown. Click multiple times to get more hints. Hints are sorted in increasing order of difficulty.
+                        <li><b>Apply hint</b> to apply the current hint, without getting the next one. It is possible to select multiple hints and to use this button to apply all of them at once.
+                            <li><b>Get all hints</b> to get all simple hints that can be applied on the current situation. The hints are grouped by category, and sorted in increasing order of difficulty. The hints appear in the right pane. You can select
+                                any hint to get a detailed explanation of it, and click on <b>Apply hint</b> to apply it.
+                                <li><b>Undo step</b> Go back one step.
+        </ul>
+    </p>
+    <p>
+        The following variants are available (Some of them can be combined):
+        <ul>
+            <li><b>Vanilla Sudoku/Sukaku</b>: This is the default setting bringing you the popular Sudoku where you have to fill a 9 × 9 grid with numbers so that each row, column and 3x3 block contain all of the digits between 1 and 9. <b>Sukaku</b> is the
+                same puzzle but allows you to use Pencilmarks. The same rules as Sudoku still apply. The regions on a 9x9 grid have this configuration:
+                <pre style="font-family:Courier"><b>
 1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8195;&#8195;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8195;&#8195;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3
 2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8195;&#8195;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8195;&#8195;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3
 3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8195;&#8195;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8195;&#8195;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3
@@ -49,12 +39,10 @@
 8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8195;&#8195;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8195;&#8195;7&#8194;&#8194;7&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9
 9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9&#8195;&#8195;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8195;&#8195;7&#8194;&#8194;7&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;9&#8194;&#8194;9</b>
 </pre>
-<li><b>Latin Square</b>: Also known as QWH, LQ or LS. Removing the blocks will leave only the rows
-   and columns as constraints. Sudoku can therefore be considered a subset of Latin Square.
-<br><br>
-   <li><b>Disjoint Groups</b>: Adds 9 block position groups. In combination with Sudoku it is also known
-   as SudokuDG, SudokuP or Sudoku4D. The regions on a 9x9 grid have this configuration:
-<pre style="font-family:Courier"><b>
+                <li><b>Latin Square</b>: Also known as QWH, LQ or LS. Removing the blocks will leave only the rows and columns as constraints. Sudoku can therefore be considered a subset of Latin Square.
+                    <br><br>
+                    <li><b>Disjoint Groups</b>: Adds 9 block position groups. In combination with Sudoku it is also known as SudokuDG, SudokuP or Sudoku4D. The regions on a 9x9 grid have this configuration:
+                        <pre style="font-family:Courier"><b>
 1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;3
 4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6
 7&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9
@@ -64,12 +52,10 @@
 1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;3&#8194;&#8194;1&#8194;&#8194;2&#8194;&#8194;3
 4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6&#8194;&#8194;4&#8194;&#8194;5&#8194;&#8194;6
 7&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9&#8194;&#8194;7&#8194;&#8194;8&#8194;&#8194;9</b>
-</pre>  
-   <li><b>Windows</b>: Adds 4 Extra Blocks (Windows) as constraints. These would force the creation of 5
-   other hidden groups which can be used to help advancing the solution. When combined with Sudoku it
-   is also known as Windoku, Hyper Sudoku, NRC Sudoku (Dutch Newspaper) or SudokuW.  The regions on a 9x9
-   grid have this configuration:
-<pre style="font-family:Courier"><b>
+</pre>
+                        <li><b>Windows</b>: Adds 4 Extra Blocks (Windows) as constraints. These would force the creation of 5 other hidden groups which can be used to help advancing the solution. When combined with Sudoku it is also known as Windoku, Hyper
+                            Sudoku, NRC Sudoku (Dutch Newspaper) or SudokuW. The regions on a 9x9 grid have this configuration:
+                            <pre style="font-family:Courier"><b>
 9&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;9&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;9
 7&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;7&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;7
 7&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;1&#8194;&#8194;7&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;2&#8194;&#8194;7
@@ -79,11 +65,10 @@
 8&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;8&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;8
 8&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;3&#8194;&#8194;8&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;4&#8194;&#8194;8
 9&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;5&#8194;&#8194;9&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;6&#8194;&#8194;9</b>
-</pre>   
-   <li><b>X diagonals</b>: Adds 2 9-cell diagonals as constraints (No repeating symbols in corner to
-   corner diagonal). When combined with sudoku it is also known as SudokuX. The diagonals overlap in
-   the center of the grid with that cell at Row 5 and Column 5 capable of seeing all cells of both diagonals:
-<pre style="font-family:Courier"><b>
+</pre>
+                            <li><b>X diagonals</b>: Adds 2 9-cell diagonals as constraints (No repeating symbols in corner to corner diagonal). When combined with sudoku it is also known as SudokuX. The diagonals overlap in the center of the grid with that
+                                cell at Row 5 and Column 5 capable of seeing all cells of both diagonals:
+                                <pre style="font-family:Courier"><b>
 \&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;/
 .&#8194;&#8194;\&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;/&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;\&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;/&#8194;&#8194;.&#8194;&#8194;.
@@ -93,9 +78,9 @@
 .&#8194;&#8194;.&#8194;&#8194;/&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;\&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;/&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;\&#8194;&#8194;.
 /&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;\</b>
-</pre>   
-	<li><b>Center Dot</b>: Adds a 9 cell <i>Center Dot</i> Extra group which has the following configuration:
-<pre style="font-family:Courier"><b>
+</pre>
+                                <li><b>Center Dot</b>: Adds a 9 cell <i>Center Dot</i> Extra group which has the following configuration:
+                                    <pre style="font-family:Courier"><b>
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
@@ -106,9 +91,9 @@
 .&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 </b>
-</pre> 
-	<li><b>Asterisk</b>: Adds a 9 cell <i>Asterisk</i> Extra group which has the following configuration:
-<pre style="font-family:Courier"><b>
+</pre>
+                                    <li><b>Asterisk</b>: Adds a 9 cell <i>Asterisk</i> Extra group which has the following configuration:
+                                        <pre style="font-family:Courier"><b>
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.
@@ -120,8 +105,8 @@
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 </b>
 </pre>
-	<li><b>Girandola</b>: Adds a 9 cell <i>Girandola</i> Extra group which has the following configuration:
-<pre style="font-family:Courier"><b>
+                                        <li><b>Girandola</b>: Adds a 9 cell <i>Girandola</i> Extra group which has the following configuration:
+                                            <pre style="font-family:Courier"><b>
 O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
@@ -132,37 +117,29 @@ O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#81
 .&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.
 O&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;.&#8194;&#8194;O</b>
 </pre>
-  </ul>
-  <ul>
-   <li><b>Forbidden pairs variants</b>:These variants impose constraints on pairs of cells,
-    known as binary constraints. These binary constraints are clues which specify that certain
-    value pairs can never occur in cells with a specific location relationship. Each cell that
-	is solved will propagate this relationship to another unsolved cell.
-  </ul>
-  <ul>
-  <u>Non consecutive (NC)</u>: Sukaku Explainer has this variant where no consecutive values can
-    occur in orthogonal adjacent cells. The values available in a 9x9 sudoku are 1,2,3,4,5,6,7,8,9.
-    If 1 and 9 are not allowed in adjacent cells then it is known as <u>NC+ or cyclic NC</u>.
-  </ul>
-  <ul>  
-  <u>Ferz Non consecutive (NC)</u>: Sukaku Explainer has this variant where no consecutive values can
-    occur in diagonal neighbouring cells. The values available in a 9x9 sudoku are 1,2,3,4,5,6,7,8,9.
-    If 1 and 9 are not allowed in the neighbouring cells then it is known
-	as <u>Ferz NC+ or cyclic Ferz NC</u>.
-  </ul>
-  <ul>
-    Anti Chess: in this subset of Forbidden Pairs, the same value can't occur in cells that
-    are positioned 1 leap (of a specified chess piece) apart. 2 famous Anti Chess varieties
-    are supported by Sukaku Explainer: <u>Anti-King (AK, also known as touchless)</u> and
-    <u>Anti-kNight (AN)</u>.
-  </ul>
-  <ul>
-   <li>A 9x9 <b>Toroidal board</b> is one that wraps the board in way where Row 1 becomes next
-    to Row 9 and Column 1 beocems next to Column 9, transforming the board into a Doughnut shaped
-    (Halo or Toroid) 3D shape. It extands the effect of forbidden pairs to more cells taking
-    advantage of this property.
-  </ul>
-  </p>
+        </ul>
+        <ul>
+            <li><b>Forbidden pairs variants</b>:These variants impose constraints on pairs of cells, known as binary constraints. These binary constraints are clues which specify that certain value pairs can never occur in cells with a specific location relationship.
+                Each cell that is solved will propagate this relationship to another unsolved cell.
+        </ul>
+        <ul>
+            <u>Non consecutive (NC)</u>: Sukaku Explainer has this variant where no consecutive values can occur in orthogonal adjacent cells. The values available in a 9x9 sudoku are 1,2,3,4,5,6,7,8,9. If 1 and 9 are not allowed in adjacent cells then
+            it is known as <u>NC+ or cyclic NC</u>.
+        </ul>
+        <ul>
+            <u>Ferz Non consecutive (NC)</u>: Sukaku Explainer has this variant where no consecutive values can occur in diagonal neighbouring cells. The values available in a 9x9 sudoku are 1,2,3,4,5,6,7,8,9. If 1 and 9 are not allowed in the neighbouring
+            cells then it is known as <u>Ferz NC+ or cyclic Ferz NC</u>.
+        </ul>
+        <ul>
+            Anti Chess: in this subset of Forbidden Pairs, the same value can't occur in cells that are positioned 1 leap (of a specified chess piece) apart. 2 famous Anti Chess varieties are supported by Sukaku Explainer: <u>Anti-King (AK, also known as touchless)</u>            and
+            <u>Anti-Knight (AN)</u>.
+        </ul>
+        <ul>
+            <li>A 9x9 <b>Toroidal board</b> is one that wraps the board in way where Row 1 becomes next to Row 9 and Column 1 beocems next to Column 9, transforming the board into a Doughnut shaped (Halo or Toroid) 3D shape. It extands the effect of forbidden
+                pairs to more cells taking advantage of this property.
+        </ul>
+    </p>
 
- </body>
+</body>
+
 </html>
