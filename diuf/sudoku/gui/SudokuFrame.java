@@ -1498,7 +1498,7 @@ public class SudokuFrame extends JFrame implements Asker {
     private JMenu getForbiddenPairsMenu() {
 		if (forbiddenPairsMenu == null) {
 			forbiddenPairsMenu = new JMenu();
-            forbiddenPairsMenu.setText("Forbidden Paris");
+            forbiddenPairsMenu.setText("Forbidden Pairs");
 			forbiddenPairsMenu.setToolTipText("Certain Cells have a certain value pairing");
 			forbiddenPairsMenu.add(getMitRegularNC());
 			forbiddenPairsMenu.add(getMitCyclicNC());
