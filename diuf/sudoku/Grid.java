@@ -87,9 +87,9 @@ public class Grid {
 	private static final int [][] asteriskVisibleCellIndex;
 	private static final int [][] girandolaVisibleCellIndex;
 	private static final int [][] CDVisibleCellIndex;
-	private static final int [][] ferzCellIndex;
+	public static final int [][] ferzCellIndex;
 	//private static final int [][] wazirCellIndex;
-	private static final int [][] knightCellIndex;
+	public static final int [][] knightCellIndex;
 	public static final int [][] wazirCellsRegular;
 	public static final int [][] wazirCellsToroidal;
 	public static final int [][] ferzCellsRegular;
