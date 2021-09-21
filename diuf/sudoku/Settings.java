@@ -329,7 +329,7 @@ public class Settings {
 			variantsCount++;
 		}
 		if (isAntiKnight()){
-			temp += "Anti-kNight ";
+			temp += "Anti-Knight ";
 			variantsCount++;
 		}
 		if (isForbiddenPairs()){

@@ -123,7 +123,7 @@ public class serate {
         System.err.println("  -m, --man");
         System.err.println("      List detailed info in displayed man page form.");
         System.err.println("  -n, --isAntiKnight=N");
-        System.err.println("  	  Enable/disable Anti-kNight constraints. 0:disable (default), 1:enabled");
+        System.err.println("  	  Enable/disable Anti-Knight constraints. 0:disable (default), 1:enabled");
         System.err.println("  -N, --revisedRating=N");
         System.err.println("      Revised rating scheme. Default 0=disabled. 1=enabled");
         System.err.println("  -o, --output=FILE");

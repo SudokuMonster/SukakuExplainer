@@ -578,15 +578,15 @@ public class Chaining implements IndirectHintProducer {
     }
 
     /**
-     * Get the set of all {@link Potential}s that cannot be
-     * valid (are "off") if the given potential is "on"
-     * (i.e. if its value is the correct one for the cell).
+     * Get the set of all {@link Potential}s that cannot be valid (are "off") if the
+     * given potential is "on" (i.e. if its value is the correct one for the cell).
+     * 
      * @param grid the Sudoku grid
-     * @param p the potential that is assumed to be "on"
+     * @param p    the potential that is assumed to be "on"
      * @return the set of potentials that must be "off"
      */
     private Set<Potential> getOnToOff(Grid grid, Potential p, boolean isYChainEnabled) {
-    	Set<Potential> result = new LinkedHashSet<Potential>();
+        Set<Potential> result = new LinkedHashSet<Potential>();
 
         int potentialCellIndex = p.cell.getIndex();
         if (isYChainEnabled) { // This rule is not used with X-Chains
@@ -594,204 +594,227 @@ public class Chaining implements IndirectHintProducer {
             BitSet potentialValues = grid.getCellPotentialValues(potentialCellIndex);
             for (int value = potentialValues.nextSetBit(0); value >= 0; value = potentialValues.nextSetBit(value + 1)) {
                 if (value != p.value)
-                    result.add(new Potential(p.cell, value, false, p,
-                            Potential.Cause.NakedSingle, "the cell can contain only one value"));
+                    result.add(new Potential(p.cell, value, false, p, Potential.Cause.NakedSingle,
+                            "the cell can contain only one value"));
             }
         }
+
+        boolean[] addedPotential = new boolean[81];
+        addedPotential[potentialCellIndex] = true;
 
         // Second rule: other potential position for this value get off
         Grid.Region box = Grid.getRegionAt(0, potentialCellIndex);
         BitSet boxPositions = box.copyPotentialPositions(grid, p.value);
         boxPositions.clear(box.indexOf(p.cell));
         if (Settings.getInstance().isBlocks())
-			for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
-				Cell cell = box.getCell(i);
-				result.add(new Potential(cell, p.value, false, p,
-						getRegionCause(0),
-						"the value can occur only once in the " + box.toString()));
-			}
+            for (int i = boxPositions.nextSetBit(0); i >= 0; i = boxPositions.nextSetBit(i + 1)) {
+                Cell cell = box.getCell(i);
+                if (!addedPotential[cell.getIndex()]) {
+                    result.add(new Potential(cell, p.value, false, p, getRegionCause(0),
+                            "the value can occur only once in the " + box.toString()));
+                    addedPotential[cell.getIndex()] = true;
+                }
+            }
         Grid.Region row = Grid.getRegionAt(1, potentialCellIndex);
         BitSet rowPositions = row.copyPotentialPositions(grid, p.value);
         rowPositions.clear(row.indexOf(p.cell));
         for (int i = rowPositions.nextSetBit(0); i >= 0; i = rowPositions.nextSetBit(i + 1)) {
             Cell cell = row.getCell(i);
-            if (Settings.getInstance().isBlocks())
-				if(box.contains(cell)) continue;
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(1),
-                    "the value can occur only once in the " + row.toString()));
+            if (!addedPotential[cell.getIndex()]) {
+                result.add(new Potential(cell, p.value, false, p, getRegionCause(1),
+                        "the value can occur only once in the " + row.toString()));
+                addedPotential[cell.getIndex()] = true;
+            }
         }
         Grid.Region col = Grid.getRegionAt(2, potentialCellIndex);
         BitSet colPositions = col.copyPotentialPositions(grid, p.value);
         colPositions.clear(col.indexOf(p.cell));
         for (int i = colPositions.nextSetBit(0); i >= 0; i = colPositions.nextSetBit(i + 1)) {
             Cell cell = col.getCell(i);
-            if (Settings.getInstance().isBlocks())
-				if(box.contains(cell)) continue;
-            result.add(new Potential(cell, p.value, false, p,
-                    getRegionCause(2),
-                    "the value can occur only once in the " + col.toString()));
+            if (!addedPotential[cell.getIndex()]) {
+                result.add(new Potential(cell, p.value, false, p, getRegionCause(2),
+                        "the value can occur only once in the " + col.toString()));
+                addedPotential[cell.getIndex()] = true;
+            }
         }
-//@SudokuMonster: Added Variants changes
-		if (!Settings.getInstance().isVLatin()){
-			Grid.Region dg = null;
-			Grid.Region window = null;
-			Grid.Region md = null;
-			Grid.Region ad = null;
-			Grid.Region girandola = null;
-			Grid.Region asterisk = null;
-			Grid.Region cd = null;
-			if (Settings.getInstance().isDG()){
-				dg = Grid.getRegionAt(3, potentialCellIndex);
-				BitSet dgPositions = dg.copyPotentialPositions(grid, p.value);
-				dgPositions.clear(dg.indexOf(p.cell));
-				for (int i = dgPositions.nextSetBit(0); i >= 0; i = dgPositions.nextSetBit(i + 1)) {
-					Cell cell = dg.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(3),
-							"the value can occur only once in the " + dg.toString()));
-				}
-			}
-			if (Settings.getInstance().isWindows()){
-				window = Grid.getRegionAt(4, potentialCellIndex);
-				BitSet windowPositions = window.copyPotentialPositions(grid, p.value);
-				windowPositions.clear(window.indexOf(p.cell));
-				for (int i = windowPositions.nextSetBit(0); i >= 0; i = windowPositions.nextSetBit(i + 1)) {
-					Cell cell = window.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(4),
-							"the value can occur only once in the " + window.toString()));
-				}
-			}
-			if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0){
-				md = Grid.getRegionAt(5, potentialCellIndex);
-				BitSet mdPositions = md.copyPotentialPositions(grid, p.value);
-				mdPositions.clear(md.indexOf(p.cell));
-				for (int i = mdPositions.nextSetBit(0); i >= 0; i = mdPositions.nextSetBit(i + 1)) {
-					Cell cell = md.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					if (Settings.getInstance().isWindows())
-						if(window.contains(cell)) continue;				
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(5),
-							"the value can occur only once in the " + md.toString()));
-				}
-			}
-			if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0){
-				ad = Grid.getRegionAt(6, potentialCellIndex);
-				BitSet adPositions = ad.copyPotentialPositions(grid, p.value);
-				adPositions.clear(ad.indexOf(p.cell));
-				for (int i = adPositions.nextSetBit(0); i >= 0; i = adPositions.nextSetBit(i + 1)) {
-					Cell cell = ad.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					if (Settings.getInstance().isWindows())
-						if(window.contains(cell)) continue;				
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(6),
-							"the value can occur only once in the " + ad.toString()));
-				}
-			}
-			if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0){
-				girandola = Grid.getRegionAt(7, potentialCellIndex);
-				BitSet girandolaPositions = girandola.copyPotentialPositions(grid, p.value);
-				girandolaPositions.clear(girandola.indexOf(p.cell));
-				for (int i = girandolaPositions.nextSetBit(0); i >= 0; i = girandolaPositions.nextSetBit(i + 1)) {
-					Cell cell = girandola.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					if (Settings.getInstance().isWindows())
-						if(window.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
-						if(md.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
-						if(ad.contains(cell)) continue;
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(7),
-							"the value can occur only once in the " + girandola.toString()));
-				}
-			}
-			if (Settings.getInstance().isAsterisk() && Grid.cellRegions[potentialCellIndex][8] == 0){
-				asterisk = Grid.getRegionAt(8, potentialCellIndex);
-				BitSet asteriskPositions = asterisk.copyPotentialPositions(grid, p.value);
-				asteriskPositions.clear(asterisk.indexOf(p.cell));
-				for (int i = asteriskPositions.nextSetBit(0); i >= 0; i = asteriskPositions.nextSetBit(i + 1)) {
-					Cell cell = asterisk.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					if (Settings.getInstance().isWindows())
-						if(window.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
-						if(md.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
-						if(ad.contains(cell)) continue;
-					if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0)
-						if(girandola.contains(cell)) continue;
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(8),
-							"the value can occur only once in the " + asterisk.toString()));
-				}
-			}
-			if (Settings.getInstance().isCD() && Grid.cellRegions[potentialCellIndex][9] == 0){
-				cd = Grid.getRegionAt(9, potentialCellIndex);
-				BitSet cdPositions = cd.copyPotentialPositions(grid, p.value);
-				cdPositions.clear(cd.indexOf(p.cell));
-				for (int i = cdPositions.nextSetBit(0); i >= 0; i = cdPositions.nextSetBit(i + 1)) {
-					Cell cell = cd.getCell(i);
-					if (Settings.getInstance().isBlocks())
-						if(box.contains(cell)) continue;
-					if(col.contains(cell)) continue;
-					if(row.contains(cell)) continue;
-					if (Settings.getInstance().isDG())
-						if(dg.contains(cell)) continue;
-					if (Settings.getInstance().isWindows())
-						if(window.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0)
-						if(md.contains(cell)) continue;
-					if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0)
-						if(ad.contains(cell)) continue;
-					if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0)
-						if(girandola.contains(cell)) continue;
-					if (Settings.getInstance().isAsterisk() && Grid.cellRegions[potentialCellIndex][8] == 0)
-						if(asterisk.contains(cell)) continue;
-					result.add(new Potential(cell, p.value, false, p,
-							getRegionCause(9),
-							"the value can occur only once in the " + cd.toString()));
-				}
-			}
-		}
+        // @SudokuMonster: Added Variants changes
+        if (!Settings.getInstance().isVLatin()) {
+            Grid.Region dg = null;
+            Grid.Region window = null;
+            Grid.Region md = null;
+            Grid.Region ad = null;
+            Grid.Region girandola = null;
+            Grid.Region asterisk = null;
+            Grid.Region cd = null;
+            if (Settings.getInstance().isDG()) {
+                dg = Grid.getRegionAt(3, potentialCellIndex);
+                BitSet dgPositions = dg.copyPotentialPositions(grid, p.value);
+                dgPositions.clear(dg.indexOf(p.cell));
+                for (int i = dgPositions.nextSetBit(0); i >= 0; i = dgPositions.nextSetBit(i + 1)) {
+                    Cell cell = dg.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(3),
+                                "the value can occur only once in the " + dg.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isWindows()) {
+                window = Grid.getRegionAt(4, potentialCellIndex);
+                BitSet windowPositions = window.copyPotentialPositions(grid, p.value);
+                windowPositions.clear(window.indexOf(p.cell));
+                for (int i = windowPositions.nextSetBit(0); i >= 0; i = windowPositions.nextSetBit(i + 1)) {
+                    Cell cell = window.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(4),
+                                "the value can occur only once in the " + window.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][5] == 0) {
+                md = Grid.getRegionAt(5, potentialCellIndex);
+                BitSet mdPositions = md.copyPotentialPositions(grid, p.value);
+                mdPositions.clear(md.indexOf(p.cell));
+                for (int i = mdPositions.nextSetBit(0); i >= 0; i = mdPositions.nextSetBit(i + 1)) {
+                    Cell cell = md.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(5),
+                                "the value can occur only once in the " + md.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isX() && Grid.cellRegions[potentialCellIndex][6] == 0) {
+                ad = Grid.getRegionAt(6, potentialCellIndex);
+                BitSet adPositions = ad.copyPotentialPositions(grid, p.value);
+                adPositions.clear(ad.indexOf(p.cell));
+                for (int i = adPositions.nextSetBit(0); i >= 0; i = adPositions.nextSetBit(i + 1)) {
+                    Cell cell = ad.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(6),
+                                "the value can occur only once in the " + ad.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isGirandola() && Grid.cellRegions[potentialCellIndex][7] == 0) {
+                girandola = Grid.getRegionAt(7, potentialCellIndex);
+                BitSet girandolaPositions = girandola.copyPotentialPositions(grid, p.value);
+                girandolaPositions.clear(girandola.indexOf(p.cell));
+                for (int i = girandolaPositions.nextSetBit(0); i >= 0; i = girandolaPositions.nextSetBit(i + 1)) {
+                    Cell cell = girandola.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(7),
+                                "the value can occur only once in the " + girandola.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isAsterisk() && Grid.cellRegions[potentialCellIndex][8] == 0) {
+                asterisk = Grid.getRegionAt(8, potentialCellIndex);
+                BitSet asteriskPositions = asterisk.copyPotentialPositions(grid, p.value);
+                asteriskPositions.clear(asterisk.indexOf(p.cell));
+                for (int i = asteriskPositions.nextSetBit(0); i >= 0; i = asteriskPositions.nextSetBit(i + 1)) {
+                    Cell cell = asterisk.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(8),
+                                "the value can occur only once in the " + asterisk.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+            if (Settings.getInstance().isCD() && Grid.cellRegions[potentialCellIndex][9] == 0) {
+                cd = Grid.getRegionAt(9, potentialCellIndex);
+                BitSet cdPositions = cd.copyPotentialPositions(grid, p.value);
+                cdPositions.clear(cd.indexOf(p.cell));
+                for (int i = cdPositions.nextSetBit(0); i >= 0; i = cdPositions.nextSetBit(i + 1)) {
+                    Cell cell = cd.getCell(i);
+                    if (!addedPotential[cell.getIndex()]) {
+                        result.add(new Potential(cell, p.value, false, p, getRegionCause(9),
+                                "the value can occur only once in the " + cd.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+        }
+
+        // @Rangsk: Added anti-king
+        if (Settings.getInstance().isAntiFerz()) {
+            Cell centerCell = Grid.getCell(potentialCellIndex);
+            int centerCellX = centerCell.getX();
+            int centerCellY = centerCell.getY();
+            for (int ferzOffsetIndex = 0; ferzOffsetIndex < Grid.ferzCellIndex.length; ferzOffsetIndex++) {
+                int ferzOffsetX = Grid.ferzCellIndex[ferzOffsetIndex][0];
+                int ferzOffsetY = Grid.ferzCellIndex[ferzOffsetIndex][1];
+                int ferzCellX = centerCellX + ferzOffsetX;
+                int ferzCellY = centerCellY + ferzOffsetY;
+                if (ferzCellX >= 0 && ferzCellY >= 0 && ferzCellX < 9 && ferzCellY < 9) {
+                    Cell cell = Grid.getCell(ferzCellX, ferzCellY);
+                    if (!addedPotential[cell.getIndex()] && grid.hasCellPotentialValue(cell.getIndex(), p.value)) {
+                        result.add(new Potential(cell, p.value, false, p, Potential.Cause.NakedSingle,
+                                "anti-king prevents the value from being the same as " + centerCell.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+        }
+
+        // @Rangsk: Added anti-knight
+        if (Settings.getInstance().isAntiKnight()) {
+            Cell centerCell = Grid.getCell(potentialCellIndex);
+            int centerCellX = centerCell.getX();
+            int centerCellY = centerCell.getY();
+            for (int knightOffsetIndex = 0; knightOffsetIndex < Grid.knightCellIndex.length; knightOffsetIndex++) {
+                int knightOffsetX = Grid.knightCellIndex[knightOffsetIndex][0];
+                int knightOffsetY = Grid.knightCellIndex[knightOffsetIndex][1];
+                int knightCellX = centerCellX + knightOffsetX;
+                int knightCellY = centerCellY + knightOffsetY;
+                if (knightCellX >= 0 && knightCellY >= 0 && knightCellX < 9 && knightCellY < 9) {
+                    Cell cell = Grid.getCell(knightCellX, knightCellY);
+                    if (!addedPotential[cell.getIndex()] && grid.hasCellPotentialValue(cell.getIndex(), p.value)) {
+                        result.add(new Potential(cell, p.value, false, p, Potential.Cause.NakedSingle,
+                                "anti-knight prevents the value from being the same as " + centerCell.toString()));
+                        addedPotential[cell.getIndex()] = true;
+                    }
+                }
+            }
+        }
+
+        // @Rangsk: Added non-consecutive
+        if (Settings.getInstance().isForbiddenPairs() && Settings.getInstance().whichNC() > 0) {
+            int statusNC = Settings.getInstance().whichNC();
+            int i = potentialCellIndex;
+            Cell centerCell = Grid.getCell(i);
+            int value = p.value;
+            boolean isWazir = statusNC == 1 || statusNC == 2;
+            boolean isNCToroidal = statusNC == 2 || statusNC == 4;
+            int[][] lookupCells = Settings.getInstance().isToroidal()
+                    ? (isWazir ? Grid.wazirCellsToroidal : Grid.ferzCellsToroidal)
+                    : (isWazir ? Grid.wazirCellsRegular : Grid.ferzCellsRegular);
+
+            int j = lookupCells[i].length;
+            for (int k = 0; k < j; k++) {
+                int cellIndex = lookupCells[i][k];
+                Cell cell = Grid.getCell(cellIndex);
+                if (isNCToroidal || value < 9) {
+                    int ncValue = value == 9 ? 1 : value + 1;
+                    if (grid.hasCellPotentialValue(cell.getIndex(), ncValue)) {
+                        result.add(new Potential(cell, ncValue, false, p, Potential.Cause.NakedSingle,
+                                "The value is consecutive with " + centerCell.toString()));
+                    }
+                }
+                if (isNCToroidal || value > 1) {
+                    int ncValue = value == 1 ? 9 : value - 1;
+                    if (grid.hasCellPotentialValue(cell.getIndex(), ncValue)) {
+                        result.add(new Potential(cell, ncValue, false, p, Potential.Cause.NakedSingle,
+                                "The value is consecutive with " + centerCell.toString()));
+                    }
+                }
+            }
+        }
         return result;
-
     }
-
-
 
     private void addHiddenParentsOfCell(Potential p, Grid grid, Grid source,
             LinkedSet<Potential> offPotentials) {
