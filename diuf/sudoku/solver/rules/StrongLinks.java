@@ -293,6 +293,9 @@ public class StrongLinks implements IndirectHintProducer {
 						continue;
 					BitSet baseLinkBlade1 = (BitSet)baseLinkRegionPotentials.clone();
 					BitSet baseLinkBlade2 = (BitSet)baseLinkRegionPotentials.clone();
+						//@SudokuMonster #111 bug fixattempt
+						BitSet beatingHeart = (BitSet)baseLinkRegionPotentials.clone();
+					
 					if (baseLinkRegionPotentialsC > 2) {
 						//Grouped Strong links in box have 15 configurations but only 9 are ER 
 						for (e[linksDepth] = 0; e[linksDepth] < (linkSet[linksDepth] < 1 ? 15 : 3); e[linksDepth]++) {
@@ -304,6 +307,8 @@ public class StrongLinks implements IndirectHintProducer {
 							BitSet baseLinkEmptyArea = (BitSet)baseLinkRegionPotentials.clone();
 							baseLinkBlade1 = (BitSet)baseLinkRegionPotentials.clone();
 							baseLinkBlade2 = (BitSet)baseLinkRegionPotentials.clone();
+								//@SudokuMonster #111 bug fixattempt
+								beatingHeart = (BitSet)baseLinkRegionPotentials.clone();
 							if (linkSet[linksDepth] == 0 || linkSet[linksDepth] == 3 || linkSet[linksDepth] == 4) {
 								//confirm if we have an empty rectangle
 								//block has 9 cells: 4 "Cross" cells, 4 "Rectangle" cells and 1 "Heart" cell
@@ -320,6 +325,8 @@ public class StrongLinks implements IndirectHintProducer {
 									//9 configurations for each block depending on "Heart" cell
 									baseLinkBlade1.and(baseLinkRegion[linksDepth].crossBlade1(e[linksDepth]));
 									baseLinkBlade2.and(baseLinkRegion[linksDepth].crossBlade2(e[linksDepth]));
+										//@SudokuMonster #111 bug fixattempt
+										beatingHeart.and(baseLinkRegion[linksDepth].crossHeart(e[linksDepth]));
 								}
 								else {
 									baseLinkBlade1.and(baseLinkRegion[linksDepth].lineBlade1(e[linksDepth]));
@@ -443,8 +450,17 @@ public class StrongLinks implements IndirectHintProducer {
 										cells[linksDepth * 2 + 1] = baseLinkRegion[linksDepth].getCell(baseLinkBlade1.nextSetBit(p1 + 1));
 										cells[linksNumber * 2 + linksDepth * 2 + 0] = baseLinkRegion[linksDepth].getCell(baseLinkBlade2.nextSetBit(0));
 									}	
-								if (!EmL)
-									baseLinkGroupedLinkOrdinal = 1;							}									
+								if (!EmL) {
+									baseLinkGroupedLinkOrdinal = 1;
+									//@SudokuMonster #111 bug fixattempt
+										if (e[linksDepth] < 9){
+												if (baseLinkBlade1.cardinality() == 2 && beatingHeart.cardinality() == 1)
+													cells[linksDepth * 2 + linksNumber * 4 + 0] = baseLinkRegion[linksDepth].getCell(baseLinkRegion[linksDepth].Heart(e[linksDepth]));
+												if (baseLinkBlade2.cardinality() == 2 && beatingHeart.cardinality() == 1)
+													cells[linksDepth * 2 + linksNumber * 4 + 1] = baseLinkRegion[linksDepth].getCell(baseLinkRegion[linksDepth].Heart(e[linksDepth]));
+										}
+								}
+							}									
 						}
 						else {
 							baseLinkGroupedLinkOrdinal = 1;

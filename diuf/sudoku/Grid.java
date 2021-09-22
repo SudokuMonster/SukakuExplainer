@@ -2712,6 +2712,14 @@ public class Grid {
 			return blockGroupedCellSet;
 		}
 
+		//1 Cell set corresponds to intersection cell in block cells that share exactly 1 column and 1 row 
+		public BitSet crossHeart(int index) {
+        	BitSet blockGroupedCellSet = new BitSet(10);
+			blockGroupedCellSet.set(index);
+			return blockGroupedCellSet;
+		}
+
+
 		//cellIndex of blockCell at centre of Cross Cell set 
 		public int Heart(int index) {
 			int[] blocksHeartCells = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
